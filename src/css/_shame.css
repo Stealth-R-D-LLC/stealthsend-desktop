@@ -1,0 +1,8 @@
+/* shame  */
+
+.body__inner {
+    background-color: lightgreen;
+    &--bla {
+        color: red;
+    }
+}

@@ -1,4 +1,15 @@
-@import 'css/transitions.css';
+@import 'css/settings/global.css';
+
+@import 'css/design-tokens/colors.css';
+@import 'css/design-tokens/fonts.css';
+@import 'css/design-tokens/typography.css';
+
+@import 'css/generic/normalize.css';
+
+
+@import 'css/tools/transitions.css';
+
+@import 'css/_shame.css';
 
 body {
   /* used for behaving more like an app, selection inside inputs and textareas still work in chromium */
