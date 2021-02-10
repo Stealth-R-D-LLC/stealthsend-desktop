@@ -1,0 +1,6 @@
+@import 'css/transitions.css';
+
+body {
+  /* used for behaving more like an app, selection inside inputs and textareas still work in chromium */
+  user-select: none;
+}
