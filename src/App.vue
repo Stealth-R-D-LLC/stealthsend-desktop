@@ -1,9 +1,8 @@
 <template>
   <div class="body__inner" style="background: pink">
     <TopBar />
-    <!-- [ HERE COMES YOUR CONTENT ] -->
     <transition name="fade" appear>
-      <div>aaaaaaa</div>
+      <div>aaa222aaaa</div>
     </transition>
   </div>
 </template>
