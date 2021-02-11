@@ -6,9 +6,11 @@
     "dev": "run-p dev:*",
     "dev:vite": "vite",
     "dev:electron": "electron src/background.js",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "build": "run-s build:*",
     "build:vite": "vite build --base=./",
     "build:electron": "electron-builder build",
+    "clean": "rm -rf node_modules package-lock.json && npm i",
     "postinstall": "install-app-deps"
   },
   "dependencies": {
@@ -17,13 +19,18 @@
     "vue": "^3.0.1"
   },
   "devDependencies": {
+    "@ehutch79/vite-eslint": "0.0.1",
     "@vitejs/plugin-vue": "^1.1.4",
     "@vue/compiler-sfc": "^3.0.5",
     "electron": "^11.2.3",
     "electron-builder": "^22.9.1",
     "electron-reloader": "^1.2.0",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-vue": "^7.5.0",
     "npm-run-all": "^4.1.5",
     "postcss-preset-env": "^6.7.0",
+    "prettier": "^2.2.1",
     "vite": "^2.0.0-beta.67"
   },
   "main": "src/background.js",
