@@ -1,11 +1,12 @@
+@import 'css/generic/normalize.css';
+
 @import 'css/settings/global.css';
 
 @import 'css/design-tokens/colors.css';
 @import 'css/design-tokens/fonts.css';
 @import 'css/design-tokens/typography.css';
 
-@import 'css/generic/normalize.css';
-
+@import 'css/skeleton/layout.css';
 
 @import 'css/tools/transitions.css';
 

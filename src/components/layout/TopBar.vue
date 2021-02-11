@@ -1,3 +1,5 @@
 <template>
-  <nav></nav>
+  <header>
+    header
+  </header>
 </template>

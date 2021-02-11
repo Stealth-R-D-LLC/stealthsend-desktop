@@ -1,20 +1,22 @@
 <template>
-  <div class="body__inner" style="background: pink">
-    <div class="body__inner--bla">aaa</div>
-    <TopBar />
-    <transition name="fade" appear>
-      <div>aaa222aaaaaaa222aaaaaaa222aaaaaaa222aaaaaaa222aaaaaaa222aaaaaaa222aaaaaaa222aaaaaaa222aaaaaaa222aaaa</div>
-    </transition>
+  <div class="default-layout">
+      <header class="default-layout__header">
+    headeraaa
+  </header>
+    <main class="default-layout__main">
+      <aside class="default-layout__aside">lijesvo</aside>
+      <article class="default-layout__main">main centar</article>
+    </main>
   </div>
 </template>
 
 <script>
-import TopBar from '/~/components/layout/TopBar.vue'
+// import TopBar from '/~/components/layout/TopBar.vue'
 
 export default {
   name: 'App',
   components: {
-    TopBar,
+    // TopBar,
   },
 }
 </script>

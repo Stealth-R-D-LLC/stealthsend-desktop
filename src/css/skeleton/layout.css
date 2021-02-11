@@ -1,0 +1,26 @@
+.default-layout {
+    display: flex;
+    flex-direction: column;
+    background-color: lightseagreen;
+}
+
+.default-layout__header {
+    background-color: lightsalmon;
+}
+
+.default-layout__main {
+    background-color: lightslategray;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+}
+
+.default-layout__aside {
+    background-color: lime;
+    width: 200px;
+}
+
+.default-layout__main {
+    background-color: mediumslateblue;
+    flex-grow: 1;
+}

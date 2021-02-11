@@ -1,8 +1,14 @@
+const postcssPresetEnv = require('postcss-preset-env');
+const autoprefixer = require('autoprefixer');
 
 module.exports = {
     plugins: [
-        require('autoprefixer'),
-        // require('postcss-nested')
-        require('postcss-preset-env')
+        autoprefixer,
+        postcssPresetEnv({
+            stage: 3,
+            features: {
+              'nesting-rules': true
+            }
+        })
     ]
 }
