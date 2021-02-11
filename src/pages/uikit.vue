@@ -1,8 +1,8 @@
 <template>
   <div class="uikit-container">
     ui kit
-    <StButton  color="secondary" @click="clickHandler('aaaaa')">Dash</StButton>
-    <StButton disabled @click="clickHandler('bbbbb')">Settings</StButton>
+    <StButton color="secondary" @click="clickHandler('aaaaa')">Dash</StButton>
+    <StButton @click="clickHandler('bbbbb')">Settings</StButton>
     <StInput></StInput>
   </div>
 </template>
@@ -11,7 +11,7 @@
 import StButton from '/~/components/kit/StButton.vue'
 import StInput from '/~/components/kit/StInput.vue'
 export default {
-      components: {
+  components: {
     StButton,
     StInput,
   },
