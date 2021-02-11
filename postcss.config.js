@@ -1,4 +1,5 @@
 const autoprefixer = require('autoprefixer');
+const postcssNested = require('postcss-nested');
 
 module.exports = {
   plugins: {
@@ -9,5 +10,5 @@ module.exports = {
       },
     },
   },
-  plugins: [autoprefixer],
+  plugins: [autoprefixer, postcssNested],
 };
