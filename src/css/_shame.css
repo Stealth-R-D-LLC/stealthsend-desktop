@@ -1,8 +1,8 @@
 /* shame  */
 
 .body__inner {
-    background-color: lightgreen;
-    &--bla {
+    background-color: lightpink;
+    /* .body__inner:hover {
         color: red;
-    }
+    } */
 }
