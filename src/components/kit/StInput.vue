@@ -1,6 +1,5 @@
 <template>
   <div class="st-input" :class="{ 'st-input--has-icon': icon }">
-    <TsIcon v-if="icon" :name="icon" />
     <input
       ref="input"
       :type="type"

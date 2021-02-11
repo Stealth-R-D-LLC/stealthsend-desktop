@@ -5,8 +5,8 @@ const isProd = app.isPackaged
 
 module.exports = function createWindow(windowName = 'main', options = {}) {
   const winOptions = {
-    minWidth: 800,
-    minHeight: 600,
+    minWidth: 1024,
+    minHeight: 768,
     titleBarStyle: 'hidden',
     autoHideMenuBar: true,
     trafficLightPosition: {

@@ -6,18 +6,27 @@
 
 .default-layout {
   display: flex;
+  background-color: var(--background100);
 }
 
 .default-layout__header {
-  background-color: var(--marine200);
+  border: 3px dashed blue;
+  padding: 12px 0;
 }
 .default-layout__main {
-  background-color: var(--mint400);
+  border: 3px dashed green;
   flex: 1;
   overflow: auto;
+  padding: 0 12px;
 }
 
 .default-layout__aside {
-  background-color: var(--purple100);
+  border: 3px dashed red;
+  background-color: var(--marine50);
   width: 200px;
+}
+
+.container {
+  padding: 12px 0;
+  border: 3px dashed orange;
 }
