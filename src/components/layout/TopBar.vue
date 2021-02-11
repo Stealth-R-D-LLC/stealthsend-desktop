@@ -1,3 +1,5 @@
 <template>
-  <header class="default-layout__header">headeraaa</header>
+  <header class="default-layout__header">
+    Welcome, Matej
+  </header>
 </template>
