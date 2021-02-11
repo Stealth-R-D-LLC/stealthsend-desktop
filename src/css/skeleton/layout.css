@@ -1,3 +1,9 @@
+#app {
+  height: 100vh;
+  position: relative;
+  display: grid;
+}
+
 .default-layout {
   display: flex;
   background-color: lightseagreen;
