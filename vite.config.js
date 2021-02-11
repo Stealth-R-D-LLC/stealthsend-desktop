@@ -1,7 +1,8 @@
 const vue = require('@vitejs/plugin-vue')
 const path = require('path')
-import viteESLint from '@ehutch79/vite-eslint'
 const srcPath = path.resolve(__dirname, 'src')
+import viteESLint from '@ehutch79/vite-eslint';
+import voie from 'vite-plugin-voie';
 
 module.exports = {
   server: {
@@ -12,7 +13,7 @@ module.exports = {
     // setup aliases for cleaner imports
     '/~': srcPath,
   },
-  plugins: [vue(), viteESLint({ 'include': ['src/**/*.vue', 'src/**/*.js'] })],
+  plugins: [vue(), voie(), viteESLint({ 'include': ['src/**/*.vue', 'src/**/*.js'] })],
   optimizeDeps: {
     // exclude path and electron-window-state as we are using the node runtime inside the browser
     // and don't wont vite to complain. If you have any issues importing node packages and vite complains,

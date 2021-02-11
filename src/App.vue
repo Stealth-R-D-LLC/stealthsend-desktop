@@ -3,8 +3,9 @@
     <MenuBar></MenuBar>
     <main class="default-layout__main">
       <TopBar></TopBar>
-      <p>aaa</p>
-      <StButton @click="clickHandler">Button</StButton>
+      <DefaultLayout></DefaultLayout>
+      <StButton @click="clickHandler('dashboard')">Dash</StButton>
+      <StButton @click="clickHandler('settings')">Settings</StButton>
       <StInput></StInput>
     </main>
   </div>
@@ -12,9 +13,11 @@
 
 <script>
 import MenuBar from '/~/components/layout/MenuBar.vue'
+import DefaultLayout from '/~/components/layout/Default.vue'
 import TopBar from '/~/components/layout/TopBar.vue'
 import StButton from '/~/components/kit/StButton.vue'
 import StInput from '/~/components/kit/StInput.vue'
+import { useRouter } from 'vue-router'
 
 export default {
   name: 'App',
@@ -23,10 +26,12 @@ export default {
     StInput,
     MenuBar,
     TopBar,
+    DefaultLayout, 
   },
   setup() {
-    function clickHandler() {
-      console.log('--> clicked!')
+    const router = useRouter()
+    function clickHandler(route) {
+      router.push('/' + route)
     }
     return {
       clickHandler,
