@@ -1,7 +1,7 @@
 <template>
   <div class="uikit-container">
     ui kit
-    <StButton @click="clickHandler('aaaaa')">Dash</StButton>
+    <StButton color="secondary" @click="clickHandler('aaaaa')">Dash</StButton>
     <StButton @click="clickHandler('bbbbb')">Settings</StButton>
     <StInput></StInput>
   </div>

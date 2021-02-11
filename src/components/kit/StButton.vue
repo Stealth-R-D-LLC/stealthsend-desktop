@@ -1,5 +1,14 @@
 <template>
-  <button class="st-button" :disabled="disabled" @click="handleClick">
+  <button
+    class="st-button"
+    :class="{
+      'st-button--primary': color === 'primary',
+      'st-button--secondary': color === 'secondary',
+      'disabled': disabled,
+    }"
+    :disabled="disabled"
+    @click="handleClick"
+  >
     <slot />
   </button>
 </template>
@@ -19,7 +28,10 @@ export default {
       type: String,
       required: false,
       default: () => {
-        return 'default'
+        return 'primary'
+      },
+      validator: (value) => {
+        return ['primary', 'secondary'].includes(value)
       },
     },
   },
@@ -37,15 +49,41 @@ export default {
 
 <style scoped>
 .st-button {
-  /* height: 40px; */
-  padding: 10px;
-  background-color: #4e00f6;
-  color: #ffffff;
+  /* box-sizing: border-box; */
+  padding: 12px;
   font-family: 'Source Sans Pro';
   font-size: 18px;
   font-weight: 600;
   letter-spacing: 0.5px;
   line-height: 26px;
   text-align: center;
+  min-width: 140px;
+
+  &--primary {
+    border: 1px solid var(--marine600);
+    background-color: var(--marine500);
+    background: linear-gradient(
+      153.43deg,
+      var(--marine500) 0%,
+      var(--marine600) 100%
+    );
+    color: var(--white);
+
+    &:hover {
+      background-color: var(--marine400);
+      cursor: pointer;
+    }
+  }
+
+  &--secondary {
+    border: none;
+    background-color: transparent;
+    color: var(--marine500);
+
+    &:hover {
+      cursor: pointer;
+      color: var(--marine400)
+    }
+  }
 }
 </style>
