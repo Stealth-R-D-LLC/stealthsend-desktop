@@ -6,25 +6,18 @@
 
 .default-layout {
   display: flex;
-  background-color: lightseagreen;
 }
 
 .default-layout__header {
-  background-color: lightsalmon;
+  background-color: var(--marine200);
 }
-
 .default-layout__main {
-  background-color: lightslategray;
+  background-color: var(--mint400);
   flex: 1;
   overflow: auto;
 }
 
 .default-layout__aside {
-  background-color: lime;
+  background-color: var(--purple100);
   width: 200px;
-}
-
-.default-layout__main {
-  background-color: mediumslateblue;
-  flex-grow: 1;
 }

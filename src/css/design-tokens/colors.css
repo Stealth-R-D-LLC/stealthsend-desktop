@@ -1,1 +1,62 @@
-/* colors */
+:root {
+  --marine900: #140435;
+  --marine800: #220365;
+  --marine700: #310296;
+  --marine600: #3f01c6;
+  --marine500: #4e00f6;
+  --marine400: #6b2af7;
+  --marine300: #8854f8;
+  --marine200: #a67ffa;
+  --marine100: #c3a9fb;
+  --marine50: #e0d3fc;
+
+  --mint900: #022b20;
+  --mint800: #045641;
+  --mint700: #058161;
+  --mint600: #07ac82;
+  --mint500: #09d7a2;
+  --mint400: #32deb2;
+  --mint300: #5be4c1;
+  --mint200: #84ebd1;
+  --mint100: #adf2e0;
+  --mint50: #d6f8f0;
+
+  --rose900: #332d2d;
+  --rose800: #615555;
+  --rose700: #8e7c7e;
+  --rose600: #bca4a6;
+  --rose500: #eaccce;
+  --rose400: #eed5d6;
+  --rose300: #f1ddde;
+  --rose200: #f5e6e7;
+  --rose100: #f8eeef;
+  --rose50: #fcf7f7;
+
+  --hampton900: #33302c;
+  --hampton800: #615c53;
+  --hampton700: #8e8779;
+  --hampton600: #bcb3a0;
+  --hampton500: #eadec7;
+  --hampton400: #eee4d0;
+  --hampton300: #f1e9da;
+  --hampton200: #f5efe3;
+  --hampton100: #f8f4ec;
+  --hampton50: #fcfaf6;
+
+  --purple900: #232330;
+  --purple800: #41415a;
+  --purple700: #5e6084;
+  --purple600: #7c7eaf;
+  --purple500: #9a9cd9;
+  --purple400: #abaddf;
+  --purple300: #bcbde6;
+  --purple200: #cdceec;
+  --purple100: #dddef2;
+  --purple50: #eeeff9;
+
+  --background100: #f4f3f6;
+  --background50: #fbfbfc;
+
+  --danger: #be1735;
+  --success: #07ac82;
+}
