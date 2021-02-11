@@ -1,9 +1,8 @@
 <template>
   <div class="default-layout">
-    <header class="default-layout__header">headeraaa</header>
-    <main class="default-layout__main">
       <aside class="default-layout__aside">lijesvo</aside>
-      <div class="default-layout__main">
+    <main class="default-layout__main">
+    <header class="default-layout__header">headeraaa</header>
         <p>aaa</p>
         <p>aaa</p>
         <p>aaa</p>
@@ -18,7 +17,6 @@
         <p>aaa</p>
         <p>aaa</p>
         <StButton @click="clickHandler">Button</StButton>
-      </div>
     </main>
   </div>
 </template>
