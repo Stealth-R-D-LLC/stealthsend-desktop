@@ -1,5 +1,3 @@
 <template>
-  <header>
-    topbaraaa
-  </header>
+  <header class="default-layout__header">headeraaa</header>
 </template>

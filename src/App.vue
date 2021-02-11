@@ -1,20 +1,8 @@
 <template>
   <div class="default-layout">
-    <aside class="default-layout__aside">lijesvo</aside>
+    <MenuBar></MenuBar>
     <main class="default-layout__main">
-      <header class="default-layout__header">headeraaa</header>
-      <p>aaa</p>
-      <p>aaa</p>
-      <p>aaa</p>
-      <p>aaa</p>
-      <p>aaa</p>
-      <p>aaa</p>
-      <p>aaa</p>
-      <p>aaa</p>
-      <p>aaa</p>
-      <p>aaa</p>
-      <p>aaa</p>
-      <p>aaa</p>
+      <TopBar></TopBar>
       <p>aaa</p>
       <StButton @click="clickHandler">Button</StButton>
       <StInput></StInput>
@@ -23,6 +11,8 @@
 </template>
 
 <script>
+import MenuBar from '/~/components/layout/MenuBar.vue'
+import TopBar from '/~/components/layout/TopBar.vue'
 import StButton from '/~/components/kit/StButton.vue'
 import StInput from '/~/components/kit/StInput.vue'
 
@@ -31,6 +21,8 @@ export default {
   components: {
     StButton,
     StInput,
+    MenuBar,
+    TopBar,
   },
   setup() {
     function clickHandler() {
