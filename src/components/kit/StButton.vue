@@ -4,7 +4,7 @@
     :class="{
       'st-button--primary': color === 'primary',
       'st-button--secondary': color === 'secondary',
-      'disabled': disabled,
+      disabled: disabled,
     }"
     :disabled="disabled"
     @click="handleClick"
@@ -82,8 +82,15 @@ export default {
 
     &:hover {
       cursor: pointer;
-      color: var(--marine400)
+      color: var(--marine400);
     }
+  }
+}
+
+.disabled {
+  opacity: 0.5;
+  &:hover {
+      cursor: not-allowed;
   }
 }
 </style>
