@@ -150,6 +150,10 @@ export default {
     background: transparent;
     border-bottom: 2px solid var(--grey100);
 
+    &:hover {
+      /* color */
+    }
+
     &:focus {
       &::-webkit-input-placeholder {
         opacity: 1;

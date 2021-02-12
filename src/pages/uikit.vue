@@ -8,9 +8,12 @@
     <br />
     <h2>Inputs</h2>
     {{ bla }}
-    <StInput placeholder="aaaa" v-model="bla"></StInput>
-    <StInput hasError :errorMessages="'custom error message'" v-model="bla"></StInput>
-
+    <StInput v-model="bla" placeholder="aaaa"></StInput>
+    <StInput
+      v-model="bla"
+      has-error
+      :error-messages="'custom error message'"
+    ></StInput>
   </div>
 </template>
 
