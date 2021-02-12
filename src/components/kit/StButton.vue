@@ -47,7 +47,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .st-button {
   /* box-sizing: border-box; */
   padding: 12px;
