@@ -46,6 +46,23 @@
       >option 3</StRadio
     >
     {{ radioValue }}
+    <br />
+    <br />
+    <h2>Checkbox</h2>
+
+    <StCheckbox v-model="checkboxPrvi"
+      >checkbox usrani {{ checkboxPrvi }}</StCheckbox
+    >
+    <StCheckbox
+      >checkbox usrani veliki Lorem ipsum dolor sit amet, consectetur
+      adipisicing elit. Nemo iure doloremque accusantium, beatae doloribus
+      minima? Ut voluptas accusantium accusamus repellendus? Perferendis rerum
+      voluptates sequi incidunt, magnam quidem in. Magni, illum?Lorem ipsum
+      dolor sit amet consectetur adipisicing elit. Minus itaque eos consectetur
+      perferendis laborum facere expedita, iste quod voluptatibus officiis
+      dolorem delectus accusantium aut vero fugiat adipisci eaque perspiciatis
+      beatae!</StCheckbox
+    >
   </div>
 </template>
 
@@ -54,6 +71,7 @@ import StButton from '/~/components/kit/StButton.vue'
 import StInput from '/~/components/kit/StInput.vue'
 import StLink from '/~/components/kit/StLink.vue'
 import StRadio from '/~/components/kit/StRadio.vue'
+import StCheckbox from '/~/components/kit/StCheckbox.vue'
 import { ref } from 'vue'
 export default {
   components: {
@@ -61,9 +79,11 @@ export default {
     StInput,
     StLink,
     StRadio,
+    StCheckbox,
   },
   setup() {
     const bla = ref('')
+    let checkboxPrvi = ref(false)
     let radioValue = ref('')
     function clickHandler(test) {
       console.log('---> ', test)
@@ -72,6 +92,7 @@ export default {
       clickHandler,
       bla,
       radioValue,
+      checkboxPrvi,
     }
   },
 }
