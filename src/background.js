@@ -57,5 +57,3 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
-
-window['version'] = app.getVersion()
