@@ -65,8 +65,17 @@
     >
     <br /><br />
     <h2>Modal</h2>
-      <StModal v-if="showModal" @close="showModal = false"/>
-<button @click="showModal=true">Show modal</button>
+    <StModal v-if="showModal" @close="showModal = false">
+      <template #header> Modal title </template>
+      <template #body>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores,
+        aspernatur? Necessitatibus hic a ullam commodi! Nostrum deserunt facere
+        ut ducimus unde in, animi qui soluta, omnis praesentium, incidunt
+        voluptatum quae.
+      </template>
+      <template #footer> footer </template>
+    </StModal>
+    <button @click="showModal = true">Show modal</button>
   </div>
 </template>
 
@@ -85,12 +94,12 @@ export default {
     StLink,
     StRadio,
     StCheckbox,
-    StModal
+    StModal,
   },
   setup() {
     const bla = ref('')
     let checkboxPrvi = ref(false)
-        let showModal = ref(false)
+    let showModal = ref(false)
 
     let radioValue = ref('')
     function clickHandler(test) {
@@ -101,7 +110,7 @@ export default {
       bla,
       radioValue,
       checkboxPrvi,
-      showModal
+      showModal,
     }
   },
 }

@@ -3,6 +3,27 @@
     <div class="st-modal">
       <div class="st-modal-wrapper">
         <div class="st-modal-container">
+          <span v-if="showCloseButton" class="st-modal__close-button" @click="$emit('close')"
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              @click="hide"
+            >
+              <defs />
+              <g
+                fill="none"
+                fill-rule="evenodd"
+                stroke="#1C1A1C"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              >
+                <path
+                  d="M1.058 1.126l15.884 15.883M1.058 17.009L16.942 1.126"
+                />
+              </g></svg
+          ></span>
           <div class="st-modal__header">
             <slot name="header"> default header </slot>
           </div>
@@ -40,7 +61,7 @@ export default {
       default: true,
     },
   },
-  emits: ['close']
+  emits: ['close'],
 }
 </script>
 
@@ -55,6 +76,16 @@ export default {
   background-color: rgba(0, 0, 0, 0.5);
   display: table;
   transition: opacity 0.3s ease;
+
+  &__close-button {
+    color: red;
+    position: absolute;
+    top: 32px;
+    right: 32px;
+    &:hover {
+      cursor: pointer;
+    }
+  }
 }
 
 .st-modal-wrapper {
@@ -63,9 +94,10 @@ export default {
 }
 
 .st-modal-container {
+  position: relative;
   width: 300px;
   margin: 0px auto;
-  padding: 20px 30px;
+  padding: 60px;
   background-color: #fff;
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
@@ -73,13 +105,16 @@ export default {
   font-family: Helvetica, Arial, sans-serif;
 }
 
-.st-modal__header h3 {
-  margin-top: 0;
-  color: #42b983;
+.st-modal__header {
+  color: #1c1a1c;
+  font-family: 'Source Sans Pro';
+  font-size: 20px;
+  letter-spacing: 0.32px;
+  line-height: 26px;
 }
 
 .st-modal__body {
-  margin: 20px 0;
+  margin: 45px 0 65px 0;
 }
 
 .modal-default-button {
