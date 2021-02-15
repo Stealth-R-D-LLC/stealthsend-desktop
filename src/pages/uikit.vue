@@ -13,13 +13,39 @@
       has-error
       :error-messages="'custom error message'"
     ></StInput>
-        <br />
+    <br />
     <br />
     <h2>Link</h2>
     <StLink to="settings">hoveraj me burki</StLink>
-    <br>
+    <br />
+    <br />
     <StLink @click="clickHandler('bla')">ovaj samo ima emit</StLink>
-
+    <h2>Radio</h2>
+    <StLink to="settings">hoveraj me burki</StLink>
+    <br />
+    <br />
+    <StRadio
+      :id="'uikitradio1'"
+      v-model="radioValue"
+      :name="'uikitradio'"
+      :label="'option 1'"
+      >option 1</StRadio
+    >
+    <StRadio
+      :id="'uikitradio2'"
+      v-model="radioValue"
+      :name="'uikitradio'"
+      :label="'option 2'"
+      >option 2</StRadio
+    >
+    <StRadio
+      :id="'uikitradio3'"
+      v-model="radioValue"
+      :name="'uikitradio'"
+      :label="'option 3'"
+      >option 3</StRadio
+    >
+    {{ radioValue }}
   </div>
 </template>
 
@@ -27,21 +53,25 @@
 import StButton from '/~/components/kit/StButton.vue'
 import StInput from '/~/components/kit/StInput.vue'
 import StLink from '/~/components/kit/StLink.vue'
+import StRadio from '/~/components/kit/StRadio.vue'
 import { ref } from 'vue'
 export default {
   components: {
     StButton,
     StInput,
-    StLink
+    StLink,
+    StRadio,
   },
   setup() {
     const bla = ref('')
+    let radioValue = ref('')
     function clickHandler(test) {
       console.log('---> ', test)
     }
     return {
       clickHandler,
       bla,
+      radioValue,
     }
   },
 }
