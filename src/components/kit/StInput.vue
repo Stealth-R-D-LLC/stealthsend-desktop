@@ -152,6 +152,7 @@ export default {
 
     &:hover {
       /* color */
+      border-bottom: 2px solid var(--grey200);
     }
 
     &:focus {
@@ -181,10 +182,11 @@ export default {
   /* transform: scale(0.6); */
   top: -20px;
   position: absolute;
-  color: var(--marine500);
+  color: var(--marine500); 
   font-weight: 600;
   letter-spacing: 0.16px;
   line-height: 20px;
   font-size: 12px;
 }
+
 </style>
