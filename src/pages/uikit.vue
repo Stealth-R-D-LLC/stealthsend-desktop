@@ -63,6 +63,10 @@
       dolorem delectus accusantium aut vero fugiat adipisci eaque perspiciatis
       beatae!</StCheckbox
     >
+    <br /><br />
+    <h2>Modal</h2>
+      <StModal v-if="showModal" @close="showModal = false"/>
+<button @click="showModal=true">Show modal</button>
   </div>
 </template>
 
@@ -72,6 +76,7 @@ import StInput from '/~/components/kit/StInput.vue'
 import StLink from '/~/components/kit/StLink.vue'
 import StRadio from '/~/components/kit/StRadio.vue'
 import StCheckbox from '/~/components/kit/StCheckbox.vue'
+import StModal from '/~/components/kit/StModal.vue'
 import { ref } from 'vue'
 export default {
   components: {
@@ -80,10 +85,13 @@ export default {
     StLink,
     StRadio,
     StCheckbox,
+    StModal
   },
   setup() {
     const bla = ref('')
     let checkboxPrvi = ref(false)
+        let showModal = ref(false)
+
     let radioValue = ref('')
     function clickHandler(test) {
       console.log('---> ', test)
@@ -93,6 +101,7 @@ export default {
       bla,
       radioValue,
       checkboxPrvi,
+      showModal
     }
   },
 }
