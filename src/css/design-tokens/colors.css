@@ -71,8 +71,9 @@
   --background100: #f4f3f6;
   --background50: #fbfbfc;
 
-  --danger: #be1735;
-  --success: #07ac82;
+  --danger: #D12F2F;
+  --success: #75B52F;
+  --warning: #D29915;
   --white: #FAF9FC;
   --text: #1C1A1C;
 }
