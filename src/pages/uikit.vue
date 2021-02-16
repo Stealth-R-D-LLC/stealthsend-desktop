@@ -81,13 +81,28 @@
     <br /><br />
     <h2>Table</h2>
     <StTable :data="tableData" :columns="tableColumns"></StTable>
-    <StPagination :total="Number(85)" :page-size="Number(10)" :current-page="Number(9)"></StPagination>
+    <StPagination
+      :total="Number(85)"
+      :page-size="Number(10)"
+      :current-page="Number(9)"
+    ></StPagination>
     <br /><br />
     <h2>Status</h2>
     <StStatus type="red">Missed</StStatus>
     <StStatus type="green">Produced</StStatus>
     <StStatus type="orange">Late</StStatus>
     <StStatus type="empty">Scheduled</StStatus>
+    <br /><br />
+    <h2>Dropdown</h2>
+    <StDropdown
+      :items="[
+        { to: 'settings', label: 'Settings' },
+        { to: 'dashboard', label: 'Dash' },
+      ]"
+      >click me</StDropdown
+    >
+    <br /><br />
+    <h2>Copy to clipboard</h2>
   </div>
 </template>
 
@@ -101,6 +116,7 @@ import StModal from '/~/components/kit/StModal.vue'
 import StTable from '/~/components/kit/StTable.vue'
 import StStatus from '/~/components/kit/StStatus.vue'
 import StPagination from '/~/components/kit/StPagination.vue'
+import StDropdown from '/~/components/kit/StDropdown.vue'
 import { ref } from 'vue'
 export default {
   components: {
@@ -112,7 +128,8 @@ export default {
     StModal,
     StTable,
     StStatus,
-    StPagination
+    StPagination,
+    StDropdown,
   },
   setup() {
     const tableData = ref([

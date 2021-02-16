@@ -106,13 +106,8 @@ export default {
     background-color: var(--marine500);
     height: 2px;
     border: none;
-    /* background: #607d8b; */
     font-size: 1px;
-    /* will-change: transform, visibility; */
     transition: all 200ms ease-out;
-    /* transform: scaleX(0); */
-    /* visibility: hidden; */
-    z-index: 10;
   }
 
   &.has-error {

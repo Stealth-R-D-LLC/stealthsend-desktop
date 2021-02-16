@@ -7,6 +7,7 @@
 .default-layout {
   display: flex;
   background-color: #fff;
+  z-index: var(--zApp);
 }
 
 .default-layout__header {
@@ -29,4 +30,11 @@
 .container {
   padding: 12px 0;
   /* border: 3px dashed orange; */
+}
+
+/* z-indexes used */
+:root {
+  --zApp: 1;
+  --zDropdown: 2;
+  --zModal: 3;
 }
