@@ -58,6 +58,7 @@ export default {
   line-height: 26px;
   text-align: center;
   min-width: 140px;
+  outline: none;
 
   &--primary {
     border: 1px solid var(--marine600);
