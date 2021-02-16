@@ -96,7 +96,7 @@ export default {
   }
 
   &__header {
-    color: #1c1a1c;
+    color: var(--grey1000);
     font-family: 'Source Sans Pro';
     font-size: 20px;
     letter-spacing: 0.32px;
@@ -123,7 +123,7 @@ export default {
   width: 300px;
   margin: 0px auto;
   padding: 60px;
-  background-color: #fff;
+  background-color: var(--white);
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
