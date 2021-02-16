@@ -81,6 +81,7 @@
     <br /><br />
     <h2>Table</h2>
     <StTable :data="tableData" :columns="tableColumns"></StTable>
+    <StPagination :total="Number(85)" :page-size="Number(10)" :current-page="Number(9)"></StPagination>
     <br /><br />
     <h2>Status</h2>
     <StStatus type="red">Missed</StStatus>
@@ -99,6 +100,7 @@ import StCheckbox from '/~/components/kit/StCheckbox.vue'
 import StModal from '/~/components/kit/StModal.vue'
 import StTable from '/~/components/kit/StTable.vue'
 import StStatus from '/~/components/kit/StStatus.vue'
+import StPagination from '/~/components/kit/StPagination.vue'
 import { ref } from 'vue'
 export default {
   components: {
@@ -110,6 +112,7 @@ export default {
     StModal,
     StTable,
     StStatus,
+    StPagination
   },
   setup() {
     const tableData = ref([
