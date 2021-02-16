@@ -21,7 +21,6 @@
     <br />
     <StLink @click="clickHandler('bla')">ovaj samo ima emit</StLink>
     <h2>Radio</h2>
-    <StLink to="settings">hoveraj me burki</StLink>
     <br />
     <br />
     <StRadio
@@ -82,6 +81,12 @@
     <br /><br />
     <h2>Table</h2>
     <StTable :data="tableData" :columns="tableColumns"></StTable>
+    <br /><br />
+    <h2>Status</h2>
+    <StStatus type="red">Missed</StStatus>
+    <StStatus type="green">Produced</StStatus>
+    <StStatus type="orange">Late</StStatus>
+    <StStatus type="empty">Scheduled</StStatus>
   </div>
 </template>
 
@@ -93,6 +98,7 @@ import StRadio from '/~/components/kit/StRadio.vue'
 import StCheckbox from '/~/components/kit/StCheckbox.vue'
 import StModal from '/~/components/kit/StModal.vue'
 import StTable from '/~/components/kit/StTable.vue'
+import StStatus from '/~/components/kit/StStatus.vue'
 import { ref } from 'vue'
 export default {
   components: {
@@ -102,7 +108,8 @@ export default {
     StRadio,
     StCheckbox,
     StModal,
-    StTable
+    StTable,
+    StStatus,
   },
   setup() {
     const tableData = ref([
@@ -161,9 +168,8 @@ export default {
       {
         key: 'subVersion',
         title: 'Sub-version',
-         customCellClass: 'cell-center',
-         customHeaderClass: 'cell-center',
-         
+        customCellClass: 'cell-center',
+        customHeaderClass: 'cell-center',
       },
       { key: 'blockHeight', title: 'Blockheight' },
     ])
