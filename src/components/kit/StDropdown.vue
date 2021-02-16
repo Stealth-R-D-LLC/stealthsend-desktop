@@ -4,7 +4,7 @@
       <slot></slot>
     </div>
     <transition name="fade" mode="out-in">
-      <div v-if="isVisible" v-click-outside="close" class="st-dropdown__items">
+      <div v-if="isVisible" class="st-dropdown__items">
         <span class="tip"></span>
         <ul>
           <li v-for="item in items" :key="item">
@@ -20,13 +20,9 @@
 
 <script>
 import { ref } from 'vue'
-import { directive } from 'vue3-click-away'
 
 export default {
   name: 'StDropdown',
-  directives: {
-    ClickAway: directive,
-  },
   props: {
     items: {
       type: Array,
