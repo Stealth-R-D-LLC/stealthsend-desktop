@@ -74,15 +74,14 @@
         voluptatum quae.
       </template>
       <template #footer>
-        <StButton color="secondary" @click="showModal = false"
-          >Cancel</StButton
-        >
-        <StButton @click="showModal = false"
-          >Submit</StButton
-        >
+        <StButton color="secondary" @click="showModal = false">Cancel</StButton>
+        <StButton @click="showModal = false">Submit</StButton>
       </template>
     </StModal>
     <button @click="showModal = true">Show modal</button>
+    <br /><br />
+    <h2>Table</h2>
+    <StTable :data="tableData" :columns="tableColumns"></StTable>
   </div>
 </template>
 
@@ -93,6 +92,7 @@ import StLink from '/~/components/kit/StLink.vue'
 import StRadio from '/~/components/kit/StRadio.vue'
 import StCheckbox from '/~/components/kit/StCheckbox.vue'
 import StModal from '/~/components/kit/StModal.vue'
+import StTable from '/~/components/kit/StTable.vue'
 import { ref } from 'vue'
 export default {
   components: {
@@ -102,8 +102,71 @@ export default {
     StRadio,
     StCheckbox,
     StModal,
+    StTable
   },
   setup() {
+    const tableData = ref([
+      {
+        address: 'RxLvZSm4gMmzoS5VyJxm24FaGDRJjVPv9z',
+        protocol: 62200,
+        subVersion: '2.2.0',
+        blockHeight: '12345678',
+      },
+      {
+        address: '4b5t45z45zb45zb45bz45bz45zb45zb454',
+        protocol: 62200,
+        subVersion: '2.2.0',
+        blockHeight: '556756756',
+      },
+      {
+        address: '56un56un56u56un56un56u5u56n56un56u',
+        protocol: 62200,
+        subVersion: '2.2.0',
+        blockHeight: '7878787887',
+      },
+      {
+        address: '67imi67im67im67im67i67i67i6767m6mm',
+        protocol: 62200,
+        subVersion: '2.2.0',
+        blockHeight: '6776676767',
+      },
+      {
+        address: 'rbrthrthrhrthrhthbrbhrthbrbthrtbhr ',
+        protocol: 62200,
+        subVersion: '2.2.0',
+        blockHeight: '454353353535',
+      },
+      {
+        address: 'vbbcvbcvbcvbcvbcbcvbvbcvbcvbcvbcvb',
+        protocol: 62200,
+        subVersion: '2.2.0',
+        blockHeight: '67677667',
+      },
+      {
+        address: 'mbnnmbmnbmbnmbnmbnmbnmbmbnmbnmbnmm',
+        protocol: 62200,
+        subVersion: '2.2.0',
+        blockHeight: '7676767',
+      },
+      {
+        address: 'qweqeqweqqwewqewqeqeqewqweqwewqqwe',
+        protocol: 62200,
+        subVersion: '2.2.0',
+        blockHeight: '12345678',
+      },
+    ])
+    const tableColumns = ref([
+      { key: 'address', title: 'Address' },
+      { key: 'protocol', title: 'Protocol' },
+      {
+        key: 'subVersion',
+        title: 'Sub-version',
+         customCellClass: 'cell-center',
+         customHeaderClass: 'cell-center',
+         
+      },
+      { key: 'blockHeight', title: 'Blockheight' },
+    ])
     const bla = ref('')
     let checkboxPrvi = ref(false)
     let showModal = ref(false)
@@ -118,6 +181,8 @@ export default {
       radioValue,
       checkboxPrvi,
       showModal,
+      tableData,
+      tableColumns,
     }
   },
 }
