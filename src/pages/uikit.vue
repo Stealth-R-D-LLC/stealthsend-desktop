@@ -65,7 +65,7 @@
     >
     <br /><br />
     <h2>Modal</h2>
-    <StModal v-if="showModal" @close="showModal = false">
+    <StModal :visible="showModal" @close="showModal = false">
       <template #header> Modal title </template>
       <template #body>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores,
@@ -73,7 +73,14 @@
         ut ducimus unde in, animi qui soluta, omnis praesentium, incidunt
         voluptatum quae.
       </template>
-      <template #footer> footer </template>
+      <template #footer>
+        <StButton color="secondary" @click="showModal = false"
+          >Cancel</StButton
+        >
+        <StButton @click="showModal = false"
+          >Submit</StButton
+        >
+      </template>
     </StModal>
     <button @click="showModal = true">Show modal</button>
   </div>

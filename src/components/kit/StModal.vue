@@ -1,9 +1,12 @@
 <template>
-  <transition name="modal">
-    <div class="st-modal">
+  <transition name="fade">
+    <div v-if="visible" class="st-modal">
       <div class="st-modal-wrapper">
         <div class="st-modal-container">
-          <span v-if="showCloseButton" class="st-modal__close-button" @click="$emit('close')"
+          <span
+            v-if="showCloseButton"
+            class="st-modal__close-button"
+            @click="$emit('close')"
             ><svg
               xmlns="http://www.w3.org/2000/svg"
               width="18"
@@ -50,6 +53,11 @@
 export default {
   name: 'StModal',
   props: {
+    visible: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     showCloseButton: {
       type: Boolean,
       required: false,
@@ -86,6 +94,18 @@ export default {
       cursor: pointer;
     }
   }
+
+  &__header {
+    color: #1c1a1c;
+    font-family: 'Source Sans Pro';
+    font-size: 20px;
+    letter-spacing: 0.32px;
+    line-height: 26px;
+  }
+
+  &__body {
+    margin: 45px 0 65px 0;
+  }
 }
 
 .st-modal-wrapper {
@@ -105,43 +125,8 @@ export default {
   font-family: Helvetica, Arial, sans-serif;
 }
 
-.st-modal__header {
-  color: #1c1a1c;
-  font-family: 'Source Sans Pro';
-  font-size: 20px;
-  letter-spacing: 0.32px;
-  line-height: 26px;
-}
-
-.st-modal__body {
-  margin: 45px 0 65px 0;
-}
-
 .modal-default-button {
   display: block;
   margin-top: 1rem;
-}
-
-/*
- * The following styles are auto-applied to elements with
- * transition="modal" when their visibility is toggled
- * by Vue.js.
- *
- * You can easily play with the modal transition by editing
- * these styles.
- */
-
-.modal-enter {
-  opacity: 0;
-}
-
-.modal-leave-active {
-  opacity: 0;
-}
-
-.modal-enter .modal-container,
-.modal-leave-active .modal-container {
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
 }
 </style>
