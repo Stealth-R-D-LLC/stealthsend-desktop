@@ -106,6 +106,11 @@ export default {
   &__body {
     margin: 45px 0 65px 0;
   }
+
+  &__footer {
+    display: flex;
+  justify-content: flex-end;
+  }
 }
 
 .st-modal-wrapper {
