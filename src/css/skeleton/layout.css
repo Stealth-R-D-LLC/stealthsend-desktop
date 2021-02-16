@@ -35,6 +35,7 @@
 /* z-indexes used */
 :root {
   --zApp: 1;
-  --zDropdown: 2;
-  --zModal: 3;
+  --zTooltip: 2;
+  --zDropdown: 3;
+  --zModal: 4;
 }
