@@ -103,6 +103,7 @@
     >
     <br /><br />
     <h2>Copy to clipboard</h2>
+    <StCopyToClipboard content="asdf111"></StCopyToClipboard>
   </div>
 </template>
 
@@ -117,6 +118,7 @@ import StTable from '/~/components/kit/StTable.vue'
 import StStatus from '/~/components/kit/StStatus.vue'
 import StPagination from '/~/components/kit/StPagination.vue'
 import StDropdown from '/~/components/kit/StDropdown.vue'
+import StCopyToClipboard from '/~/components/kit/StClipboard.vue'
 import { ref } from 'vue'
 export default {
   components: {
@@ -130,6 +132,7 @@ export default {
     StStatus,
     StPagination,
     StDropdown,
+    StCopyToClipboard
   },
   setup() {
     const tableData = ref([
