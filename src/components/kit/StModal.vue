@@ -76,7 +76,7 @@ export default {
 <style lang="postcss" scoped>
 .st-modal {
   position: fixed;
-  z-index: 9998;
+  z-index: var(--zModal);
   top: 0;
   left: 0;
   width: 100%;

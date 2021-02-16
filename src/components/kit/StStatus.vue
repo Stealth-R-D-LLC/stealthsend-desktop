@@ -12,10 +12,6 @@ import { computed } from 'vue'
 export default {
   name: 'StStatus',
   props: {
-    status: {
-      type: String,
-      required: true,
-    },
     type: {
       type: String,
       required: true,

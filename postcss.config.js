@@ -2,7 +2,6 @@ const autoprefixer = require('autoprefixer');
 const postcssNested = require('postcss-nested');
 const postcssCustomProperties = require('postcss-custom-properties');
 
-
 module.exports = {
   plugins: {
     'postcss-preset-env': {

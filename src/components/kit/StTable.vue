@@ -103,8 +103,8 @@ export default {
   .table__row {
     font-size: 14px;
     color: var(--gray1000);
-      letter-spacing: 0.16px;
-  line-height: 20px;
+    letter-spacing: 0.16px;
+    line-height: 20px;
     .cell {
       &:hover {
       }
