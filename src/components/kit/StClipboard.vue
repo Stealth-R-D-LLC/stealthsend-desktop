@@ -11,14 +11,17 @@ export default {
       required: true,
     },
   },
-  setup(props) {
+  emits: ['click'],
+  setup(props, ctx) {
     function copy() {
       navigator.clipboard.writeText(props.content).then(
-        () => {},
-        function (err) {
+        () => {
+          ctx.emit('click')
+        },
+        (err) => {
           console.warn('Async: Could not copy to clipboard: ', err)
         }
-      )
+       )
     }
     return { copy }
   },

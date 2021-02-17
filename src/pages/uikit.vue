@@ -103,7 +103,28 @@
     >
     <br /><br />
     <h2>Copy to clipboard</h2>
-    <StCopyToClipboard content="asdf111"></StCopyToClipboard>
+    <StTooltip
+      :tooltip-text="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
+    >
+      <StCopyToClipboard
+        content="kopirani string"
+        @click="handleCopy"
+      ></StCopyToClipboard>
+    </StTooltip>
+
+    <h2>Tooltip</h2>
+    <StTooltip tooltip-text="aaaaa">
+      <button>top</button>
+    </StTooltip>
+    <StTooltip position="right" tooltip-text="aaaaa">
+      <button>right</button>
+    </StTooltip>
+    <StTooltip position="bottom" tooltip-text="aaaaa">
+      <button>bottom</button>
+    </StTooltip>
+    <StTooltip position="left" tooltip-text="aaaaa">
+      <button>left</button>
+    </StTooltip>
   </div>
 </template>
 
@@ -119,6 +140,8 @@ import StStatus from '/~/components/kit/StStatus.vue'
 import StPagination from '/~/components/kit/StPagination.vue'
 import StDropdown from '/~/components/kit/StDropdown.vue'
 import StCopyToClipboard from '/~/components/kit/StClipboard.vue'
+import StTooltip from '/~/components/kit/StTooltip.vue'
+
 import { ref } from 'vue'
 export default {
   components: {
@@ -132,7 +155,8 @@ export default {
     StStatus,
     StPagination,
     StDropdown,
-    StCopyToClipboard
+    StCopyToClipboard,
+    StTooltip,
   },
   setup() {
     const tableData = ref([
@@ -204,6 +228,14 @@ export default {
     function clickHandler(test) {
       console.log('---> ', test)
     }
+
+    let copyPending = ref(false)
+    function handleCopy() {
+      copyPending.value = true;
+      setTimeout(() => {
+        copyPending.value = false;
+      }, 2000)
+    }
     return {
       clickHandler,
       bla,
@@ -212,6 +244,8 @@ export default {
       showModal,
       tableData,
       tableColumns,
+      handleCopy,
+      copyPending
     }
   },
 }
