@@ -16,7 +16,7 @@ Main technologies:
 `
 └─ $ ▶ node -v
 v12.18.2`
-
+`
 `
 └─ $ ▶ npm -v
 6.14.5 
@@ -49,6 +49,6 @@ Deploys for desktop apps are still in research state and this is yet to be docum
 
 ### Links
 
-Jira board: https://jira.barrage.net/projects/XSTDESKTOP
-Slack channel: https://wearebarrage.slack.com/archives/G01KQNE67PV
-GitFlow: https://nvie.com/posts/a-successful-git-branching-model/
+* Jira board: https://jira.barrage.net/projects/XSTDESKTOP
+* Slack channel: https://wearebarrage.slack.com/archives/G01KQNE67PV
+* GitFlow: https://nvie.com/posts/a-successful-git-branching-model/
