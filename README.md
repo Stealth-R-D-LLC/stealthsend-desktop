@@ -13,14 +13,14 @@ Main technologies:
 
 ### Prerequisites
 
-`
+```
 └─ $ ▶ node -v
-v12.18.2`
-`
-`
+v12.18.2
+```
+```
 └─ $ ▶ npm -v
 6.14.5 
-`
+```
 
 ### Initial configuration for running and developing
 
