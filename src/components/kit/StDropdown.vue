@@ -4,7 +4,7 @@
       <slot></slot>
     </div>
     <transition name="fade" mode="out-in">
-      <div v-if="isVisible" class="st-dropdown__items">
+      <div v-if="isVisible" ref="stDropdownRef" class="st-dropdown__items">
         <span class="tip"></span>
         <ul>
           <li v-for="item in items" :key="item">
@@ -20,6 +20,7 @@
 
 <script>
 import { ref } from 'vue'
+import { onClickOutside } from '@vueuse/core'
 
 export default {
   name: 'StDropdown',
@@ -31,11 +32,16 @@ export default {
   },
   setup() {
     let isVisible = ref(false)
+    const stDropdownRef = ref(null)
+
+    onClickOutside(stDropdownRef, () => {
+      isVisible.value = false
+    })
 
     function close() {
       isVisible = false
     }
-    return { isVisible, close }
+    return { isVisible, close, stDropdownRef }
   },
 }
 </script>
