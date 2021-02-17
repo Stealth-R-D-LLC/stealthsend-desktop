@@ -9,7 +9,7 @@ Main technologies:
 * Vue (3.0.x)
 * Electron (11.2.x)
 * Vite (2.0.x beta)
-* PostCSS (8.2.x)
+* PostCSS (8.2.x) 
 
 ### Prerequisites
 
