@@ -1,8 +1,11 @@
 <template>
-  <span class="st-clipboard" @click="copy">Copy to clipboard (click me)</span>
+  <span class="st-clipboard" @click="copyToClipboard"
+    >Copy to clipboard (click me)</span
+  >
 </template>
 
 <script>
+import { useClipboard } from '@vueuse/core'
 export default {
   name: 'StCopyToClipboard',
   props: {
@@ -13,17 +16,12 @@ export default {
   },
   emits: ['click'],
   setup(props, ctx) {
-    function copy() {
-      navigator.clipboard.writeText(props.content).then(
-        () => {
-          ctx.emit('click')
-        },
-        (err) => {
-          console.warn('Async: Could not copy to clipboard: ', err)
-        }
-       )
+    const { copy } = useClipboard()
+    function copyToClipboard() {
+      copy(props.content)
+      ctx.emit('click')
     }
-    return { copy }
+    return { copyToClipboard }
   },
 }
 </script>
