@@ -2,14 +2,14 @@
 
 Stealth desktop App for MacOs, Linux and Windows.
 
-Jira board: https://jira.barrage.net/projects/XSTDESKTOP
-Slack channel: https://wearebarrage.slack.com/archives/G01KQNE67PV
+* Jira board: https://jira.barrage.net/projects/XSTDESKTOP
+* Slack channel: https://wearebarrage.slack.com/archives/G01KQNE67PV
 
 Main technologies:
-* Vue 3.0.x
-* Electron 11.2.x
-* Vite 2.0.x beta
-* PostCSS 8.2.x
+* Vue (3.0.x)
+* Electron (11.2.x)
+* Vite (2.0.x beta)
+* PostCSS (8.2.x)
 
 ### Prerequisites
 
