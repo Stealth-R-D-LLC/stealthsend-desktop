@@ -111,20 +111,41 @@
         @click="handleCopy"
       ></StCopyToClipboard>
     </StTooltip>
-
+    <br />
+    <br />
     <h2>Tooltip</h2>
+    <StTooltip position="left" tooltip-text="aaaaa">
+      <button>left</button>
+    </StTooltip>
     <StTooltip tooltip-text="aaaaa">
       <button>top</button>
-    </StTooltip>
-    <StTooltip position="right" tooltip-text="aaaaa">
-      <button>right</button>
     </StTooltip>
     <StTooltip position="bottom" tooltip-text="aaaaa">
       <button>bottom</button>
     </StTooltip>
-    <StTooltip position="left" tooltip-text="aaaaa">
-      <button>left</button>
+    <StTooltip position="right" tooltip-text="aaaaa">
+      <button>right</button>
     </StTooltip>
+    <br />
+    <br />
+    <h2>Select</h2>
+    <Multiselect v-model="multiselectValue" :can-deselect="false" :options="multiselectOptions" />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
   </div>
 </template>
 
@@ -141,6 +162,7 @@ import StPagination from '/~/components/kit/StPagination.vue'
 import StDropdown from '/~/components/kit/StDropdown.vue'
 import StCopyToClipboard from '/~/components/kit/StClipboard.vue'
 import StTooltip from '/~/components/kit/StTooltip.vue'
+import Multiselect from '@vueform/multiselect'
 
 import { ref } from 'vue'
 export default {
@@ -157,6 +179,7 @@ export default {
     StDropdown,
     StCopyToClipboard,
     StTooltip,
+    Multiselect,
   },
   setup() {
     const tableData = ref([
@@ -231,11 +254,15 @@ export default {
 
     let copyPending = ref(false)
     function handleCopy() {
-      copyPending.value = true;
+      copyPending.value = true
       setTimeout(() => {
-        copyPending.value = false;
+        copyPending.value = false
       }, 2000)
     }
+
+    let multiselectValue = ref(null)
+    let multiselectOptions = ref(['Batman', 'Robin', 'Joker'])
+
     return {
       clickHandler,
       bla,
@@ -245,7 +272,9 @@ export default {
       tableData,
       tableColumns,
       handleCopy,
-      copyPending
+      copyPending,
+      multiselectValue,
+      multiselectOptions,
     }
   },
 }

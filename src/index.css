@@ -10,6 +10,9 @@
 
 @import 'css/tools/transitions.css';
 
+@import '@vueform/multiselect/themes/default.css';
+@import 'css/components/multiselect.css';
+
 @import 'css/_shame.css';
 
 body {
