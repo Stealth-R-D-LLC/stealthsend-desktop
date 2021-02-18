@@ -2,7 +2,7 @@
   <transition name="fade">
     <div v-if="visible" class="st-modal">
       <div class="st-modal-wrapper">
-        <div class="st-modal-container">
+        <div ref="stModalRef" class="st-modal-container">
           <span
             v-if="showCloseButton"
             class="st-modal__close-button"
@@ -50,6 +50,9 @@
 </template>
 
 <script>
+import { onClickOutside } from '@vueuse/core'
+import { ref } from 'vue'
+
 export default {
   name: 'StModal',
   props: {
@@ -70,6 +73,17 @@ export default {
     },
   },
   emits: ['close'],
+  setup(props, ctx) {
+    const stModalRef = ref(null)
+
+    onClickOutside(stModalRef, () => {
+      if (props.hasClickOutside) {
+        ctx.emit('close')
+      }
+    })
+
+    return { stModalRef }
+  },
 }
 </script>
 
@@ -109,7 +123,7 @@ export default {
 
   &__footer {
     display: flex;
-  justify-content: flex-end;
+    justify-content: flex-end;
   }
 }
 
