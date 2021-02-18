@@ -80,7 +80,7 @@
     <button @click="showModal = true">Show modal</button>
     <br /><br />
     <h2>Select</h2>
-    <Multiselect
+    <StMultiselect
       v-model="multiselectValue"
       :can-deselect="false"
       :options="multiselectOptions"
@@ -143,11 +143,6 @@
 </template>
 
 <script>
-import StButton from '/~/components/kit/StButton.vue'
-import StInput from '/~/components/kit/StInput.vue'
-import StLink from '/~/components/kit/StLink.vue'
-import StRadio from '/~/components/kit/StRadio.vue'
-import StCheckbox from '/~/components/kit/StCheckbox.vue'
 import StModal from '/~/components/kit/StModal.vue'
 import StTable from '/~/components/kit/StTable.vue'
 import StStatus from '/~/components/kit/StStatus.vue'
@@ -156,16 +151,11 @@ import StDropdown from '/~/components/kit/StDropdown.vue'
 import StCopyToClipboard from '/~/components/kit/StClipboard.vue'
 import StTooltip from '/~/components/kit/StTooltip.vue'
 import StLoading from '/~/components/kit/StLoading.vue'
-import Multiselect from '@vueform/multiselect'
 
 import { ref } from 'vue'
+
 export default {
   components: {
-    StButton,
-    StInput,
-    StLink,
-    StRadio,
-    StCheckbox,
     StModal,
     StTable,
     StStatus,
@@ -173,7 +163,6 @@ export default {
     StDropdown,
     StCopyToClipboard,
     StTooltip,
-    Multiselect,
     StLoading,
   },
   setup() {
