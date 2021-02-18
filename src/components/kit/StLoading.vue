@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visibility" class="loading-page">
+  <div v-show="visibility" class="loading-page">
     <img src="/static/xstloader.gif" alt="Test gif" />
   </div>
 </template>
