@@ -129,7 +129,11 @@
     <br />
     <br />
     <h2>Select</h2>
-    <Multiselect v-model="multiselectValue" :can-deselect="false" :options="multiselectOptions" />
+    <Multiselect
+      v-model="multiselectValue"
+      :can-deselect="false"
+      :options="multiselectOptions"
+    />
     <br />
     <br />
     <br />
@@ -146,6 +150,11 @@
     <br />
     <br />
     <br />
+    <br />
+    <br />
+    <h2>Global loading</h2>
+    <button @click="toggleLoading">Trigger global loading</button>
+    <StLoading :visibility="isLoading"></StLoading>
   </div>
 </template>
 
@@ -162,6 +171,7 @@ import StPagination from '/~/components/kit/StPagination.vue'
 import StDropdown from '/~/components/kit/StDropdown.vue'
 import StCopyToClipboard from '/~/components/kit/StClipboard.vue'
 import StTooltip from '/~/components/kit/StTooltip.vue'
+import StLoading from '/~/components/kit/StLoading.vue'
 import Multiselect from '@vueform/multiselect'
 
 import { ref } from 'vue'
@@ -180,6 +190,7 @@ export default {
     StCopyToClipboard,
     StTooltip,
     Multiselect,
+    StLoading
   },
   setup() {
     const tableData = ref([
@@ -262,6 +273,14 @@ export default {
 
     let multiselectValue = ref(null)
     let multiselectOptions = ref(['Batman', 'Robin', 'Joker'])
+    const isLoading = ref(false);
+
+    function toggleLoading() {
+      isLoading.value = true;
+      setTimeout(() => {
+        isLoading.value = false
+      }, 3000)
+    }
 
     return {
       clickHandler,
@@ -275,6 +294,8 @@ export default {
       copyPending,
       multiselectValue,
       multiselectOptions,
+      isLoading,
+      toggleLoading
     }
   },
 }
