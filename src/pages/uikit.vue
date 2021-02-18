@@ -79,7 +79,7 @@
     </StModal>
     <button @click="showModal = true">Show modal</button>
     <br /><br />
-        <h2>Select</h2>
+    <h2>Select</h2>
     <Multiselect
       v-model="multiselectValue"
       :can-deselect="false"
@@ -174,7 +174,7 @@ export default {
     StCopyToClipboard,
     StTooltip,
     Multiselect,
-    StLoading
+    StLoading,
   },
   setup() {
     const tableData = ref([
@@ -257,10 +257,10 @@ export default {
 
     let multiselectValue = ref(null)
     let multiselectOptions = ref(['Batman', 'Robin', 'Joker'])
-    const isLoading = ref(false);
+    const isLoading = ref(false)
 
     function toggleLoading() {
-      isLoading.value = true;
+      isLoading.value = true
       setTimeout(() => {
         isLoading.value = false
       }, 3000)
@@ -279,7 +279,7 @@ export default {
       multiselectValue,
       multiselectOptions,
       isLoading,
-      toggleLoading
+      toggleLoading,
     }
   },
 }
