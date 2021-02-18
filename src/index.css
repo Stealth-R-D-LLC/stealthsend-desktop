@@ -13,6 +13,7 @@
 @import '@vueform/multiselect/themes/default.css';
 @import 'css/components/multiselect.css';
 
+@import 'css/utilities/modifiers.css';
 @import 'css/_shame.css';
 
 body {
