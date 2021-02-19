@@ -17,6 +17,7 @@
     <br />
     <h2>Link</h2>
     <StLink to="settings">hoveraj me burki</StLink>
+    <StLink to="settings">hoveraj me burki</StLink>
     <br />
     <br />
     <StLink @click="clickHandler('bla')">ovaj samo ima emit</StLink>
