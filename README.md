@@ -4,6 +4,7 @@ Stealth desktop App for MacOs, Linux and Windows.
 
 * Jira board: https://jira.barrage.net/projects/XSTDESKTOP
 * Slack channel: https://wearebarrage.slack.com/archives/G01KQNE67PV
+* Postman Workspace: https://barrage-team.postman.co/workspace/Stealth~d7086fad-cb9c-4467-a6f2-37514d478f79
 
 Main technologies:
 * Vue (3.0.x)
@@ -51,4 +52,5 @@ Deploys for desktop apps are still in research state and this is yet to be docum
 
 * Jira board: https://jira.barrage.net/projects/XSTDESKTOP
 * Slack channel: https://wearebarrage.slack.com/archives/G01KQNE67PV
-* GitFlow: https://nvie.com/posts/a-successful-git-branching-model/
+* GitFlow: https://nvie.com/posts/a-successful-git-branching-model
+* bitcoinjs-lib examples: https://github.com/bitcoinjs/bitcoinjs-lib#examples
