@@ -6,7 +6,7 @@ import db from '../db'
 const CryptoService = {
   seed: null,
   mnemonic: null,
-  masterPK: null,
+  master: null,
   WIFtoPK(wif = 'KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU73sVHnoWn') {
     const keyPair = bitcoin.ECPair.fromWIF(wif)
     const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey })
@@ -15,7 +15,8 @@ const CryptoService = {
   },
   async generateMnemonicAndSeed() {
     this.mnemonic = bip39.generateMnemonic()
-    this.seed = await bip39.mnemonicToSeed(this.mnemonic)
+    this.seed = await bip39.mnemonicToSeed(this.mnemonic) // actual master key
+    // this.master = bip32.fromSeed(this.seed)
   },
   isMnemonicValid() {
     const isValid = bip39.validateMnemonic(this.mnemonic)
@@ -24,6 +25,8 @@ const CryptoService = {
   generateRandomAddress() {
     const keyPair = bitcoin.ECPair.makeRandom()
     const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey })
+    // console.log('public key', keyPair.publicKey);
+    // keyPair.toWIF()
     return address
   },
   getPk() {

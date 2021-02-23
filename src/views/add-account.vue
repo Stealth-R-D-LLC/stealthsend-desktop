@@ -29,6 +29,7 @@ export default {
     function generateMnemonic() {
       CryptoService.generateMnemonicAndSeed()
       console.log('mnemonic: ', CryptoService.mnemonic)
+      console.log('master: ', CryptoService.master)
       console.log('is mnemonic valid: ', CryptoService.isMnemonicValid())
     }
     function generateRandomAddress() {
