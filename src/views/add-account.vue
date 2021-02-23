@@ -6,16 +6,17 @@
 
 <script>
 import { onMounted } from 'vue'
-import bitcoin from 'bitcoinjs-lib';
+import CryptoService from '../services/crypto';
+
 export default {
     name: 'StAddAccount',
     setup () {
 
         onMounted(() => {
-            let bla = bitcoin.ECPair.makeRandom()
-            console.log('ha', bla);
-            // const mnemonic = bip39.generateMnemonic();
-            // console.log('mn', mnemonic);
+            CryptoService.generateMnemonicAndSeed()
+            console.log('mnemonic: ', CryptoService.mnemonic);
+            console.log('is mnemonic valid: ', CryptoService.isMnemonicValid());
+            console.log('random address: ', CryptoService.generateRadnomAddress());
 
         })
         return {
