@@ -9,9 +9,9 @@
 </template>
 
 <script>
-import MenuBar from '/~/components/layout/MenuBar.vue'
-import DefaultLayout from '/~/components/layout/Default.vue'
-import TopBar from '/~/components/layout/TopBar.vue'
+import MenuBar from '@/components/layout/MenuBar.vue'
+import DefaultLayout from '@/components/layout/Default.vue'
+import TopBar from '@/components/layout/TopBar.vue'
 import { useRouter } from 'vue-router'
 
 export default {
@@ -32,5 +32,10 @@ export default {
   },
 }
 </script>
+<style scoped>
+@import 'css/skeleton/layout.css';
+</style>
+
+<style src="@vueform/multiselect/themes/default.css"></style>
 
 

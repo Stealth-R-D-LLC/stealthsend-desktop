@@ -1,6 +1,6 @@
 const autoprefixer = require('autoprefixer');
-const postcssNested = require('postcss-nested');
-const postcssCustomProperties = require('postcss-custom-properties');
+// const postcssNested = require('postcss-nested');
+// const postcssCustomProperties = require('postcss-custom-properties');
 
 module.exports = {
   plugins: {
@@ -11,7 +11,5 @@ module.exports = {
       },
     },
   },
-  plugins: [autoprefixer, postcssNested, postcssCustomProperties({
-      importFrom: './src/css/design-tokens/colors.css'
-  })],
+  plugins: [autoprefixer],
 };

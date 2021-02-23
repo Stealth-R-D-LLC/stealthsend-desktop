@@ -27,8 +27,8 @@ export default {
   props: {
     items: {
       type: Array,
-      required: true,
-    },
+      required: true
+    }
   },
   setup() {
     let isVisible = ref(false)
@@ -42,58 +42,54 @@ export default {
       isVisible = false
     }
     return { isVisible, close, stDropdownRef }
-  },
+  }
 }
 </script>
 
-<style lang="postcss" scoped>
-.st-dropdown {
-  &__label {
-    color: var(--grey1000);
-    font-size: 18px;
-    letter-spacing: 0.32px;
-    line-height: 26px;
-    &:hover {
-      cursor: pointer;
-    }
-  }
-  &__items {
-    padding: 12px 0;
-    border: 1px solid var(--grey100);
-    margin-top: 20px;
-    position: absolute;
-    min-width: 300px;
-    background: white;
-    z-index: var(--zDropdown);
-    left: 120px;
-
-    .tip {
-      width: 12px;
-      height: 12px;
-      position: absolute;
-      top: -8px;
-      right: 50%;
-      transform: rotate(45deg);
-      border-left: 1px solid var(--grey100);
-      border-top: 1px solid var(--grey100);
-      background: white;
-    }
-  }
-  .dropdown-item {
-    display: block;
-    padding: 12px 24px;
-    text-decoration: none;
-    color: var(--grey1000);
-    font-size: 18px;
-    letter-spacing: 0.32px;
-    line-height: 26px;
-    border-left: 4px solid transparent;
-    transition: 0.22s;
-
-    &:hover {
-      background: var(--purple50);
-      border-color: var(--marine500);
-    }
-  }
+<style scoped>
+.st-dropdown__label {
+  color: var(--grey1000);
+  font-size: 18px;
+  letter-spacing: 0.32px;
+  line-height: 26px;
+}
+.st-dropdown__label:hover {
+  cursor: pointer;
+}
+.st-dropdown__items {
+  padding: 12px 0;
+  border: 1px solid var(--grey100);
+  margin-top: 20px;
+  position: absolute;
+  min-width: 300px;
+  background: white;
+  z-index: var(--zDropdown);
+  left: 120px;
+}
+.st-dropdown__items .tip {
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  top: -8px;
+  right: 50%;
+  transform: rotate(45deg);
+  border-left: 1px solid var(--grey100);
+  border-top: 1px solid var(--grey100);
+  background: white;
+}
+.st-dropdown .dropdown-item {
+  display: block;
+  padding: 12px 24px;
+  text-decoration: none;
+  color: var(--grey1000);
+  font-size: 18px;
+  letter-spacing: 0.32px;
+  line-height: 26px;
+  border-left: 4px solid transparent;
+  transition: 0.22s;
+}
+.st-dropdown .dropdown-item:hover {
+  background: var(--purple50);
+  border-color: var(--marine500);
 }
 </style>

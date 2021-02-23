@@ -6,3 +6,6 @@ build
 .env
 yarn-error.log
 .vscode
+
+#Electron-builder output
+/dist_electron
