@@ -1,3 +1,11 @@
+:root {
+  --zApp: 1;
+  --zDropdown: 2;
+  --zModal: 3;
+  --zTooltip: 4;
+  --zGlobalLoading: 5;
+}
+
 #app {
   height: 100vh;
   position: relative;
@@ -11,32 +19,20 @@
 }
 
 .default-layout__header {
-  /* border: 3px dashed blue; */
   padding: 12px 0;
 }
 .default-layout__main {
-  /* border: 3px dashed green; */
   flex: 1;
   overflow: auto;
   padding: 0 12px;
 }
 
 .default-layout__aside {
-  /* border: 3px dashed red; */
   background-color: var(--grey100);
   width: 200px;
 }
 
 .container {
   padding: 12px 0;
-  /* border: 3px dashed orange; */
 }
 
-/* z-indexes used */
-:root {
-  --zApp: 1;
-  --zDropdown: 2;
-  --zModal: 3;
-  --zTooltip: 4;
-  --zGlobalLoading: 5;
-}

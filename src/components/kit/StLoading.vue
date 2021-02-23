@@ -1,6 +1,6 @@
 <template>
   <div v-show="visibility" class="loading-page">
-    <img src="/static/xstloader.gif" alt="Test gif" />
+    <img src="../../../static/xstloader.gif" alt="Test gif" />
   </div>
 </template>
 

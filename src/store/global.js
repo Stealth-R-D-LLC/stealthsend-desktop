@@ -1,5 +1,5 @@
+import { API } from '@/api/axios'
 import { reactive, readonly } from 'vue'
-import { API } from '/~/api/axios'
 
 const state = reactive({
   test: 123,
@@ -21,7 +21,7 @@ const requestTest = () => {
   })
 }
 
-// import globalState from /~/store/global
+// import globalState from @/store/global
 // readonly ensures that globalState.state.test++ is not possible
 export default {
   state: readonly(state),

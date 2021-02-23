@@ -1,16 +1,10 @@
 import Multiselect from '@vueform/multiselect';
 import { StButton, StCheckbox, StInput, StLink, StRadio } from 'stealth-kit';
 import { createApp } from 'vue';
+import App from './App.vue';
 import directives from "./directives/";
+import './index.css';
 import router from './router';
-import App from '/~/App.vue';
-// import StButton from '/~/components/kit/StButton.vue';
-// import StCheckbox from '/~/components/kit/StCheckbox.vue';
-// import StInput from '/~/components/kit/StInput.vue';
-// import StLink from '/~/components/kit/StLink.vue';
-// import StRadio from '/~/components/kit/StRadio.vue';
-import '/~/index.css';
-
 
 const app = createApp(App)
 
@@ -31,3 +25,4 @@ directives(app)
 
 app.use(router)
 app.mount('#app')
+

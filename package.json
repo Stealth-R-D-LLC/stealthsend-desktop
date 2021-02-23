@@ -1,63 +1,43 @@
 {
-  "name": "stealth-desktop",
-  "version": "0.0.1",
-  "author": "Matej Lazarevic",
+  "name": "stealth-desktop-app",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "dev": "run-p dev:*",
-    "dev:vite": "vite",
-    "dev:electron": "electron src/background.js",
-    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "build": "run-s build:*",
-    "build:vite": "vite build --base=./",
-    "build:electron": "electron-builder build",
-    "clean": "rm -rf node_modules package-lock.json && npm i",
-    "postinstall": "install-app-deps"
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "test:e2e": "vue-cli-service test:e2e",
+    "lint": "vue-cli-service lint",
+    "clean": "rm -rf node_modules package-lock.json dist_electron && npm i",
+    "electron:build": "vue-cli-service electron:build",
+    "electron:serve": "vue-cli-service electron:serve",
+    "postinstall": "electron-builder install-app-deps",
+    "postuninstall": "electron-builder install-app-deps"
   },
+  "main": "background.js",
   "dependencies": {
     "@vueform/multiselect": "^1.3.2",
     "@vueuse/core": "^4.1.1",
     "@vueuse/integrations": "^4.1.1",
-    "electron-context-menu": "^2.4.0",
-    "electron-window-state": "^5.0.3",
+    "core-js": "^3.6.5",
     "stealth-kit": "^0.1.0",
-    "vue": "^3.0.1",
-    "vue-router": "^4.0.3"
+    "vue": "^3.0.0",
+    "vue-router": "^4.0.0-0"
   },
   "devDependencies": {
-    "@ehutch79/vite-eslint": "0.0.1",
-    "@vitejs/plugin-vue": "^1.1.4",
-    "@vue/compiler-sfc": "^3.0.5",
-    "electron": "^11.2.3",
-    "electron-builder": "^22.9.1",
-    "electron-reloader": "^1.2.0",
-    "eslint-config-prettier": "^7.2.0",
-    "eslint-plugin-prettier": "^3.3.1",
-    "eslint-plugin-vue": "^7.5.0",
-    "npm-run-all": "^4.1.5",
-    "postcss-custom-properties": "^11.0.0",
-    "postcss-nested": "^5.0.3",
-    "postcss-preset-env": "^6.7.0",
-    "prettier": "^2.2.1",
-    "vite": "^2.0.0-beta.67",
-    "vite-plugin-fonts": "^0.1.5",
-    "vite-plugin-voie": "^0.7.3"
-  },
-  "main": "src/background.js",
-  "resolutions": {
-    "postcss": "^8.2.1"
-  },
-  "build": {
-    "directories": {
-      "output": "build"
-    },
-    "mac": {
-      "target": "dmg"
-    },
-    "files": [
-      "src/background.js",
-      "src/helpers",
-      "dist",
-      "package.json"
-    ]
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-e2e-cypress": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-router": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "@vue/compiler-sfc": "^3.0.0",
+    "@vue/eslint-config-prettier": "^6.0.0",
+    "babel-eslint": "^10.1.0",
+    "electron": "^11.0.0",
+    "electron-devtools-installer": "^3.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-prettier": "^3.1.3",
+    "eslint-plugin-vue": "^7.0.0-0",
+    "prettier": "^1.19.1",
+    "vue-cli-plugin-electron-builder": "~2.0.0-rc.6"
   }
 }

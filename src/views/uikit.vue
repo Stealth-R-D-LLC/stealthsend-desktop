@@ -144,14 +144,14 @@
 </template>
 
 <script>
-import StModal from '/~/components/kit/StModal.vue'
-import StTable from '/~/components/kit/StTable.vue'
-import StStatus from '/~/components/kit/StStatus.vue'
-import StPagination from '/~/components/kit/StPagination.vue'
-import StDropdown from '/~/components/kit/StDropdown.vue'
-import StCopyToClipboard from '/~/components/kit/StClipboard.vue'
-import StTooltip from '/~/components/kit/StTooltip.vue'
-import StLoading from '/~/components/kit/StLoading.vue'
+import StModal from '@/components/kit/StModal.vue'
+import StTable from '@/components/kit/StTable.vue'
+import StStatus from '@/components/kit/StStatus.vue'
+import StPagination from '@/components/kit/StPagination.vue'
+import StDropdown from '@/components/kit/StDropdown.vue'
+import StCopyToClipboard from '@/components/kit/StClipboard.vue'
+import StTooltip from '@/components/kit/StTooltip.vue'
+import StLoading from '@/components/kit/StLoading.vue'
 
 import { ref } from 'vue'
 
