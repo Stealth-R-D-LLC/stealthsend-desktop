@@ -1,3 +1,4 @@
+import AddAccount from '@/views/add-account.vue'
 import Dashboard from '@/views/dashboard.vue'
 import Settings from '@/views/settings.vue'
 import UIKit from '@/views/uikit.vue'
@@ -23,6 +24,11 @@ const routes = [
     path: '/settings',
     name: 'Settings',
     component: Settings,
+  },
+  {
+    path: '/add-account',
+    name: 'AddAccount',
+    component: AddAccount,
   },
 ]
 

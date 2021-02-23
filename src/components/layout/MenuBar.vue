@@ -19,7 +19,7 @@
           <router-link class="item" to="/settings"><p>Receive</p></router-link>
         </li>
         <li>
-          <router-link class="item" to="/settings"
+          <router-link class="item" to="/add-account"
             ><p>Add Account</p></router-link
           >
         </li>
