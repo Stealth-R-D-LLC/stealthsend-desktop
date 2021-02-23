@@ -6,15 +6,15 @@
 @import 'css/design-tokens/fonts.css';
 @import 'css/design-tokens/typography.css';
 
-@import 'css/skeleton/layout.css';
 
 @import 'css/tools/transitions.css';
 
-@import '@vueform/multiselect/themes/default.css';
+/* @import '../node_modules/@vueform/multiselect/themes/default.css'; */
 @import 'css/components/multiselect.css';
+@import 'css/skeleton/layout.css';
 
 @import 'css/utilities/modifiers.css';
-@import 'css/_shame.css';
+@import 'css/shame.css';
 
 body {
   /* used for behaving more like an app, selection inside inputs and textareas still work in chromium */

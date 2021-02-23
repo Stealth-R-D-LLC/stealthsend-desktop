@@ -39,25 +39,21 @@
   </aside>
 </template>
 
-<style scoped lang="postcss">
-.default-layout__aside {
-  /* background: pink; */
-  nav {
-    margin-top: 80px;
-  }
-
-  li {
-    margin-top: 20px;
-    padding: 0 18px;
-  }
-
-  .item {
-    padding: 12px 0;
-    width: 100%;
-  }
-
-  .router-link-exact-active {
-    background-color: var(--marine200);
-  }
+<style scoped>
+/* background: pink;
+ */
+.default-layout__aside nav {
+  margin-top: 80px;
+}
+.default-layout__aside li {
+  margin-top: 20px;
+  padding: 0 18px;
+}
+.default-layout__aside .item {
+  padding: 12px 0;
+  width: 100%;
+}
+.default-layout__aside .router-link-exact-active {
+  background-color: var(--marine200);
 }
 </style>

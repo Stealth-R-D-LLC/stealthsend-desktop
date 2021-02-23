@@ -41,25 +41,25 @@ export default {
   props: {
     total: {
       type: Number,
-      required: true,
+      required: true
     },
     pageSize: {
       type: Number,
       required: false,
       default: () => {
         return 10
-      },
+      }
     },
     currentPage: {
       type: Number,
       required: true,
-      default: 1,
+      default: 1
     },
     paginationLimit: {
       type: Number,
       required: false,
-      default: 5, // number of pages in pagination before 3 dots
-    },
+      default: 5 // number of pages in pagination before 3 dots
+    }
   },
   emits: ['view-all', 'size-change', 'current-change'],
   setup(props, ctx) {
@@ -113,9 +113,9 @@ export default {
       sizeChange,
       gotoPage,
       nextPage,
-      prevPage,
+      prevPage
     }
-  },
+  }
 }
 </script>
 
@@ -126,33 +126,29 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 24px;
-  &__label {
-    margin-bottom: 24px;
-  }
-  &__pages {
-    .page {
-      padding: 10px 16px;
-      border: 1px solid var(--grey100);
-      border-right: transparent;
-
-      &:last-child {
-        border-right: 1px solid var(--grey100);
-      }
-
-      &:hover:not(.no-hover) {
-        border-color: var(--marine500);
-        border-right: 1px solid var(--marine500);
-        cursor: pointer;
-      }
-    }
-    .disabled {
-      color: var(--grey100);
-      border-color: var(--grey100);
-      &:hover:not(.no-hover) {
-        border-color: var(--grey100);
-        cursor: not-allowed;
-      }
-    }
-  }
+}
+.st-pagination__label {
+  margin-bottom: 24px;
+}
+.st-pagination__pages .page {
+  padding: 10px 16px;
+  border: 1px solid var(--grey100);
+  border-right: transparent;
+}
+.st-pagination__pages .page:last-child {
+  border-right: 1px solid var(--grey100);
+}
+.st-pagination__pages .page:hover:not(.no-hover) {
+  border-color: var(--marine500);
+  border-right: 1px solid var(--marine500);
+  cursor: pointer;
+}
+.st-pagination__pages .disabled {
+  color: var(--grey100);
+  border-color: var(--grey100);
+}
+.st-pagination__pages .disabled:hover:not(.no-hover) {
+  border-color: var(--grey100);
+  cursor: not-allowed;
 }
 </style>
