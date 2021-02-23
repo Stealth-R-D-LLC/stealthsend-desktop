@@ -1,12 +1,12 @@
+import Dashboard from '@/views/dashboard.vue'
+import Settings from '@/views/settings.vue'
+import UIKit from '@/views/uikit.vue'
 import { createRouter, createWebHistory } from 'vue-router'
-import Dashboard from '/~/pages/dashboard.vue'
-import Settings from '/~/pages/settings.vue'
-import UIKit from '/~/pages/uikit.vue'
 
 const routes = [
   {
     path: '/',
-    redirect: 'Dashboard',
+    redirect: 'dashboard',
     pathMatch: 'full',
   },
   {

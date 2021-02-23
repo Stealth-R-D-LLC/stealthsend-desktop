@@ -11,8 +11,8 @@ export default {
   props: {
     content: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   emits: ['click'],
   setup(props, ctx) {
@@ -22,14 +22,12 @@ export default {
       ctx.emit('click')
     }
     return { copyToClipboard }
-  },
+  }
 }
 </script>
 
 <style lang="postcss" scoped>
-.st-clipboard {
-  &:hover {
-    cursor: pointer;
-  }
+.st-clipboard:hover {
+  cursor: pointer;
 }
 </style>
