@@ -1,9 +1,11 @@
 <template>
   <div class="add-account-container">
     Add account
-    <button @click="generate">generate</button>
+    <button @click="generateMnemonic">generate mnemonic</button>
+    <button @click="generateRandomAddress">generate random address</button>
     <button @click="storePKinDB">store pk in db</button>
     <button @click="getPKfromDB">getPKfromDB</button>
+    <button @click="wifToPk">wif to pk</button>
   </div>
 </template>
 
@@ -16,21 +18,28 @@ export default {
     function storePKinDB() {
       CryptoService.storePKinDB()
     }
+    function wifToPk() {
+      CryptoService.WIFtoPK()
+    }
     function getPKfromDB() {
       CryptoService.getPk().then((res) => {
         console.log('db: ', res)
       })
     }
-    function generate() {
+    function generateMnemonic() {
       CryptoService.generateMnemonicAndSeed()
       console.log('mnemonic: ', CryptoService.mnemonic)
       console.log('is mnemonic valid: ', CryptoService.isMnemonicValid())
+    }
+    function generateRandomAddress() {
       console.log('random address: ', CryptoService.generateRandomAddress())
     }
     return {
       storePKinDB,
       getPKfromDB,
-      generate
+      generateMnemonic,
+      generateRandomAddress,
+      wifToPk
     }
   }
 }

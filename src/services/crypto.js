@@ -3,10 +3,16 @@ import * as bitcoin from 'bitcoinjs-lib'
 import cryptoJs from 'crypto-js'
 import db from '../db'
 
-
 const CryptoService = {
   seed: null,
   mnemonic: null,
+  masterPK: null,
+  WIFtoPK(wif = 'KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU73sVHnoWn') {
+    const keyPair = bitcoin.ECPair.fromWIF(wif)
+    const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey })
+    console.log('address retrieved from pk: ', address);
+    return address
+  },
   async generateMnemonicAndSeed() {
     this.mnemonic = bip39.generateMnemonic()
     this.seed = await bip39.mnemonicToSeed(this.mnemonic)
@@ -22,11 +28,11 @@ const CryptoService = {
   },
   getPk() {
     return new Promise((res, rej) => {
-        db.find({name: 'pero'} || {}, (err, docs) => {
-            if (err) rej(err);
-            res(docs);
-        });
-    });
+      db.find({ name: 'matej' } || {}, (err, docs) => {
+        if (err) rej(err)
+        res(docs)
+      })
+    })
   },
   storePKinDB(password = '123123', pk = 'privatekey') {
     // encrypt PK with password
@@ -38,14 +44,13 @@ const CryptoService = {
     //   iterations: 1000
     // })
 
-
     let key = '12345678901234567890123456789012'
     key = cryptoJs.enc.Utf8.parse(key)
 
     let iv = '1234567890123456'
     iv = cryptoJs.enc.Utf8.parse(iv)
 
-    let encryptedPK = cryptoJs.AES.encrypt(pk, key, {iv: iv});
+    let encryptedPK = cryptoJs.AES.encrypt(pk, key, { iv: iv })
     // encryptedPK.toString()
 
     let encryptedPassword = cryptoJs.AES.encrypt(password, key, { iv: iv })
@@ -53,15 +58,17 @@ const CryptoService = {
 
     // let decrypted = cryptoJs.AES.decrypt(encrypted, key, { iv: iv })
     // decrypted = decrypted.toString(cryptoJs.enc.Utf8)
-
-    db.insert({
+    db.insert(
+      {
         name: 'matej',
         pk: encryptedPK.toString(),
         password: encryptedPassword.toString(),
-        balance: 0,
-    }, () => {
-        console.log('stored in db!');
-    })
+        balance: 0
+      },
+      () => {
+        console.log('stored in db!')
+      }
+    )
   }
 }
 
