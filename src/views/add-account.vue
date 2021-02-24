@@ -3,8 +3,8 @@
     Add account
     <button @click="generateMnemonic">generate mnemonic</button>
     <button @click="generateRandomAddress">generate random address</button>
-    <button @click="storePKinDB">store pk in db</button>
-    <button @click="getPKfromDB">getPKfromDB</button>
+    <button @click="storeWalletInDb">storeWalletInDb</button>
+    <button @click="getWalletFromDb">getWalletFromDb</button>
     <button @click="wifToPk">wif to pk</button>
   </div>
 </template>
@@ -15,14 +15,15 @@ import CryptoService from '../services/crypto'
 export default {
   name: 'StAddAccount',
   setup() {
-    function storePKinDB() {
-      CryptoService.storePKinDB()
+    
+    function storeWalletInDb() {
+      CryptoService.storeWalletInDb()
     }
     function wifToPk() {
       CryptoService.WIFtoPK()
     }
-    function getPKfromDB() {
-      CryptoService.getPk().then((res) => {
+    function getWalletFromDb() {
+      CryptoService.getWalletFromDb().then((res) => {
         console.log('db: ', res)
       })
     }
@@ -36,8 +37,8 @@ export default {
       console.log('random address: ', CryptoService.generateRandomAddress())
     }
     return {
-      storePKinDB,
-      getPKfromDB,
+      storeWalletInDb,
+      getWalletFromDb,
       generateMnemonic,
       generateRandomAddress,
       wifToPk
