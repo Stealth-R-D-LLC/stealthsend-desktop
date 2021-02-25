@@ -26,14 +26,21 @@ const CryptoService = {
     console.log('address retrieved from pk: ', address)
     return address
   },
-  generateMnemonicAndSeed() {
-    // The root seed is most often represented by a mnemonic word sequence
+  async generateMnemonicAndSeed() {
+    // generate mnemonic with mouse movement
+    // let entropy = await this.generateEntropyWithMouse()
+    // console.log('en: ', entropy)
+    // this.mnemonic = bip39.entropyToMnemonic(entropy)
+    // generate mnemonic with bip39
     this.mnemonic = bip39.generateMnemonic()
     // HD wallets are created from a single root seed, which is a 128-, 256-, or 512-bit random number.
     //  Everything else in the HD wallet is deterministically derived from this root seed,
     // which makes it possible to re-create the entire HD wallet from that seed in any compatible HD wallet
     this.seed = bip39.mnemonicToSeedSync(this.mnemonic) // recovery seed of the master bip32 seed.?
     this.master = bip32.fromSeed(this.seed, this.network)
+    console.log('mnemonic: ', this.mnemonic)
+    console.log('seed: ', this.seed)
+    console.log('master: ', this.master)
   },
   isMnemonicValid() {
     const isValid = bip39.validateMnemonic(this.mnemonic)
@@ -87,11 +94,57 @@ const CryptoService = {
       balance: 0
     }
 
-    db.insert(wallet,
-        (res) => {
-          console.log('stored in db!!!', wallet, res)
+    db.insert(wallet, (res) => {
+      console.log('stored in db!!!', wallet, res)
+    })
+  },
+  generateEntropyWithMouse() {
+    return new Promise((resolve) => {
+      const entropy = []
+      let captureStart = false
+
+      document.addEventListener('mousemove', function(e) {
+        const MAX_LEN = 32 // size of entropy's array
+        if (entropy.length >= MAX_LEN) return
+        const now = Date.now()
+        if (now >= 1 && now % 10 !== 0) return
+        if (!captureStart) {
+          return setTimeout(() => {
+            captureStart = true
+          }, 1500) // capturing starts in 1.5 seconds to set the mouse cursor at random position...
         }
-      )
+        const iw = window.innerWidth
+        const ih = window.innerHeight
+        const iwPlusIh = iw + ih
+        const px = e.pageX
+        const py = e.pageY
+        const pxPlusPy = px + py
+        const ret = Math.round((pxPlusPy / iwPlusIh) * 255)
+        entropy.push(ret)
+        if (entropy.length >= MAX_LEN) {
+          shuffle(entropy)
+          let len = String(Math.floor(entropy.join('').length) / 4)
+          resolve(entropy.slice(0, len))
+        }
+
+        function shuffle(array) {
+          let currentIndex = array.length,
+            temporaryValue,
+            randomIndex
+          // While there remain elements to shuffle...
+          while (0 !== currentIndex) {
+            // Pick a remaining element...
+            randomIndex = Math.floor(Math.random() * currentIndex)
+            currentIndex -= 1
+            // And swap it with the current element.
+            temporaryValue = array[currentIndex]
+            array[currentIndex] = array[randomIndex]
+            array[randomIndex] = temporaryValue
+          }
+          return array
+        }
+      })
+    })
   }
 }
 
