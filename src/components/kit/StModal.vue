@@ -37,10 +37,10 @@
 
           <div class="st-modal__footer">
             <slot name="footer">
-              default footer
+              <!-- default footer
               <button class="modal-default-button" @click="$emit('close')">
                 OK
-              </button>
+              </button> -->
             </slot>
           </div>
         </div>
