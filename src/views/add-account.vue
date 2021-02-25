@@ -11,6 +11,17 @@
         few moments to generate better entropy for the seed generation.
       </template>
     </StModal>
+    <StModal :visible="isSeedModalVisible" @close="isSeedModalVisible = false">
+      <template #header> Master seed successfully generated </template>
+      <template #body>
+        Your master seed and mnemonic
+        <pre>
+          {{wallet}}
+        <!-- {{ CryptoService.seed }}
+        {{ CryptoService.mnemonic }} -->
+        </pre>
+      </template>
+    </StModal>
     <button @click="openEntropyModal">Generate master seed</button>
     <button @click="generateMnemonic">generate mnemonic</button>
     <button @click="generateRandomAddress">generate random address</button>
@@ -32,13 +43,21 @@ export default {
   },
   setup() {
     const isEntropyModalVisible = ref(false)
-    function openEntropyModal() {
+    const isSeedModalVisible = ref(false)
+    const wallet = ref({} )
+    async function openEntropyModal() {
       isEntropyModalVisible.value = true
-      CryptoService.generateMnemonicAndSeed()
-      // console.log('mnemonic: ', CryptoService.mnemonic)
-      // console.log('seed: ', CryptoService.seed)
-      // console.log('master: ', CryptoService.master)
+      await CryptoService.generateMnemonicAndSeed()
+      console.log('mnemonic: ', CryptoService.mnemonic)
+      console.log('seed: ', CryptoService.seed)
+      console.log('master: ', CryptoService.master)
+      wallet.value = await CryptoService.storeWalletInDb()
+      // wallet.value = CryptoService.getWalletFromDb()
+      console.log('---', wallet.value);
+      isEntropyModalVisible.value = false
+      isSeedModalVisible.value = true
     }
+
     function storeWalletInDb() {
       CryptoService.storeWalletInDb()
     }
@@ -68,7 +87,9 @@ export default {
       generateRandomAddress,
       wifToPk,
 
-      isEntropyModalVisible
+      isEntropyModalVisible,
+      isSeedModalVisible,
+      wallet
     }
   }
 }
