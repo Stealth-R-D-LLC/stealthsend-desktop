@@ -3,6 +3,7 @@ import { reactive, readonly } from 'vue'
 
 const state = reactive({
   test: 123,
+  globalLoading: false
 })
 
 const incrementTest = () => {
@@ -21,10 +22,20 @@ const requestTest = () => {
   })
 }
 
+const startGlobalLoading = () => {
+  state.globalLoading = true;
+}
+
+const stopGlobalLoading = () => {
+  state.globalLoading = false;
+}
+
 // import globalState from @/store/global
 // readonly ensures that globalState.state.test++ is not possible
 export default {
   state: readonly(state),
   incrementTest: incrementTest,
   requestTest: requestTest,
+  startGlobalLoading: startGlobalLoading,
+  stopGlobalLoading: stopGlobalLoading
 }
