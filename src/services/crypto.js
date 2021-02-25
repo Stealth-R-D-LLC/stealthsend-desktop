@@ -99,8 +99,8 @@ const CryptoService = {
       }
       resolve(wallet)
   
-      db.insert(wallet, (res) => {
-        console.log('stored in db!!!', wallet, res)
+      db.insert(wallet, () => {
+        // console.log('stored in db!!!', wallet, res)
       })
     })
   },
