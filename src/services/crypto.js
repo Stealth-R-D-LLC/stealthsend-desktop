@@ -36,7 +36,7 @@ const CryptoService = {
       // generate mnemonic with bip39
       this.mnemonic = await bip39.generateMnemonic()
       // HD wallets are created from a single root seed, which is a 128-, 256-, or 512-bit random number.
-      //  Everything else in the HD wallet is deterministically derived from this root seed,
+      // Everything else in the HD wallet is deterministically derived from this root seed,
       // which makes it possible to re-create the entire HD wallet from that seed in any compatible HD wallet
       this.seed = await bip39.mnemonicToSeedSync(this.mnemonic) // recovery seed of the master bip32 seed.?
       this.master = await bip32.fromSeed(this.seed, this.network) // aka. root
@@ -100,6 +100,7 @@ const CryptoService = {
       // console.log('decrypted: ', decrypted);
       const wallet = {
         name: 'wallet1',
+        archived: false,
         address: this.generateRandomAddress(),
         pk: encryptedPK.toString(),
         password: hash.toString(),
