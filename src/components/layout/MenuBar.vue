@@ -1,7 +1,12 @@
 <template>
-  <aside class="default-layout__aside">
+  <aside class="default-layout__aside" :class="{ width: isCollapsed }">
     <nav>
       <ul>
+        <li @click="isCollapsed = !isCollapsed">
+          <span class="item">
+            <p>Collapse</p>
+          </span>
+        </li>
         <li>
           <router-link class="item" to="/dashboard">
             <p>Account Balances</p>
@@ -39,7 +44,25 @@
   </aside>
 </template>
 
-<style scoped>
+<script>
+import { ref } from 'vue'
+export default {
+  name: 'StMenuBar',
+  setup() {
+    const isCollapsed = ref(false)
+
+    return {
+      isCollapsed
+    }
+  }
+}
+</script>
+
+<style lang="postcss">
+.default-layout__aside {
+  transition: width 0.5s ease-out;
+  animation: animate-width 1.2s 1 ease-in-out;
+}
 .default-layout__aside nav {
   margin-top: 136px;
 }
@@ -61,5 +84,14 @@
 }
 .default-layout__aside .router-link-exact-active {
   background-color: var(--marine200);
+}
+
+.width {
+  width: 148px;
+}
+
+@keyframes animate-width {
+  0%,40% { width: 48px; }
+    100% { width: 216px;}
 }
 </style>
