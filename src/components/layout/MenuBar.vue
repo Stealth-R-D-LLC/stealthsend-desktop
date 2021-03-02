@@ -91,7 +91,7 @@ export default {
 }
 
 @keyframes animate-width {
-  0%,40% { width: 48px; }
-    100% { width: 216px;}
+  0%,40% { width: 148px; }
+    100% { width: 280px;}
 }
 </style>
