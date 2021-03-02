@@ -15,7 +15,7 @@
 import Card from '../components/elements/Card'
 import { ref } from 'vue'
 export default {
-  name: 'StDshboard',
+  name: 'StDahboard',
   components: {
     Card
   },
