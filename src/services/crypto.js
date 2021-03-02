@@ -27,18 +27,19 @@ const CryptoService = {
     return address
   },
   async generateMnemonicAndSeed() {
-    return new Promise((resolve) => {
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise(async (resolve) => {
       // generate mnemonic with mouse movement
       // let entropy = await this.generateEntropyWithMouse()
       // console.log('en: ', entropy)
       // this.mnemonic = bip39.entropyToMnemonic(entropy)
       // generate mnemonic with bip39
-      this.mnemonic = bip39.generateMnemonic()
+      this.mnemonic = await bip39.generateMnemonic()
       // HD wallets are created from a single root seed, which is a 128-, 256-, or 512-bit random number.
       //  Everything else in the HD wallet is deterministically derived from this root seed,
       // which makes it possible to re-create the entire HD wallet from that seed in any compatible HD wallet
-      this.seed = bip39.mnemonicToSeedSync(this.mnemonic) // recovery seed of the master bip32 seed.?
-      this.master = bip32.fromSeed(this.seed, this.network)
+      this.seed = await bip39.mnemonicToSeedSync(this.mnemonic) // recovery seed of the master bip32 seed.?
+      this.master = await bip32.fromSeed(this.seed, this.network) // aka. root
       // console.log('mnemonic: ', this.mnemonic)
       // console.log('seed: ', this.seed)
       // console.log('master: ', this.master)
@@ -58,6 +59,13 @@ const CryptoService = {
     // console.log('public key', keyPair.publicKey);
     // keyPair.toWIF()
     return address
+  },
+  generateChildAddress(i) {
+    // https://github.com/satoshilabs/slips/blob/master/slip-0044.md
+    const path = `m/44'/1'/0'/0/${i}`
+    const child1 = this.master.derivePath(path)
+    // private key: child1.privateKey
+    return bitcoin.payments.p2pkh({pubkey: child1.publicKey}).address
   },
   getWalletFromDb() {
     return new Promise((res, rej) => {
