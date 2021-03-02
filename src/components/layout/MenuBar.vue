@@ -58,7 +58,7 @@ export default {
 }
 </script>
 
-<style lang="postcss">
+<style scoped>
 .default-layout__aside {
   transition: width 0.5s ease-out;
   animation: animate-width 1.2s 1 ease-in-out;
