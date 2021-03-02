@@ -1,12 +1,12 @@
 <template>
   <div class="st-card">
     <div class="st-card__row">
-        <span class="item title"><slot name="title"></slot></span>
-        <span class="item type"><slot name="type"></slot></span>
+      <span class="item title"><slot name="title"></slot></span>
+      <span class="item type"><slot name="type"></slot></span>
     </div>
     <div class="st-card__row">
-        <span class="item amount"><slot name="amount-crypto"></slot></span>
-        <span class="item amount"><slot name="amount-fiat"></slot></span>
+      <span class="item amount"><slot name="amount-crypto"></slot></span>
+      <span class="item amount"><slot name="amount-fiat"></slot></span>
     </div>
   </div>
 </template>
@@ -26,10 +26,13 @@ export default {
   min-width: 320px;
   height: 80px;
   background: white;
-  border: 1px solid #EEEFF9;
+  border: 1px solid #eeeff9;
   display: inline-flex;
   flex-direction: column;
   justify-content: space-between;
+  box-sizing: border-box;
+  box-shadow: 9px 10px 16px rgba(34, 3, 101, 0.1);
+  margin: 10px;
 }
 
 .st-card__row {
