@@ -43,15 +43,23 @@
 /* background: pink;
  */
 .default-layout__aside nav {
-  margin-top: 80px;
+  margin-top: 136px;
 }
 .default-layout__aside li {
   margin-top: 20px;
-  padding: 0 18px;
+  padding: 0 24px;
 }
 .default-layout__aside .item {
   padding: 12px 0;
   width: 100%;
+  text-decoration: none;
+}
+
+.default-layout__aside .item p {
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: 0.12px;
+  color: #fcfaff;
 }
 .default-layout__aside .router-link-exact-active {
   background-color: var(--marine200);
