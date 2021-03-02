@@ -40,8 +40,6 @@
 </template>
 
 <style scoped>
-/* background: pink;
- */
 .default-layout__aside nav {
   margin-top: 136px;
 }
