@@ -20,6 +20,12 @@ const routes = [
     path: '/',
     redirect: 'dashboard',
     pathMatch: 'full',
+    beforeEnter:(to, from, next) => {
+      console.log('is there anything in the db?', database);
+      if (!database || database.length === 0) {
+        next('/welcome')
+      }
+    }
   },
   {
     path: '/dashboard',
@@ -27,12 +33,6 @@ const routes = [
     component: Dashboard,
     meta: {
       layout: 'default'
-    },
-    beforeEnter:() => {
-      console.log('is there anything in the db?', database);
-      // if (database && database.length === 0) {
-      //   to('/welcome')
-      // }
     }
   },
   {
@@ -53,6 +53,9 @@ const routes = [
   {
     path: '/welcome',
     name: 'Welcome',
+    meta: {
+      layout: 'new-user'
+    },
     component: Welcome,
   },
 ]
