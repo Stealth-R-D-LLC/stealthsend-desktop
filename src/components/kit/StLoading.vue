@@ -38,6 +38,6 @@ export default {
   text-align: center;
   font-size: 30px;
   overflow: hidden;
-  z-index: var(-zGlobalLoading);
+  z-index: 10;
 }
 </style>

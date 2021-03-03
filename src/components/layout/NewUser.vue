@@ -1,6 +1,12 @@
 <template>
   <div class="new-user-layout">
-    bbbbbbbbbb
+    <main class="new-user-layout__main">
+      <router-view v-slot="{ Component }">
+        <transition name="fade" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
+    </main>
   </div>
 </template>
 
@@ -8,8 +14,7 @@
 export default {
   name: 'TsNewuser',
   setup() {
-    return {
-    }
+    return {}
   }
 }
 </script>
