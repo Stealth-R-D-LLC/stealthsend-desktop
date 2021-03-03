@@ -17,8 +17,8 @@ const CryptoService = {
     scriptHash: 0xc4,
     wif: 0xef
   },
-  seed: null,
-  mnemonic: null,
+  // seed: null,
+  // mnemonic: null,
   master: null,
   WIFtoPK(wif = 'KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU73sVHnoWn') {
     const keyPair = bitcoin.ECPair.fromWIF(wif)
@@ -34,20 +34,25 @@ const CryptoService = {
       // console.log('en: ', entropy)
       // this.mnemonic = bip39.entropyToMnemonic(entropy)
       // generate mnemonic with bip39
-      this.mnemonic = await bip39.generateMnemonic()
+      const mnemonic = await bip39.generateMnemonic()
       // HD wallets are created from a single root seed, which is a 128-, 256-, or 512-bit random number.
       // Everything else in the HD wallet is deterministically derived from this root seed,
       // which makes it possible to re-create the entire HD wallet from that seed in any compatible HD wallet
-      this.seed = await bip39.mnemonicToSeedSync(this.mnemonic) // recovery seed of the master bip32 seed.?
-      this.master = await bip32.fromSeed(this.seed, this.network) // aka. root
+      const seed = await bip39.mnemonicToSeedSync(this.mnemonic) // recovery seed of the master bip32 seed.?
+      const master = await bip32.fromSeed(this.seed, this.network) // aka. root
+      this.master = master
       // console.log('mnemonic: ', this.mnemonic)
       // console.log('seed: ', this.seed)
       // console.log('master: ', this.master)
-      resolve()
+      resolve({
+        mnemonic,
+        seed,
+        master 
+      })
     })
   },
-  isMnemonicValid() {
-    const isValid = bip39.validateMnemonic(this.mnemonic)
+  isMnemonicValid(mnemonic) {
+    const isValid = bip39.validateMnemonic(mnemonic)
     return isValid
   },
   generateRandomAddress() {
@@ -75,7 +80,8 @@ const CryptoService = {
       })
     })
   },
-  storeWalletInDb(password = '123123', pk = 'privatekey') {
+  storeWalletInDb(master = this.master, password = '123123', pk = 'privatekey') {
+    console.log('---', master);
     return new Promise((resolve) => {
       // user security is ultimately dependent on a password,
       // and because a password usually can't be used directly as a cryptographic key,
@@ -101,6 +107,7 @@ const CryptoService = {
       const wallet = {
         name: 'wallet1',
         archived: false,
+        master: master,
         address: this.generateRandomAddress(),
         pk: encryptedPK.toString(),
         password: hash.toString(),

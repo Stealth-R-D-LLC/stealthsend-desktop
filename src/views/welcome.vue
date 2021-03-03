@@ -23,8 +23,9 @@ import { ref } from 'vue'
 import * as bip39 from 'bip39'
 import * as bip32 from 'bip32'
 import globalState from '@/store/global'
-import db from '../db'
+// import db from '../db'
 import router from '../router'
+import CryptoService from '../services/crypto'
 
 export default {
   name: 'StWelcome',
@@ -38,21 +39,12 @@ export default {
     async function recover() {
       globalState.startGlobalLoading()
       let bytes = await bip39.mnemonicToSeed(mnemonic.value)
-      // TODO what next?
-      const master = bip32.fromSeed(bytes) // root
+      const master = bip32.fromSeed(bytes).toString('hex') // root
       recovered.value = {
         seed: bytes.toString('hex'),
         master: master
       }
-      const wallet = {
-        name: 'wallet1',
-        archived: false,
-        // address: this.generateRandomAddress(),
-        // pk: encryptedPK.toString(),
-        password: '123123',
-        balance: 0
-      }
-      db.insert(wallet)
+      CryptoService.storeWalletInDb(master, '1111111')
       setTimeout(() => {
         router.push('/dashboard')
         globalState.stopGlobalLoading()
