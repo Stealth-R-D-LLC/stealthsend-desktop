@@ -24,6 +24,7 @@ import * as bip39 from 'bip39'
 import * as bip32 from 'bip32'
 import globalState from '@/store/global'
 import db from '../db'
+import router from '../router'
 
 export default {
   name: 'StWelcome',
@@ -52,7 +53,10 @@ export default {
         balance: 0
       }
       db.insert(wallet)
-      globalState.stopGlobalLoading()
+      setTimeout(() => {
+        router.push('/dashboard')
+        globalState.stopGlobalLoading()
+      }, 3000)
     }
     return {
       recoverWallet,

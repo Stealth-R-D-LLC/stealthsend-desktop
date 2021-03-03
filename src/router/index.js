@@ -6,11 +6,7 @@ import Welcome from '@/views/welcome.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import db from '../db'
 
-let database = db.find({}, (err, docs) => {
-  console.log('docs', err, docs);
-})
-
-// dump whole
+// dump whole db
 // db.remove({}, { multi: true }, function () {
 //   console.log('db dumped');
 // });
@@ -18,13 +14,18 @@ let database = db.find({}, (err, docs) => {
 const routes = [
   {
     path: '/',
-    redirect: 'dashboard',
+    // redirect: 'dashboard',
     pathMatch: 'full',
     beforeEnter:(to, from, next) => {
-      console.log('is there anything in the db?', database);
-      if (!database || database.length === 0) {
-        next('/welcome')
-      }
+      db.find({}, (err, docs) => {
+        console.log('docs', err, docs);
+        if (!docs || docs.length === 0) {
+          console.log('aj na welcome');
+          next('/welcome')
+        } else {
+          next('/dashboard')
+        }
+      })
     }
   },
   {
