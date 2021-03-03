@@ -2,6 +2,7 @@
   <div class="default-layout">
     <MenuBar></MenuBar>
     <main class="default-layout__main">
+      <div class="triangle"></div>
       <TopBar></TopBar>
       <DefaultLayout></DefaultLayout>
     </main>

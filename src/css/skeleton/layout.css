@@ -14,7 +14,6 @@
 
 .default-layout {
   display: flex;
-  background-color: #fff;
   z-index: var(--zApp);
 }
 
@@ -22,9 +21,24 @@
   padding: 12px 0;
 }
 .default-layout__main {
+  background-color: #220365;
   flex: 1;
   overflow: auto;
   padding: 0 12px;
+  position: relative;
+}
+
+.default-layout__main .triangle {
+  clip-path: polygon(0 0, 0% 100%, 100% 100%);
+  background-color: white;
+  width: 66vw;
+  height: 70vh;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  /* border-bottom: 460px solid white;
+  border-right: 800px solid transparent;
+  background-color: transparent; */
 }
 
 .default-layout__aside {
