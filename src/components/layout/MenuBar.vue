@@ -348,8 +348,8 @@ export default {
   transition: opacity 0.5;
 }
 
-.default-layout__aside .router-link-exact-active {
-  background-color: var(--marine800);
+.default-layout__aside .router-link-exact-active span{
+  color: var(--success);
 }
 
 @keyframes animate-width {
