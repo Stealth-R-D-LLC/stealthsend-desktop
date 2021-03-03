@@ -1,6 +1,6 @@
 <template>
   <aside class="default-layout__aside" :class="{ width: isCollapsed }">
-    <nav >
+    <nav>
       <ul>
         <li @click.prevent="isCollapsed = !isCollapsed">
           <a href="" class="item">
@@ -38,21 +38,18 @@
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path d="M9 13H1V21H9V13Z" stroke="#FCFAFF" stroke-width="2" />
-              <path d="M21 13H13V21H21V13Z" stroke="#FCFAFF" stroke-width="2" />
               <path
-                d="M1 9H9"
+                d="M9 13H1v8h8v-8zM21 13h-8v8h8v-8z"
+                stroke="#FCFAFF"
+                stroke-width="2"
+              />
+              <path
+                d="M1 9h8M1 5h8"
                 stroke="#FCFAFF"
                 stroke-width="2"
                 stroke-linecap="square"
               />
-              <path
-                d="M1 5H9"
-                stroke="#FCFAFF"
-                stroke-width="2"
-                stroke-linecap="square"
-              />
-              <path d="M21 1H13V9H21V1Z" stroke="#FCFAFF" stroke-width="2" />
+              <path d="M21 1h-8v8h8V1z" stroke="#FCFAFF" stroke-width="2" />
             </svg>
 
             <span>
@@ -318,9 +315,15 @@ export default {
   /* position: relative; */
 }
 
-.default-layout__aside li:hover {
-  background-color: var(--marine800);
-  transition: background-color 0.2s;
+.default-layout__aside li:hover,
+.default-layout__aside li a *:hover,
+.default-layout__aside li a svg*:hover {
+  color: var(--success);
+  transition: color 0.2s;
+}
+.default-layout__aside li svg path:hover {
+  stroke: var(--success) !important;
+  transition: stroke 0.2s !important;
 }
 .default-layout__aside .item {
   padding: 12px 0;
