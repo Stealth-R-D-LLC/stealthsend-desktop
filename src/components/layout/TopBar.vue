@@ -1,6 +1,6 @@
 <template>
   <header class="default-layout__header">
-    Welcome, Matej {{version}}
+    <!-- Welcome, Matej {{version}} -->
   </header>
 </template>
 
