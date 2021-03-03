@@ -15,13 +15,14 @@
 .default-layout {
   display: flex;
   z-index: var(--zApp);
+  height: 100%;
 }
 
 .default-layout__header {
   padding: 12px 0;
 }
 .default-layout__main {
-  background-color: #220365;
+  /* background-color: #220365; */
   flex: 1;
   overflow: auto;
   padding: 0 12px;
@@ -46,7 +47,7 @@
   width: 280px;
 }
 
-.container {
+/* .container {
   padding: 12px 0;
-}
+} */
 
