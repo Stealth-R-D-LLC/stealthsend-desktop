@@ -1,8 +1,8 @@
 <template>
   <div class="welcome">
     <div class="nav">
-      <StButton @click="recoverWallet = true">Recover wallet</StButton>
-      <StButton>Import wallet</StButton>
+      <StButton @click="importWallet = false; recoverWallet = true">Recover wallet</StButton>
+      <StButton @click="importWallet = true; recoverWallet = false">Import wallet</StButton>
       <StButton>Create new wallet</StButton>
     </div>
     <div v-if="recoverWallet">
@@ -14,6 +14,16 @@
       ></StInput>
       <StButton @click="recover">Start Recover</StButton>
       <pre v-if="recovered"> recovered seed: {{ recovered }}</pre>
+    </div>
+    <div v-if="importWallet">
+      <h1>Import wallet</h1>
+      <StInput
+        v-model="wif"
+        label="WIF"
+        placeholder="Enter your WIF"
+      ></StInput>
+      <StButton @click="importWalletFromWif">Start Import from WIF</StButton>
+      <pre v-if="imported"> imported from wif: {{ imported }}</pre>
     </div>
   </div>
 </template>
@@ -50,11 +60,23 @@ export default {
         globalState.stopGlobalLoading()
       }, 3000)
     }
+
+    const importWallet = ref(false)
+    const wif = ref('KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU73sVHnoWn')
+    const imported = ref({})
+    async function importWalletFromWif() {
+      imported.value = CryptoService.WIFtoPK(wif.value)
+    }
     return {
       recoverWallet,
       mnemonic,
       recover,
-      recovered
+      recovered,
+
+      importWalletFromWif,
+      importWallet,
+      wif,
+      imported
     }
   }
 }

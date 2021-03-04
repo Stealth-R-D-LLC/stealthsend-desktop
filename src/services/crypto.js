@@ -20,11 +20,11 @@ const CryptoService = {
   // seed: null,
   // mnemonic: null,
   master: null,
-  WIFtoPK(wif = 'KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU73sVHnoWn') {
+  WIFtoPK(wif) {
     const keyPair = bitcoin.ECPair.fromWIF(wif)
     const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey })
     console.log('address retrieved from pk: ', address)
-    return address
+    return bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey })
   },
   async generateMnemonicAndSeed() {
     // eslint-disable-next-line no-async-promise-executor
