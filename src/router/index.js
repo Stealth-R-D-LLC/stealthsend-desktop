@@ -7,9 +7,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import db from '../db'
 
 // dump whole db
-// db.remove({}, { multi: true }, function () {
-//   console.log('db dumped');
-// });
+db.remove({}, { multi: true }, function () {
+  console.log('db dumped');
+});
 
 const routes = [
   {
