@@ -17,6 +17,8 @@ import globalState from '@/store/global'
 import MenuBar from '@/components/layout/MenuBar.vue'
 import TopBar from '@/components/layout/TopBar.vue'
 import { computed } from 'vue'
+import CryptoService from '../../services/crypto'
+
 export default {
   name: 'TsDefault',
   components: {
@@ -24,6 +26,8 @@ export default {
     TopBar
   },
   setup() {
+    CryptoService.init()
+
     const isLoading = computed(() => {
       return globalState.state.globalLoading
     })

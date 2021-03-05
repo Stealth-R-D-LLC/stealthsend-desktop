@@ -17,14 +17,33 @@ const CryptoService = {
     scriptHash: 0xc4,
     wif: 0xef
   },
-  // seed: null,
   // mnemonic: null,
   master: null,
+  seed: null,
+  async init() {
+    let wallet = await db.find({ name: 'wallet' })
+    console.log('--------', wallet)
+    if (wallet.length) {
+      this.master = this.WIFtoPK(wallet[0].master)
+      this.seed =this.hexToArray(wallet[0].seed)
+    }
+    // db.find({name: 'wallet'}, (err, docs) => {
+    //   if (!err && docs) {
+    //     console.log('--', docs);
+    //     CryptoService.master = docs[0].master
+    //   }
+    // })
+  },
   WIFtoPK(wif) {
     const keyPair = bitcoin.ECPair.fromWIF(wif)
+    // console.log('keypair: ', keyPair); //
     const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey })
     console.log('address retrieved from pk: ', address)
-    return bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey })
+    // return bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey })
+    return keyPair
+  },
+  hexToArray(hexString) {
+    return new Uint8Array(hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)))
   },
   async generateMnemonicAndSeed() {
     // eslint-disable-next-line no-async-promise-executor
@@ -39,7 +58,14 @@ const CryptoService = {
       // Everything else in the HD wallet is deterministically derived from this root seed,
       // which makes it possible to re-create the entire HD wallet from that seed in any compatible HD wallet
       const seed = await bip39.mnemonicToSeedSync(mnemonic) // recovery seed of the master bip32 seed.?
-      const master = await bip32.fromSeed(seed, this.network) // aka. root
+      // console.log('see', seed);
+      // console.log('ovo valjda', seed);
+      // console.log('ovo valjda1', seed.toString('hex'))
+      // console.log('---', this.hexToArray(seed.toString('hex')))
+      // console.log('ovo valjda2', seed.toString());
+      const master = await bip32.fromSeed(seed) // aka. root
+      // console.log('-->>', bip32.fromWIF(seed.toString('hex'), this.network));
+      // console.log('master: ', master.keyPair.toWIF())
       this.master = master
       // console.log('mnemonic: ', this.mnemonic)
       // console.log('seed: ', this.seed)
@@ -47,37 +73,48 @@ const CryptoService = {
       resolve({
         mnemonic,
         // seed,
-        master 
+        master
       })
     })
   },
-  getChildFromRoot(master = this.master, account, change, address) {
-    return master.derivePath(`m/44'/125'/${account}'/${change}/${address}`)
+  getChildFromRoot(account, change, address) {
+    // console.log('.1111', this.master, account, change, address)
+    const child = this.master.derivePath(
+      `m/44'/125'/${account}'/${change}/${address}`
+    )
+    // console.log('haha', child);
+    console.log('---', child.toWIF()) // encrypt
+    this.WIFtoPK(child.toWIF()) // decrypt
+    return {
+      address: bitcoin.payments.p2pkh({ pubkey: child.publicKey }).address,
+      pk: child.publicKey,
+      sk: child.privateKey
+    }
   },
   isMnemonicValid(mnemonic) {
     const isValid = bip39.validateMnemonic(mnemonic)
     return isValid
   },
-  generateRandomAddress() {
-    const keyPair = bitcoin.ECPair.makeRandom()
-    const { address } = bitcoin.payments.p2pkh({
-      pubkey: keyPair.publicKey,
-      network: this.network
-    })
-    // console.log('public key', keyPair.publicKey);
-    // keyPair.toWIF()
-    return address
-  },
+  // generateRandomAddress() {
+  //   const keyPair = bitcoin.ECPair.makeRandom()
+  //   const { address } = bitcoin.payments.p2pkh({
+  //     pubkey: keyPair.publicKey,
+  //     network: this.network
+  //   })
+  //   // console.log('public key', keyPair.publicKey);
+  //   // keyPair.toWIF()
+  //   return address
+  // },
   generateChildAddress(i) {
     // https://github.com/satoshilabs/slips/blob/master/slip-0044.md
-    const path = `m/44'/1'/0'/0/${i}`
+    const path = `m/44'/125'/0'/0/${i}`
     const child1 = this.master.derivePath(path)
     // private key: child1.privateKey
-    return bitcoin.payments.p2pkh({pubkey: child1.publicKey}).address
+    return bitcoin.payments.p2pkh({ pubkey: child1.publicKey }).address
   },
   getWalletFromDb() {
     return new Promise((res, rej) => {
-      db.find({ name: 'wallet1' } || {}, (err, docs) => {
+      db.find({ name: 'wallet' } || {}, (err, docs) => {
         if (err) rej(err)
         res(docs)
       })
@@ -93,34 +130,36 @@ const CryptoService = {
         keySize: 512 / 32,
         iterations: 1000
       })
-  
+
       // encrypt private key with hashed password
       // let iv = '1234567890123456'
       // iv = cryptoJs.enc.Utf8.parse(iv)
       // let encryptedPK = cryptoJs.AES.encrypt(pk, hash, { iv: iv })
-  
+
       // let encryptedPassword = cryptoJs.AES.encrypt(password, key, { iv: iv })
       // encryptedPassword.toString()
-  
+
       // ask user for password, rehash it, decrypt the private key
       // let decrypted = cryptoJs.AES.decrypt(encryptedPK, hash, { iv: iv })
       // decrypted = decrypted.toString(cryptoJs.enc.Utf8)
       // console.log('decrypted: ', decrypted);
+      console.log('master prije to wif', master)
       const wallet = {
-        name: 'Main wallet',
+        name: 'wallet',
         archived: false,
-        master: master,
+        // master: master.derivePath(`m/44'/125'/0'/0/0`).toWIF(),
+        seed: this.seed.toString('hex'),
         // address: this.generateRandomAddress(),
         // pk: encryptedPK.toString(), // not necessarry to store, can be derivated from master
         password: hash.toString(),
         balance: 0,
         accounts: []
       }
-      
+
       db.insert(wallet, () => {
         console.log('stored in db!!!', wallet)
       })
-      
+
       resolve(wallet)
     })
   },

@@ -1,6 +1,6 @@
 <template>
   <div class="dashbaord-container">
-    <transition-group name="list" tag="div">
+    <transition-group v-if="accounts.length !== 0" name="list" tag="div">
       <card v-for="account in accounts" :key="account.title" class="list-item">
         <template #title>{{ account.title }}</template>
         <template #type>{{ account.type }}</template>
@@ -8,6 +8,9 @@
         <template #amount-fiat>{{ account.fiat }}</template>
       </card>
     </transition-group>
+    <p v-else>
+      You don't have any accounts in your wallet. 
+    </p>
   </div>
 </template>
 
@@ -20,26 +23,28 @@ export default {
     Card
   },
   setup() {
-    const accounts = ref([
-      {
-        title: 'Main account',
-        type: 'XST / USD',
-        crypto: '3,321,321.00',
-        fiat: '$123,456.00'
-      },
-      {
-        title: 'Main account 2',
-        type: 'XST / USD',
-        crypto: '3,321,321.00',
-        fiat: '$123,456.00'
-      },
-      {
-        title: 'Main account 3',
-        type: 'XST / USD',
-        crypto: '3,321,321.00',
-        fiat: '$123,456.00'
-      }
-    ])
+    // CryptoService.init()
+    const accounts = ref([])
+    // const accounts = ref([
+    //   {
+    //     title: 'Main account',
+    //     type: 'XST / USD',
+    //     crypto: '3,321,321.00',
+    //     fiat: '$123,456.00'
+    //   },
+    //   {
+    //     title: 'Main account 2',
+    //     type: 'XST / USD',
+    //     crypto: '3,321,321.00',
+    //     fiat: '$123,456.00'
+    //   },
+    //   {
+    //     title: 'Main account 3',
+    //     type: 'XST / USD',
+    //     crypto: '3,321,321.00',
+    //     fiat: '$123,456.00'
+    //   }
+    // ])
     return {
       accounts
     }
