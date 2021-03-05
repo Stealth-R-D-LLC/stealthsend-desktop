@@ -1,9 +1,28 @@
 <template>
   <div class="welcome">
     <div class="nav">
-      <StButton @click="importWallet = false; recoverWallet = true">Recover wallet</StButton>
-      <StButton @click="importWallet = true; recoverWallet = false">Import wallet</StButton>
-      <StButton>Create new wallet</StButton>
+      <StButton
+        @click="
+          importWallet = false;
+          recoverWallet = true
+        "
+        >Recover wallet</StButton
+      >
+      <StButton
+        @click="
+          importWallet = true;
+          recoverWallet = false
+        "
+        >Import wallet</StButton
+      >
+      <StButton
+        @click="
+          importWallet = false;
+          recoverWallet = false;
+          createWallet = true
+        "
+        >Create new wallet</StButton
+      >
     </div>
     <div v-if="recoverWallet">
       <h1>Recover wallet</h1>
@@ -17,13 +36,29 @@
     </div>
     <div v-if="importWallet">
       <h1>Import wallet</h1>
-      <StInput
-        v-model="wif"
-        label="WIF"
-        placeholder="Enter your WIF"
-      ></StInput>
+      <StInput v-model="wif" label="WIF" placeholder="Enter your WIF"></StInput>
       <StButton @click="importWalletFromWif">Start Import from WIF</StButton>
       <pre v-if="imported"> imported from wif: {{ imported }}</pre>
+    </div>
+    <div v-if="createWallet">
+      <h1>New wallet</h1>
+      <StInput
+        v-model="password"
+        label="Password"
+        type="password"
+        placeholder="Create your password"
+      ></StInput>
+      <StButton :disabled="!password" @click="createNewWallet"
+        >Create wallet</StButton
+      >
+      <pre v-if="created">
+        Your stealth wallet has been created. Make sure to write down your mnemonic and keep it in a safe spot. 
+        The manemonic stores all the information needed to recover your funds on-chain.
+        Mnemonic: {{ created.mnemonic }}
+      <StButton @click="goToDashboard"
+        >Go to dashboard</StButton
+      >
+      </pre>
     </div>
   </div>
 </template>
@@ -56,7 +91,7 @@ export default {
       }
       CryptoService.storeWalletInDb(master, '1111111')
       setTimeout(() => {
-        router.push('/dashboard')
+        goToDashboard()
         globalState.stopGlobalLoading()
       }, 3000)
     }
@@ -67,7 +102,23 @@ export default {
     async function importWalletFromWif() {
       imported.value = CryptoService.WIFtoPK(wif.value)
     }
+
+    const createWallet = ref(false)
+    const created = ref(false)
+    const password = ref('')
+    async function createNewWallet() {
+      globalState.startGlobalLoading()
+      created.value = await CryptoService.generateMnemonicAndSeed()
+      await CryptoService.storeWalletInDb(created.value.master, password.value)
+      globalState.stopGlobalLoading()
+    }
+
+    function goToDashboard() {
+      router.push('/dashboard')
+    }
     return {
+      goToDashboard,
+
       recoverWallet,
       mnemonic,
       recover,
@@ -76,7 +127,12 @@ export default {
       importWalletFromWif,
       importWallet,
       wif,
-      imported
+      imported,
+
+      password,
+      createWallet,
+      created,
+      createNewWallet
     }
   }
 }

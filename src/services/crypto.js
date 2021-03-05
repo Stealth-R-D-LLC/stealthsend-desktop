@@ -38,18 +38,21 @@ const CryptoService = {
       // HD wallets are created from a single root seed, which is a 128-, 256-, or 512-bit random number.
       // Everything else in the HD wallet is deterministically derived from this root seed,
       // which makes it possible to re-create the entire HD wallet from that seed in any compatible HD wallet
-      const seed = await bip39.mnemonicToSeedSync(this.mnemonic) // recovery seed of the master bip32 seed.?
-      const master = await bip32.fromSeed(this.seed, this.network) // aka. root
+      const seed = await bip39.mnemonicToSeedSync(mnemonic) // recovery seed of the master bip32 seed.?
+      const master = await bip32.fromSeed(seed, this.network) // aka. root
       this.master = master
       // console.log('mnemonic: ', this.mnemonic)
       // console.log('seed: ', this.seed)
       // console.log('master: ', this.master)
       resolve({
         mnemonic,
-        seed,
+        // seed,
         master 
       })
     })
+  },
+  getChildFromRoot(master = this.master, account, change, address) {
+    return master.derivePath(`m/44'/125'/${account}'/${change}/${address}`)
   },
   isMnemonicValid(mnemonic) {
     const isValid = bip39.validateMnemonic(mnemonic)
@@ -80,8 +83,7 @@ const CryptoService = {
       })
     })
   },
-  storeWalletInDb(master = this.master, password = '123123', pk = 'privatekey') {
-    console.log('---', master);
+  storeWalletInDb(master = this.master, password) {
     return new Promise((resolve) => {
       // user security is ultimately dependent on a password,
       // and because a password usually can't be used directly as a cryptographic key,
@@ -93,9 +95,9 @@ const CryptoService = {
       })
   
       // encrypt private key with hashed password
-      let iv = '1234567890123456'
-      iv = cryptoJs.enc.Utf8.parse(iv)
-      let encryptedPK = cryptoJs.AES.encrypt(pk, hash, { iv: iv })
+      // let iv = '1234567890123456'
+      // iv = cryptoJs.enc.Utf8.parse(iv)
+      // let encryptedPK = cryptoJs.AES.encrypt(pk, hash, { iv: iv })
   
       // let encryptedPassword = cryptoJs.AES.encrypt(password, key, { iv: iv })
       // encryptedPassword.toString()
@@ -105,19 +107,21 @@ const CryptoService = {
       // decrypted = decrypted.toString(cryptoJs.enc.Utf8)
       // console.log('decrypted: ', decrypted);
       const wallet = {
-        name: 'wallet1',
+        name: 'Main wallet',
         archived: false,
         master: master,
-        address: this.generateRandomAddress(),
-        pk: encryptedPK.toString(),
+        // address: this.generateRandomAddress(),
+        // pk: encryptedPK.toString(), // not necessarry to store, can be derivated from master
         password: hash.toString(),
-        balance: 0
+        balance: 0,
+        accounts: []
       }
-      resolve(wallet)
-  
+      
       db.insert(wallet, () => {
-        // console.log('stored in db!!!', wallet, res)
+        console.log('stored in db!!!', wallet)
       })
+      
+      resolve(wallet)
     })
   },
   generateEntropyWithMouse() {
