@@ -7,24 +7,25 @@ import { createRouter, createWebHistory } from 'vue-router'
 import db from '../db'
 
 // dump whole db
-db.remove({}, { multi: true }, function () {
-  console.log('db dumped');
-});
+db.remove({}, { multi: true })
 
 const routes = [
   {
     path: '/',
     // redirect: 'dashboard',
     pathMatch: 'full',
-    beforeEnter:(to, from, next) => {
-      db.find({}, (err, docs) => {
-        console.log('docs', err, docs);
+    beforeEnter: (to, from, next) => {
+      console.log('aaa');
+      db.find({ name: 'wallet' }).then(docs => {
+        console.log('docs', docs)
         if (!docs || docs.length === 0) {
-          console.log('aj na welcome');
+          console.log('aj na welcome')
           next('/welcome')
         } else {
+          console.log('aj na dash');
           next('/dashboard')
         }
+
       })
     }
   },
@@ -39,17 +40,17 @@ const routes = [
   {
     path: '/uikit',
     name: 'UIKit',
-    component: UIKit,
+    component: UIKit
   },
   {
     path: '/settings',
     name: 'Settings',
-    component: Settings,
+    component: Settings
   },
   {
     path: '/add-account',
     name: 'AddAccount',
-    component: AddAccount,
+    component: AddAccount
   },
   {
     path: '/welcome',
@@ -57,13 +58,13 @@ const routes = [
     meta: {
       layout: 'new-user'
     },
-    component: Welcome,
-  },
+    component: Welcome
+  }
 ]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes,
+  routes
 })
 
 export default router

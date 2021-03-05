@@ -5,25 +5,18 @@
     {{ wallet }}
     </pre>
     <StModal
-      :visible="isEntropyModalVisible"
-      @close="isEntropyModalVisible = false"
+      :visible="isAccountModalVisible"
+      @close="isAccountModalVisible = false"
     >
-      <template #header> Generate master seed </template>
+      <template #header> Generate account </template>
       <template #body>
-        You are about to generate your master seed. Please move your mouse for a
-        few moments to generate better entropy for the seed generation.
+        You are about to generate a new account.
       </template>
       <template #footer>
-        <button @click="generateSeed">Generate</button>
+        <button @click="generateAccount">Start</button>
       </template>
     </StModal>
-    <button @click="isEntropyModalVisible = true">Generate master seed</button>
-    <button @click="genAdd">Generate address</button>
-    <!-- <button @click="generateMnemonic">generate mnemonic</button>
-    <button @click="generateRandomAddress">generate random address</button>
-    <button @click="storeWalletInDb">storeWalletInDb</button>
-    <button @click="getWalletFromDb">getWalletFromDb</button> -->
-    <!-- <button @click="wifToPk">wif to pk</button> -->
+    <button @click="isAccountModalVisible = true">Generate new account</button>
   </div>
 </template>
 
@@ -39,63 +32,32 @@ export default {
     StModal
   },
   setup() {
-    let isEntropyModalVisible = ref(false)
-    // const isSeedModalVisible = ref(false)
+    let isAccountModalVisible = ref(false)
     const wallet = ref({})
-    let i = 0;
-    function genAdd() {
-      // "i" should be the length of generated addresses
-      console.log("child addr:", CryptoService.generateChildAddress(i++))
-    }
-    async function generateSeed() {
-      isEntropyModalVisible.value = false
+
+    async function generateAccount() {
+      isAccountModalVisible.value = false
       globalState.startGlobalLoading()
-      // isEntropyModalVisible.value = true
-      await CryptoService.generateMnemonicAndSeed()
-      // console.log('mnemonic: ', CryptoService.mnemonic)
-      // console.log('seed: ', CryptoService.seed)
-      // console.log('master: ', CryptoService.master)
-      wallet.value = await CryptoService.storeWalletInDb()
-      wallet.value['mnemonic'] = CryptoService.mnemonic
-      // wallet.value = CryptoService.getWalletFromDb()
-      // isEntropyModalVisible.value = false
-      // isSeedModalVisible.value = true
+      const {address, pk, sk} = CryptoService.getChildFromRoot(0,0,0)
+      wallet.value = {address}
+      console.log('address: ', address);
+      console.log('pk: ', pk);
+      console.log('sk: ', sk);
       globalState.stopGlobalLoading()
     }
 
-    // function storeWalletInDb() {
-    //   CryptoService.storeWalletInDb()
-    // }
-    function wifToPk() {
-      CryptoService.WIFtoPK()
-    }
+
     // function getWalletFromDb() {
     //   CryptoService.getWalletFromDb().then((res) => {
     //     console.log('db: ', res)
     //   })
     // }
-    // function generateMnemonic(entropy) {
-    //   CryptoService.generateMnemonicAndSeed(entropy) // without custom entropy
 
-    //   console.log('mnemonic: ', CryptoService.mnemonic)
-    //   console.log('master: ', CryptoService.master)
-    //   console.log('is mnemonic valid: ', CryptoService.isMnemonicValid())
-    // }
-    function generateRandomAddress() {
-      console.log('random address: ', CryptoService.generateRandomAddress())
-    }
+
     return {
-      generateSeed,
-      // storeWalletInDb,
-      // getWalletFromDb,
-      // generateMnemonic,
-      generateRandomAddress,
-      wifToPk,
-
-      isEntropyModalVisible,
-      // isSeedModalVisible,
+      isAccountModalVisible,
       wallet,
-      genAdd
+      generateAccount
     }
   }
 }

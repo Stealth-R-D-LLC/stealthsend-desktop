@@ -23,7 +23,7 @@
     "bitcoinjs-lib": "^5.2.0",
     "core-js": "^3.6.5",
     "crypto-js": "^4.0.0",
-    "nedb": "^1.8.0",
+    "nedb-promise": "^2.0.1",
     "stealth-kit": "^0.1.0",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0"
