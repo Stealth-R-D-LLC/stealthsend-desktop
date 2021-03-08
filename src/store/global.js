@@ -4,7 +4,8 @@ import { reactive, readonly } from 'vue'
 const state = reactive({
   test: 123,
   globalLoading: false,
-  wallet: null
+  wallet: null,
+  accounts: []
 })
 
 const incrementTest = () => {
@@ -12,9 +13,14 @@ const incrementTest = () => {
 }
 
 const setWallet = (payload) => {
-  console.log('--', payload);
   state.wallet = payload
-} 
+}
+const setAccounts = (payload) => {
+  state.accounts = payload
+}
+const appendAccount = (payload) => {
+  state.accounts.push(payload)
+}
 
 const requestTest = () => {
   return new Promise((resolve, reject) => {
@@ -29,11 +35,11 @@ const requestTest = () => {
 }
 
 const startGlobalLoading = () => {
-  state.globalLoading = true;
+  state.globalLoading = true
 }
 
 const stopGlobalLoading = () => {
-  state.globalLoading = false;
+  state.globalLoading = false
 }
 
 // import globalState from @/store/global
@@ -44,5 +50,7 @@ export default {
   requestTest: requestTest,
   startGlobalLoading: startGlobalLoading,
   stopGlobalLoading: stopGlobalLoading,
+  setAccounts: setAccounts,
+  appendAccount: appendAccount,
   setWallet: setWallet
 }

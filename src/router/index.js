@@ -9,6 +9,13 @@ import db from '../db'
 // dump whole db
 // db.remove({}, { multi: true })
 
+async function bla() {
+  let a = await db.find({}, { multi: true })
+  console.log("cijela baza", a)
+} 
+
+bla()
+
 const routes = [
   {
     path: '/',

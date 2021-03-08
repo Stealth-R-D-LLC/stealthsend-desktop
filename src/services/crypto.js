@@ -26,6 +26,8 @@ const CryptoService = {
     // check if there's already a wallet stored in the db
     // if so, retrieve it and generate the master from the stored seed
     let wallet = await this.getWalletFromDb()
+    let acc = await this.getAccounts()
+    console.log('accounts all', acc);
     if (wallet.length) {
       console.log('wallet: ', wallet)
       // seed is stored in a string format because it's the easies to store
@@ -96,14 +98,34 @@ const CryptoService = {
     globalState.setWallet(wallet[0])
     return wallet
   },
+  async getAccounts() {
+    let accounts = await db.find({ name: 'account' })
+    globalState.setAccounts(accounts)
+    console.log('accounts: ', accounts)
+    return accounts
+  },
   async storeAccountInDb(account) {
-    let acc = await db.update(
-      { name: 'wallet' },
-      { $addToSet: { accounts: account } }
-    )
+    let acc = await db.insert({
+      name: 'account',
+      address: account.address,
+      label: account.label,
+      isArchived: account.isArchived,
+      balance: account.balance
+    })
     console.log('account stored in db: ', acc)
-    this.getWalletFromDb()
+    this.getAccounts()
     return acc
+  },
+  async archiveAccount(account) {
+    console.log('acc', account)
+    await db.update({ name: 'account', address: account.address }, {
+      name: 'account',
+      address: account.address,
+      label: account.label,
+      isArchived: true,
+      balance: account.balance
+    })
+    await this.getAccounts()
   },
   storeWalletInDb(password) {
     return new Promise((resolve) => {
