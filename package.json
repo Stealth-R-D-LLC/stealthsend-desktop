@@ -21,6 +21,7 @@
     "bip32": "^2.0.6",
     "bip39": "^3.0.3",
     "bitcoinjs-lib": "^5.2.0",
+    "buffer": "^5.7.1",
     "core-js": "^3.6.5",
     "crypto-js": "^4.0.0",
     "nedb-promise": "^2.0.1",

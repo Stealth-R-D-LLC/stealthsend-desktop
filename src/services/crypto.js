@@ -1,8 +1,9 @@
-import * as bip32 from 'bip32'
-import * as bip39 from 'bip39'
-import * as bitcoin from 'bitcoinjs-lib'
-import cryptoJs from 'crypto-js'
-import db from '../db'
+import * as bip32 from 'bip32';
+import * as bip39 from 'bip39';
+import * as bitcoin from 'bitcoinjs-lib';
+import { Buffer } from 'buffer';
+import cryptoJs from 'crypto-js';
+import db from '../db';
 
 const CryptoService = {
   network: {
@@ -24,8 +25,9 @@ const CryptoService = {
     let wallet = await db.find({ name: 'wallet' })
     console.log('--------', wallet)
     if (wallet.length) {
-      this.master = this.WIFtoPK(wallet[0].master)
-      this.seed =this.hexToArray(wallet[0].seed)
+      this.seed = this.hexToArray(wallet[0].seed)
+      console.log('sidara', Buffer.from(this.seed));
+      this.master = await bip32.fromSeed(Buffer.from(this.seed))
     }
     // db.find({name: 'wallet'}, (err, docs) => {
     //   if (!err && docs) {
@@ -67,6 +69,7 @@ const CryptoService = {
       // console.log('-->>', bip32.fromWIF(seed.toString('hex'), this.network));
       // console.log('master: ', master.keyPair.toWIF())
       this.master = master
+      this.seed = seed
       // console.log('mnemonic: ', this.mnemonic)
       // console.log('seed: ', this.seed)
       // console.log('master: ', this.master)
