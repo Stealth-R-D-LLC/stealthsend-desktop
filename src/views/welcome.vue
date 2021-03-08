@@ -84,7 +84,7 @@ export default {
     async function recover() {
       globalState.startGlobalLoading()
       let bytes = await bip39.mnemonicToSeed(mnemonic.value)
-      const master = bip32.fromSeed(bytes).toString('hex') // root
+      const master = await bip32.fromSeed(bytes).toString('hex') // root
       recovered.value = {
         seed: bytes.toString('hex'),
         master: master
