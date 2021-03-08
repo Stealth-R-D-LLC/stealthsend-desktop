@@ -44,7 +44,7 @@ export default {
     async function generateAccount() {
       isAccountModalVisible.value = false
       globalState.startGlobalLoading()
-      const { address } = CryptoService.getChildFromRoot(0, 0, 0)
+      const { address } = CryptoService.getChildFromRoot(0, 0, 2)
       account.value = {
         address,
         label: accountName.value,
