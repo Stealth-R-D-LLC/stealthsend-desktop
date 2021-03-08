@@ -1,11 +1,10 @@
 <template>
   <div class="dashbaord-container">
     <transition-group v-if="accounts.length !== 0" name="list" tag="div">
-      <card v-for="account in accounts" :key="account.title" class="list-item">
-        <template #title>{{ account.title }}</template>
-        <template #type>{{ account.type }}</template>
-        <template #amount-crypto>{{ account.crypto }}</template>
-        <template #amount-fiat>{{ account.fiat }}</template>
+      <card v-for="account in accounts" :key="account.title" class="list-item" :amount="account.balance">
+        <template #title>{{ account.label }}</template>
+        <template #type>{{ !account.isArchived ? 'Active' : 'Archived' }}</template>
+        <!-- <template #amount-crypto>{{ account.balance }}</template> -->
       </card>
     </transition-group>
     <p v-else>
@@ -15,8 +14,9 @@
 </template>
 
 <script>
+import globalState from '@/store/global'
 import Card from '../components/elements/Card'
-import { ref } from 'vue'
+import { computed } from 'vue'
 export default {
   name: 'StDahboard',
   components: {
@@ -24,7 +24,11 @@ export default {
   },
   setup() {
     // CryptoService.init()
-    const accounts = ref([])
+    // const accounts = ref([])
+    console.log('global state', globalState.state);
+    const accounts = computed(() => {
+      return globalState.state.wallet ? globalState.state.wallet.accounts : []
+    })
     // const accounts = ref([
     //   {
     //     title: 'Main account',

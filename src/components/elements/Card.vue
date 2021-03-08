@@ -5,17 +5,27 @@
       <span class="item type"><slot name="type"></slot></span>
     </div>
     <div class="st-card__row">
-      <span class="item amount"><slot name="amount-crypto"></slot></span>
-      <span class="item amount"><slot name="amount-fiat"></slot></span>
+      <span class="item amount">{{ amount }} XST</span>
+      <span class="item fiat">{{ amountInFiat }} EUR</span>
     </div>
   </div>
 </template>
 
 <script>
+import { computed } from 'vue'
 export default {
   name: 'StCard',
-  setup() {
-    return {}
+  props: {
+    amount: {
+      type: Number,
+      required: true
+    }
+  },
+  setup(props) {
+    const amountInFiat = computed(() => {
+      return props.amount * 2.5
+    })
+    return { amountInFiat }
   }
 }
 </script>
