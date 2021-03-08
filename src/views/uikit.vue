@@ -17,6 +17,7 @@
     <br />
     <h2>Link</h2>
     <StLink to="settings">hoveraj me burki</StLink>
+    <StLink to="settings">hoveraj me burki</StLink>
     <br />
     <br />
     <StLink @click="clickHandler('bla')">ovaj samo ima emit</StLink>
@@ -79,6 +80,14 @@
     </StModal>
     <button @click="showModal = true">Show modal</button>
     <br /><br />
+    <h2>Select</h2>
+    <StMultiselect
+      v-model="multiselectValue"
+      :can-deselect="false"
+      :options="multiselectOptions"
+    />
+    <br />
+    <br />
     <h2>Table</h2>
     <StTable :data="tableData" :columns="tableColumns"></StTable>
     <StPagination
@@ -128,50 +137,26 @@
     </StTooltip>
     <br />
     <br />
-    <h2>Select</h2>
-    <Multiselect v-model="multiselectValue" :can-deselect="false" :options="multiselectOptions" />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
+    <h2>Global loading</h2>
+    <button @click="toggleLoading">Trigger global loading</button>
+    <StLoading :visibility="isLoading"></StLoading>
   </div>
 </template>
 
 <script>
-import StButton from '/~/components/kit/StButton.vue'
-import StInput from '/~/components/kit/StInput.vue'
-import StLink from '/~/components/kit/StLink.vue'
-import StRadio from '/~/components/kit/StRadio.vue'
-import StCheckbox from '/~/components/kit/StCheckbox.vue'
-import StModal from '/~/components/kit/StModal.vue'
-import StTable from '/~/components/kit/StTable.vue'
-import StStatus from '/~/components/kit/StStatus.vue'
-import StPagination from '/~/components/kit/StPagination.vue'
-import StDropdown from '/~/components/kit/StDropdown.vue'
-import StCopyToClipboard from '/~/components/kit/StClipboard.vue'
-import StTooltip from '/~/components/kit/StTooltip.vue'
-import Multiselect from '@vueform/multiselect'
+import StModal from '@/components/kit/StModal.vue'
+import StTable from '@/components/kit/StTable.vue'
+import StStatus from '@/components/kit/StStatus.vue'
+import StPagination from '@/components/kit/StPagination.vue'
+import StDropdown from '@/components/kit/StDropdown.vue'
+import StCopyToClipboard from '@/components/kit/StClipboard.vue'
+import StTooltip from '@/components/kit/StTooltip.vue'
+import StLoading from '@/components/kit/StLoading.vue'
 
 import { ref } from 'vue'
+
 export default {
   components: {
-    StButton,
-    StInput,
-    StLink,
-    StRadio,
-    StCheckbox,
     StModal,
     StTable,
     StStatus,
@@ -179,7 +164,7 @@ export default {
     StDropdown,
     StCopyToClipboard,
     StTooltip,
-    Multiselect,
+    StLoading,
   },
   setup() {
     const tableData = ref([
@@ -262,6 +247,14 @@ export default {
 
     let multiselectValue = ref(null)
     let multiselectOptions = ref(['Batman', 'Robin', 'Joker'])
+    const isLoading = ref(false)
+
+    function toggleLoading() {
+      isLoading.value = true
+      setTimeout(() => {
+        isLoading.value = false
+      }, 3000)
+    }
 
     return {
       clickHandler,
@@ -275,6 +268,8 @@ export default {
       copyPending,
       multiselectValue,
       multiselectOptions,
+      isLoading,
+      toggleLoading,
     }
   },
 }

@@ -2,7 +2,7 @@
   <transition name="fade">
     <div v-if="visible" class="st-modal">
       <div class="st-modal-wrapper">
-        <div class="st-modal-container">
+        <div ref="stModalRef" class="st-modal-container">
           <span
             v-if="showCloseButton"
             class="st-modal__close-button"
@@ -37,10 +37,10 @@
 
           <div class="st-modal__footer">
             <slot name="footer">
-              default footer
+              <!-- default footer
               <button class="modal-default-button" @click="$emit('close')">
                 OK
-              </button>
+              </button> -->
             </slot>
           </div>
         </div>
@@ -50,30 +50,44 @@
 </template>
 
 <script>
+import { onClickOutside } from '@vueuse/core'
+import { ref } from 'vue'
+
 export default {
   name: 'StModal',
   props: {
     visible: {
       type: Boolean,
       required: false,
-      default: false,
+      default: false
     },
     showCloseButton: {
       type: Boolean,
       required: false,
-      default: true,
+      default: true
     },
     hasClickOutside: {
       type: Boolean,
       required: false,
-      default: true,
-    },
+      default: true
+    }
   },
   emits: ['close'],
+  setup(props, ctx) {
+    const stModalRef = ref(null)
+
+    onClickOutside(stModalRef, () => {
+      if (props.hasClickOutside) {
+        ctx.emit('close')
+      }
+    })
+
+    return { stModalRef }
+  }
 }
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .st-modal {
   position: fixed;
   z-index: var(--zModal);
@@ -84,40 +98,34 @@ export default {
   background-color: rgba(0, 0, 0, 0.5);
   display: table;
   transition: opacity 0.3s ease;
-
-  &__close-button {
-    color: red;
-    position: absolute;
-    top: 32px;
-    right: 32px;
-    &:hover {
-      cursor: pointer;
-    }
-  }
-
-  &__header {
-    color: var(--grey1000);
-    font-family: 'Source Sans Pro';
-    font-size: 20px;
-    letter-spacing: 0.32px;
-    line-height: 26px;
-  }
-
-  &__body {
-    margin: 45px 0 65px 0;
-  }
-
-  &__footer {
-    display: flex;
-  justify-content: flex-end;
-  }
 }
-
+.st-modal__close-button {
+  color: red;
+  position: absolute;
+  top: 32px;
+  right: 32px;
+}
+.st-modal__close-button:hover {
+  cursor: pointer;
+}
+.st-modal__header {
+  color: var(--grey1000);
+  font-family: 'Source Sans Pro';
+  font-size: 20px;
+  letter-spacing: 0.32px;
+  line-height: 26px;
+}
+.st-modal__body {
+  margin: 45px 0 65px 0;
+}
+.st-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+}
 .st-modal-wrapper {
   display: table-cell;
   vertical-align: middle;
 }
-
 .st-modal-container {
   position: relative;
   width: 300px;
@@ -129,7 +137,6 @@ export default {
   transition: all 0.3s ease;
   font-family: Helvetica, Arial, sans-serif;
 }
-
 .modal-default-button {
   display: block;
   margin-top: 1rem;

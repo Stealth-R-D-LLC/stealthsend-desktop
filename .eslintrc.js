@@ -12,6 +12,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 8,
     sourceType: 'module',
+    allowImportExportEverywhere: true
   },
   plugins: ['prettier', 'vue'],
   // add your custom rules here
