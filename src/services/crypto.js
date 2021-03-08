@@ -18,56 +18,41 @@ const CryptoService = {
     scriptHash: 0xc4,
     wif: 0xef
   },
-  // mnemonic: null,
   master: null,
   seed: null,
   async init() {
+    // check if there's already a wallet stored in the db
+    // if so, retrieve it and generate the master from the stored seed
     let wallet = await db.find({ name: 'wallet' })
-    console.log('--------', wallet)
     if (wallet.length) {
+      console.log('wallet: ', wallet);
+      // seed is stored in a string format because it's the easies to store
+      // when retrieving, we need to have the seed in buffer type so we can work with it
+      // that's why we are converting the seed from string -> uint8array -> buffer
       this.seed = this.hexToArray(wallet[0].seed)
-      console.log('sidara', Buffer.from(this.seed));
       this.master = await bip32.fromSeed(Buffer.from(this.seed))
     }
-    // db.find({name: 'wallet'}, (err, docs) => {
-    //   if (!err && docs) {
-    //     console.log('--', docs);
-    //     CryptoService.master = docs[0].master
-    //   }
-    // })
   },
   WIFtoPK(wif) {
     const keyPair = bitcoin.ECPair.fromWIF(wif)
-    // console.log('keypair: ', keyPair); //
     const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey })
     console.log('address retrieved from pk: ', address)
-    // return bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey })
     return keyPair
   },
   hexToArray(hexString) {
+    // convert hex string to uint8array
+    // helper for seed
     return new Uint8Array(hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)))
   },
   async generateMnemonicAndSeed() {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve) => {
-      // generate mnemonic with mouse movement
-      // let entropy = await this.generateEntropyWithMouse()
-      // console.log('en: ', entropy)
-      // this.mnemonic = bip39.entropyToMnemonic(entropy)
-      // generate mnemonic with bip39
-      const mnemonic = await bip39.generateMnemonic()
       // HD wallets are created from a single root seed, which is a 128-, 256-, or 512-bit random number.
       // Everything else in the HD wallet is deterministically derived from this root seed,
       // which makes it possible to re-create the entire HD wallet from that seed in any compatible HD wallet
+      const mnemonic = await bip39.generateMnemonic()
       const seed = await bip39.mnemonicToSeedSync(mnemonic) // recovery seed of the master bip32 seed.?
-      // console.log('see', seed);
-      // console.log('ovo valjda', seed);
-      // console.log('ovo valjda1', seed.toString('hex'))
-      // console.log('---', this.hexToArray(seed.toString('hex')))
-      // console.log('ovo valjda2', seed.toString());
       const master = await bip32.fromSeed(seed) // aka. root
-      // console.log('-->>', bip32.fromWIF(seed.toString('hex'), this.network));
-      // console.log('master: ', master.keyPair.toWIF())
       this.master = master
       this.seed = seed
       // console.log('mnemonic: ', this.mnemonic)
@@ -81,12 +66,9 @@ const CryptoService = {
     })
   },
   getChildFromRoot(account, change, address) {
-    // console.log('.1111', this.master, account, change, address)
     const child = this.master.derivePath(
       `m/44'/125'/${account}'/${change}/${address}`
     )
-    // console.log('haha', child);
-    console.log('---', child.toWIF()) // encrypt
     this.WIFtoPK(child.toWIF()) // decrypt
     return {
       address: bitcoin.payments.p2pkh({ pubkey: child.publicKey }).address,
@@ -98,16 +80,6 @@ const CryptoService = {
     const isValid = bip39.validateMnemonic(mnemonic)
     return isValid
   },
-  // generateRandomAddress() {
-  //   const keyPair = bitcoin.ECPair.makeRandom()
-  //   const { address } = bitcoin.payments.p2pkh({
-  //     pubkey: keyPair.publicKey,
-  //     network: this.network
-  //   })
-  //   // console.log('public key', keyPair.publicKey);
-  //   // keyPair.toWIF()
-  //   return address
-  // },
   generateChildAddress(i) {
     // https://github.com/satoshilabs/slips/blob/master/slip-0044.md
     const path = `m/44'/125'/0'/0/${i}`
@@ -123,7 +95,16 @@ const CryptoService = {
       })
     })
   },
-  storeWalletInDb(master = this.master, password) {
+  storeAccountInDb(account) {
+    return new Promise((resolve, reject) => {
+      db.update({ name: 'wallet' }, {$addToSet: {accounts: account}}, (err, docs) => {
+        if (err) reject(err)
+        resolve(docs)
+        console.log('account stored in db: ', account);
+      })
+    })
+  },
+  storeWalletInDb(password) {
     return new Promise((resolve) => {
       // user security is ultimately dependent on a password,
       // and because a password usually can't be used directly as a cryptographic key,
@@ -146,72 +127,20 @@ const CryptoService = {
       // let decrypted = cryptoJs.AES.decrypt(encryptedPK, hash, { iv: iv })
       // decrypted = decrypted.toString(cryptoJs.enc.Utf8)
       // console.log('decrypted: ', decrypted);
-      console.log('master prije to wif', master)
       const wallet = {
         name: 'wallet',
         archived: false,
-        // master: master.derivePath(`m/44'/125'/0'/0/0`).toWIF(),
-        seed: this.seed.toString('hex'),
-        // address: this.generateRandomAddress(),
-        // pk: encryptedPK.toString(), // not necessarry to store, can be derivated from master
+        seed: this.seed.toString('hex'), // nicest way to store seed is in hex string format
         password: hash.toString(),
-        balance: 0,
-        accounts: []
+        balance: 0, // will be calculated after "scanning" for accounts; sum of all accounts
+        accounts: [] // will be populated after "scanning"
       }
 
       db.insert(wallet, () => {
-        console.log('stored in db!!!', wallet)
+        console.log('wallet stored in db: ', wallet)
       })
 
       resolve(wallet)
-    })
-  },
-  generateEntropyWithMouse() {
-    return new Promise((resolve) => {
-      const entropy = []
-      let captureStart = false
-
-      document.addEventListener('mousemove', function(e) {
-        const MAX_LEN = 32 // size of entropy's array
-        if (entropy.length >= MAX_LEN) return
-        const now = Date.now()
-        if (now >= 1 && now % 10 !== 0) return
-        if (!captureStart) {
-          return setTimeout(() => {
-            captureStart = true
-          }, 1500) // capturing starts in 1.5 seconds to set the mouse cursor at random position...
-        }
-        const iw = window.innerWidth
-        const ih = window.innerHeight
-        const iwPlusIh = iw + ih
-        const px = e.pageX
-        const py = e.pageY
-        const pxPlusPy = px + py
-        const ret = Math.round((pxPlusPy / iwPlusIh) * 255)
-        entropy.push(ret)
-        if (entropy.length >= MAX_LEN) {
-          shuffle(entropy)
-          let len = String(Math.floor(entropy.join('').length) / 4)
-          resolve(entropy.slice(0, len))
-        }
-
-        function shuffle(array) {
-          let currentIndex = array.length,
-            temporaryValue,
-            randomIndex
-          // While there remain elements to shuffle...
-          while (0 !== currentIndex) {
-            // Pick a remaining element...
-            randomIndex = Math.floor(Math.random() * currentIndex)
-            currentIndex -= 1
-            // And swap it with the current element.
-            temporaryValue = array[currentIndex]
-            array[currentIndex] = array[randomIndex]
-            array[randomIndex] = temporaryValue
-          }
-          return array
-        }
-      })
     })
   }
 }

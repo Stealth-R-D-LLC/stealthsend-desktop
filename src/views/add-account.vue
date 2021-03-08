@@ -2,7 +2,7 @@
   <div class="add-account-container">
     Add account
     <pre>
-    {{ wallet }}
+    {{ account }}
     </pre>
     <StModal
       :visible="isAccountModalVisible"
@@ -11,6 +11,11 @@
       <template #header> Generate account </template>
       <template #body>
         You are about to generate a new account.
+        <StInput
+          v-model="accountName"
+          label="Accout name"
+          placeholder="Account name"
+        ></StInput>
       </template>
       <template #footer>
         <button @click="generateAccount">Start</button>
@@ -33,19 +38,26 @@ export default {
   },
   setup() {
     let isAccountModalVisible = ref(false)
-    const wallet = ref({})
+    const account = ref({})
 
+    const accountName = ref('')
     async function generateAccount() {
       isAccountModalVisible.value = false
       globalState.startGlobalLoading()
-      const {address, pk, sk} = CryptoService.getChildFromRoot(0,0,0)
-      wallet.value = {address}
-      console.log('address: ', address);
-      console.log('pk: ', pk);
-      console.log('sk: ', sk);
+      const { address } = CryptoService.getChildFromRoot(0, 0, 0)
+      account.value = {
+        address,
+        label: accountName.value,
+        balance: 0,
+        isArchived: false
+      }
+      const res = await CryptoService.storeAccountInDb(account.value)
+      console.log('iz baze brate', res);
+      // console.log('address: ', address)
+      // console.log('pk: ', pk)
+      // console.log('sk: ', sk)
       globalState.stopGlobalLoading()
     }
-
 
     // function getWalletFromDb() {
     //   CryptoService.getWalletFromDb().then((res) => {
@@ -53,10 +65,10 @@ export default {
     //   })
     // }
 
-
     return {
+      accountName,
       isAccountModalVisible,
-      wallet,
+      account,
       generateAccount
     }
   }
