@@ -21,7 +21,7 @@
             class="table__row"
             :class="{
               'table__row--is-cancelled':
-                item['status'] && item['status'] === 'cancelled',
+                item['status'] && item['status'] === 'cancelled'
             }"
           >
             <td
@@ -52,84 +52,70 @@ export default {
     identifier: {
       type: String,
       required: false,
-      default: '',
+      default: ''
     },
     columns: {
       type: Array,
-      required: true,
+      required: true
     },
     data: {
       type: Array,
-      required: true,
-    },
+      required: true
+    }
   },
   emits: ['sortChanged'],
   methods: {
     handleSort(col) {
       this.$emit('sortChanged', col)
-    },
-  },
+    }
+  }
 }
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .table {
   width: 100%;
   border-spacing: 0 12px;
-
-  td {
-    padding: 18px 24px;
-  }
-
-  thead {
-    border-bottom: 1px solid var(--grey100);
-    width: 100%;
-
-    th {
-      text-align: left;
-      color: var(--grey500);
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.23px;
-      line-height: 20px;
-      padding: 12px 24px;
-    }
-  }
-  tbody {
-    tr {
-    }
-  }
-
-  .table__row {
-    font-size: 14px;
-    color: var(--gray1000);
-    letter-spacing: 0.16px;
-    line-height: 20px;
-    .cell {
-      &:hover {
-      }
-    }
-  }
-
-  .table__row {
-    box-shadow: none;
-    border-left: 4px solid transparent;
-    transition: 0.22s;
-    &:hover {
-      background-color: var(--background50);
-      border-color: var(--marine500);
-    }
-    &:last-child {
-      border-bottom: 1px solid var(--grey100);
-    }
-  }
-
   /* custom classes for th and td cells */
-  .cell-center {
-    text-align: center !important;
-  }
-  .cell-right {
-    text-align: right !important;
-  }
+}
+.table td {
+  padding: 18px 24px;
+}
+.table thead {
+  border-bottom: 1px solid var(--grey100);
+  width: 100%;
+}
+.table thead th {
+  text-align: left;
+  color: var(--grey500);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.23px;
+  line-height: 20px;
+  padding: 12px 24px;
+}
+.table .table__row {
+  font-size: 14px;
+  color: var(--gray1000);
+  letter-spacing: 0.16px;
+  line-height: 20px;
+}
+.table .table__row {
+  box-shadow: none;
+  border-left: 4px solid transparent;
+  transition: 0.22s;
+}
+.table .table__row:hover {
+  background-color: var(--background50);
+  border-color: var(--marine500);
+}
+.table .table__row:last-child {
+  border-bottom: 1px solid var(--grey100);
+}
+.table .cell-center {
+  text-align: center !important;
+}
+.table .cell-right {
+  text-align: right !important;
 }
 </style>

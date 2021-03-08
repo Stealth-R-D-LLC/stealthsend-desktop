@@ -1,3 +1,11 @@
+:root {
+  --zApp: 1;
+  --zDropdown: 2;
+  --zModal: 3;
+  --zTooltip: 4;
+  --zGlobalLoading: 5;
+}
+
 #app {
   height: 100vh;
   position: relative;
@@ -6,36 +14,40 @@
 
 .default-layout {
   display: flex;
-  background-color: #fff;
   z-index: var(--zApp);
+  height: 100%;
 }
 
 .default-layout__header {
-  /* border: 3px dashed blue; */
   padding: 12px 0;
 }
 .default-layout__main {
-  /* border: 3px dashed green; */
+  /* background-color: #220365; */
   flex: 1;
   overflow: auto;
   padding: 0 12px;
+  position: relative;
+}
+
+.default-layout__main .triangle {
+  clip-path: polygon(0 0, 0% 100%, 100% 100%);
+  background-color: white;
+  width: 66vw;
+  height: 70vh;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  /* border-bottom: 460px solid white;
+  border-right: 800px solid transparent;
+  background-color: transparent; */
 }
 
 .default-layout__aside {
-  /* border: 3px dashed red; */
-  background-color: var(--grey100);
-  width: 200px;
+  background-color: var(--marine900);
+  width: 280px;
 }
 
-.container {
+/* .container {
   padding: 12px 0;
-  /* border: 3px dashed orange; */
-}
+} */
 
-/* z-indexes used */
-:root {
-  --zApp: 1;
-  --zDropdown: 2;
-  --zModal: 3;
-  --zTooltip: 4;
-}

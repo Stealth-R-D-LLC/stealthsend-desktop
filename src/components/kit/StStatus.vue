@@ -14,8 +14,8 @@ export default {
   props: {
     type: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   setup(props) {
     const customClass = computed(() => {
@@ -23,12 +23,12 @@ export default {
         'st-status__dot--red': props.type === 'red',
         'st-status__dot--green': props.type === 'green',
         'st-status__dot--orange': props.type === 'orange',
-        'st-status__dot--empty': props.type === 'empty',
+        'st-status__dot--empty': props.type === 'empty'
       }
     })
 
     return { customClass }
-  },
+  }
 }
 </script>
 
@@ -36,32 +36,30 @@ export default {
 .st-status {
   display: flex;
   align-items: center;
-
-  &__dot {
-    border-radius: 50%;
-    display: inline-block;
-    height: 10px;
-    width: 10px;
-
-    &--red {
-      background-color: var(--danger);
-    }
-    &--green {
-      background-color: var(--success);
-    }
-    &--orange {
-      background-color: var(--warning);
-    }
-    &--empty {
-      border: 1px solid var(--success);
-    }
-  }
-  &__label {
-    color: var(--grey1000);
-    font-size: 14px;
-    letter-spacing: 0.16px;
-    line-height: 20px;
-    margin-left: 8px;
-  }
+}
+.st-status__dot {
+  border-radius: 50%;
+  display: inline-block;
+  height: 10px;
+  width: 10px;
+}
+.st-status__dot--red {
+  background-color: var(--danger);
+}
+.st-status__dot--green {
+  background-color: var(--success);
+}
+.st-status__dot--orange {
+  background-color: var(--warning);
+}
+.st-status__dot--empty {
+  border: 1px solid var(--success);
+}
+.st-status__label {
+  color: var(--grey1000);
+  font-size: 14px;
+  letter-spacing: 0.16px;
+  line-height: 20px;
+  margin-left: 8px;
 }
 </style>
