@@ -89,7 +89,7 @@ export default {
         seed: bytes.toString('hex'),
         master: master
       }
-      CryptoService.storeWalletInDb(master, '1111111')
+      CryptoService.storeWalletInDb('1111111')
       setTimeout(() => {
         goToDashboard()
         globalState.stopGlobalLoading()
@@ -109,7 +109,7 @@ export default {
     async function createNewWallet() {
       globalState.startGlobalLoading()
       created.value = await CryptoService.generateMnemonicAndSeed()
-      await CryptoService.storeWalletInDb(created.value.master, password.value)
+      await CryptoService.storeWalletInDb(password.value)
       globalState.stopGlobalLoading()
     }
 
