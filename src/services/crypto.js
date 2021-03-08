@@ -1,9 +1,10 @@
-import * as bip32 from 'bip32';
-import * as bip39 from 'bip39';
-import * as bitcoin from 'bitcoinjs-lib';
-import { Buffer } from 'buffer';
-import cryptoJs from 'crypto-js';
-import db from '../db';
+import globalState from '@/store/global'
+import * as bip32 from 'bip32'
+import * as bip39 from 'bip39'
+import * as bitcoin from 'bitcoinjs-lib'
+import { Buffer } from 'buffer'
+import cryptoJs from 'crypto-js'
+import db from '../db'
 
 const CryptoService = {
   network: {
@@ -20,12 +21,13 @@ const CryptoService = {
   },
   master: null,
   seed: null,
+  wallet: null,
   async init() {
     // check if there's already a wallet stored in the db
     // if so, retrieve it and generate the master from the stored seed
-    let wallet = await db.find({ name: 'wallet' })
+    let wallet = await this.getWalletFromDb()
     if (wallet.length) {
-      console.log('wallet: ', wallet);
+      console.log('wallet: ', wallet)
       // seed is stored in a string format because it's the easies to store
       // when retrieving, we need to have the seed in buffer type so we can work with it
       // that's why we are converting the seed from string -> uint8array -> buffer
@@ -42,7 +44,9 @@ const CryptoService = {
   hexToArray(hexString) {
     // convert hex string to uint8array
     // helper for seed
-    return new Uint8Array(hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)))
+    return new Uint8Array(
+      hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16))
+    )
   },
   async generateMnemonicAndSeed() {
     // eslint-disable-next-line no-async-promise-executor
@@ -87,22 +91,19 @@ const CryptoService = {
     // private key: child1.privateKey
     return bitcoin.payments.p2pkh({ pubkey: child1.publicKey }).address
   },
-  getWalletFromDb() {
-    return new Promise((res, rej) => {
-      db.find({ name: 'wallet' } || {}, (err, docs) => {
-        if (err) rej(err)
-        res(docs)
-      })
-    })
+  async getWalletFromDb() {
+    let wallet = await db.find({ name: 'wallet' })
+    globalState.setWallet(wallet[0])
+    return wallet
   },
-  storeAccountInDb(account) {
-    return new Promise((resolve, reject) => {
-      db.update({ name: 'wallet' }, {$addToSet: {accounts: account}}, (err, docs) => {
-        if (err) reject(err)
-        resolve(docs)
-        console.log('account stored in db: ', account);
-      })
-    })
+  async storeAccountInDb(account) {
+    let acc = await db.update(
+      { name: 'wallet' },
+      { $addToSet: { accounts: account } }
+    )
+    console.log('account stored in db: ', acc)
+    this.getWalletFromDb()
+    return acc
   },
   storeWalletInDb(password) {
     return new Promise((resolve) => {

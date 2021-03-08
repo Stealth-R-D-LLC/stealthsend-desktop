@@ -3,12 +3,18 @@ import { reactive, readonly } from 'vue'
 
 const state = reactive({
   test: 123,
-  globalLoading: false
+  globalLoading: false,
+  wallet: null
 })
 
 const incrementTest = () => {
   state.test++
 }
+
+const setWallet = (payload) => {
+  console.log('--', payload);
+  state.wallet = payload
+} 
 
 const requestTest = () => {
   return new Promise((resolve, reject) => {
@@ -37,5 +43,6 @@ export default {
   incrementTest: incrementTest,
   requestTest: requestTest,
   startGlobalLoading: startGlobalLoading,
-  stopGlobalLoading: stopGlobalLoading
+  stopGlobalLoading: stopGlobalLoading,
+  setWallet: setWallet
 }

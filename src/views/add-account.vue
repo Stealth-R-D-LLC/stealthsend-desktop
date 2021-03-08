@@ -51,11 +51,7 @@ export default {
         balance: 0,
         isArchived: false
       }
-      const res = await CryptoService.storeAccountInDb(account.value)
-      console.log('iz baze brate', res);
-      // console.log('address: ', address)
-      // console.log('pk: ', pk)
-      // console.log('sk: ', sk)
+      CryptoService.storeAccountInDb(account.value)
       globalState.stopGlobalLoading()
     }
 

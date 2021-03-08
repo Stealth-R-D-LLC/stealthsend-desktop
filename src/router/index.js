@@ -15,7 +15,6 @@ const routes = [
     // redirect: 'dashboard',
     pathMatch: 'full',
     beforeEnter: (to, from, next) => {
-      console.log('aaa');
       db.find({ name: 'wallet' }).then(docs => {
         console.log('docs', docs)
         if (!docs || docs.length === 0) {
