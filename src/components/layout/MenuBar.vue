@@ -177,7 +177,7 @@
           </router-link>
         </li>
         <li>
-          <router-link tag="a" class="item" to="/settings">
+          <router-link tag="a" class="item" to="/account/archived">
             <svg
               width="22"
               height="22"

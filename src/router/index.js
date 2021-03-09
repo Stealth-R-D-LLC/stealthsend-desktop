@@ -1,4 +1,5 @@
 import AddAccount from '@/views/account/add.vue'
+import ArchivedAccounts from '@/views/account/archived.vue'
 import AccountDetails from '@/views/account/details.vue'
 import Dashboard from '@/views/dashboard.vue'
 import Settings from '@/views/settings.vue'
@@ -63,6 +64,11 @@ const routes = [
     path: '/account/details',
     name: 'AccountDetails',
     component: AccountDetails
+  },
+  {
+    path: '/account/archived',
+    name: 'ArchivedAccounts',
+    component: ArchivedAccounts
   },
   {
     path: '/welcome',
