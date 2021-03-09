@@ -1,5 +1,5 @@
 <template>
-  <div class="st-card">
+  <div class="st-card" @click="handleClick(account)">
     <a href="" class="archive" @click.prevent="archive(account)"></a>
     <div class="st-card__row">
       <span class="item title">{{ account.label }}</span>
@@ -14,6 +14,7 @@
 
 <script>
 import { computed } from 'vue'
+const XST_USD = 2.5 // hardcoded obviously
 export default {
   name: 'StCard',
   props: {
@@ -22,16 +23,20 @@ export default {
       required: true
     }
   },
-  emits: ['archived'],
+  emits: ['archived', 'click'],
   setup(props, context) {
     const amountInFiat = computed(() => {
-      return props.account.balance * 2.5
+      return props.account.balance * XST_USD
     })
+
+    const handleClick = (account) => {
+      context.emit('click', account)
+    }
 
     const archive = (account) => {
       context.emit('archived', account)
     }
-    return { amountInFiat, archive }
+    return { amountInFiat, archive, handleClick }
   }
 }
 </script>

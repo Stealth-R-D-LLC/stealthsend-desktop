@@ -5,7 +5,8 @@ const state = reactive({
   test: 123,
   globalLoading: false,
   wallet: null,
-  accounts: []
+  accounts: [],
+  accountDetails: null
 })
 
 const incrementTest = () => {
@@ -20,6 +21,10 @@ const setAccounts = (payload) => {
 }
 const appendAccount = (payload) => {
   state.accounts.push(payload)
+}
+
+const SET_ACCOUNT_DETAILS = (payload) => {
+  state.accountDetails = payload
 }
 
 const requestTest = () => {
@@ -52,5 +57,6 @@ export default {
   stopGlobalLoading: stopGlobalLoading,
   setAccounts: setAccounts,
   appendAccount: appendAccount,
-  setWallet: setWallet
+  setWallet: setWallet,
+  setAccountDetails: SET_ACCOUNT_DETAILS,
 }

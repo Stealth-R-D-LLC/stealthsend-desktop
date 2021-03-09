@@ -148,7 +148,7 @@
           </router-link>
         </li>
         <li>
-          <router-link tag="a" class="item" to="/add-account">
+          <router-link tag="a" class="item" to="/account/add">
             <svg
               width="22"
               height="23"
