@@ -27,6 +27,7 @@
   overflow: auto;
   padding: 0 12px;
   position: relative;
+  margin-left: 280px; /* for fixed sidebar */
 }
 
 .default-layout__main .triangle {
@@ -45,9 +46,11 @@
 .default-layout__aside {
   background-color: var(--marine900);
   width: 280px;
+  /* fixed and no scrolling  */
+  position: fixed;
+  height: 100%;
 }
 
 /* .container {
   padding: 12px 0;
 } */
-
