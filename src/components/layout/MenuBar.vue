@@ -87,7 +87,7 @@
           </router-link>
         </li>
         <li>
-          <router-link tag="a" class="item" to="/settings">
+          <router-link tag="a" class="item" to="/send">
             <svg
               width="27"
               height="20"
@@ -115,7 +115,7 @@
           </router-link>
         </li>
         <li>
-          <router-link tag="a" class="item" to="/settings">
+          <router-link tag="a" class="item" to="/receive">
             <svg
               width="20"
               height="22"
@@ -198,7 +198,7 @@
           </router-link>
         </li>
         <li>
-          <router-link tag="a" class="item" to="/settings">
+          <router-link tag="a" class="item" to="/address-book">
             <svg
               width="24"
               height="24"

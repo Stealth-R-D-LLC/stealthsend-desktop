@@ -1,7 +1,10 @@
 import AddAccount from '@/views/account/add.vue'
 import ArchivedAccounts from '@/views/account/archived.vue'
 import AccountDetails from '@/views/account/details.vue'
+import AddressBook from '@/views/address-book.vue'
 import Dashboard from '@/views/dashboard.vue'
+import Receive from '@/views/receive.vue'
+import Send from '@/views/send.vue'
 import Settings from '@/views/settings.vue'
 import UIKit from '@/views/uikit.vue'
 import Welcome from '@/views/welcome.vue'
@@ -49,6 +52,21 @@ const routes = [
     path: '/uikit',
     name: 'UIKit',
     component: UIKit
+  },
+  {
+    path: '/receive',
+    name: 'Receive',
+    component: Receive
+  },
+  {
+    path: '/send',
+    name: 'Send',
+    component: Send
+  },
+  {
+    path: '/address-book',
+    name: 'AddressBook',
+    component: AddressBook
   },
   {
     path: '/settings',
