@@ -1,7 +1,7 @@
 <template>
   <div class="dashbaord-container">
     <transition-group v-if="accounts.length !== 0" name="list" tag="div">
-      <card v-for="account in accounts" :key="account" class="list-item" :account="account" @archived="archiveAccount">
+      <card v-for="account in accounts" :key="account" class="list-item" :account="account" @click="openAccountDetails" @archived="archiveAccount">
         <!-- <template #title>{{ account.label }}</template> -->
         <!-- <template #type>{{ !account.isArchived ? 'Active' : 'Archived' }}</template> -->
         <!-- <template #amount-crypto>{{ account.balance }}</template> -->
@@ -18,18 +18,22 @@ import globalState from '@/store/global'
 import Card from '../components/elements/Card'
 import { computed } from 'vue'
 import CryptoService from '../services/crypto'
-
+import router from '../router'
 export default {
   name: 'StDahboard',
   components: {
     Card
   },
   setup() {
-    console.log('global state', globalState.state);
     const accounts = computed(() => {
       return globalState.state.accounts.filter(el => !el.isArchived)
     })
     
+    const openAccountDetails = (account) => {
+      globalState.setAccountDetails(account)
+      router.push('/account/details')
+    }
+
     const archiveAccount = (account) => {
       // account.isArchived = true;
       console.log('archive!', account);
@@ -37,6 +41,7 @@ export default {
 
     }
     return {
+      openAccountDetails,
       accounts,
       archiveAccount
     }

@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import CryptoService from '../services/crypto'
+import CryptoService from '@/services/crypto'
 import StModal from '@/components/kit/StModal.vue'
 import globalState from '@/store/global'
 
