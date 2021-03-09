@@ -79,7 +79,8 @@ const CryptoService = {
     return {
       address: bitcoin.payments.p2pkh({ pubkey: child.publicKey }).address,
       pk: child.publicKey,
-      sk: child.privateKey
+      sk: child.privateKey,
+      path: `${account}'/${change}/${address}`
     }
   },
   isMnemonicValid(mnemonic) {
@@ -110,7 +111,9 @@ const CryptoService = {
       address: account.address,
       label: account.label,
       isArchived: account.isArchived,
-      balance: account.balance
+      balance: account.balance,
+      path: account.path,
+      asset: account.asset
     })
     console.log('account stored in db: ', acc)
     this.getAccounts()
@@ -123,7 +126,8 @@ const CryptoService = {
       address: account.address,
       label: account.label,
       isArchived: true,
-      balance: account.balance
+      balance: account.balance,
+      path: account.path
     })
     await this.getAccounts()
   },

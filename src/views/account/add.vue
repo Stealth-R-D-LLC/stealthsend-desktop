@@ -44,12 +44,14 @@ export default {
     async function generateAccount() {
       isAccountModalVisible.value = false
       globalState.startGlobalLoading()
-      const { address } = CryptoService.getChildFromRoot(0, 0, 2)
+      const { address, path } = CryptoService.getChildFromRoot(0, 0, 2)
       account.value = {
         address,
         label: accountName.value,
         balance: 0,
-        isArchived: false
+        isArchived: false,
+        asset: 'XST',
+        path: path
       }
       CryptoService.storeAccountInDb(account.value)
       globalState.stopGlobalLoading()
