@@ -1,5 +1,5 @@
 <template>
-  <div class="st-card" @click="handleClick(account)">
+  <div class="st-card" :class="{'st-card--is-archived': account.isArchived}" @click="handleClick(account)">
     <a href="" class="archive" @click.prevent="archive(account)"></a>
     <div class="st-card__row">
       <span class="item title">{{ account.label }}</span>
@@ -100,7 +100,7 @@ export default {
   display: none;
 }
 
-.st-card:hover .archive {
+.st-card:not(.st-card--is-archived):hover .archive {
   display: block;
 }
 </style>
