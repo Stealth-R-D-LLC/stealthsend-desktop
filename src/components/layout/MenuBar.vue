@@ -4,37 +4,15 @@
       <ul>
         <li @click.prevent="isCollapsed = !isCollapsed">
           <a href="" class="item">
-            <svg
-              width="21"
-              height="16"
-              viewBox="0 0 21 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M0 15H21"
-                stroke="#FCFAFF"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M0 1H21"
-                stroke="#FCFAFF"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-            </svg>
-            <span>
-              Collapse
-            </span>
+            <StHamburger :open="!isCollapsed"></StHamburger>
           </a>
         </li>
         <li>
           <router-link tag="a" class="item" to="/dashboard">
             <svg
-              width="22"
-              height="22"
-              viewBox="0 0 22 22"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
@@ -60,9 +38,9 @@
         <li>
           <router-link tag="a" class="item" to="/uikit">
             <svg
-              width="22"
-              height="23"
-              viewBox="0 0 22 23"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
@@ -89,9 +67,9 @@
         <li>
           <router-link tag="a" class="item" to="/send">
             <svg
-              width="27"
-              height="20"
-              viewBox="0 0 27 20"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
@@ -117,9 +95,9 @@
         <li>
           <router-link tag="a" class="item" to="/receive">
             <svg
-              width="20"
-              height="22"
-              viewBox="0 0 20 22"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
@@ -150,9 +128,9 @@
         <li>
           <router-link tag="a" class="item" to="/account/add">
             <svg
-              width="22"
-              height="23"
-              viewBox="0 0 22 23"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
@@ -179,9 +157,9 @@
         <li>
           <router-link tag="a" class="item" to="/account/archived">
             <svg
-              width="22"
-              height="22"
-              viewBox="0 0 22 22"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
@@ -238,9 +216,9 @@
         <li>
           <router-link tag="a" class="item" to="/settings">
             <svg
-              width="22"
-              height="22"
-              viewBox="0 0 22 22"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
@@ -270,10 +248,14 @@
 
 <script>
 import { ref } from 'vue'
+import StHamburger from '@/components/elements/StHamburger'
 export default {
   name: 'StMenuBar',
+  components: {
+    StHamburger
+  },
   setup() {
-    const isCollapsed = ref(false)
+    const isCollapsed = ref(true)
 
     return {
       isCollapsed
@@ -288,26 +270,23 @@ export default {
   animation: animate-width 1.2s 1 ease-in-out;
 }
 .default-layout__aside.width {
-  width: 72px;
+  width: 75px;
 }
 
 .default-layout__aside.width .item span {
   opacity: 0;
-  right: 0;
-  /* overflow: hidden; */
-  transition: opacity 0.5;
 }
 .default-layout__aside nav {
-  margin-top: 136px;
+  margin-top: 30px;
 }
 .default-layout__aside li {
   display: block;
-  /* align-items: center;
-  justify-content: center; */
   cursor: pointer;
-  height: 26px;
-  padding: 14px 0;
   position: relative;
+}
+
+.default-layout__aside li:first-child {
+  margin-bottom: 120px;
 }
 
 .default-layout__aside .item {
@@ -315,15 +294,14 @@ export default {
   /* position: relative; */
 }
 
-.default-layout__aside li:hover,
-.default-layout__aside li a *:hover,
-.default-layout__aside li a svg*:hover {
-  color: var(--success);
-  transition: color 0.2s;
+.default-layout__aside li svg path,
+.default-layout__aside li span {
+  transition: all 0.2s;
 }
-.default-layout__aside li svg path:hover {
-  stroke: var(--success) !important;
-  transition: stroke 0.2s !important;
+.default-layout__aside li:hover svg path,
+.default-layout__aside li:hover span {
+  stroke: var(--success);
+  color: var(--success);
 }
 .default-layout__aside .item {
   padding: 12px 0;
@@ -333,11 +311,8 @@ export default {
   position: relative;
 }
 
-/* .default-layout__aside .item p {} */
 .default-layout__aside .item span {
   position: absolute;
-  /* display: inline-block; */
-  /* right: 0; */
   overflow: hidden;
   font-size: 18px;
   line-height: 24px;
@@ -346,10 +321,13 @@ export default {
   margin-left: 42px;
   opacity: 1;
   transition: opacity 0.5;
+  white-space: nowrap;
 }
 
-.default-layout__aside .router-link-exact-active span{
+.default-layout__aside .router-link-exact-active span,
+.default-layout__aside .router-link-exact-active svg path {
   color: var(--success);
+  stroke: var(--success);
 }
 
 @keyframes animate-width {
