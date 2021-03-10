@@ -47,10 +47,11 @@ const rpc = (method, payload) => {
     })
       .then((res) => {
         console.log(`RPC response (${method}): `, res.data.result);
-        resolve(res.data)
+        resolve(res.data.result)
       })
       .catch((err) => {
-        reject(err)
+        console.warn('RPC error: ', err);
+        reject(err.response.data.error.message)
       })
   })
 }

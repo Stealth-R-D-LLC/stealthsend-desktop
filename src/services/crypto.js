@@ -39,7 +39,7 @@ const CryptoService = {
   },
   WIFtoPK(wif) {
     const keyPair = bitcoin.ECPair.fromWIF(wif)
-    const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey })
+    const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: this.network })
     console.log('address retrieved from pk: ', address)
     return keyPair
   },
@@ -77,7 +77,7 @@ const CryptoService = {
     )
     this.WIFtoPK(child.toWIF()) // decrypt
     return {
-      address: bitcoin.payments.p2pkh({ pubkey: child.publicKey }).address,
+      address: bitcoin.payments.p2pkh({ pubkey: child.publicKey, network: this.network }).address,
       pk: child.publicKey,
       sk: child.privateKey,
       path: `${account}'/${change}/${address}`
@@ -92,7 +92,7 @@ const CryptoService = {
     const path = `m/44'/125'/0'/0/${i}`
     const child1 = this.master.derivePath(path)
     // private key: child1.privateKey
-    return bitcoin.payments.p2pkh({ pubkey: child1.publicKey }).address
+    return bitcoin.payments.p2pkh({ pubkey: child1.publicKey, network: this.network }).address
   },
   async getWalletFromDb() {
     let wallet = await db.find({ name: 'wallet' })
