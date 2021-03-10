@@ -10,9 +10,10 @@ module.exports = {
     'prettier/vue',
   ],
   parserOptions: {
-    ecmaVersion: 8,
+    ecmaVersion: 2018,
     sourceType: 'module',
-    allowImportExportEverywhere: true
+    allowImportExportEverywhere: true,
+    experimentalObjectRestSpread: true
   },
   plugins: ['prettier', 'vue'],
   // add your custom rules here

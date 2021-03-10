@@ -15,6 +15,7 @@ import { computed } from 'vue'
 export default {
   name: 'StAccountDetails',
   setup() {
+    globalState.rpc('getaddressinfo', ['mtZNzEATaAyQinTEGu3Ye7EAM5fk75R4b7'])
     const account = computed(() => {
       return globalState.state.accountDetails
     })
