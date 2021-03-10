@@ -15,12 +15,10 @@ import db from '../db'
 // dump whole db
 // db.remove({}, { multi: true })
 
-async function bla() {
+(async function bla() {
   let a = await db.find({}, { multi: true })
-  console.log("cijela baza", a)
-} 
-
-bla()
+  console.log("cijela baza: ", a)
+})()
 
 const routes = [
   {
@@ -29,13 +27,10 @@ const routes = [
     pathMatch: 'full',
     beforeEnter: (to, from, next) => {
       db.find({ name: 'wallet' }).then(docs => {
-        console.log('docs', docs)
         if (!docs || docs.length === 0) {
-          console.log('aj na welcome')
           next('/welcome')
         } else {
-          console.log('aj na dash');
-          next('/dashboard')
+          next('/lock')
         }
 
       })
