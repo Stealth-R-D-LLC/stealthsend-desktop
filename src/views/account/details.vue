@@ -3,6 +3,7 @@
       <h1>Account details</h1>
     <pre>
           {{ account }}
+          {{addressInfo}}
       </pre
     >
   </div>
@@ -10,17 +11,24 @@
 
 <script>
 import globalState from '@/store/global'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 export default {
   name: 'StAccountDetails',
   setup() {
-    globalState.rpc('getaddressinfo', ['mtZNzEATaAyQinTEGu3Ye7EAM5fk75R4b7'])
     const account = computed(() => {
       return globalState.state.accountDetails
     })
+
+    const addressInfo = ref({})
+    globalState.rpc('getaddressinfo', ['mtZNzEATaAyQinTEGu3Ye7EAM5fk75R4b7']).then(res => {
+      addressInfo.value = res
+    }).catch(err => {
+      return err
+    })
     return {
-      account
+      account,
+      addressInfo
     }
   }
 }
