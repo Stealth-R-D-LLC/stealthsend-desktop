@@ -1,20 +1,25 @@
-import axios from 'axios'
+import axios from 'axios';
 
 const API_CONFIG = {
-    baseURL: 'https://jsonplaceholder.typicode.com/',
-//   withCredentials: true,
-//   xsrfCookieName: 'XCSRF-TOKEN',
-//   xsrfHeaderName: 'x-csrf-token',
-//   headers: {
-//     common: {
-//       Accept: 'application/json',
-//       'Content-Type': 'application/json',
-//     },
-//   },
+  baseURL: process.env.VUE_APP_API_URL,
+  headers: {
+    common: {
+      'Content-Type': 'application/json',
+    },
+  },
+  transformRequest: [
+    (data) => {
+      data = { 
+        ...data,
+        jsonrpc: "2.0",
+        id: 1,
+      }
+      return JSON.stringify(data)
+    }
+  ]
 }
 
 export const API = axios.create(API_CONFIG)
-
 API.interceptors.request.use(
   (API_CONFIG) => {
     return API_CONFIG

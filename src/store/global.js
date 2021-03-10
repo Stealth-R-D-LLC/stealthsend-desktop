@@ -39,6 +39,22 @@ const requestTest = () => {
   })
 }
 
+const rpc = (method, payload) => {
+  return new Promise((resolve, reject) => {
+    API.post('', {
+      method: method,
+      params: payload
+    })
+      .then((res) => {
+        console.log(`RPC response (${method}): `, res.data.result);
+        resolve(res.data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+}
+
 const startGlobalLoading = () => {
   state.globalLoading = true
 }
@@ -58,5 +74,6 @@ export default {
   setAccounts: setAccounts,
   appendAccount: appendAccount,
   setWallet: setWallet,
+  rpc: rpc,
   setAccountDetails: SET_ACCOUNT_DETAILS,
 }

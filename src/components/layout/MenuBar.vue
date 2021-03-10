@@ -255,7 +255,7 @@ export default {
     StHamburger
   },
   setup() {
-    const isCollapsed = ref(true)
+    const isCollapsed = ref(false)
 
     return {
       isCollapsed
