@@ -13,10 +13,8 @@
 </template>
 
 <script>
-import globalState from '@/store/global'
 import MenuBar from '@/components/layout/MenuBar.vue'
 import TopBar from '@/components/layout/TopBar.vue'
-import { computed } from 'vue'
 import CryptoService from '../../services/crypto'
 
 export default {
@@ -27,10 +25,6 @@ export default {
   },
   setup() {
     CryptoService.init()
-
-    const isLoading = computed(() => {
-      return globalState.state.globalLoading
-    })
     // if there's nothing in the db, show welcome screen
     // welcome screen will have recover option, create new wallet option and import option
     // recover option will recover the whole wallet via seed
@@ -39,7 +33,6 @@ export default {
 
     // if there is an account/wallet in the db, ask for password (lock screen page), render dashboard
     return {
-      isLoading
     }
   }
 }
