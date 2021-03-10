@@ -26,8 +26,7 @@ const CryptoService = {
     // check if there's already a wallet stored in the db
     // if so, retrieve it and generate the master from the stored seed
     let wallet = await this.getWalletFromDb()
-    let acc = await this.getAccounts()
-    console.log('accounts all', acc);
+    await this.getAccounts()
     if (wallet.length) {
       console.log('wallet: ', wallet)
       // seed is stored in a string format because it's the easies to store
@@ -39,8 +38,7 @@ const CryptoService = {
   },
   WIFtoPK(wif) {
     const keyPair = bitcoin.ECPair.fromWIF(wif)
-    const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: this.network })
-    console.log('address retrieved from pk: ', address)
+    // const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: this.network })
     return keyPair
   },
   hexToArray(hexString) {
@@ -120,7 +118,6 @@ const CryptoService = {
     return acc
   },
   async archiveAccount(account) {
-    console.log('acc', account)
     await db.update({ name: 'account', address: account.address }, {
       name: 'account',
       address: account.address,
@@ -160,7 +157,8 @@ const CryptoService = {
         seed: this.seed.toString('hex'), // nicest way to store seed is in hex string format
         password: hash.toString(),
         balance: 0, // will be calculated after "scanning" for accounts; sum of all accounts
-        accounts: [] // will be populated after "scanning"
+        accounts: [], // will be populated after "scanning",
+        salt: salt
       }
 
       db.insert(wallet, () => {

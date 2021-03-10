@@ -35,10 +35,7 @@ export default {
     }
 
     const archiveAccount = (account) => {
-      // account.isArchived = true;
-      console.log('archive!', account);
       CryptoService.archiveAccount(account)
-
     }
     return {
       openAccountDetails,
