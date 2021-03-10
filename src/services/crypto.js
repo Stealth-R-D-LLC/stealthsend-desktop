@@ -151,9 +151,9 @@ const CryptoService = {
       // encryptedPassword.toString()
 
       // ask user for password, rehash it, decrypt the private key
-      // let decrypted = cryptoJs.AES.decrypt(encryptedPK, hash, { iv: iv })
+      // let decrypted = cryptoJs.AES.decrypt(encryptedPK, hash)
       // decrypted = decrypted.toString(cryptoJs.enc.Utf8)
-      // console.log('decrypted: ', decrypted);
+      // console.log('decrypted pass: ', decrypted);
       const wallet = {
         name: 'wallet',
         archived: false,

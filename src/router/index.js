@@ -3,6 +3,7 @@ import ArchivedAccounts from '@/views/account/archived.vue'
 import AccountDetails from '@/views/account/details.vue'
 import AddressBook from '@/views/address-book.vue'
 import Dashboard from '@/views/dashboard.vue'
+import Lock from '@/views/lock.vue'
 import Receive from '@/views/receive.vue'
 import Send from '@/views/send.vue'
 import Settings from '@/views/settings.vue'
@@ -38,6 +39,14 @@ const routes = [
         }
 
       })
+    }
+  },
+  {
+    path: '/lock',
+    name: 'Lock',
+    component: Lock,
+    meta: {
+      layout: 'lock'
     }
   },
   {

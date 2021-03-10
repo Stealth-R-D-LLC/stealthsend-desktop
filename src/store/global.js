@@ -2,16 +2,11 @@ import { API } from '@/api/axios'
 import { reactive, readonly } from 'vue'
 
 const state = reactive({
-  test: 123,
   globalLoading: false,
   wallet: null,
   accounts: [],
   accountDetails: null
 })
-
-const incrementTest = () => {
-  state.test++
-}
 
 const setWallet = (payload) => {
   state.wallet = payload
@@ -25,18 +20,6 @@ const appendAccount = (payload) => {
 
 const SET_ACCOUNT_DETAILS = (payload) => {
   state.accountDetails = payload
-}
-
-const requestTest = () => {
-  return new Promise((resolve, reject) => {
-    API.get('todos/1')
-      .then((res) => {
-        resolve(res.data)
-      })
-      .catch((err) => {
-        reject(err)
-      })
-  })
 }
 
 const rpc = (method, payload) => {
@@ -68,8 +51,6 @@ const stopGlobalLoading = () => {
 // readonly ensures that globalState.state.test++ is not possible
 export default {
   state: readonly(state),
-  incrementTest: incrementTest,
-  requestTest: requestTest,
   startGlobalLoading: startGlobalLoading,
   stopGlobalLoading: stopGlobalLoading,
   setAccounts: setAccounts,

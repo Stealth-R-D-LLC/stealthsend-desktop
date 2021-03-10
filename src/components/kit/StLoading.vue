@@ -1,5 +1,5 @@
 <template>
-  <div v-show="visibility" class="loading-page">
+  <div v-show="visibility" class="loading-page" :class="{'opaque': opaque, 'transparent': !opaque}">
     <img src="../../../static/xstloader.gif" alt="Test gif" />
   </div>
 </template>
@@ -14,6 +14,11 @@ export default {
       required: false,
       default: false,
     },
+    opaque: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
   },
   setup(props) {
     watch(() => {
@@ -34,10 +39,16 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(255, 255, 255, 0.8);
   text-align: center;
   font-size: 30px;
   overflow: hidden;
   z-index: 10;
+}
+
+.transparent {
+  background: rgba(255, 255, 255, 0.8)
+}
+.opaque {
+  background: rgba(255, 255, 255, 1)
 }
 </style>
