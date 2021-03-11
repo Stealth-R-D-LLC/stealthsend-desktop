@@ -95,16 +95,16 @@ const CryptoService = {
     const isValid = bip39.validateMnemonic(mnemonic)
     return isValid
   },
-  generateChildAddress(i) {
-    // https://github.com/satoshilabs/slips/blob/master/slip-0044.md
-    const path = `m/44'/125'/0'/0/${i}`
-    const child1 = this.master.derivePath(path)
-    // private key: child1.privateKey
-    return bitcoin.payments.p2pkh({
-      pubkey: child1.publicKey,
-      network: this.network
-    }).address
-  },
+  // generateChildAddress(i) {
+  //   // https://github.com/satoshilabs/slips/blob/master/slip-0044.md
+  //   const path = `m/44'/125'/0'/0/${i}`
+  //   const child1 = this.master.derivePath(path)
+  //   // private key: child1.privateKey
+  //   return bitcoin.payments.p2pkh({
+  //     pubkey: child1.publicKey,
+  //     network: this.network
+  //   }).address
+  // },
   async getWalletFromDb() {
     let wallet = await db.find({ name: 'wallet' })
     console.log('voljet', wallet);
