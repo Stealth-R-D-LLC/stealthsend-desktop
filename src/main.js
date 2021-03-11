@@ -6,6 +6,7 @@ import directives from "./directives/";
 import './index.css';
 import router from './router';
 
+
 const app = createApp(App)
 
 // global components

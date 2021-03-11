@@ -1,6 +1,5 @@
 <template>
   <div class="add-account-container">
-    {{ hasZeroBalance }}
     <p>
       You can create unlimited number of accounts; they are all derived from the
       same Recovery Phrase.
