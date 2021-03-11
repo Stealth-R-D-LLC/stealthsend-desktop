@@ -32,9 +32,8 @@ export default {
     Card
   },
   setup() {
-    console.log('Init crypto service!')
-
-    CryptoService.init()
+    // console.log('Init crypto service!')
+    // CryptoService.init()
 
     const accounts = computed(() => {
       return globalState.state.accounts.filter((el) => !el.isArchived)

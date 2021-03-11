@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { watch } from 'vue'
+// import { watchEffect } from 'vue'
 export default {
   name: 'StLoader',
   props: {
@@ -21,10 +21,10 @@ export default {
     }
   },
   setup(props) {
-    watch(() => {
-      // when global loading is active, it shouldn't be possible to scroll
+    // watchEffect(props.visibility, () => {
+    //   // when global loading is active, it shouldn't be possible to scroll
+    // })
       document.body.classList.toggle('noscroll', props.visibility)
-    })
   },
 }
 </script>

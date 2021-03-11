@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { onMounted, watch, ref, computed } from 'vue'
+import { onMounted, watchEffect, ref, computed } from 'vue'
 export default {
   name: 'StPagination',
   props: {
@@ -78,7 +78,7 @@ export default {
         : Math.floor(l / s) + 1
     })
 
-    watch(props.pageSize, (pageSize) => {
+    watchEffect(props.pageSize, (pageSize) => {
       sizeChange(pageSize)
     })
 

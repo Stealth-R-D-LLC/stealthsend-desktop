@@ -1,27 +1,40 @@
 <template>
   <div class="add-account-container">
-    Add account
-    <pre>
-    {{ account }}
-    </pre>
+    {{ hasZeroBalance }}
+    <p>
+      You can create unlimited number of accounts; they are all derived from the
+      same Recovery Phrase.
+    </p>
+    <p>
+      Your previously created Recovery Phrase protects all of your accounts.
+    </p>
+    <StButton @click="isAccountModalVisible = true"
+      >Generate new account</StButton
+    >
     <StModal
       :visible="isAccountModalVisible"
       @close="isAccountModalVisible = false"
     >
       <template #header> Generate account </template>
       <template #body>
-        You are about to generate a new account.
-        <StInput
-          v-model="accountName"
-          label="Accout name"
-          placeholder="Account name"
-        ></StInput>
+        <template v-if="hasZeroBalance">
+          You can only have one account with a zero balance. Please add XST to
+          your existing account prior to opening a new one.
+        </template>
+        <template v-else>
+          <StInput
+            v-model="accountName"
+            label="Accout name"
+            placeholder="Account name"
+          ></StInput>
+        </template>
       </template>
       <template #footer>
-        <button @click="generateAccount">Start</button>
+        <StButton v-if="!hasZeroBalance" @click="generateAccount"
+          >Generate</StButton
+        >
       </template>
     </StModal>
-    <button @click="isAccountModalVisible = true">Generate new account</button>
   </div>
 </template>
 
@@ -29,6 +42,7 @@
 import CryptoService from '@/services/crypto'
 import StModal from '@/components/kit/StModal.vue'
 import globalState from '@/store/global'
+import { computed } from 'vue'
 
 import { ref } from 'vue'
 export default {
@@ -37,15 +51,19 @@ export default {
     StModal
   },
   setup() {
+    const hasZeroBalance = computed(() => {
+      return globalState.state.accounts.some((el) => el.balance === 0)
+    })
+
     let isAccountModalVisible = ref(false)
-    const account = ref({})
+    let account = {}
 
     const accountName = ref('')
     async function generateAccount() {
       isAccountModalVisible.value = false
       globalState.startGlobalLoading()
       const { address, path } = CryptoService.getChildFromRoot(0, 0, 2)
-      account.value = {
+      account = {
         address,
         label: accountName.value,
         balance: 0,
@@ -53,21 +71,15 @@ export default {
         asset: 'XST',
         path: path
       }
-      CryptoService.storeAccountInDb(account.value)
+      CryptoService.storeAccountInDb(account)
       globalState.stopGlobalLoading()
     }
-
-    // function getWalletFromDb() {
-    //   CryptoService.getWalletFromDb().then((res) => {
-    //     console.log('db: ', res)
-    //   })
-    // }
 
     return {
       accountName,
       isAccountModalVisible,
-      account,
-      generateAccount
+      generateAccount,
+      hasZeroBalance
     }
   }
 }
