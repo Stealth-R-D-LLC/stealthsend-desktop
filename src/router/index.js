@@ -13,7 +13,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import db from '../db'
 
 // dump whole db
-// db.remove({}, { multi: true })
+// db.remove({}, { multi: true });
 
 (async function bla() {
   let a = await db.find({}, { multi: true })
@@ -30,7 +30,7 @@ const routes = [
         if (!docs || docs.length === 0) {
           next('/welcome')
         } else {
-          next('/lock')
+          next('/dashboard')
         }
 
       })

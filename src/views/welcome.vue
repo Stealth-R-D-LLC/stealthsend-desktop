@@ -89,7 +89,8 @@ export default {
         seed: bytes.toString('hex'),
         master: master
       }
-      CryptoService.storeWalletInDb('1111111')
+
+      CryptoService.storeWalletInDb(password.value)
       setTimeout(() => {
         goToDashboard()
         globalState.stopGlobalLoading()

@@ -27,13 +27,20 @@ const CryptoService = {
     // if so, retrieve it and generate the master from the stored seed
     let wallet = await this.getWalletFromDb()
     await this.getAccounts()
-    if (wallet.length) {
-      console.log('wallet: ', wallet)
+    console.log('wallet: ', wallet)
+    if (wallet.length > 0) {
       // seed is stored in a string format because it's the easies to store
       // when retrieving, we need to have the seed in buffer type so we can work with it
       // that's why we are converting the seed from string -> uint8array -> buffer
-      this.seed = this.hexToArray(wallet[0].seed)
-      this.master = await bip32.fromSeed(Buffer.from(this.seed))
+      let { hashHex } = await this.hashPassword('123123')
+      console.log('seed u init kriptirani: ', wallet[0].seed);
+      console.log('seed pokusaj dec: ', cryptoJs.AES.decrypt(wallet[0].seed, hashHex));
+      // console.log('seed pokusaj uint16arr: ', cryptoJs.enc.Hex.parse(wallet[0].seed.ciphertext.toString(cryptoJs.enc.Hex)));
+      // this.seed = this.hexToArray(
+      //   cryptoJs.AES.decrypt(wallet[0].seed, hashHex).toString(cryptoJs.enc.Hex)
+      // )
+      // TODO: tu nesto ne valja. provjeriti jel se dobro dekriptira seed
+      this.master = await bip32.fromSeed(Buffer.from(cryptoJs.AES.decrypt(wallet[0].seed, hashHex).words))
     }
   },
   WIFtoPK(wif) {
@@ -75,7 +82,10 @@ const CryptoService = {
     )
     this.WIFtoPK(child.toWIF()) // decrypt
     return {
-      address: bitcoin.payments.p2pkh({ pubkey: child.publicKey, network: this.network }).address,
+      address: bitcoin.payments.p2pkh({
+        pubkey: child.publicKey,
+        network: this.network
+      }).address,
       pk: child.publicKey,
       sk: child.privateKey,
       path: `${account}'/${change}/${address}`
@@ -90,10 +100,14 @@ const CryptoService = {
     const path = `m/44'/125'/0'/0/${i}`
     const child1 = this.master.derivePath(path)
     // private key: child1.privateKey
-    return bitcoin.payments.p2pkh({ pubkey: child1.publicKey, network: this.network }).address
+    return bitcoin.payments.p2pkh({
+      pubkey: child1.publicKey,
+      network: this.network
+    }).address
   },
   async getWalletFromDb() {
     let wallet = await db.find({ name: 'wallet' })
+    console.log('voljet', wallet);
     globalState.setWallet(wallet[0])
     return wallet
   },
@@ -118,44 +132,78 @@ const CryptoService = {
     return acc
   },
   async archiveAccount(account) {
-    await db.update({ name: 'account', address: account.address }, {
-      name: 'account',
-      address: account.address,
-      label: account.label,
-      isArchived: true,
-      balance: account.balance,
-      path: account.path
-    })
+    await db.update(
+      { name: 'account', address: account.address },
+      {
+        name: 'account',
+        address: account.address,
+        label: account.label,
+        isArchived: true,
+        balance: account.balance,
+        path: account.path
+      }
+    )
     await this.getAccounts()
+  },
+  async hashPassword(password) {
+    let wallet = await this.getWalletFromDb()
+
+    const salt = wallet[0].salt
+    const hash = cryptoJs.PBKDF2(password, salt, {
+      keySize: 512 / 32,
+      iterations: 1000
+    })
+    console.log('passses', {
+      storedPassword: wallet[0].password,
+      hash: hash,
+      hashHex: hash.toString(cryptoJs.enc.Hex)
+    });
+    return {
+      storedPassword: wallet[0].password,
+      hash: hash,
+      hashHex: hash.toString(cryptoJs.enc.Hex)
+    }
+  },
+  async validatePassword(password) {
+    let { hashHex, storedPassword } = await this.hashPassword(password)
+    // console.log('newly hashed: ', hashHex);
+    // console.log('stored pass hash: ', storedPassword);
+    return hashHex === storedPassword
   },
   storeWalletInDb(password) {
     return new Promise((resolve) => {
       // user security is ultimately dependent on a password,
       // and because a password usually can't be used directly as a cryptographic key,
-      //some processing is required
+      // some processing is required
+      // hash the password and store it in the db. PBKDF2 is a one-way hashing algorithm
+      // we'll use the hash to encrypt sensitive data like the seed
       const salt = cryptoJs.lib.WordArray.random(128 / 8)
       const hash = cryptoJs.PBKDF2(password, salt, {
         keySize: 512 / 32,
         iterations: 1000
       })
 
-      // encrypt private key with hashed password
-      // let iv = '1234567890123456'
-      // iv = cryptoJs.enc.Utf8.parse(iv)
-      // let encryptedPK = cryptoJs.AES.encrypt(pk, hash, { iv: iv })
+      // encrypt the seed with the hashed password
+      // to decrypt the seed, we need to ask the user for his password and then hash it again.
+      // if the resulted hash is the same as the hashed password,
+      // then the user entered the correct password and the seed can be decrypted
+      const encryptedSeed = cryptoJs.AES.encrypt(
+        this.seed.toString('hex'),
+        hash.toString(cryptoJs.enc.Hex)
+      )
+      console.log('seed', this.seed);
+      console.log('seed hex', this.seed.toString('hex'));
+      console.log('pokusaj smrti', this.hexToArray(this.seed.toString('hex')));
+      console.log('enc seed encrypted raw', encryptedSeed);
+      console.log('enc seed stored: ', encryptedSeed.ciphertext.toString(cryptoJs.enc.Hex));
+      console.log('decrypted', cryptoJs.AES.decrypt(encryptedSeed, hash.toString(cryptoJs.enc.Hex)).toString(cryptoJs.enc.Utf8));
+      console.log('parsed: ', cryptoJs.enc.Hex.parse(encryptedSeed.ciphertext.toString(cryptoJs.enc.Hex)));
 
-      // let encryptedPassword = cryptoJs.AES.encrypt(password, key, { iv: iv })
-      // encryptedPassword.toString()
-
-      // ask user for password, rehash it, decrypt the private key
-      // let decrypted = cryptoJs.AES.decrypt(encryptedPK, hash)
-      // decrypted = decrypted.toString(cryptoJs.enc.Utf8)
-      // console.log('decrypted pass: ', decrypted);
       const wallet = {
         name: 'wallet',
         archived: false,
-        seed: this.seed.toString('hex'), // nicest way to store seed is in hex string format
-        password: hash.toString(),
+        seed: encryptedSeed.ciphertext.toString(cryptoJs.enc.Hex),
+        password: hash.toString(cryptoJs.enc.Hex),
         balance: 0, // will be calculated after "scanning" for accounts; sum of all accounts
         accounts: [], // will be populated after "scanning",
         salt: salt
@@ -164,7 +212,7 @@ const CryptoService = {
       db.insert(wallet, () => {
         console.log('wallet stored in db: ', wallet)
       })
-
+      
       resolve(wallet)
     })
   }

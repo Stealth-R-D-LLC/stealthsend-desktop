@@ -1,14 +1,21 @@
 <template>
   <div class="dashbaord-container">
     <transition-group v-if="accounts.length !== 0" name="list" tag="div">
-      <card v-for="account in accounts" :key="account" class="list-item" :account="account" @click="openAccountDetails" @archived="archiveAccount">
+      <card
+        v-for="account in accounts"
+        :key="account"
+        class="list-item"
+        :account="account"
+        @click="openAccountDetails"
+        @archived="archiveAccount"
+      >
         <!-- <template #title>{{ account.label }}</template> -->
         <!-- <template #type>{{ !account.isArchived ? 'Active' : 'Archived' }}</template> -->
         <!-- <template #amount-crypto>{{ account.balance }}</template> -->
       </card>
     </transition-group>
     <p v-else>
-      You don't have any accounts in your wallet. 
+      You don't have any accounts in your wallet.
     </p>
   </div>
 </template>
@@ -25,10 +32,14 @@ export default {
     Card
   },
   setup() {
+    console.log('Init crypto service!')
+
+    CryptoService.init()
+
     const accounts = computed(() => {
-      return globalState.state.accounts.filter(el => !el.isArchived)
+      return globalState.state.accounts.filter((el) => !el.isArchived)
     })
-    
+
     const openAccountDetails = (account) => {
       globalState.setAccountDetails(account)
       router.push('/account/details')
