@@ -51,7 +51,8 @@ export default {
   },
   setup() {
     const hasZeroBalance = computed(() => {
-      return globalState.state.accounts.some((el) => el.balance === 0)
+      return false // TODO: hardcoded
+      // return globalState.state.accounts.some((el) => el.balance === 0)
     })
 
     let isAccountModalVisible = ref(false)
@@ -61,9 +62,10 @@ export default {
     async function generateAccount() {
       isAccountModalVisible.value = false
       globalState.startGlobalLoading()
-      const { address, path } = CryptoService.getChildFromRoot(0, 0, 2)
+      const { address, path, pk } = CryptoService.getChildFromRoot(0, 0, 2)
       account = {
-        address,
+        pk: pk,
+        address: address,
         label: accountName.value,
         balance: 0,
         isArchived: false,

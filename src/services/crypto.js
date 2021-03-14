@@ -86,8 +86,8 @@ const CryptoService = {
         pubkey: child.publicKey,
         network: this.network
       }).address,
-      pk: child.publicKey,
-      sk: child.privateKey,
+      pk: String(child.neutered().toBase58()),
+      // sk: child.privateKey,
       path: `${account}'/${change}/${address}`
     }
   },
@@ -125,6 +125,7 @@ const CryptoService = {
       isArchived: account.isArchived,
       balance: account.balance,
       path: account.path,
+      pk: account.pk,
       asset: account.asset
     })
     console.log('account stored in db: ', acc)

@@ -3,6 +3,7 @@
     <h1>Account details</h1>
     <card
       class="list-item"
+      :archiveable="false"
       :account="{
         label: account.label,
         balance: addressInfo.balance,
@@ -17,8 +18,9 @@
         @click="handleCopy"
       ></StCopyToClipboard>
     </StTooltip>
-
+    <img :src="qrSrc" />
     Address: {{ account.address }}
+    template
     <StTable
       :data="trxOutputs"
       :columns="[
@@ -45,12 +47,17 @@ import globalState from '@/store/global'
 import StTable from '@/components/kit/StTable.vue'
 import { computed, ref } from 'vue'
 import Card from '../../components/elements/Card'
+import VanillaQR from 'vanillaqr'
+import StCopyToClipboard from '@/components/kit/StClipboard.vue'
+import StTooltip from '@/components/kit/StTooltip.vue'
 
 export default {
   name: 'StAccountDetails',
   components: {
     Card,
-    StTable
+    StTable,
+    StCopyToClipboard,
+    StTooltip
   },
   setup() {
     const account = computed(() => {
@@ -58,8 +65,9 @@ export default {
     })
 
     const addressInfo = ref({})
-    const trxOutputs = ref({})
-    const trxInputs = ref({})
+    const trxOutputs = ref([])
+    const trxInputs = ref([])
+    const qrSrc = ref('')
 
     let copyPending = ref(false)
     function handleCopy() {
@@ -94,6 +102,11 @@ export default {
         .catch((err) => {
           return err
         })
+
+      var qr = new VanillaQR({
+        url: account.value.pk
+      })
+      qrSrc.value = qr.toImage('png').src
     }
     return {
       account,
@@ -101,7 +114,8 @@ export default {
       trxOutputs,
       copyPending,
       handleCopy,
-      trxInputs
+      trxInputs,
+      qrSrc
     }
   }
 }
