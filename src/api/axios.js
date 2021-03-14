@@ -31,7 +31,6 @@ API.interceptors.request.use(
 
 API.interceptors.response.use(
   (response) => {
-    console.log('res', response);
     return response
   },
   (error) => {

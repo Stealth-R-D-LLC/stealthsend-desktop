@@ -30,8 +30,11 @@
     "core-js": "^3.6.5",
     "crypto-js": "^4.0.0",
     "electron-squirrel-startup": "^1.0.0",
+    "i": "^0.3.6",
     "nedb-promise": "^2.0.1",
+    "npm": "^7.6.0",
     "stealth-kit": "^0.1.0",
+    "vanillaqr": "^1.0.0",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0"
   },

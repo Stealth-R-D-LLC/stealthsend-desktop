@@ -1,9 +1,9 @@
 <template>
   <div class="st-card" :class="{'st-card--is-archived': account.isArchived}" @click="handleClick(account)">
-    <a href="" class="archive" @click.prevent="archive(account)"></a>
+    <a v-if="archiveable" href="" class="archive" @click.prevent="archive(account)"></a>
     <div class="st-card__row">
       <span class="item title">{{ account.label }}</span>
-      <!-- <span class="item type">{{ account.isArchived  }}</span> -->
+      <!-- <span class="itemu type">{{ account.isArchived  }}</span> -->
     </div>
     <div class="st-card__row">
       <span class="item amount">{{ account.balance }} XST</span>
@@ -18,6 +18,11 @@ const XST_USD = 2.5 // hardcoded obviously
 export default {
   name: 'StCard',
   props: {
+    archiveable: {
+      type: Boolean,
+      required: false,
+      default: true
+    },
     account: {
       type: Object,
       required: true
