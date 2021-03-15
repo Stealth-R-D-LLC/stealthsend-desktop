@@ -188,6 +188,8 @@ const CryptoService = {
       // to decrypt the seed, we need to ask the user for his password and then hash it again.
       // if the resulted hash is the same as the hashed password,
       // then the user entered the correct password and the seed can be decrypted
+      console.log('sid', this.seed);
+      console.log('hash', hash);
       const encryptedSeed = cryptoJs.AES.encrypt(
         this.seed.toString('hex'),
         hash.toString(cryptoJs.enc.Hex)
