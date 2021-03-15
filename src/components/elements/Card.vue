@@ -14,7 +14,7 @@
 
 <script>
 import { computed } from 'vue'
-const XST_USD = 2.5 // hardcoded obviously
+const XST_USD = 0.174010 // hardcoded obviously
 export default {
   name: 'StCard',
   props: {
