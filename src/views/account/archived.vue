@@ -23,7 +23,6 @@ export default {
       return globalState.state.accounts.filter((el) => el.isArchived)
     })
     function unarchieve(account) {
-      console.log('aa');
       CryptoService.unarchiveAccount(account)
     }
     return {
