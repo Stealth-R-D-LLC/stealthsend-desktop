@@ -85,10 +85,15 @@ export default {
       globalState.startGlobalLoading()
       let bytes = await bip39.mnemonicToSeed(mnemonic.value)
       const master = await bip32.fromSeed(bytes).toString('hex') // root
+      console.log('1', bytes);
+      console.log('2', master);
       recovered.value = {
         seed: bytes.toString('hex'),
         master: master
       }
+
+      CryptoService.seed = bytes.toString('hex')
+      CryptoService.master = master
 
       CryptoService.storeWalletInDb(password.value)
       setTimeout(() => {
