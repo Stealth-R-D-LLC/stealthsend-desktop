@@ -146,6 +146,20 @@ const CryptoService = {
     )
     await this.getAccounts()
   },
+  async unarchiveAccount(account) {
+    await db.update(
+      { name: 'account', address: account.address },
+      {
+        name: 'account',
+        address: account.address,
+        label: account.label,
+        isArchived: false,
+        balance: account.balance,
+        path: account.path
+      }
+    )
+    await this.getAccounts()
+  },
   async hashPassword(password) {
     let wallet = await this.getWalletFromDb()
 

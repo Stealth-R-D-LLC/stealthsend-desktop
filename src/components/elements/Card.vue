@@ -1,6 +1,7 @@
 <template>
   <div class="st-card" :class="{'st-card--is-archived': account.isArchived}" @click="handleClick(account)">
     <a v-if="archiveable" href="" class="archive" @click.prevent="archive(account)"></a>
+    <a v-if="unarchiveable" href="" class="unarchive" @click.prevent="unarchive(account)"></a>
     <div class="st-card__row">
       <span class="item title">{{ account.label }}</span>
       <!-- <span class="itemu type">{{ account.isArchived  }}</span> -->
@@ -18,6 +19,11 @@ const XST_USD = 0.174010 // hardcoded obviously
 export default {
   name: 'StCard',
   props: {
+        unarchiveable: {
+      type: Boolean,
+      required: false,
+      default: true
+    },
     archiveable: {
       type: Boolean,
       required: false,
@@ -28,7 +34,7 @@ export default {
       required: true
     }
   },
-  emits: ['archived', 'click'],
+  emits: ['archived', 'unarchived', 'click'],
   setup(props, context) {
     const amountInFiat = computed(() => {
       return props.account.balance * XST_USD
@@ -41,7 +47,10 @@ export default {
     const archive = (account) => {
       context.emit('archived', account)
     }
-    return { amountInFiat, archive, handleClick }
+    const unarchive = (account) => {
+      context.emit('unarchived', account)
+    }
+    return { amountInFiat, archive, unarchive, handleClick }
   }
 }
 </script>
@@ -94,7 +103,7 @@ export default {
   letter-spacing: 0.12px;
 }
 
-.st-card .archive {
+.st-card .archive, .st-card .unarchive {
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -106,6 +115,9 @@ export default {
 }
 
 .st-card:not(.st-card--is-archived):hover .archive {
+  display: block;
+}
+.st-card:hover .unarchive {
   display: block;
 }
 </style>
