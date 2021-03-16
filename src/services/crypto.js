@@ -239,17 +239,19 @@ const CryptoService = {
     // it expects there are no used addresses beyond this point and stops searching the address chain.
     // We scan just the external chains, because internal chains receive only coins that come from the associated external chains.
     const GAP_LIMIT = 20;
-    // derive the first account's node (index = 0)
-    const account = this.getChildFromRoot(0,0,0);
-    console.log('acc', account);
-
+    
     let emptyInARow = 0;
     for (let i = 0; i < GAP_LIMIT; i++) {
+      // derive the first account's node (index = 0)
       // derive the external chain node of this account
-      const {address} = this.getChildFromRoot( n, 0, i)
+      const acc = this.getChildFromRoot( n, 0, i)
+      console.log('acc', acc);
       // scan addresses of the external chain; respect the gap limit described below
-      const inputs = await globalState.rpc('getaddressinputs', [address, 1, 10])
+      const inputs = await globalState.rpc('getaddressinputs', [acc.address, 1, 10])
       if (inputs.length > 0) {
+        console.log('discovered account: ',  acc);
+        // save account in db?
+        // get account balance
         // if there are some transactions, increase the account index and go to step 1
         this.accountDiscovery(n+1)
         emptyInARow = 0
@@ -261,6 +263,7 @@ const CryptoService = {
       // If the software hits 20 unused addresses in a row, it expects there are no used addresses beyond this point and stops searching the address chain
       if (emptyInARow >= 20) break
     }
+    // grace concert hunt glide million orange enact habit amazing deal object nurse
 
   }
 }
