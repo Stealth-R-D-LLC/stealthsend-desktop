@@ -104,7 +104,7 @@ export default {
         })
 
       var qr = new VanillaQR({
-        url: account.value.pk || account.value.address
+        url: account.value.address
       })
       qrSrc.value = qr.toImage('png').src
     }
