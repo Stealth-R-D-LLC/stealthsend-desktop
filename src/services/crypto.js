@@ -251,6 +251,16 @@ const CryptoService = {
       if (inputs.length > 0) {
         console.log('discovered account: ',  acc);
         // save account in db?
+        this.storeAccountInDb({
+          address: acc.address,
+          path: acc.path,
+          pk: acc.pk, 
+          name: 'account',
+          label: 'Account ' + i + 1,
+          isArchived: false,
+          balance: 0,
+          asset: 'XST'
+        })
         // get account balance
         // if there are some transactions, increase the account index and go to step 1
         this.accountDiscovery(n+1)
