@@ -33,7 +33,6 @@ export default {
   },
   setup() {
     // console.log('Init crypto service!')
-    // CryptoService.init()
 
     const accounts = computed(() => {
       return globalState.state.accounts.filter((el) => !el.isArchived)
