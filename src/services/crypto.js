@@ -6,19 +6,40 @@ import { Buffer } from 'buffer'
 import cryptoJs from 'crypto-js'
 import db from '../db'
 
+// libs.bitcoin.networks.stealthtestnet = {
+//   messagePrefix: 'unused',
+//   bip32: {
+// public: 0x043587cf,
+// private: 0x04358394,
+//   },
+//   pubKeyHash: 0x6f,
+//   scriptHash: 0xc4,
+//   wif: 0xef
+// };
+
+// libs.bitcoin.networks.stealth = {
+//   messagePrefix: 'unused',
+//   bip32: {
+// public: 0x0488b21e,
+// private: 0x0488ade4
+//   },
+//   pubKeyHash: 0x3e,
+//   scriptHash: 0x85,
+//   wif: 0xbe
+// };
+
+
 const CryptoService = {
   network: {
-    messagePrefix: '\x18Stealth Testnet Signed Message:\n',
-    bech32: 'tb', // address format specified by BIP173
-    bip32: {
-      // address path. defines how to derive private and public keys of a wallet from a binary master seed (m) and an ordered set of indices
-      public: 0x043587cf,
-      private: 0x04358394
+      messagePrefix: 'unused',
+      bip32: {
+    public: 0x043587cf,
+    private: 0x04358394,
+      },
+      pubKeyHash: 0x6f,
+      scriptHash: 0xc4,
+      wif: 0xef
     },
-    pubKeyHash: 0x6f,
-    scriptHash: 0xc4,
-    wif: 0xef
-  },
   master: null,
   seed: null,
   wallet: null,
@@ -79,7 +100,7 @@ const CryptoService = {
   },
   getChildFromRoot(account, change, address) {
     const child = this.master.derivePath(
-      `m/44'/125'/${account}'/${change}/${address}`
+      `m/44'/1'/${account}'/${change}/${address}`
     )
     this.WIFtoPK(child.toWIF()) // decrypt
     return {
