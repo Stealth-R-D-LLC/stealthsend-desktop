@@ -7,6 +7,7 @@ import Lock from '@/views/lock.vue'
 import Receive from '@/views/receive.vue'
 import Send from '@/views/send.vue'
 import Settings from '@/views/settings.vue'
+import TransactionDetails from '@/views/transaction-details.vue'
 import UIKit from '@/views/uikit.vue'
 import Welcome from '@/views/welcome.vue'
 import { createRouter, createWebHistory } from 'vue-router'
@@ -86,6 +87,11 @@ const routes = [
     path: '/account/details',
     name: 'AccountDetails',
     component: AccountDetails
+  },
+  {
+    path: '/transaction/:id',
+    name: 'TransactionDetails',
+    component: TransactionDetails
   },
   {
     path: '/account/archived',

@@ -2,7 +2,7 @@
   <div class="account-details-container">
     <h1>Account details</h1>
     <pre>
-      {{account}}
+      {{ account }}
     </pre>
     <card
       class="list-item"
@@ -10,7 +10,7 @@
       :account="{
         label: account.label,
         balance: addressInfo.balance,
-        isArchived: account.isArchived
+        isArchived: account.isArchived,
       }"
     ></card>
     <StTooltip
@@ -30,8 +30,9 @@
         { key: 'txid', title: 'TRX ID' },
         { key: 'amount', title: 'Amount' },
         { key: 'confirmations', title: 'Confirmations' },
-        { key: 'balance', title: 'Balance' }
+        { key: 'balance', title: 'Balance' },
       ]"
+      @rowClick="openTransaction"
     ></StTable>
     <StTable
       :data="trxInputs"
@@ -39,8 +40,9 @@
         { key: 'txid', title: 'TRX ID' },
         { key: 'amount', title: 'Amount' },
         { key: 'confirmations', title: 'Confirmations' },
-        { key: 'balance', title: 'Balance' }
+        { key: 'balance', title: 'Balance' },
       ]"
+      @rowClick="openTransaction"
     ></StTable>
   </div>
 </template>
@@ -53,6 +55,7 @@ import Card from '../../components/elements/Card'
 import VanillaQR from 'vanillaqr'
 import StCopyToClipboard from '@/components/kit/StClipboard.vue'
 import StTooltip from '@/components/kit/StTooltip.vue'
+import router from '@/router'
 
 export default {
   name: 'StAccountDetails',
@@ -60,9 +63,14 @@ export default {
     Card,
     StTable,
     StCopyToClipboard,
-    StTooltip
+    StTooltip,
   },
   setup() {
+
+      function openTransaction(trx) {
+        router.push(`/transaction/${trx.txid}`)
+      }
+
     const account = computed(() => {
       return globalState.state.accountDetails
     })
@@ -107,9 +115,11 @@ export default {
         })
 
       var qr = new VanillaQR({
-        url: account.value.address
+        url: account.value.address,
       })
       qrSrc.value = qr.toImage('png').src
+
+
     }
     return {
       account,
@@ -118,9 +128,10 @@ export default {
       copyPending,
       handleCopy,
       trxInputs,
-      qrSrc
+      qrSrc,
+      openTransaction
     }
-  }
+  },
 }
 </script>
 
