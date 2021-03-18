@@ -28,8 +28,11 @@
 const XST_USD = 0.17401 // hardcoded obviously
 import { reactive } from 'vue'
 import CryptoService from '@/services/crypto'
-
 import * as bitcoin from 'bitcoinjs-lib'
+import { Buffer } from 'buffer'
+
+import globalState from '@/store/global'
+
 export default {
   setup() {
     const sendForm = reactive({
@@ -38,7 +41,7 @@ export default {
       label: '',
     })
 
-    function send() {
+    async function send() {
       console.log('sending...', sendForm)
       // https://gist.githubusercontent.com/StealthSend/d24a338b85b5be26073213c44210a11e/raw/3e4827fc354c45d73755dbae63c7d81e2d50a33b/stealth-mainnet-address-regex.txt
       // get current account
@@ -46,48 +49,90 @@ export default {
       // currency input for amount
       // check if insufficient funds
 
-      let getAddressOutputs = {
-        result: [
+      // In bitcoin transactions, you don’t actually spend the balance of the address
+      // instead, you spend transactions received by your address
+      // also referred to as UTXO
+      // To create a transaction, we’ll need such UTXO to use as input to our next transaction
+      let unspentOutput =
           {
-            address: 'muXrZjF8HL58rQMxTUYQvWutPMtqKSfNrq',
-            amount: 100,
-            balance: 100,
+            address: 'muztTCCEETc22FF8imGoGgG7MqVVaMaXef',
+            amount: 0.06,
+            balance: 0.1,
             blockhash:
-              '17a1edbb75dc0fbe0d21d8ef6335b4a5aea19d980d68570ea38e6fc6e3912e7f',
-            blocktime: 1615471309,
-            confirmations: 58771,
-            height: 4378925,
+              "f01712d93bfd9a84ca3f07ac5b7325e888a460e1d3934cf8bc8b1fcf920454b0",
+            blocktime: 1616065534,
+            confirmations: 2200,
+            height: 4481928,
             isspent: 'false',
             txid:
-              '74168d8a366ba18b2733e33f93b465346095346d72e20a0b0e693e435ba62dec',
+              '8c2d88672aa3fad6fbd9a002607c1b4eaa0f397f0ae55026375106a6eaf02bf9',
             vout: 0,
             vtx: 0,
+          }
+
+      // There are three elements involved in a bitcoin transaction:
+      // 1 - a transaction input - the bitcoin address FROM which the money was sent
+      // 2 - a transaction output - the bitcoin address TO which the money will be sent
+      // 3 -  amount
+
+      const psbt = new bitcoin.Psbt({ network: CryptoService.network })
+      psbt.setVersion(2); // These are defaults. This line is not needed.
+
+      // TODO: somehow locally get transaction in hex
+      const tx = await globalState.rpc('gettransaction', [unspentOutput.txid])
+
+      // TODO: somehow locally get transaction in hex
+      const txidHex = await globalState.rpc('createrawtransaction', [
+        [
+          {
+            vout: unspentOutput.vout,
+            txid: unspentOutput.txid,
           },
         ],
-        error: null,
-        id: 1,
-      }
+        {
+          mhjpLAjaHHWnBQHGVtJHPesZQvAhJGYzDX: 0.05,
+        },
+      ])
 
-      let addressOutputs = getAddressOutputs.result
-      let TransactionBuilder = bitcoin.TransactionBuilder
-      let rawTransaction = new TransactionBuilder({ network: CryptoService.network })
-      rawTransaction.addInput(addressOutputs[0].txid, addressOutputs[0].vout)
-      let recipient = {
-        address: 'mrB2LwKaEYick9dDhnUDhGJ8eapuMKpw6y',
-        amount: 0.001,
-      }
-      let change = {
-        address: 'n4SBCTpfzYyk7SD7hHr6JDjKN2BBGYWXd5',
-        amount: 0.989,
-      }
-      // add the output for recipient
-      rawTransaction.addOutput(recipient.address, recipient.amount)
 
-      // add the output for the change, send the change back to yourself.
-      // Outputs - inputs = transaction fee, so always double-check your math!
-      rawTransaction.addOutput(change.address, change.amount)
+      console.log('aaa', tx);
+      console.log('bbb', Buffer.from(txidHex, 'hex'));
+      console.log('bbb', txidHex);
+      console.log('ccc', unspentOutput.txid);
+      console.log('ccc', unspentOutput.txid.toString('hex'));
 
-      console.dir(rawTransaction)
+      psbt.addInput({
+        hash: unspentOutput.txid,
+        index: unspentOutput.vout,
+        nonWitnessUtxo: Buffer.from(txidHex, 'hex'),
+        // redeemScript: Buffer.from(tx.vin[0].scriptSig.hex, 'hex')
+      })
+
+      psbt.addOutput({
+        address: 'mhjpLAjaHHWnBQHGVtJHPesZQvAhJGYzDX', // destination address
+        value: 0.05 * 1e8, // value in satoshi (0.5 BTC)
+      })
+
+      psbt.addOutput({
+        address: 'muztTCCEETc22FF8imGoGgG7MqVVaMaXef', // change address
+        value: 0.05 * 1e8,
+      })
+
+      // TODO: hardcoded, has to be retrieved from every account
+      const child = CryptoService.master.derivePath(`m/44'/1'/0'/0/0`)
+
+      // const pk = child.privateKey
+      console.log('pk: ', child)
+
+      const signed = psbt.signInput(0, child);
+      psbt.validateSignaturesOfInput(0);
+      psbt.finalizeAllInputs();
+
+      console.log('--', signed);
+
+      // const sent = await globalState.rpc('sendrawtransaction', [signed.hex])
+
+      // console.log('sent: ', sent);
     }
 
     return {
