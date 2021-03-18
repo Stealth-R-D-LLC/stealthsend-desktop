@@ -53,7 +53,6 @@ import Card from '../../components/elements/Card'
 import VanillaQR from 'vanillaqr'
 import StCopyToClipboard from '@/components/kit/StClipboard.vue'
 import StTooltip from '@/components/kit/StTooltip.vue'
-import CryptoService from '@/services/crypto'
 
 export default {
   name: 'StAccountDetails',
@@ -67,10 +66,6 @@ export default {
     const account = computed(() => {
       return globalState.state.accountDetails
     })
-
-      const { address } = CryptoService.getChildFromRoot(0, 0, 1)
-      console.log('aaaaa', address);
-
 
     const addressInfo = ref({})
     const trxOutputs = ref([])

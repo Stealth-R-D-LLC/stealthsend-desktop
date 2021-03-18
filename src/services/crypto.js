@@ -99,15 +99,17 @@ const CryptoService = {
     })
   },
   getChildFromRoot(account, change, address) {
+    // child === keypair
     const child = this.master.derivePath(
       `m/44'/1'/${account}'/${change}/${address}`
     )
-    this.WIFtoPK(child.toWIF()) // decrypt
+    // this.WIFtoPK(child.toWIF()) // decrypt
     return {
       address: bitcoin.payments.p2pkh({
         pubkey: child.publicKey,
         network: this.network
       }).address,
+      keyPair: child,
       pk: String(child.neutered().toBase58()),
       // sk: child.privateKey,
       path: `${account}'/${change}/${address}`

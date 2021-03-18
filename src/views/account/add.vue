@@ -51,8 +51,8 @@ export default {
   },
   setup() {
     const hasZeroBalance = computed(() => {
-      // return false // TODO: hardcoded
-      return globalState.state.accounts.some((el) => el.balance === 0)
+      return false // TODO: hardcoded
+      // return globalState.state.accounts.some((el) => el.balance === 0)
     })
 
     let isAccountModalVisible = ref(false)
