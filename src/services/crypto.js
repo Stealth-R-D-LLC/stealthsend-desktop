@@ -62,7 +62,7 @@ const CryptoService = {
       // )
       // TODO: tu nesto ne valja. provjeriti jel se dobro dekriptira seed
       this.master = await bip32.fromSeed(Buffer.from(cryptoJs.AES.decrypt(wallet[0].seed, hashHex).words))
-      this.accountDiscovery()
+      // this.accountDiscovery()
     }
   },
   WIFtoPK(wif) {
@@ -286,7 +286,7 @@ const CryptoService = {
         })
         // get account balance
         // if there are some transactions, increase the account index and go to step 1
-        this.accountDiscovery(n+1)
+        // this.accountDiscovery(n+1)
         emptyInARow = 0
         continue
       }

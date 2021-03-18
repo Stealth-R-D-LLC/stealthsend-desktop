@@ -23,6 +23,7 @@
               'table__row--is-cancelled':
                 item['status'] && item['status'] === 'cancelled'
             }"
+            @click="handleRowClick(item)"
           >
             <td
               v-for="{ key, customCellClass } in columns"
@@ -63,10 +64,13 @@ export default {
       required: true
     }
   },
-  emits: ['sortChanged'],
+  emits: ['sortChanged', 'rowClick'],
   methods: {
     handleSort(col) {
       this.$emit('sortChanged', col)
+    },
+    handleRowClick(row) {
+      this.$emit('rowClick', row)
     }
   }
 }
