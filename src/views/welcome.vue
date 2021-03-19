@@ -80,13 +80,15 @@ export default {
       'excite attract off sugar mandate only captain chief follow celery elbow melt bone express cat loop mountain nephew'
     )
     const recovered = ref({})
+    const password = ref('')
 
     async function recover() {
+      // recover an existing wallet via mnemonic
+      // password is asked because we have to lock the seed in the database
+      // user is createing a new password in this step
       globalState.startGlobalLoading()
       let bytes = await bip39.mnemonicToSeed(mnemonic.value)
       const master = await bip32.fromSeed(bytes).toString('hex') // root
-      // console.log('1', bytes);
-      // console.log('2', master);
       recovered.value = {
         seed: bytes.toString('hex'),
         master: master
@@ -106,13 +108,16 @@ export default {
     const wif = ref('KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU73sVHnoWn')
     const imported = ref({})
     async function importWalletFromWif() {
+      // wallet is simply imported via wif
+      // user should be also prompted here to create a new password
       imported.value = CryptoService.WIFtoPK(wif.value)
     }
 
     const createWallet = ref(false)
     const created = ref(false)
-    const password = ref('')
     async function createNewWallet() {
+      // new wallet is created
+      // therefore, new password can be made
       globalState.startGlobalLoading()
       created.value = await CryptoService.generateMnemonicAndSeed()
       await CryptoService.storeWalletInDb(password.value)

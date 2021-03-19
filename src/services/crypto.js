@@ -56,17 +56,20 @@ const CryptoService = {
       let { hashHex } = await this.hashPassword('123123')
       // console.log('seed u init kriptirani: ', wallet[0].seed);
       // console.log('seed pokusaj dec: ', cryptoJs.AES.decrypt(wallet[0].seed, hashHex));
-      // console.log('seed pokusaj uint16arr: ', cryptoJs.enc.Hex.parse(wallet[0].seed.ciphertext.toString(cryptoJs.enc.Hex)));
+      // console.log('seed pokusaj uint16arr: ', this.hexToArray(
+      //   cryptoJs.AES.decrypt(wallet[0].seed, hashHex).toString(cryptoJs.enc.Hex)
+      // ));
       // this.seed = this.hexToArray(
       //   cryptoJs.AES.decrypt(wallet[0].seed, hashHex).toString(cryptoJs.enc.Hex)
       // )
       // TODO: tu nesto ne valja. provjeriti jel se dobro dekriptira seed
-      this.master = await bip32.fromSeed(Buffer.from(cryptoJs.AES.decrypt(wallet[0].seed, hashHex).words))
+      this.master = await bip32.fromSeed(Buffer.from(cryptoJs.AES.decrypt(wallet[0].seed, hashHex).words), this.network)
+      console.log('master!', this.master);
       // this.accountDiscovery()
     }
   },
   WIFtoPK(wif) {
-    const keyPair = bitcoin.ECPair.fromWIF(wif)
+    const keyPair = bitcoin.ECPair.fromWIF(wif, this.network)
     // const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: this.network })
     return keyPair
   },
@@ -100,8 +103,12 @@ const CryptoService = {
   },
   getChildFromRoot(account, change, address) {
     // child === keypair
+    console.log('bokte');
     const child = this.master.derivePath(
       `m/44'/1'/${account}'/${change}/${address}`
+    )
+    let acc = this.master.derivePath(
+      `m/44'/1'/${account}'`
     )
     // this.WIFtoPK(child.toWIF()) // decrypt
     return {
@@ -110,7 +117,7 @@ const CryptoService = {
         network: this.network
       }).address,
       keyPair: child,
-      pk: String(child.neutered().toBase58()),
+      pk: String(acc.neutered().toBase58()),
       // sk: child.privateKey,
       path: `${account}'/${change}/${address}`
     }
@@ -202,9 +209,10 @@ const CryptoService = {
     }
   },
   async validatePassword(password) {
+    // receive password as plain text, hash it, compare it with existing hash in db
     let { hashHex, storedPassword } = await this.hashPassword(password)
-    // console.log('newly hashed: ', hashHex);
-    // console.log('stored pass hash: ', storedPassword);
+    console.log('newly hashed: ', hashHex);
+    console.log('stored pass hash: ', storedPassword);
     return hashHex === storedPassword
   },
   storeWalletInDb(password) {
