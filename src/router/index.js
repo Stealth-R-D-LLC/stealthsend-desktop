@@ -18,7 +18,7 @@ import db from '../db'
 
 (async function bla() {
   let a = await db.find({}, { multi: true })
-  console.log("cijela baza: ", a)
+  console.log("Database: ", a)
 })()
 
 const routes = [

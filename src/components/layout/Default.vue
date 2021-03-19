@@ -23,7 +23,6 @@ export default {
     TopBar
   },
   setup() {
-    console.log('Init crypto service!')
     CryptoService.init()
     // if there's nothing in the db, show welcome screen
     // welcome screen will have recover option, create new wallet option and import option

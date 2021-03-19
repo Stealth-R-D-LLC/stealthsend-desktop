@@ -95,12 +95,11 @@ export default {
       ])
 
 
-      console.log('aaa', tx);
-      console.log('bbb', Buffer.from(txidHex, 'hex'));
-      console.log('bbb', txidHex);
-      console.log('ccc', unspentOutput.txid);
-      console.log('ccc', unspentOutput.txid.toString('hex'));
-
+      console.log('1', tx);
+      console.log('2', Buffer.from(txidHex, 'hex'));
+      console.log('3', txidHex);
+      console.log('4', unspentOutput.txid);
+      console.log('5', unspentOutput.txid.toString('hex'));
       psbt.addInput({
         hash: unspentOutput.txid,
         index: unspentOutput.vout,
@@ -128,11 +127,11 @@ export default {
       psbt.validateSignaturesOfInput(0);
       psbt.finalizeAllInputs();
 
-      console.log('--', signed);
+      console.log('signed', signed);
 
-      // const sent = await globalState.rpc('sendrawtransaction', [signed.hex])
+      const sent = await globalState.rpc('sendrawtransaction', [signed.hex])
 
-      // console.log('sent: ', sent);
+      console.log('sent: ', sent);
     }
 
     return {
