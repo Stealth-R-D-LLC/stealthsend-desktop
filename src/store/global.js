@@ -33,7 +33,7 @@ const rpc = (method, payload) => {
         resolve(res.data.result)
       })
       .catch((err) => {
-        console.warn('RPC error: ', err);
+        console.error('RPC error: ', err);
         reject(err.response.data.error.message)
       })
   })

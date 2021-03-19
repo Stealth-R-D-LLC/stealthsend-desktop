@@ -48,14 +48,14 @@ const CryptoService = {
     // if so, retrieve it and generate the master from the stored seed
     let wallet = await this.getWalletFromDb()
     await this.getAccounts()
-    console.log('wallet: ', wallet)
+    console.log('Wallet: ', wallet)
     if (wallet.length > 0) {
       // seed is stored in a string format because it's the easies to store
       // when retrieving, we need to have the seed in buffer type so we can work with it
       // that's why we are converting the seed from string -> uint8array -> buffer
       let { hashHex } = await this.hashPassword('123123')
-      console.log('seed u init kriptirani: ', wallet[0].seed);
-      console.log('seed pokusaj dec: ', cryptoJs.AES.decrypt(wallet[0].seed, hashHex));
+      // console.log('seed u init kriptirani: ', wallet[0].seed);
+      // console.log('seed pokusaj dec: ', cryptoJs.AES.decrypt(wallet[0].seed, hashHex));
       // console.log('seed pokusaj uint16arr: ', cryptoJs.enc.Hex.parse(wallet[0].seed.ciphertext.toString(cryptoJs.enc.Hex)));
       // this.seed = this.hexToArray(
       //   cryptoJs.AES.decrypt(wallet[0].seed, hashHex).toString(cryptoJs.enc.Hex)
@@ -131,14 +131,13 @@ const CryptoService = {
   // },
   async getWalletFromDb() {
     let wallet = await db.find({ name: 'wallet' })
-    console.log('voljet', wallet);
     globalState.setWallet(wallet[0])
     return wallet
   },
   async getAccounts() {
     let accounts = await db.find({ name: 'account' })
     globalState.setAccounts(accounts)
-    console.log('accounts: ', accounts)
+    console.log('Accounts: ', accounts)
     return accounts
   },
   async storeAccountInDb(account) {
@@ -152,7 +151,6 @@ const CryptoService = {
       pk: account.pk,
       asset: account.asset
     })
-    console.log('account stored in db: ', acc)
     this.getAccounts()
     return acc
   },
@@ -192,11 +190,11 @@ const CryptoService = {
       keySize: 512 / 32,
       iterations: 1000
     })
-    console.log('passses', {
-      storedPassword: wallet[0].password,
-      hash: hash,
-      hashHex: hash.toString(cryptoJs.enc.Hex)
-    });
+    // console.log('passses', {
+    //   storedPassword: wallet[0].password,
+    //   hash: hash,
+    //   hashHex: hash.toString(cryptoJs.enc.Hex)
+    // });
     return {
       storedPassword: wallet[0].password,
       hash: hash,
@@ -226,19 +224,19 @@ const CryptoService = {
       // to decrypt the seed, we need to ask the user for his password and then hash it again.
       // if the resulted hash is the same as the hashed password,
       // then the user entered the correct password and the seed can be decrypted
-      console.log('sid', this.seed);
-      console.log('hash', hash);
+      // console.log('sid', this.seed);
+      // console.log('hash', hash);
       const encryptedSeed = cryptoJs.AES.encrypt(
         this.seed.toString('hex'),
         hash.toString(cryptoJs.enc.Hex)
       )
-      console.log('seed', this.seed);
-      console.log('seed hex', this.seed.toString('hex'));
-      console.log('pokusaj smrti', this.hexToArray(this.seed.toString('hex')));
-      console.log('enc seed encrypted raw', encryptedSeed);
-      console.log('enc seed stored: ', encryptedSeed.ciphertext.toString(cryptoJs.enc.Hex));
-      console.log('decrypted', cryptoJs.AES.decrypt(encryptedSeed, hash.toString(cryptoJs.enc.Hex)).toString(cryptoJs.enc.Utf8));
-      console.log('parsed: ', cryptoJs.enc.Hex.parse(encryptedSeed.ciphertext.toString(cryptoJs.enc.Hex)));
+      // console.log('seed', this.seed);
+      // console.log('seed hex', this.seed.toString('hex'));
+      // console.log('pokusaj smrti', this.hexToArray(this.seed.toString('hex')));
+      // console.log('enc seed encrypted raw', encryptedSeed);
+      // console.log('enc seed stored: ', encryptedSeed.ciphertext.toString(cryptoJs.enc.Hex));
+      // console.log('decrypted', cryptoJs.AES.decrypt(encryptedSeed, hash.toString(cryptoJs.enc.Hex)).toString(cryptoJs.enc.Utf8));
+      // console.log('parsed: ', cryptoJs.enc.Hex.parse(encryptedSeed.ciphertext.toString(cryptoJs.enc.Hex)));
 
       const wallet = {
         name: 'wallet',
@@ -257,7 +255,7 @@ const CryptoService = {
     })
   },
   async accountDiscovery(n = 0) {
-    console.log('start account discovery');
+    // console.log('start account discovery');
     //  Address gap limit is currently set to 20. If the software hits 20 unused addresses in a row,
     // it expects there are no used addresses beyond this point and stops searching the address chain.
     // We scan just the external chains, because internal chains receive only coins that come from the associated external chains.
