@@ -65,7 +65,7 @@ const CryptoService = {
       // TODO: tu nesto ne valja. provjeriti jel se dobro dekriptira seed
       this.master = await bip32.fromSeed(Buffer.from(cryptoJs.AES.decrypt(wallet[0].seed, hashHex).words), this.network)
       console.log('master!', this.master);
-      // this.accountDiscovery()
+      this.accountDiscovery()
     }
   },
   WIFtoPK(wif) {
@@ -277,8 +277,10 @@ const CryptoService = {
       const acc = this.getChildFromRoot( n, 0, i)
       console.log('acc', acc);
       // scan addresses of the external chain; respect the gap limit described below
-      const inputs = await globalState.rpc('getaddressinputs', [acc.address, 1, 10])
-      if (inputs.length > 0) {
+      const hdAccount = await globalState.rpc('gethdaccount', [acc.pk])
+      console.log('hdacc', hdAccount);
+      // const inputs = await globalState.rpc('getaddressinputs', [acc.address, 1, 10])
+      if (hdAccount.length > 0) {
         console.log('discovered account: ',  acc);
         // save account in db?
         this.storeAccountInDb({
