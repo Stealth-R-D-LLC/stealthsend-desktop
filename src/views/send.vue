@@ -42,34 +42,63 @@ export default {
       label: '',
     })
 
+    /*
+console.log('/// TRANSACTION BUILDER ///')
+console.log('Trying to create 1-to-1 Raw Transaction');
+let trx = new bitcoin.TransactionBuilder(network, 3000000);
+let trxId = '65bb364cd24d42d147a0c0c15dd4ae66e4931bcd5de313f120ce6a4631e3d393';
+let vOut = 1;
+let sequence = 4294967295;
+let prevOutScript = '76a9144e1b865eed74ce6cfc61c02a9aa18b5a4047867988ac';
+let fromAddressPrivateKeyWIF = 'cPyweJi2XUL14bj7prYPDM1jrJZZQRvsGkBKuzjtd6ksDpfutukt';
+let toAddress = 'mhdA5F46Npznb6sXtLxMvD59Raj3jqfM6w';
+let toAmount = 0.03 * 1e6;
+let changeAddress = 'mndwyUkxE69QPVavKeK56PotK9GKoki2aX';
+let changeAmount = 1 * 1e6;
+trx.setVersion(2);
+trx.addInput(trxId, vOut, sequence, Buffer.from(prevOutScript, 'hex'));
+trx.addOutput(toAddress, toAmount);
+trx.addOutput(changeAddress, changeAmount);
+trx.sign(0, bitcoin.ECPair.fromWIF(fromAddressPrivateKeyWIF, network))
+console.dir(trx.build().toHex());
+    */
+
     async function sendOpet() {
       let addressOutputs = {
-        address: 'miM6d6S71YX9JrRgVfKUeFxGpqdd8o3fKD',
-        amount: 1.23,
-        balance: 1.23,
+        address: 'mmDr34PKbdure6eVUnjqTu4EAo3WjWvZ9p',
+        amount: 0.19,
+        balance: 0.25,
         blockhash:
-          '5c9c980ee4f84c800f38726d72c9ce91a90360dfb92696ee9cc0d9baefaf82e4',
-        blocktime: 1616065534,
+          "45d63fdfe7ff0c273b659e8f397beecc989ddcb45c5f3cbfac469888383ddcd7",
+        blocktime: 1617088334,
         confirmations: 2200,
         height: 4481928,
         isspent: 'false',
         txid:
-          'f04a6f1eacd9f0d2c0f9997473f50d2282b6af6ec3acbb17a73ba66e8e7c604b',
-        vout: 1,
+          'eeca9988b5e0255e1185355ceaf44fea71bf70aec2cf4a7f212ee04ff6fefafa',
+        vout: 0,
         vtx: 0,
       }
 
       let TransactionBuilder = bitcoin.TransactionBuilder
       let rawTransaction = new TransactionBuilder(CryptoService.network)
-      rawTransaction.addInput(addressOutputs.txid, addressOutputs.vout)
+      let prevOutScript = '76a914291f364393b83a053022b9e6b57b458fc1ffe31f88ac'
+      rawTransaction.addInput(
+        addressOutputs.txid,
+        1,
+        null,
+        Buffer.from(prevOutScript, 'hex')
+      )
       let recipient = {
         address: 'mhjpLAjaHHWnBQHGVtJHPesZQvAhJGYzDX',
         amount: 0.05 * 1e6,
       }
       let change = {
-        address: 'miM6d6S71YX9JrRgVfKUeFxGpqdd8o3fKD',
-        amount: 1.17 * 1e6,
+        address: 'mmDr34PKbdure6eVUnjqTu4EAo3WjWvZ9p',
+        amount: 0.1 * 1e6,
       }
+      // rawTransaction.addInput("6893ba14a9c77648788bfefd56229bdbc7f5a212d2f15801eacee305d740636a", 0)
+
       // add the output for recipient
       rawTransaction.addOutput(recipient.address, recipient.amount)
 
@@ -78,23 +107,25 @@ export default {
       rawTransaction.addOutput(change.address, change.amount)
       const child = CryptoService.master.derivePath(`m/44'/1'/0'/0/0`)
 
-
-    const keyPair = bitcoin.ECPair.fromWIF(child.toWIF(), CryptoService.network);
-      console.log('wif', child.toWIF());
+      const keyPair = bitcoin.ECPair.fromWIF(
+        child.toWIF(),
+        CryptoService.network
+      )
+      // console.log('wif', child.toWIF());
 
       rawTransaction.sign(0, keyPair)
 
       console.dir(rawTransaction)
-      const rawTransactionToHex = rawTransaction.build()
-      rawTransactionToHex.toHex()
-      console.log(rawTransactionToHex.toHex())
+      const rawTransactionToHex = rawTransaction.build().toHex()
+      console.log(rawTransactionToHex)
 
-      const res = await globalState.rpc('sendrawtransaction', [rawTransactionToHex.toHex()])
-      console.log('res', res);
+      const res = await globalState.rpc('sendrawtransaction', [
+        rawTransactionToHex,
+      ])
+      console.log('res', res)
 
-      const txid = await globalState.rpc('gettransaction', [res])
-      console.log('txid', txid);
-
+      // const txid = await globalState.rpc('gettransaction', [res])
+      // console.log('txid', txid);
 
       // pingati stalno dok ne dobijem N confirmacija (1)
       // namjerno pogresnu da vidis kak izgleda

@@ -62,7 +62,7 @@ export default {
     async function generateAccount() {
       isAccountModalVisible.value = false
       globalState.startGlobalLoading()
-      const { address, path, pk } = CryptoService.getChildFromRoot(0, 0, 0)
+      const { address, path, pk, wif } = CryptoService.getChildFromRoot(0, 0, 0)
       account = {
         pk: pk,
         address: address,
@@ -70,8 +70,10 @@ export default {
         balance: 0,
         isArchived: false,
         asset: 'XST',
+        wif: wif,
         path: path
       }
+      console.log('novi acc: ', account);
       CryptoService.storeAccountInDb(account)
       globalState.stopGlobalLoading()
     }

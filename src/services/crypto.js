@@ -103,7 +103,7 @@ const CryptoService = {
   },
   getChildFromRoot(account, change, address) {
     // child === keypair
-    console.log('bokte');
+    console.log('getChildFromRoot');
     const child = this.master.derivePath(
       `m/44'/1'/${account}'/${change}/${address}`
     )
@@ -118,6 +118,7 @@ const CryptoService = {
       }).address,
       keyPair: child,
       pk: String(acc.neutered().toBase58()),
+      wif: child.toWIF(),
       // sk: child.privateKey,
       path: `${account}'/${change}/${address}`
     }
