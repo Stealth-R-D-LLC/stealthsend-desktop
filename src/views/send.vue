@@ -82,10 +82,10 @@ console.dir(trx.build().toHex());
 
       let TransactionBuilder = bitcoin.TransactionBuilder
       let rawTransaction = new TransactionBuilder(CryptoService.network)
-      let prevOutScript = '76a914291f364393b83a053022b9e6b57b458fc1ffe31f88ac'
+      let prevOutScript = '76a9143e9475809082fff3f4f8bda7d2fb8873d5876f0f88ac'
       rawTransaction.addInput(
         addressOutputs.txid,
-        1,
+        0,
         null,
         Buffer.from(prevOutScript, 'hex')
       )
