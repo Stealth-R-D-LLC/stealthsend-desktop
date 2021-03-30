@@ -65,7 +65,7 @@ const CryptoService = {
       // TODO: tu nesto ne valja. provjeriti jel se dobro dekriptira seed
       this.master = await bip32.fromSeed(Buffer.from(cryptoJs.AES.decrypt(wallet[0].seed, hashHex).words), this.network)
       console.log('master!', this.master);
-      this.accountDiscovery()
+      // this.accountDiscovery()
     }
   },
   WIFtoPK(wif) {
@@ -103,7 +103,7 @@ const CryptoService = {
   },
   getChildFromRoot(account, change, address) {
     // child === keypair
-    console.log('getChildFromRoot');
+    console.log('getChildFromRoot', account);
     const child = this.master.derivePath(
       `m/44'/1'/${account}'/${change}/${address}`
     )
