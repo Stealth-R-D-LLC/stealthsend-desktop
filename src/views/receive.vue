@@ -37,7 +37,8 @@ export default {
       const { account, change, address } = CryptoService.breakAccountPath(
         acc.path
       )
-      const child = CryptoService.getChildFromRoot(account, change, address + 1)
+      CryptoService.accountDiscovery(account)
+      const child = CryptoService.getChildFromRoot(account, change, address + 5)
       depositAddress.value = child.address
       var qr = new VanillaQR({
         url: depositAddress.value,
