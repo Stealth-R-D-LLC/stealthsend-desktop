@@ -23,7 +23,7 @@
 <script>
 import globalState from '@/store/global'
 import Card from '../components/elements/Card'
-import { computed } from 'vue'
+import { ref } from 'vue'
 import CryptoService from '../services/crypto'
 import router from '../router'
 export default {
@@ -33,10 +33,15 @@ export default {
   },
   setup() {
     // console.log('Init crypto service!')
+    const accounts = ref([])
+    async function getAccounts() {
+      accounts.value = await CryptoService.getAccounts()
+    }
+    getAccounts()
 
-    const accounts = computed(() => {
-      return globalState.state.accounts.filter((el) => !el.isArchived)
-    })
+    // const accounts = computed(() => {
+    //   return globalState.state.accounts.filter((el) => !el.isArchived)
+    // })
 
     const openAccountDetails = (account) => {
       globalState.setAccountDetails(account)

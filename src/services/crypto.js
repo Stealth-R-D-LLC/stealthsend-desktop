@@ -286,13 +286,13 @@ const CryptoService = {
       // derive the first account's node (index = 0)
       // derive the external chain node of this account
       const acc = this.getChildFromRoot( n, 0, i)
-      console.log('acc', acc);
+      console.log('acc.address', acc.address);
       // scan addresses of the external chain; respect the gap limit described below
-      const hdAccount = await globalState.rpc('gethdaccount', [acc.pk])
-      console.log('hdacc', hdAccount);
-      // const inputs = await globalState.rpc('getaddressinputs', [acc.address, 1, 10])
-      if (hdAccount.length > 0) {
-        console.log('discovered account: ',  acc);
+      // const hdAccount = await globalState.rpc('gethdaccount', [acc.pk])
+      // console.log('hdacc', hdAccount);
+      const inputs = await globalState.rpc('getaddressoutputs', [acc.address, 1, 10])
+      if (inputs.length > 0) {
+        console.log('discovered account: ',  acc.path);
         // save account in db?
         this.storeAccountInDb({
           address: acc.address,

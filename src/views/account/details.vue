@@ -66,10 +66,9 @@ export default {
     StTooltip,
   },
   setup() {
-
-      function openTransaction(trx) {
-        router.push(`/transaction/${trx.txid}`)
-      }
+    function openTransaction(trx) {
+      router.push(`/transaction/${trx.txid}`)
+    }
 
     const account = computed(() => {
       return globalState.state.accountDetails
@@ -118,8 +117,6 @@ export default {
         url: account.value.address,
       })
       qrSrc.value = qr.toImage('png').src
-
-
     }
     return {
       account,
@@ -129,7 +126,7 @@ export default {
       handleCopy,
       trxInputs,
       qrSrc,
-      openTransaction
+      openTransaction,
     }
   },
 }
