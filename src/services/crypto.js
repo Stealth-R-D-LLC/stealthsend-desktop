@@ -101,9 +101,20 @@ const CryptoService = {
       })
     })
   },
+  breakAccountPath(path = "0'/0/0") {
+    path = path.replace("'", '')
+    const account = +path.split('/')[0]
+    const change = +path.split('/')[1]
+    const address = +path.split('/')[2]
+    return {
+      account,
+      change,
+      address
+    }
+  },
   getChildFromRoot(account, change, address) {
     // child === keypair
-    console.log('getChildFromRoot', account);
+    console.log('getChildFromRoot', account, change, address);
     const child = this.master.derivePath(
       `m/44'/1'/${account}'/${change}/${address}`
     )
@@ -144,7 +155,7 @@ const CryptoService = {
   },
   async getAccounts() {
     let accounts = await db.find({ name: 'account' })
-    globalState.setAccounts(accounts)
+    // globalState.setAccounts(accounts)
     console.log('Accounts: ', accounts)
     return accounts
   },

@@ -64,7 +64,6 @@ export default {
       let accounts = await CryptoService.getAccounts();
       let largest = 0
       for (let acc of accounts) {
-        console.log('acc', parseInt(acc.path));
         if (parseInt(acc.path) > largest) {
           largest = parseInt(acc.path)
         }
@@ -74,9 +73,10 @@ export default {
     }
 
     async function generateAccount() {
-      let next = await getNextAccountPath();
       isAccountModalVisible.value = false
       globalState.startGlobalLoading()
+
+      let next = await getNextAccountPath();
       const { address, path, pk, wif } = CryptoService.getChildFromRoot(next, 0, 0)
       account = {
         pk: pk,
@@ -88,7 +88,7 @@ export default {
         wif: wif,
         path: path
       }
-      console.log('novi acc: ', account);
+      
       CryptoService.storeAccountInDb(account)
       globalState.stopGlobalLoading()
     }
