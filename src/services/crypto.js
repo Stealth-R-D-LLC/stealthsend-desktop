@@ -55,7 +55,8 @@ const CryptoService = {
       // that's why we are converting the seed from string -> uint8array -> buffer
       let { hashHex } = await this.hashPassword('123123')
       // console.log('seed u init kriptirani: ', wallet[0].seed);
-      // console.log('seed pokusaj dec: ', cryptoJs.AES.decrypt(wallet[0].seed, hashHex));
+      console.log('hash hex: ', hashHex);
+      console.log('seed pokusaj dec: ', cryptoJs.AES.decrypt(wallet[0].seed, hashHex));
       // console.log('seed pokusaj uint16arr: ', this.hexToArray(
       //   cryptoJs.AES.decrypt(wallet[0].seed, hashHex).toString(cryptoJs.enc.Hex)
       // ));
@@ -63,6 +64,7 @@ const CryptoService = {
       //   cryptoJs.AES.decrypt(wallet[0].seed, hashHex).toString(cryptoJs.enc.Hex)
       // )
       // TODO: tu nesto ne valja. provjeriti jel se dobro dekriptira seed
+      console.log('koji k', Buffer.from(cryptoJs.AES.decrypt(wallet[0].seed, hashHex).words), this.network);
       this.master = await bip32.fromSeed(Buffer.from(cryptoJs.AES.decrypt(wallet[0].seed, hashHex).words), this.network)
       console.log('master!', this.master);
       // this.accountDiscovery()
@@ -228,6 +230,7 @@ const CryptoService = {
     return hashHex === storedPassword
   },
   storeWalletInDb(password) {
+    console.log('store wallet in db');
     return new Promise((resolve) => {
       // user security is ultimately dependent on a password,
       // and because a password usually can't be used directly as a cryptographic key,
