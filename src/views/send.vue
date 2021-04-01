@@ -20,7 +20,7 @@
     ></StInput>
     <p>Value: {{ sendForm.amount * XST_USD }}</p>
     <p>Network fee: 0.01 XST</p>
-    <StButton @click="send">Send</StButton>
+    <!-- <StButton @click="send">Send</StButton> -->
     <StButton @click="sendOpet">sendOpet</StButton>
   </div>
 </template>
@@ -80,12 +80,11 @@ console.dir(trx.build().toHex());
         vtx: 0,
       }
 
-      let TransactionBuilder = bitcoin.TransactionBuilder
-      let rawTransaction = new TransactionBuilder(CryptoService.network)
+      let rawTransaction = new bitcoin.TransactionBuilder(CryptoService.network, 3000000)
       let prevOutScript = '76a9144d7f81c5641decec8c8c493468e06ad6c876599f88ac'
       rawTransaction.addInput(
         addressOutputs.txid,
-        0,
+        1,
         null,
         Buffer.from(prevOutScript, 'hex')
       )
@@ -95,7 +94,7 @@ console.dir(trx.build().toHex());
       }
       let change = {
         address: 'mnaj5AHhnzw8m1JaAaCxNsHwNdUrRvbEy2',
-        amount: 0.3 * 1e6,
+        amount: 0.03 * 1e6,
       }
       // rawTransaction.addInput("6893ba14a9c77648788bfefd56229bdbc7f5a212d2f15801eacee305d740636a", 0)
 
@@ -131,106 +130,106 @@ console.dir(trx.build().toHex());
       // namjerno pogresnu da vidis kak izgleda
     }
 
-    async function send() {
-      console.log('sending...', sendForm)
-      // https://gist.githubusercontent.com/StealthSend/d24a338b85b5be26073213c44210a11e/raw/3e4827fc354c45d73755dbae63c7d81e2d50a33b/stealth-mainnet-address-regex.txt
-      // get current account
-      // validate fields (caution with xst address)
-      // currency input for amount
-      // check if insufficient funds
+    // async function send() {
+    //   console.log('sending...', sendForm)
+    //   // https://gist.githubusercontent.com/StealthSend/d24a338b85b5be26073213c44210a11e/raw/3e4827fc354c45d73755dbae63c7d81e2d50a33b/stealth-mainnet-address-regex.txt
+    //   // get current account
+    //   // validate fields (caution with xst address)
+    //   // currency input for amount
+    //   // check if insufficient funds
 
-      // In bitcoin transactions, you don’t actually spend the balance of the address
-      // instead, you spend transactions received by your address
-      // also referred to as UTXO
-      // To create a transaction, we’ll need such UTXO to use as input to our next transaction
-      let unspentOutput = {
-        address: 'miM6d6S71YX9JrRgVfKUeFxGpqdd8o3fKD',
-        amount: 1.07,
-        balance: 2.3,
-        blockhash:
-          '5c9c980ee4f84c800f38726d72c9ce91a90360dfb92696ee9cc0d9baefaf82e4',
-        blocktime: 1616065534,
-        confirmations: 2200,
-        height: 4481928,
-        isspent: 'false',
-        txid:
-          'b8b2f84ec9433f025cd265f2f7fdc1a7568876acd46799b6bb7010c8cea689e4',
-        vout: 1,
-        vtx: 0,
-      }
+    //   // In bitcoin transactions, you don’t actually spend the balance of the address
+    //   // instead, you spend transactions received by your address
+    //   // also referred to as UTXO
+    //   // To create a transaction, we’ll need such UTXO to use as input to our next transaction
+    //   let unspentOutput = {
+    //     address: 'miM6d6S71YX9JrRgVfKUeFxGpqdd8o3fKD',
+    //     amount: 1.07,
+    //     balance: 2.3,
+    //     blockhash:
+    //       '5c9c980ee4f84c800f38726d72c9ce91a90360dfb92696ee9cc0d9baefaf82e4',
+    //     blocktime: 1616065534,
+    //     confirmations: 2200,
+    //     height: 4481928,
+    //     isspent: 'false',
+    //     txid:
+    //       'b8b2f84ec9433f025cd265f2f7fdc1a7568876acd46799b6bb7010c8cea689e4',
+    //     vout: 1,
+    //     vtx: 0,
+    //   }
 
-      // There are three elements involved in a bitcoin transaction:
-      // 1 - a transaction input - the bitcoin address FROM which the money was sent
-      // 2 - a transaction output - the bitcoin address TO which the money will be sent
-      // 3 -  amount
+    //   // There are three elements involved in a bitcoin transaction:
+    //   // 1 - a transaction input - the bitcoin address FROM which the money was sent
+    //   // 2 - a transaction output - the bitcoin address TO which the money will be sent
+    //   // 3 -  amount
 
-      const psbt = new bitcoin.Psbt(CryptoService.network)
-      psbt.setVersion(2) // These are defaults. This line is not needed.
+    //   const psbt = new bitcoin.Psbt(CryptoService.network)
+    //   psbt.setVersion(2) // These are defaults. This line is not needed.
 
-      // TODO: somehow locally get transaction in hex
-      // const tx = await globalState.rpc('gettransaction', [unspentOutput.txid])
+    //   // TODO: somehow locally get transaction in hex
+    //   // const tx = await globalState.rpc('gettransaction', [unspentOutput.txid])
 
-      // TODO: somehow locally get transaction in hex
-      const txidHex = await globalState.rpc('getrawtransaction', [
-        unspentOutput.txid,
-      ])
+    //   // TODO: somehow locally get transaction in hex
+    //   const txidHex = await globalState.rpc('getrawtransaction', [
+    //     unspentOutput.txid,
+    //   ])
 
-      // console.log('1', tx)
-      console.log('2', Buffer.from(txidHex, 'hex'))
-      console.log('3', txidHex)
-      console.log('4', unspentOutput.txid)
-      console.log('5', unspentOutput.txid.toString('hex'))
-      //       psbt.addInput({
-      //   hash: unspentOutput.txid,
-      //   index: 0,
-      //   nonWitnessUtxo: Buffer.from(txidHex, 'hex'),
-      //   // redeemScript: Buffer.from(tx.vin[0].scriptSig.hex, 'hex')
-      // })
-      // psbt.addInput({
-      //   hash: unspentOutput.txid,
-      //   index: 1,
-      //   nonWitnessUtxo: Buffer.from(txidHex, 'hex'),
-      //   // redeemScript: Buffer.from(tx.vin[0].scriptSig.hex, 'hex')
-      // })
+    //   // console.log('1', tx)
+    //   console.log('2', Buffer.from(txidHex, 'hex'))
+    //   console.log('3', txidHex)
+    //   console.log('4', unspentOutput.txid)
+    //   console.log('5', unspentOutput.txid.toString('hex'))
+    //   //       psbt.addInput({
+    //   //   hash: unspentOutput.txid,
+    //   //   index: 0,
+    //   //   nonWitnessUtxo: Buffer.from(txidHex, 'hex'),
+    //   //   // redeemScript: Buffer.from(tx.vin[0].scriptSig.hex, 'hex')
+    //   // })
+    //   // psbt.addInput({
+    //   //   hash: unspentOutput.txid,
+    //   //   index: 1,
+    //   //   nonWitnessUtxo: Buffer.from(txidHex, 'hex'),
+    //   //   // redeemScript: Buffer.from(tx.vin[0].scriptSig.hex, 'hex')
+    //   // })
 
-      psbt.addOutput({
-        address: 'mhjpLAjaHHWnBQHGVtJHPesZQvAhJGYzDX', // destination address
-        value: 0.05 * 1e6, // value in satoshi
-      })
+    //   psbt.addOutput({
+    //     address: 'mhjpLAjaHHWnBQHGVtJHPesZQvAhJGYzDX', // destination address
+    //     value: 0.05 * 1e6, // value in satoshi
+    //   })
 
-      psbt.addOutput({
-        address: 'miM6d6S71YX9JrRgVfKUeFxGpqdd8o3fKD', // change address
-        value: 1.17 * 1e6,
-      })
+    //   psbt.addOutput({
+    //     address: 'miM6d6S71YX9JrRgVfKUeFxGpqdd8o3fKD', // change address
+    //     value: 1.17 * 1e6,
+    //   })
 
-      psbt.addInput({
-        hash: unspentOutput.txid,
-        index: 1,
-        nonWitnessUtxo: Buffer.from(txidHex, 'hex'),
-        // redeemScript: Buffer.from(tx.vin[0].scriptSig.hex, 'hex')
-      })
+    //   psbt.addInput({
+    //     hash: unspentOutput.txid,
+    //     index: 1,
+    //     nonWitnessUtxo: Buffer.from(txidHex, 'hex'),
+    //     // redeemScript: Buffer.from(tx.vin[0].scriptSig.hex, 'hex')
+    //   })
 
-      // TODO: hardcoded, has to be retrieved from every account
-      const child = CryptoService.master.derivePath(`m/44'/1'/0'/0/0`)
+    //   // TODO: hardcoded, has to be retrieved from every account
+    //   const child = CryptoService.master.derivePath(`m/44'/1'/0'/0/0`)
 
-      // const pk = child.privateKey
-      console.log('pk: ', child)
+    //   // const pk = child.privateKey
+    //   console.log('pk: ', child)
 
-      const signed = psbt.signInput(0, child)
-      psbt.validateSignaturesOfInput(0)
-      psbt.finalizeAllInputs()
+    //   const signed = psbt.signInput(0, child)
+    //   psbt.validateSignaturesOfInput(0)
+    //   psbt.finalizeAllInputs()
 
-      console.log('signed', signed)
+    //   console.log('signed', signed)
 
-      const sent = await globalState.rpc('sendrawtransaction', [signed.hex])
+    //   const sent = await globalState.rpc('sendrawtransaction', [signed.hex])
 
-      console.log('sent: ', sent)
-    }
+    //   console.log('sent: ', sent)
+    // }
 
     return {
       XST_USD,
       sendForm,
-      send,
+      // send,
       sendOpet,
     }
   },
