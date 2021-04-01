@@ -65,24 +65,24 @@ console.dir(trx.build().toHex());
 
     async function sendOpet() {
       let addressOutputs = {
-        address: 'mmDr34PKbdure6eVUnjqTu4EAo3WjWvZ9p',
-        amount: 0.19,
-        balance: 0.25,
+        address: 'mnaj5AHhnzw8m1JaAaCxNsHwNdUrRvbEy2',
+        amount: 0.08,
+        balance: 0.08,
         blockhash:
-          "45d63fdfe7ff0c273b659e8f397beecc989ddcb45c5f3cbfac469888383ddcd7",
+          "468e976261218a37751a7a14863d6124189b4fe129c7cefcd3f74a58f7fb79af",
         blocktime: 1617088334,
         confirmations: 2200,
         height: 4481928,
         isspent: 'false',
         txid:
-          'eeca9988b5e0255e1185355ceaf44fea71bf70aec2cf4a7f212ee04ff6fefafa',
+          '57dd068b16a2fa6fd2b8ede8adba4627276539857ae69639fc264318ecbe33cd',
         vout: 0,
         vtx: 0,
       }
 
       let TransactionBuilder = bitcoin.TransactionBuilder
       let rawTransaction = new TransactionBuilder(CryptoService.network)
-      let prevOutScript = '76a9143e9475809082fff3f4f8bda7d2fb8873d5876f0f88ac'
+      let prevOutScript = '76a9144d7f81c5641decec8c8c493468e06ad6c876599f88ac'
       rawTransaction.addInput(
         addressOutputs.txid,
         0,
@@ -94,8 +94,8 @@ console.dir(trx.build().toHex());
         amount: 0.05 * 1e6,
       }
       let change = {
-        address: 'mmDr34PKbdure6eVUnjqTu4EAo3WjWvZ9p',
-        amount: 0.1 * 1e6,
+        address: 'mnaj5AHhnzw8m1JaAaCxNsHwNdUrRvbEy2',
+        amount: 0.3 * 1e6,
       }
       // rawTransaction.addInput("6893ba14a9c77648788bfefd56229bdbc7f5a212d2f15801eacee305d740636a", 0)
 

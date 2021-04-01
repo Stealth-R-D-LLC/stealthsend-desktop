@@ -66,7 +66,7 @@ const CryptoService = {
       // )
       // TODO: tu nesto ne valja. provjeriti jel se dobro dekriptira seed
       // console.log('koji k', Buffer.from(cryptoJs.AES.decrypt(wallet[0].seed, hashHex).words, 'hex'));
-      this.master = await bip32.fromSeed(Buffer.from(this.hexToArray(cryptoJs.AES.decrypt(wallet[0].seed, hashHex).toString(cryptoJs.enc.Utf8))))
+      this.master = await bip32.fromSeed(Buffer.from(this.hexToArray(cryptoJs.AES.decrypt(wallet[0].seed, hashHex).toString(cryptoJs.enc.Utf8))), this.network)
       console.log('master!', this.master);
       // this.accountDiscovery()
     }
