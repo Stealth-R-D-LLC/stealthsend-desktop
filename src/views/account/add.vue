@@ -60,24 +60,24 @@ export default {
 
     const accountName = ref('')
 
-    async function getNextAccountPath() {
-      let accounts = await CryptoService.getAccounts();
-      let largest = 0
-      for (let acc of accounts) {
-        if (parseInt(acc.path) > largest) {
-          largest = parseInt(acc.path)
-        }
+    // async function getNextAccountPath() {
+    //   let accounts = await CryptoService.getAccounts();
+    //   let largest = 0
+    //   for (let acc of accounts) {
+    //     if (parseInt(acc.path) > largest) {
+    //       largest = parseInt(acc.path)
+    //     }
         
-      }
-      return largest + 1;
-    }
+    //   }
+    //   return largest + 1;
+    // }
 
     async function generateAccount() {
       isAccountModalVisible.value = false
       globalState.startGlobalLoading()
 
-      let next = await getNextAccountPath();
-      const { address, path, pk, wif } = CryptoService.getChildFromRoot(next, 0, 0)
+      // let next = await getNextAccountPath();
+      const { address, path, pk, wif } = CryptoService.getChildFromRoot(0, 0, 0)
       account = {
         pk: pk,
         address: address,
@@ -88,7 +88,7 @@ export default {
         wif: wif,
         path: path
       }
-      
+
       CryptoService.storeAccountInDb(account)
       globalState.stopGlobalLoading()
     }
