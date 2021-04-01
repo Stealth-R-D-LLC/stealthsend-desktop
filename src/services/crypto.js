@@ -55,17 +55,18 @@ const CryptoService = {
       // that's why we are converting the seed from string -> uint8array -> buffer
       let { hashHex } = await this.hashPassword('123123')
       // console.log('seed u init kriptirani: ', wallet[0].seed);
-      console.log('hash hex: ', hashHex);
-      console.log('seed pokusaj dec: ', cryptoJs.AES.decrypt(wallet[0].seed, hashHex));
-      // console.log('seed pokusaj uint16arr: ', this.hexToArray(
-      //   cryptoJs.AES.decrypt(wallet[0].seed, hashHex).toString(cryptoJs.enc.Hex)
-      // ));
+      console.log('hash hex za decrypt: ', hashHex);
+      console.log('seed koji treba decrypt: ', wallet[0].seed);
+
+      console.log('dekriptirani seed', cryptoJs.AES.decrypt(wallet[0].seed, hashHex).toString(cryptoJs.enc.Utf8));
+      console.log('seed hexToArray', this.hexToArray(cryptoJs.AES.decrypt(wallet[0].seed, hashHex).toString(cryptoJs.enc.Utf8)));
+      console.log('seed hexToArray buffer', Buffer.from(this.hexToArray(cryptoJs.AES.decrypt(wallet[0].seed, hashHex).toString(cryptoJs.enc.Utf8))));
       // this.seed = this.hexToArray(
       //   cryptoJs.AES.decrypt(wallet[0].seed, hashHex).toString(cryptoJs.enc.Hex)
       // )
       // TODO: tu nesto ne valja. provjeriti jel se dobro dekriptira seed
-      console.log('koji k', Buffer.from(cryptoJs.AES.decrypt(wallet[0].seed, hashHex).words), this.network);
-      this.master = await bip32.fromSeed(Buffer.from(cryptoJs.AES.decrypt(wallet[0].seed, hashHex).words), this.network)
+      // console.log('koji k', Buffer.from(cryptoJs.AES.decrypt(wallet[0].seed, hashHex).words, 'hex'));
+      this.master = await bip32.fromSeed(Buffer.from(this.hexToArray(cryptoJs.AES.decrypt(wallet[0].seed, hashHex).toString(cryptoJs.enc.Utf8))))
       console.log('master!', this.master);
       // this.accountDiscovery()
     }
@@ -94,8 +95,9 @@ const CryptoService = {
       this.master = master
       this.seed = seed
       // console.log('mnemonic: ', this.mnemonic)
-      // console.log('seed: ', this.seed)
-      // console.log('master: ', this.master)
+      console.log('seed izgleda ovako: ', this.seed.toString('hex'))
+      console.log('seed buffer generiran: ', this.seed);
+      console.log('master ovako: ', this.master)
       resolve({
         mnemonic,
         // seed,
@@ -120,9 +122,11 @@ const CryptoService = {
     const child = this.master.derivePath(
       `m/44'/1'/${account}'/${change}/${address}`
     )
-    let acc = this.master.derivePath(
-      `m/44'/1'/${account}'`
-    )
+    // let acc = this.master.derivePath(
+    //   `m/44'/1'/${account}'`
+    // )
+    console.log('wif: ', child.toWIF());
+    console.log('net', this.network);
     // this.WIFtoPK(child.toWIF()) // decrypt
     return {
       address: bitcoin.payments.p2pkh({
@@ -130,7 +134,7 @@ const CryptoService = {
         network: this.network
       }).address,
       keyPair: child,
-      pk: String(acc.neutered().toBase58()),
+      pk: String(child.neutered().toBase58()),
       wif: child.toWIF(),
       // sk: child.privateKey,
       path: `${account}'/${change}/${address}`
@@ -243,16 +247,23 @@ const CryptoService = {
         iterations: 1000
       })
 
+      // let a = cryptoJs.AES.encrypt('poruka', '123')
+      // console.log('---a', a.toString());
+      // console.log('---', cryptoJs.AES.decrypt(a, '123').toString(cryptoJs.enc.Utf8));
+      // console.log('---', Buffer.from(cryptoJs.AES.decrypt(a, '123').words, 'hex'));
+
+
       // encrypt the seed with the hashed password
       // to decrypt the seed, we need to ask the user for his password and then hash it again.
       // if the resulted hash is the same as the hashed password,
       // then the user entered the correct password and the seed can be decrypted
-      // console.log('sid', this.seed);
-      // console.log('hash', hash);
+      console.log('sad cu kriptirati ovaj seed', this.seed.toString('hex'));
+      console.log('s ovim hashom', hash.toString(cryptoJs.enc.Hex));
       const encryptedSeed = cryptoJs.AES.encrypt(
         this.seed.toString('hex'),
         hash.toString(cryptoJs.enc.Hex)
       )
+      console.log('just encrypted: ', encryptedSeed.toString());
       // console.log('seed', this.seed);
       // console.log('seed hex', this.seed.toString('hex'));
       // console.log('pokusaj smrti', this.hexToArray(this.seed.toString('hex')));
@@ -264,7 +275,7 @@ const CryptoService = {
       const wallet = {
         name: 'wallet',
         archived: false,
-        seed: encryptedSeed.ciphertext.toString(cryptoJs.enc.Hex),
+        seed: encryptedSeed.toString(),
         password: hash.toString(cryptoJs.enc.Hex),
         balance: 0, // will be calculated after "scanning" for accounts; sum of all accounts
         salt: salt
