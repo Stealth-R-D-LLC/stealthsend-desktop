@@ -39,16 +39,16 @@
 
 <script>
 import CryptoService from '@/services/crypto'
-import StModal from '@/components/kit/StModal.vue'
+// import StModal from '@/components/kit/StModal.vue'
 import globalState from '@/store/global'
 import { computed } from 'vue'
 
 import { ref } from 'vue'
 export default {
   name: 'StAddAccount',
-  components: {
-    StModal
-  },
+  // components: {
+  //   StModal
+  // },
   setup() {
     const hasZeroBalance = computed(() => {
       return false // TODO: hardcoded

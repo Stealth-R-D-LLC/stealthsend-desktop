@@ -24,13 +24,13 @@
 
 <script>
 import { ref } from 'vue'
-import StLoading from '@/components/kit/StLoading.vue'
+// import StLoading from '@/components/kit/StLoading.vue'
 import router from '@/router'
 export default {
   name: 'StLock',
-  components: {
-    StLoading
-  },
+  // components: {
+  //   StLoading
+  // },
   setup() {
     const isLoading = ref(true)
     const isPasswordFieldVisible = ref(false)
