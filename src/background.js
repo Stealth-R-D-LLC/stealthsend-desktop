@@ -73,10 +73,10 @@ if (isDevelopment) {
       if (data === 'graceful-exit') {
         app.quit();
       }
-    })
+    });
   } else {
     process.on('SIGTERM', () => {
       app.quit();
-    })
+    });
   }
 }
