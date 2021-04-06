@@ -33,15 +33,15 @@ import db from '../db'
 const CryptoService = {
   isFirstArrival: true,
   network: {
-      messagePrefix: 'unused',
-      bip32: {
-    public: 0x043587cf,
-    private: 0x04358394,
-      },
-      pubKeyHash: 0x6f,
-      scriptHash: 0xc4,
-      wif: 0xef
+    messagePrefix: 'unused',
+    bip32: {
+      public: 0x043587cf,
+      private: 0x04358394,
     },
+    pubKeyHash: 0x6f,
+    scriptHash: 0xc4,
+    wif: 0xef
+  },
   master: null,
   seed: null,
   wallet: null,
@@ -66,13 +66,13 @@ const CryptoService = {
     // get password hash so that we can decrypt everything
     let { hash } = await this.hashPassword(password)
     let wallet = await this.getWalletFromDb()
-          // seed is stored in a string format because it's the easies to store
-      // when retrieving, we need to have the seed in buffer type so we can work with it
-      // that's why we are converting the seed from string -> uint8array -> buffer
-      this.master = await bip32.fromSeed(Buffer.from(this.hexToArray(cryptoJs.AES.decrypt(wallet[0].seed, hash).toString(cryptoJs.enc.Utf8))), this.network)
-      console.log('master!', this.master);
-      router.push('/dashboard')
-      // this.accountDiscovery()
+    // seed is stored in a string format because it's the easies to store
+    // when retrieving, we need to have the seed in buffer type so we can work with it
+    // that's why we are converting the seed from string -> uint8array -> buffer
+    this.master = await bip32.fromSeed(Buffer.from(this.hexToArray(cryptoJs.AES.decrypt(wallet[0].seed, hash).toString(cryptoJs.enc.Utf8))), this.network)
+    console.log('master!', this.master);
+    router.push('/dashboard')
+    // this.accountDiscovery()
   },
   WIFtoPK(wif) {
     const keyPair = bitcoin.ECPair.fromWIF(wif, this.network)
@@ -240,13 +240,13 @@ const CryptoService = {
     // });
     this.password = hash.toString(cryptoJs.enc.Hex);
     return {
-     salt: salt,
-     hash: hash.toString(cryptoJs.enc.Hex)
+      salt: salt,
+      hash: hash.toString(cryptoJs.enc.Hex)
     }
   },
   async storeWalletInDb(password) {
     console.log('store wallet in db', password);
-    let {hash, salt} = await this.hashPassword(password)
+    let { hash, salt } = await this.hashPassword(password)
     return new Promise((resolve) => {
       // user security is ultimately dependent on a password,
       // and because a password usually can't be used directly as a cryptographic key,
@@ -296,7 +296,7 @@ const CryptoService = {
       db.insert(wallet, () => {
         console.log('wallet stored in db: ', wallet)
       })
-      
+
       resolve(wallet)
     })
   },
@@ -306,24 +306,24 @@ const CryptoService = {
     // it expects there are no used addresses beyond this point and stops searching the address chain.
     // We scan just the external chains, because internal chains receive only coins that come from the associated external chains.
     const GAP_LIMIT = 20;
-    
+
     let emptyInARow = 0;
     for (let i = 0; i < GAP_LIMIT; i++) {
       // derive the first account's node (index = 0)
       // derive the external chain node of this account
-      const acc = this.getChildFromRoot( n, 0, i)
+      const acc = this.getChildFromRoot(n, 0, i)
       console.log('acc.address', acc.address);
       // scan addresses of the external chain; respect the gap limit described below
       // const hdAccount = await globalState.rpc('gethdaccount', [acc.pk])
       // console.log('hdacc', hdAccount);
       const inputs = await globalState.rpc('getaddressoutputs', [acc.address, 1, 10])
       if (inputs.length > 0) {
-        console.log('discovered account: ',  acc.path);
+        console.log('discovered account: ', acc.path);
         // save account in db?
         this.storeAccountInDb({
           address: acc.address,
           path: acc.path,
-          pk: acc.pk, 
+          pk: acc.pk,
           name: 'account',
           label: 'Account ' + i + 1,
           isArchived: false,

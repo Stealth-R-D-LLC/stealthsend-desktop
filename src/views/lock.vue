@@ -16,8 +16,8 @@
       <StButton
         v-if="!isPasswordFieldVisible"
         @click="isPasswordFieldVisible = true"
-        >Unlock</StButton
-      >
+        >Unlock
+      </StButton>
     </div>
   </div>
 </template>
@@ -30,7 +30,7 @@ import CryptoService from '@/services/crypto'
 export default {
   name: 'StLock',
   components: {
-    StLoading
+    StLoading,
   },
   setup() {
     const isLoading = ref(true)
@@ -41,14 +41,14 @@ export default {
     }, 1500)
 
     const handlePassword = async (e) => {
-      let isPasswordMatch = false;
+      let isPasswordMatch = false
       if (e.keyCode === 13) {
         isPasswordMatch = await CryptoService.validatePassword(password.value)
         if (isPasswordMatch) {
           await CryptoService.unlock(password.value)
           router.push('/dashboard')
         } else {
-          console.log('wrong password!');
+          console.log('wrong password!')
         }
       }
     }
@@ -56,9 +56,9 @@ export default {
       isLoading,
       isPasswordFieldVisible,
       password,
-      handlePassword
+      handlePassword,
     }
-  }
+  },
 }
 </script>
 
