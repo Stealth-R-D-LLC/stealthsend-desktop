@@ -5,4 +5,4 @@ const WalletService = {
     password: '',
 }
 
-export default WalletService
+export default WalletService;

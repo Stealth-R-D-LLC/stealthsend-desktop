@@ -119,7 +119,7 @@ export default {
       // new wallet is created
       // therefore, new password can be made
       globalState.startGlobalLoading()
-      created.value = await CryptoService.generateMnemonicAndSeed()
+      created.value = CryptoService.generateMnemonicAndSeed()
       await CryptoService.storeWalletInDb(password.value)
       globalState.stopGlobalLoading()
     }
