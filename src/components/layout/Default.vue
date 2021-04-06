@@ -31,8 +31,7 @@ export default {
     // create new wallet will ask for a new password and generate a new seed/pk/address/etc
 
     // if there is an account/wallet in the db, ask for password (lock screen page), render dashboard
-    return {
-    }
+    return {}
   }
 }
 </script>
