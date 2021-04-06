@@ -98,9 +98,8 @@ const CryptoService = {
       this.master = master
       this.seed = seed
       // console.log('mnemonic: ', this.mnemonic)
-      console.log('seed izgleda ovako: ', this.seed.toString('hex'))
-      console.log('seed buffer generiran: ', this.seed);
-      console.log('master ovako: ', this.master)
+      // console.log('seed: ', this.seed)
+      // console.log('master: ', this.master)
       resolve({
         mnemonic,
         // seed,
@@ -125,11 +124,9 @@ const CryptoService = {
     const child = this.master.derivePath(
       `m/44'/1'/${account}'/${change}/${address}`
     )
-    // let acc = this.master.derivePath(
-    //   `m/44'/1'/${account}'`
-    // )
-    console.log('wif: ', child.toWIF());
-    console.log('net', this.network);
+    let acc = this.master.derivePath(
+      `m/44'/1'/${account}'`
+    )
     // this.WIFtoPK(child.toWIF()) // decrypt
     return {
       address: bitcoin.payments.p2pkh({
@@ -137,7 +134,7 @@ const CryptoService = {
         network: this.network
       }).address,
       keyPair: child,
-      pk: String(child.neutered().toBase58()),
+      pk: String(acc.neutered().toBase58()),
       wif: child.toWIF(),
       // sk: child.privateKey,
       path: `${account}'/${change}/${address}`
@@ -287,8 +284,8 @@ const CryptoService = {
       const wallet = {
         name: 'wallet',
         archived: false,
-        seed: encryptedSeed.toString(),
-        password: hash,
+        seed: encryptedSeed.ciphertext.toString(cryptoJs.enc.Hex),
+        password: hash.toString(cryptoJs.enc.Hex),
         balance: 0, // will be calculated after "scanning" for accounts; sum of all accounts
         salt: salt
       }
