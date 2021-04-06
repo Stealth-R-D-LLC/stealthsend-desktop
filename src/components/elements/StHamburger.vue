@@ -1,5 +1,5 @@
 <template>
-  <div class="hamburglar" :class="{'is-open': open, 'is-closed': !open}">
+  <div class="hamburglar" :class="{ 'is-open': open, 'is-closed': !open }">
     <div class="burger-icon">
       <div class="burger-container">
         <span class="burger-bun-top"></span>
@@ -16,14 +16,13 @@ export default {
     open: {
       type: Boolean,
       required: true,
-      default: false
-    }
+      default: false,
+    },
   },
   setup() {
-    return {
-    }
-  }
-}
+    return {};
+  },
+};
 </script>
 
 <style scoped>
@@ -91,11 +90,13 @@ export default {
 
 .burger-bun-top {
   top: 0;
-    transform-origin: 25.5px 3.5px;}
+  transform-origin: 25.5px 3.5px;
+}
 
 .burger-bun-bot {
   bottom: 0;
-    transform-origin: 20.5px -0.5px;}
+  transform-origin: 20.5px -0.5px;
+}
 
 .hamburglar.is-open .burger-bun-top {
   -webkit-animation: bun-top-out 0.6s linear normal;

@@ -14,9 +14,9 @@
 export default {
   name: 'TsNewuser',
   setup() {
-    return {}
-  }
-}
+    return {};
+  },
+};
 </script>
 
 <style scoped>

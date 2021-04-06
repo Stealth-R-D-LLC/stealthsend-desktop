@@ -5,16 +5,21 @@ module.exports = {
     node: true,
   },
   extends: [
+    // 'plugin:vue/vue3-recommended',
+    // // 'eslint:recommended',
+    // 'prettier/vue',
+    // 
     'plugin:vue/vue3-recommended',
-    // 'eslint:recommended',
+    'eslint:recommended',
+    'prettier',
     'prettier/vue',
   ],
-  parserOptions: {
-    ecmaVersion: 2018,
-    sourceType: 'module',
-    allowImportExportEverywhere: true,
-    experimentalObjectRestSpread: true
-  },
+  // parserOptions: {
+  //   ecmaVersion: 2018,
+  //   sourceType: 'module',
+  //   allowImportExportEverywhere: true,
+  //   experimentalObjectRestSpread: true
+  // },
   plugins: ['prettier', 'vue'],
   // add your custom rules here
   rules: {
