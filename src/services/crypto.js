@@ -31,6 +31,7 @@ import db from '../db'
 
 
 const CryptoService = {
+  isFirstArrival: true,
   network: {
       messagePrefix: 'unused',
       bip32: {
@@ -54,8 +55,9 @@ const CryptoService = {
     console.log('Wallet: ', wallet)
     if (wallet.length <= 0) {
       router.push('/welcome')
-    } else {
-      // router.push('/lock')
+    } else if (this.isFirstArrival) {
+      router.push('/lock')
+      this.isFirstArrival = false;
     }
   },
   async unlock(password) {
