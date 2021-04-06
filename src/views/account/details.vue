@@ -4,7 +4,7 @@
     <pre>
       {{ account }}
     </pre>
-    <card
+    <StCard
       class="list-item"
       :archiveable="false"
       :account="{
@@ -12,7 +12,7 @@
         balance: addressInfo.balance,
         isArchived: account.isArchived,
       }"
-    ></card>
+    ></StCard>
     <StTooltip
       :tooltip-text="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
     >
@@ -49,22 +49,22 @@
 
 <script>
 import globalState from '@/store/global'
-import StTable from '@/components/kit/StTable.vue'
+// import StTable from '@/components/kit/StTable.vue'
 import { computed, ref } from 'vue'
-import Card from '../../components/elements/Card'
+// import Card from '../../components/elements/Card'
 import VanillaQR from 'vanillaqr'
-import StCopyToClipboard from '@/components/kit/StClipboard.vue'
-import StTooltip from '@/components/kit/StTooltip.vue'
+// import StCopyToClipboard from '@/components/kit/StClipboard.vue'
+// import StTooltip from '@/components/kit/StTooltip.vue'
 import router from '@/router'
 
 export default {
   name: 'StAccountDetails',
-  components: {
-    Card,
-    StTable,
-    StCopyToClipboard,
-    StTooltip,
-  },
+  // components: {
+  //   // StCard,
+  //   // StTable,
+  //   // StCopyToClipboard,
+  //   // StTooltip,
+  // },
   setup() {
     function openTransaction(trx) {
       router.push(`/transaction/${trx.txid}`)
