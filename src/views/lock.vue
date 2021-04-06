@@ -42,12 +42,10 @@ export default {
 
     const handlePassword = async (e) => {
       let isPasswordMatch = false;
-      console.log('password entered: ', password.value, e.keyCode);
       if (e.keyCode === 13) {
-        // handle enter
-        // TODO: validate pass
         isPasswordMatch = await CryptoService.validatePassword(password.value)
         if (isPasswordMatch) {
+          await CryptoService.unlock(password.value)
           router.push('/dashboard')
         } else {
           console.log('wrong password!');

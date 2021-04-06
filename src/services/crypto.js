@@ -1,3 +1,4 @@
+import router from '@/router'
 import globalState from '@/store/global'
 import * as bip32 from 'bip32'
 import * as bip39 from 'bip39'
@@ -46,31 +47,30 @@ const CryptoService = {
   password: '',
   async init() {
     // check if there's already a wallet stored in the db
-    // if so, retrieve it and generate the master from the stored seed
+    // if so, ask for password via lock screen and 
+    // retrieve the stored wallet and generate the master from the stored seed
     let wallet = await this.getWalletFromDb()
     await this.getAccounts()
     console.log('Wallet: ', wallet)
-    if (wallet.length > 0) {
-      // seed is stored in a string format because it's the easies to store
+    if (wallet.length <= 0) {
+      router.push('/welcome')
+    } else {
+      // router.push('/lock')
+    }
+  },
+  async unlock(password) {
+    // no need to validate password because it is validated before calling this method
+    // const isPasswordValid = await this.validatePassword(password) // compare user prompted password with stored
+    // get password hash so that we can decrypt everything
+    let { hash } = await this.hashPassword(password)
+    let wallet = await this.getWalletFromDb()
+          // seed is stored in a string format because it's the easies to store
       // when retrieving, we need to have the seed in buffer type so we can work with it
       // that's why we are converting the seed from string -> uint8array -> buffer
-      let { hash } = await this.hashPassword('123123')
-      // console.log('seed u init kriptirani: ', wallet[0].seed);
-      // console.log('hash hex za decrypt: ', hashHex);
-      // console.log('seed koji treba decrypt: ', wallet[0].seed);
-
-      // console.log('dekriptirani seed', cryptoJs.AES.decrypt(wallet[0].seed, hashHex).toString(cryptoJs.enc.Utf8));
-      // console.log('seed hexToArray', this.hexToArray(cryptoJs.AES.decrypt(wallet[0].seed, hashHex).toString(cryptoJs.enc.Utf8)));
-      // console.log('seed hexToArray buffer', Buffer.from(this.hexToArray(cryptoJs.AES.decrypt(wallet[0].seed, hashHex).toString(cryptoJs.enc.Utf8))));
-      // this.seed = this.hexToArray(
-      //   cryptoJs.AES.decrypt(wallet[0].seed, hashHex).toString(cryptoJs.enc.Hex)
-      // )
-      // TODO: tu nesto ne valja. provjeriti jel se dobro dekriptira seed
-      // console.log('koji k', Buffer.from(cryptoJs.AES.decrypt(wallet[0].seed, hashHex).words, 'hex'));
       this.master = await bip32.fromSeed(Buffer.from(this.hexToArray(cryptoJs.AES.decrypt(wallet[0].seed, hash).toString(cryptoJs.enc.Utf8))), this.network)
       console.log('master!', this.master);
+      router.push('/dashboard')
       // this.accountDiscovery()
-    }
   },
   WIFtoPK(wif) {
     const keyPair = bitcoin.ECPair.fromWIF(wif, this.network)
@@ -219,8 +219,14 @@ const CryptoService = {
   },
   async hashPassword(password) {
     let wallet = await this.getWalletFromDb()
-    console.log('ima vec salt ', wallet[0].salt);
-    const salt = wallet && wallet[0] ? wallet[0].salt : cryptoJs.lib.WordArray.random(128 / 8)
+    let salt = null;
+    if (wallet.length > 0) {
+      console.log('ima vec salt ', wallet[0].salt);
+      salt = wallet[0].salt
+    } else {
+      console.log('novi salt');
+      salt = cryptoJs.lib.WordArray.random(128 / 8)
+    }
     const hash = cryptoJs.PBKDF2(password, salt, {
       keySize: 512 / 32,
       iterations: 1000
