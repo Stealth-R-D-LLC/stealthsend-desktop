@@ -26,6 +26,7 @@
 import { ref } from 'vue'
 import StLoading from '@/components/kit/StLoading.vue'
 import router from '@/router'
+import CryptoService from '@/services/crypto'
 export default {
   name: 'StLock',
   components: {
@@ -37,13 +38,20 @@ export default {
     const password = ref('')
     setTimeout(() => {
       isLoading.value = false
-    }, 3000)
+    }, 1500)
 
-    const handlePassword = (e) => {
+    const handlePassword = async (e) => {
+      let isPasswordMatch = false;
+      console.log('password entered: ', password.value, e.keyCode);
       if (e.keyCode === 13) {
         // handle enter
         // TODO: validate pass
-        router.push('/dashboard')
+        isPasswordMatch = await CryptoService.validatePassword(password.value)
+        if (isPasswordMatch) {
+          router.push('/dashboard')
+        } else {
+          console.log('wrong password!');
+        }
       }
     }
     return {
