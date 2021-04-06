@@ -6,28 +6,29 @@ import { Buffer } from 'buffer';
 import cryptoJs from 'crypto-js';
 import db from '../db';
 
-// libs.bitcoin.networks.stealthtestnet = {
-//   messagePrefix: 'unused',
-//   bip32: {
-// public: 0x043587cf,
-// private: 0x04358394,
-//   },
-//   pubKeyHash: 0x6f,
-//   scriptHash: 0xc4,
-//   wif: 0xef
-// };
+/**
+libs.bitcoin.networks.stealthtestnet = {
+  messagePrefix: 'unused',
+  bip32: {
+public: 0x043587cf,
+private: 0x04358394,
+  },
+  pubKeyHash: 0x6f,
+  scriptHash: 0xc4,
+  wif: 0xef
+};
 
-// libs.bitcoin.networks.stealth = {
-//   messagePrefix: 'unused',
-//   bip32: {
-// public: 0x0488b21e,
-// private: 0x0488ade4
-//   },
-//   pubKeyHash: 0x3e,
-//   scriptHash: 0x85,
-//   wif: 0xbe
-// };
-
+libs.bitcoin.networks.stealth = {
+  messagePrefix: 'unused',
+  bip32: {
+public: 0x0488b21e,
+private: 0x0488ade4
+  },
+  pubKeyHash: 0x3e,
+  scriptHash: 0x85,
+  wif: 0xbe
+};
+*/
 
 const CryptoService = {
   network: {
@@ -45,8 +46,7 @@ const CryptoService = {
   wallet: null,
 
   async init() {
-    // check if there's already a wallet stored in the db
-    // if so, retrieve it and generate the master from the stored seed
+    // Check if there's already a wallet stored in the db, if so, retrieve it and generate the master from the stored seed
     let wallet = await this.getWalletFromDb();
     await this.getAccounts();
     console.log('Wallet: ', wallet);
@@ -136,16 +136,18 @@ const CryptoService = {
     const isValid = bip39.validateMnemonic(mnemonic);
     return isValid;
   },
-  // generateChildAddress(i) {
-  //   // https://github.com/satoshilabs/slips/blob/master/slip-0044.md
-  //   const path = `m/44'/125'/0'/0/${i}`
-  //   const child1 = this.master.derivePath(path)
-  //   // private key: child1.privateKey
-  //   return bitcoin.payments.p2pkh({
-  //     pubkey: child1.publicKey,
-  //     network: this.network
-  //   }).address
-  // },
+  /**
+  generateChildAddress(i) {
+    // https://github.com/satoshilabs/slips/blob/master/slip-0044.md
+    const path = `m/44'/125'/0'/0/${i}`
+    const child1 = this.master.derivePath(path)
+    // private key: child1.privateKey
+    return bitcoin.payments.p2pkh({
+      pubkey: child1.publicKey,
+      network: this.network
+    }).address
+  },
+  */
   async getWalletFromDb() {
     let wallet = await db.find({ name: 'wallet' });
     globalState.setWallet(wallet[0]);
