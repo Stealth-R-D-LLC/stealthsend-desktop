@@ -267,22 +267,22 @@
 </template>
 
 <script>
-import { ref } from 'vue'
-import StHamburger from '@/components/elements/StHamburger'
+import { ref } from 'vue';
+import StHamburger from '@/components/elements/StHamburger';
 export default {
   name: 'StMenuBar',
   components: {
     StHamburger,
   },
   setup() {
-    const isCollapsed = ref(false)
+    const isCollapsed = ref(false);
 
     return {
       isCollapsed,
-    }
+    };
   },
-}
-</script>
+};
+</script> 
 
 <style scoped>
 .default-layout__aside {

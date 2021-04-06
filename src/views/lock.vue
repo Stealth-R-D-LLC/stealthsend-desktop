@@ -23,43 +23,43 @@
 </template>
 
 <script>
-import { ref } from 'vue'
-import StLoading from '@/components/kit/StLoading.vue'
-import router from '@/router'
-import CryptoService from '@/services/crypto'
+import { ref } from 'vue';
+import StLoading from '@/components/kit/StLoading.vue';
+import router from '@/router';
+import CryptoService from '@/services/crypto';
 export default {
   name: 'StLock',
   components: {
     StLoading,
   },
   setup() {
-    const isLoading = ref(true)
-    const isPasswordFieldVisible = ref(false)
-    const password = ref('')
+    const isLoading = ref(true);
+    const isPasswordFieldVisible = ref(false);
+    const password = ref('');
     setTimeout(() => {
-      isLoading.value = false
-    }, 1500)
+      isLoading.value = false;
+    }, 1500);
 
     const handlePassword = async (e) => {
-      let isPasswordMatch = false
+      let isPasswordMatch = false;
       if (e.keyCode === 13) {
-        isPasswordMatch = await CryptoService.validatePassword(password.value)
+        isPasswordMatch = await CryptoService.validatePassword(password.value);
         if (isPasswordMatch) {
-          await CryptoService.unlock(password.value)
-          router.push('/dashboard')
+          await CryptoService.unlock(password.value);
+          router.push('/dashboard');
         } else {
-          console.log('wrong password!')
+          console.log('wrong password!');
         }
       }
-    }
+    };
     return {
       isLoading,
       isPasswordFieldVisible,
       password,
       handlePassword,
-    }
+    };
   },
-}
+};
 </script>
 
 <style scoped>
