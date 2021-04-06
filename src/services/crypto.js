@@ -44,8 +44,7 @@ const CryptoService = {
   },
   master: null,
   seed: null,
-  wallet: null,
-  password: '',
+  // password: '',
   async init() {
     // check if there's already a wallet stored in the db
     // if so, ask for password via lock screen and 
@@ -238,7 +237,7 @@ const CryptoService = {
     //   hash: hash,
     //   hashHex: hash.toString(cryptoJs.enc.Hex)
     // });
-    this.password = hash.toString(cryptoJs.enc.Hex);
+    // this.password = hash.toString(cryptoJs.enc.Hex);
     return {
       salt: salt,
       hash: hash.toString(cryptoJs.enc.Hex)
