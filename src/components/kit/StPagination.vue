@@ -35,73 +35,72 @@
 </template>
 
 <script>
-import { onMounted, watchEffect, ref, computed } from 'vue'
+import { onMounted, watchEffect, ref, computed } from 'vue';
 export default {
   name: 'StPagination',
   props: {
     total: {
       type: Number,
-      required: true
+      required: true,
     },
     pageSize: {
       type: Number,
       required: false,
       default: () => {
-        return 10
-      }
+        return 10;
+      },
     },
     currentPage: {
       type: Number,
       required: true,
-      default: 1
+      default: 1,
     },
     paginationLimit: {
       type: Number,
       required: false,
-      default: 5 // number of pages in pagination before 3 dots
-    }
+      default: 5, // number of pages in pagination before 3 dots
+    },
   },
   emits: ['view-all', 'size-change', 'current-change'],
   setup(props, ctx) {
-    let pageSizeCached = ref()
+    let pageSizeCached = ref();
     onMounted(() => {
-      pageSizeCached = props.pageSize
-    })
+      pageSizeCached = props.pageSize;
+    });
 
     const pageCount = computed(() => {
-      let l = props.total
-      let s = props.pageSize
+      let l = props.total;
+      let s = props.pageSize;
       // 40 items will be 4 pages with 10 results
       // 42 items will be 5 pages with 10 results + 1 page with 2 results
       return l % props.pageSize === 0
         ? Math.floor(l / s)
-        : Math.floor(l / s) + 1
-    })
+        : Math.floor(l / s) + 1;
+    });
 
     watchEffect(props.pageSize, (pageSize) => {
-      sizeChange(pageSize)
-    })
+      sizeChange(pageSize);
+    });
 
     function viewAll() {
-      ctx.emit('view-all')
+      ctx.emit('view-all');
     }
     function sizeChange(val) {
-      ctx.emit('size-change', val)
+      ctx.emit('size-change', val);
     }
     function paginationChange(newPage) {
-      ctx.emit('current-change', newPage)
+      ctx.emit('current-change', newPage);
     }
     function gotoPage(page) {
-      paginationChange(page)
+      paginationChange(page);
     }
     function nextPage() {
-      if (props.pageCount <= props.currentPage) return
-      paginationChange(props.currentPage + 1)
+      if (props.pageCount <= props.currentPage) return;
+      paginationChange(props.currentPage + 1);
     }
     function prevPage() {
-
-      if (props.currentPage <= 1) return
-      paginationChange(props.currentPage - 1)
+      if (props.currentPage <= 1) return;
+      paginationChange(props.currentPage - 1);
     }
 
     return {
@@ -111,10 +110,10 @@ export default {
       sizeChange,
       gotoPage,
       nextPage,
-      prevPage
-    }
-  }
-}
+      prevPage,
+    };
+  },
+};
 </script>
 
 <style lang="postcss" scoped>

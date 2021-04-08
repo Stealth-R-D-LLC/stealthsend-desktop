@@ -26,13 +26,13 @@
 </template>
 
 <script>
-const XST_USD = 0.17401 // hardcoded obviously
-import { reactive } from 'vue'
-import CryptoService from '@/services/crypto'
-import * as bitcoin from 'bitcoinjs-lib'
-import { Buffer } from 'buffer'
+const XST_USD = 0.17401; // hardcoded obviously
+import { reactive } from 'vue';
+import CryptoService from '@/services/crypto';
+import * as bitcoin from 'bitcoinjs-lib';
+import { Buffer } from 'buffer';
 
-import globalState from '@/store/global'
+import globalState from '@/store/global';
 
 export default {
   setup() {
@@ -40,7 +40,7 @@ export default {
       amount: '',
       address: '',
       label: '',
-    })
+    });
 
     /*
 console.log('/// TRANSACTION BUILDER ///')
@@ -69,7 +69,7 @@ console.dir(trx.build().toHex());
         amount: 0.08,
         balance: 0.08,
         blockhash:
-          "41075c34fa57379ff36351ce67efc4b979696167728e588c4d96f2c3cc9b69a6",
+          '41075c34fa57379ff36351ce67efc4b979696167728e588c4d96f2c3cc9b69a6',
         blocktime: 1617088334,
         confirmations: 2200,
         height: 4481928,
@@ -78,50 +78,53 @@ console.dir(trx.build().toHex());
           '18b5ca59866e6c5db0fb7fdfa88eed20a2df8ec7d4c77ae03a6b1b5a7a3e21bb',
         vout: 0,
         vtx: 0,
-      }
+      };
 
-      let rawTransaction = new bitcoin.TransactionBuilder(CryptoService.network, 3000000)
-      let prevOutScript = '76a914f3cb3f8187ce7b762ec02ae578f8d598fe32c22588ac'
+      let rawTransaction = new bitcoin.TransactionBuilder(
+        CryptoService.network,
+        3000000
+      );
+      let prevOutScript = '76a914f3cb3f8187ce7b762ec02ae578f8d598fe32c22588ac';
       rawTransaction.addInput(
         addressOutputs.txid,
         0,
         null,
         Buffer.from(prevOutScript, 'hex')
-      )
+      );
       let recipient = {
         address: 'mhjpLAjaHHWnBQHGVtJHPesZQvAhJGYzDX',
         amount: 0.05 * 1e6,
-      }
+      };
       let change = {
         address: 'n3k1ybJmkZUt9vURTg9Q7SmWSNo8traqj9',
         amount: 0.02 * 1e6,
-      }
+      };
       // rawTransaction.addInput("6893ba14a9c77648788bfefd56229bdbc7f5a212d2f15801eacee305d740636a", 0)
 
       // add the output for recipient
-      rawTransaction.addOutput(recipient.address, recipient.amount)
+      rawTransaction.addOutput(recipient.address, recipient.amount);
 
       // add the output for the change, send the change back to yourself.
       // Outputs - inputs = transaction fee, so always double-check your math!
-      rawTransaction.addOutput(change.address, change.amount)
-      const child = CryptoService.master.derivePath(`m/44'/1'/0'/0/0`)
+      rawTransaction.addOutput(change.address, change.amount);
+      const child = CryptoService.master.derivePath(`m/44'/1'/0'/0/0`);
 
       const keyPair = bitcoin.ECPair.fromWIF(
         child.toWIF(),
         CryptoService.network
-      )
+      );
       // console.log('wif', child.toWIF());
 
-      rawTransaction.sign(0, keyPair)
+      rawTransaction.sign(0, keyPair);
 
-      console.dir(rawTransaction)
-      const rawTransactionToHex = rawTransaction.build().toHex()
-      console.log(rawTransactionToHex)
+      console.dir(rawTransaction);
+      const rawTransactionToHex = rawTransaction.build().toHex();
+      console.log(rawTransactionToHex);
 
       const res = await globalState.rpc('sendrawtransaction', [
         rawTransactionToHex,
-      ])
-      console.log('res', res)
+      ]);
+      console.log('res', res);
 
       // const txid = await globalState.rpc('gettransaction', [res])
       // console.log('txid', txid);
@@ -231,9 +234,9 @@ console.dir(trx.build().toHex());
       sendForm,
       // send,
       sendOpet,
-    }
+    };
   },
-}
+};
 </script>
 
 <style lang="scss" scoped></style>
