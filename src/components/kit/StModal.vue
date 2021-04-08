@@ -50,8 +50,8 @@
 </template>
 
 <script>
-import { onClickOutside } from '@vueuse/core'
-import { ref } from 'vue'
+import { onClickOutside } from '@vueuse/core';
+import { ref } from 'vue';
 
 export default {
   name: 'StModal',
@@ -59,32 +59,32 @@ export default {
     visible: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
     showCloseButton: {
       type: Boolean,
       required: false,
-      default: true
+      default: true,
     },
     hasClickOutside: {
       type: Boolean,
       required: false,
-      default: true
-    }
+      default: true,
+    },
   },
   emits: ['close'],
   setup(props, ctx) {
-    const stModalRef = ref(null)
+    const stModalRef = ref(null);
 
     onClickOutside(stModalRef, () => {
       if (props.hasClickOutside) {
-        ctx.emit('close')
+        ctx.emit('close');
       }
-    })
+    });
 
-    return { stModalRef }
-  }
-}
+    return { stModalRef };
+  },
+};
 </script>
 
 <style scoped>

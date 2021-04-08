@@ -9,7 +9,7 @@ const API_CONFIG = {
   },
   transformRequest: [
     (data) => {
-      data = { 
+      data = {
         ...data,
         jsonrpc: "2.0",
         id: 1,

@@ -19,31 +19,31 @@
 </template>
 
 <script>
-import { ref } from 'vue'
-import { onClickOutside } from '@vueuse/core'
+import { ref } from 'vue';
+import { onClickOutside } from '@vueuse/core';
 
 export default {
   name: 'StDropdown',
   props: {
     items: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
   setup() {
-    let isVisible = ref(false)
-    const stDropdownRef = ref(null)
+    let isVisible = ref(false);
+    const stDropdownRef = ref(null);
 
     onClickOutside(stDropdownRef, () => {
-      isVisible.value = false
-    })
+      isVisible.value = false;
+    });
 
     function close() {
-      isVisible = false
+      isVisible = false;
     }
-    return { isVisible, close, stDropdownRef }
-  }
-}
+    return { isVisible, close, stDropdownRef };
+  },
+};
 </script>
 
 <style scoped>
