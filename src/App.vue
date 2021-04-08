@@ -31,9 +31,11 @@ export default {
         return DefaultLayout
       } else if (layout === 'new-user') {
         return NewUserLayout
-      } else if (layout === 'lock') {
-        return LockLayout
-      } else {
+      // } else if (layout === 'lock') {
+      //   return LockLayout
+      //
+      } 
+      else {
         console.warn('Layout error')
         return DefaultLayout
       }
