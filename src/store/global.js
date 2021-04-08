@@ -30,6 +30,23 @@ const rpc = (method, payload) => {
   });
 };
 
+/**
+ * {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "getaddressinfo",
+    "params": [
+        "mtS8n7jnjpS9upnQtvKpHNxxDeeXiFm5cy"
+    ]
+}
+ */
+console.log('rpc', rpc("getaddressinfo", ["miM6d6S71YX9JrRgVfKUeFxGpqdd8o3fKD"]));
+// getnewaddress
+// "result": "mgKQcbQ2pGJRHKAi9T6icaH8QtZReiTPvT"
+
+
+
+
 const startGlobalLoading = () => state.globalLoading = true;
 const stopGlobalLoading = () => state.globalLoading = false;
 

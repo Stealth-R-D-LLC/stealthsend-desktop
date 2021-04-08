@@ -77,7 +77,7 @@ export default {
   setup() {
     const recoverWallet = ref(false)
     const mnemonic = ref(
-      'excite attract off sugar mandate only captain chief follow celery elbow melt bone express cat loop mountain nephew'
+      'core ritual tornado cart chaos rice brave mirror float utility suffer atom'
     )
     const recovered = ref({})
     const password = ref('')
@@ -87,8 +87,8 @@ export default {
       // password is asked because we have to lock the seed in the database
       // user is createing a new password in this step
       globalState.startGlobalLoading()
-      let bytes = await bip39.mnemonicToSeed(mnemonic.value)
-      const master = await bip32.fromSeed(bytes).toString('hex') // root
+      let bytes = await bip39.mnemonicToSeedSync(mnemonic.value)
+      const master = await bip32.fromSeed(bytes) // root
       recovered.value = {
         seed: bytes.toString('hex'),
         master: master
@@ -96,6 +96,7 @@ export default {
 
       CryptoService.seed = bytes.toString('hex')
       CryptoService.master = master
+      console.log('--', master);
 
       CryptoService.storeWalletInDb(password.value)
       setTimeout(() => {
