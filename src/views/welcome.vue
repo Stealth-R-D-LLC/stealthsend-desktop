@@ -64,9 +64,9 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref } from 'vue' 
 import * as bip39 from 'bip39'
-import * as bip32 from 'bip32'
+import * as bip32 from 'bip32' 
 import globalState from '@/store/global'
 // import db from '../db'
 import router from '../router'
@@ -76,9 +76,7 @@ export default {
   name: 'StWelcome',
   setup() {
     const recoverWallet = ref(false)
-    const mnemonic = ref(
-      'core ritual tornado cart chaos rice brave mirror float utility suffer atom'
-    )
+    const mnemonic = ref('core ritual tornado cart chaos rice brave mirror float utility suffer atom')
     const recovered = ref({})
     const password = ref('')
 
@@ -91,12 +89,12 @@ export default {
       const master = await bip32.fromSeed(bytes) // root
       recovered.value = {
         seed: bytes.toString('hex'),
-        master: master
+        master: master,
       }
 
       CryptoService.seed = bytes.toString('hex')
       CryptoService.master = master
-      console.log('--', master);
+      console.log('--', master)
 
       CryptoService.storeWalletInDb(password.value)
       setTimeout(() => {
@@ -144,9 +142,9 @@ export default {
       password,
       createWallet,
       created,
-      createNewWallet
+      createNewWallet,
     }
-  }
+  },
 }
 </script>
 

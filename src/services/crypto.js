@@ -45,7 +45,6 @@ const CryptoService = {
   },
   master: null,
   seed: null,
-  wallet: null,
   // password: '',
 
   async init() {
@@ -71,8 +70,12 @@ const CryptoService = {
     // seed is stored in a string format because it's the easies to store
     // when retrieving, we need to have the seed in buffer type so we can work with it
     // that's why we are converting the seed from string -> uint8array -> buffer
-    this.master = await bip32.fromSeed(Buffer.from(this.hexToArray(cryptoJs.AES.decrypt(wallet[0].seed, hash).toString(cryptoJs.enc.Utf8))), this.network)
-    console.log('master!', this.master);
+    // console.log('hash', hash);
+    // console.log('wall', this.hexToArray(this.AESDecrypt(wallet[0].seed, hash).toString(cryptoJs.enc.Utf8)));
+    // // console.log('dec', cryptoJs.AES.decrypt(wallet[0].seed, hash));
+    // console.log('deccc', this.AESDecrypt(wallet[0].seed, hash));
+    this.master = await bip32.fromSeed(Buffer.from(this.hexToArray(this.AESDecrypt(wallet[0].seed, hash).toString(cryptoJs.enc.Utf8))), this.network)
+    // console.log('master!', this.master);
     router.push('/dashboard')
     // this.accountDiscovery()
   },
@@ -88,20 +91,23 @@ const CryptoService = {
       hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16))
     );
   },
-  generateMnemonicAndSeed() {
+  async generateMnemonicAndSeed() {
     // HD wallets are created from a single root seed, which is a 128-, 256-, or 512-bit random number.
     // Everything else in the HD wallet is deterministically derived from this root seed,
     // which makes it possible to re-create the entire HD wallet from that seed in any compatible HD wallet
-    const mnemonic = bip39.generateMnemonic(); // string
-    const seed = bip39.mnemonicToSeedSync(mnemonic); // seed buffer
-    const master = bip32.fromSeed(seed); // aka. root
+    const mnemonic = await bip39.generateMnemonic(); // string
+    const seed = await bip39.mnemonicToSeedSync(mnemonic); // recovery seed of the master bip32 seed.? - seed buffer
+    const master = await bip32.fromSeed(seed, this.network); // aka. root
     this.master = master;
     this.seed = seed;
+    // console.log('mnemonic: ', this.mnemonic)
+    // console.log('seed: ', this.seed)
+    // console.log('master: ', this.master)
     return {
       mnemonic,
       // seed,
-      master,
-    };
+      master
+    }
   },
   breakAccountPath(path = "0'/0/0") {
     path = path.replace("'", '');
@@ -116,7 +122,7 @@ const CryptoService = {
   },
   getChildFromRoot(account, change, address) {
     // child === keypair
-    console.log('getChildFromRoot', account, change, address);
+    // console.log('getChildFromRoot', account, change, address);
     const child = this.master.derivePath(
       `m/44'/1'/${account}'/${change}/${address}`
     );
@@ -205,11 +211,20 @@ const CryptoService = {
     );
     await this.getAccounts();
   },
+
+  async validatePassword(password) {
+    // receive password as plain text, hash it, compare it with existing hash in db
+    let wallet = await this.getWalletFromDb();
+    let { hash } = await this.hashPassword(password);
+    // console.log('newly hashed: ', hash);
+    // console.log('stored pass hash: ', wallet[0].password);
+    return hash === wallet[0].password;
+  },
   async hashPassword(password) {
     let wallet = await this.getWalletFromDb();
     let salt = null;
     if (wallet.length > 0) {
-      console.log('ima vec salt ', wallet[0].salt);
+      // console.log('ima vec salt ', wallet[0].salt);
       salt = wallet[0].salt
     } else {
       console.log('novi salt');
@@ -231,15 +246,8 @@ const CryptoService = {
       hash: hash.toString(cryptoJs.enc.Hex),
     }
   },
-  async validatePassword(password) {
-    // receive password as plain text, hash it, compare it with existing hash in db
-    let { hashHex, storedPassword } = await this.hashPassword(password);
-    console.log('newly hashed: ', hashHex);
-    console.log('stored pass hash: ', storedPassword);
-    return hashHex === storedPassword;
-  },
   async storeWalletInDb(password) {
-    console.log('store wallet in db', password);
+    // console.log('store wallet in db', password);
     let { hash, salt } = await this.hashPassword(password);
     return new Promise((resolve) => {
       // user security is ultimately dependent on a password,
@@ -264,11 +272,12 @@ const CryptoService = {
       // then the user entered the correct password and the seed can be decrypted
       // console.log('sad cu kriptirati ovaj seed', this.seed.toString('hex'));
       // console.log('s ovim hashom', hash.toString(cryptoJs.enc.Hex));
-      console.log('hash', hash);
-      const encryptedSeed = cryptoJs.AES.encrypt(
-        this.seed.toString('hex'),
-        hash
-      );
+      // console.log('hash', hash);
+      // const encryptedSeed = cryptoJs.AES.encrypt(
+      //   this.seed.toString('hex'),
+      //   hash
+      // )
+      const encryptedSeed = this.AESEncrypt(this.seed.toString('hex'), hash);
       // console.log('just encrypted: ', encryptedSeed.toString());
       // console.log('seed', this.seed);
       // console.log('seed hex', this.seed.toString('hex'));
@@ -281,7 +290,7 @@ const CryptoService = {
       const wallet = {
         name: 'wallet',
         archived: false,
-        seed: encryptedSeed.ciphertext.toString(cryptoJs.enc.Hex),
+        seed: encryptedSeed,
         password: hash.toString(cryptoJs.enc.Hex),
         balance: 0, // will be calculated after "scanning" for accounts; sum of all accounts
         salt: salt,
@@ -306,7 +315,7 @@ const CryptoService = {
       // derive the first account's node (index = 0)
       // derive the external chain node of this account
       const acc = this.getChildFromRoot(n, 0, i);
-      console.log('acc.address', acc.address);
+      // console.log('acc.address', acc.address);
       // scan addresses of the external chain; respect the gap limit described below
       // const hdAccount = await globalState.rpc('gethdaccount', [acc.pk])
       // console.log('hdacc', hdAccount);
@@ -339,8 +348,15 @@ const CryptoService = {
     // grace concert hunt glide million orange enact habit amazing deal object nurse
 
   },
-  async test() {
-
+  AESEncrypt(payload, key = '123456789') {
+    let encJson = cryptoJs.AES.encrypt(JSON.stringify(payload), key).toString();
+    let encData = cryptoJs.enc.Base64.stringify(cryptoJs.enc.Utf8.parse(encJson));
+    return encData
+  },
+  AESDecrypt(payload, key = '123456789') {
+    let decData = cryptoJs.enc.Base64.parse(payload).toString(cryptoJs.enc.Utf8);
+    let bytes = cryptoJs.AES.decrypt(decData, key).toString(cryptoJs.enc.Utf8);
+    return JSON.parse(bytes);
   }
 };
 
