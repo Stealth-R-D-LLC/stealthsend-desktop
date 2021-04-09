@@ -365,7 +365,7 @@ const CryptoService = {
     for (let i = 0; i < GAP_LIMIT; i++) {
       // derive the first account's node (index = 0)
       // derive the external chain node of this account
-      const acc = this.getChildFromRoot(n, 0, i); // TODO: check `n` argument, should be a 'string'
+      const acc = this.getChildFromRoot(n, 0, i); // TODO: check `n` argument, should be 'string'
       // console.log('acc.address', acc.address);
       // scan addresses of the external chain; respect the gap limit described below
       // const hdAccount = await globalState.rpc('gethdaccount', [acc.pk])
