@@ -11,7 +11,7 @@ import StLoading from '@/components/kit/StLoading.vue'
 import { computed } from 'vue'
 import DefaultLayout from './components/layout/Default.vue'
 import NewUserLayout from './components/layout/NewUser.vue'
-import LockLayout from './components/layout/Lock.vue'
+// import LockLayout from './components/layout/Lock.vue'
 import { useRoute } from 'vue-router'
 
 export default {
