@@ -40,12 +40,10 @@ const rpc = (method, payload) => {
     ]
 }
  */
-console.log('rpc', rpc("getaddressinfo", ["miM6d6S71YX9JrRgVfKUeFxGpqdd8o3fKD"]));
+// TODO: Remove later (intended for testing rpc calls)
+// console.log('rpc', rpc("getaddressinfo", ["miM6d6S71YX9JrRgVfKUeFxGpqdd8o3fKD"]));
 // getnewaddress
 // "result": "mgKQcbQ2pGJRHKAi9T6icaH8QtZReiTPvT"
-
-
-
 
 const startGlobalLoading = () => state.globalLoading = true;
 const stopGlobalLoading = () => state.globalLoading = false;
