@@ -1,6 +1,6 @@
 <template>
   <div class="dashbaord-container">
-    Sum of all UXO: {{ utxo }}
+    Sum of all UXO: {{ utxo }} XST
     <transition-group v-if="accounts.length !== 0" name="list" tag="div">
       <card
         v-for="account in accounts"

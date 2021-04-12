@@ -4,14 +4,14 @@
       <StButton
         @click="
           importWallet = false;
-          recoverWallet = true
+          recoverWallet = true;
         "
         >Recover wallet</StButton
       >
       <StButton
         @click="
           importWallet = true;
-          recoverWallet = false
+          recoverWallet = false;
         "
         >Import wallet</StButton
       >
@@ -19,7 +19,7 @@
         @click="
           importWallet = false;
           recoverWallet = false;
-          createWallet = true
+          createWallet = true;
         "
         >Create new wallet</StButton
       >
@@ -43,6 +43,11 @@
     <div v-if="createWallet">
       <h1>New wallet</h1>
       <StInput
+        v-model="account"
+        label="Account name"
+        placeholder="Enter account name"
+      ></StInput>
+      <StInput
         v-model="password"
         label="Password"
         type="password"
@@ -64,67 +69,92 @@
 </template>
 
 <script>
-import { ref } from 'vue' 
-import * as bip39 from 'bip39'
-import * as bip32 from 'bip32' 
-import globalState from '@/store/global'
+import { ref } from 'vue';
+import * as bip39 from 'bip39';
+import * as bip32 from 'bip32';
+import globalState from '@/store/global';
 // import db from '../db'
-import router from '../router'
-import CryptoService from '../services/crypto'
+import router from '../router';
+import CryptoService from '../services/crypto';
 
 export default {
   name: 'StWelcome',
   setup() {
-    const recoverWallet = ref(false)
-    const mnemonic = ref('core ritual tornado cart chaos rice brave mirror float utility suffer atom')
-    const recovered = ref({})
-    const password = ref('')
+    const recoverWallet = ref(false);
+    const mnemonic = ref(
+      'core ritual tornado cart chaos rice brave mirror float utility suffer atom'
+    );
+    const recovered = ref({});
+    const password = ref('');
+    const account = ref('');
 
     async function recover() {
       // recover an existing wallet via mnemonic
       // password is asked because we have to lock the seed in the database
       // user is createing a new password in this step
-      globalState.startGlobalLoading()
-      let bytes = await bip39.mnemonicToSeedSync(mnemonic.value)
-      const master = await bip32.fromSeed(bytes) // root
+      globalState.startGlobalLoading();
+      let bytes = await bip39.mnemonicToSeedSync(mnemonic.value);
+      const master = await bip32.fromSeed(bytes); // root
       recovered.value = {
         seed: bytes.toString('hex'),
         master: master,
-      }
+      };
 
-      CryptoService.seed = bytes.toString('hex')
-      CryptoService.master = master
-      console.log('--', master)
+      CryptoService.seed = bytes.toString('hex');
+      CryptoService.master = master;
+      console.log('--', master);
 
-      CryptoService.storeWalletInDb(password.value)
+      CryptoService.storeWalletInDb(password.value);
       setTimeout(() => {
-        goToDashboard()
-        globalState.stopGlobalLoading()
-      }, 3000)
+        goToDashboard();
+        globalState.stopGlobalLoading();
+      }, 3000);
     }
 
-    const importWallet = ref(false)
-    const wif = ref('KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU73sVHnoWn')
-    const imported = ref({})
+    const importWallet = ref(false);
+    const wif = ref('KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU73sVHnoWn');
+    const imported = ref({});
     async function importWalletFromWif() {
       // wallet is simply imported via wif
       // user should be also prompted here to create a new password
-      imported.value = CryptoService.WIFtoPK(wif.value)
+      imported.value = CryptoService.WIFtoPK(wif.value);
     }
 
-    const createWallet = ref(false)
-    const created = ref(false)
+    // async function generateAccount() {
+    //   console.log('AHA!');
+    //   const { address, path, pk, wif } = CryptoService.getChildFromRoot(
+    //     1,
+    //     0,
+    //     0
+    //   );
+    //   await CryptoService.storeAccountInDb({
+    //     pk: pk,
+    //     address: address,
+    //     label: account.value,
+    //     utxo: 0,
+    //     isArchived: false,
+    //     asset: 'XST',
+    //     wif: wif,
+    //     path: path,
+    //   });
+    // }
+
+    const createWallet = ref(false);
+    const created = ref(false);
     async function createNewWallet() {
       // new wallet is created
       // therefore, new password can be made
-      globalState.startGlobalLoading()
-      created.value = await CryptoService.generateMnemonicAndSeed()
-      await CryptoService.storeWalletInDb(password.value)
-      globalState.stopGlobalLoading()
+      globalState.startGlobalLoading();
+      created.value = await CryptoService.generateMnemonicAndSeed();
+      await CryptoService.storeWalletInDb(password.value);
+      // setTimeout(async () => {
+      //   await generateAccount();
+      // }, 100);
+      globalState.stopGlobalLoading();
     }
 
     function goToDashboard() {
-      router.push('/dashboard')
+      router.push('/dashboard');
     }
     return {
       goToDashboard,
@@ -140,12 +170,13 @@ export default {
       imported,
 
       password,
+      account,
       createWallet,
       created,
       createNewWallet,
-    }
+    };
   },
-}
+};
 </script>
 
 <style scoped>
