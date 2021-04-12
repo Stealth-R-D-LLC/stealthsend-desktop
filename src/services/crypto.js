@@ -341,10 +341,11 @@ const CryptoService = {
       let utxo = 0;
       let txs = []
       for (let account of accounts) {
+        let accUtxo = 0
         const hdAccount = await globalState.rpc('gethdaccount', [account.pk])
         for (let tx of hdAccount) {
-          utxo = add(utxo, tx.account_balance_change)
-          utxo = format(utxo, {precision: 14})
+          accUtxo = add(accUtxo, tx.account_balance_change)
+          accUtxo = format(accUtxo, {precision: 14})
           txs.push({
             amount: tx.account_balance_change,
             txid: tx.txid,
@@ -354,11 +355,14 @@ const CryptoService = {
             
           })
         }
-
+        account.utxo = accUtxo
+        utxo = add(utxo, accUtxo)
+        utxo = format(utxo, {precision: 14})
       }
       resolve({
         utxo: utxo, // sum of all utxo
-        txs: txs // all transactions
+        txs: txs, // all transactions,
+        accounts: accounts
       })
     })
   }

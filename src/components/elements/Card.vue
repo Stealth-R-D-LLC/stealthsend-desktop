@@ -51,7 +51,7 @@ export default {
   emits: ['archived', 'unarchived', 'click'],
   setup(props, context) {
     const amountInFiat = computed(() => {
-      return props.account.utxo * XST_USD;
+      return +props.account.utxo * XST_USD;
     });
 
     const handleClick = (account) => {
