@@ -57,13 +57,15 @@ const CryptoService = {
       router.push('/lock');
       this.isFirstArrival = false;
     }
+    this.scanWallet()
 
-    const result = await this.generateMnemonicAndSeed();
-    // console.log('result - mnemonic and seed', result);
-    const isMnemonicValid = this.isMnemonicValid(result.mnemonic);
-    console.log('valid mnemonic?', isMnemonicValid);
-    console.log('this.network', this.network);
-    console.log('convert WIF to PK');
+    // TODO: My tests (Josip)
+    // const result = await this.generateMnemonicAndSeed();
+    // // console.log('result - mnemonic and seed', result);
+    // const isMnemonicValid = this.isMnemonicValid(result.mnemonic);
+    // console.log('valid mnemonic?', isMnemonicValid);
+    // console.log('this.network', this.network);
+    // console.log('convert WIF to PK');
     // const keyPair = this.WIFtoPK(this.network.wif.toString());
     // console.log('keyPair', keyPair);
     // const child = this.master.derivePath(`m/44'/1'/${this.account}/${this.change}/${this.network.pubKeyHash}`);
@@ -71,7 +73,7 @@ const CryptoService = {
 
   },
   /**
-   * 
+   *
    * @param {string} password
    */
   async unlock(password) {
@@ -102,8 +104,8 @@ const CryptoService = {
     return keyPair;
   },
   /**
-   * 
-   * @param {string} hexString 
+   *
+   * @param {string} hexString
    * @return {Uint8Array}
    */
   hexToArray(hexString) {
@@ -139,11 +141,11 @@ const CryptoService = {
     };
   },
   /**
-   * 
-   * @param {string} account 
-   * @param {string} change 
-   * @param {string} address 
-   * @return {object} 
+   *
+   * @param {string} account
+   * @param {string} change
+   * @param {string} address
+   * @return {object}
    */
   getChildFromRoot(account, change, address) {
     // child === keypair
@@ -165,8 +167,8 @@ const CryptoService = {
     }
   },
   /**
-   * 
-   * @param {string} mnemonic 
+   *
+   * @param {string} mnemonic
    * @return {Boolean}
    */
   isMnemonicValid(mnemonic) {
@@ -200,9 +202,9 @@ const CryptoService = {
     return accounts;
   },
   /**
-   * 
-   * @param {object} account 
-   * @returns 
+   *
+   * @param {object} account
+   * @returns
    */
   async storeAccountInDb(account) {
     let acc = await db.insert({
@@ -219,8 +221,8 @@ const CryptoService = {
     return acc;
   },
   /**
-   * 
-   * @param {object} account 
+   *
+   * @param {object} account
    * @return {Promise<*>}
    */
   async archiveAccount(account) {
@@ -238,7 +240,7 @@ const CryptoService = {
     await this.getAccounts();
   },
   /**
-   * 
+   *
    * @param {object} account
    * @return {Promise<*>}
    */
@@ -257,9 +259,9 @@ const CryptoService = {
     await this.getAccounts();
   },
   /**
-   * 
-   * @param {string} password 
-   * @return {Promise<boolean>} 
+   *
+   * @param {string} password
+   * @return {Promise<boolean>}
    */
   async validatePassword(password) {
     // receive password as plain text, hash it, compare it with existing hash in db
@@ -270,7 +272,7 @@ const CryptoService = {
     return hash === wallet[0].password;
   },
   /**
-   * 
+   *
    * @param {string | cryptoJs.lib.WordArray} password
    * @param {string | cryptoJs.lib.WordArray} salt
    * @return cryptoJs.lib.WordArray
@@ -284,7 +286,7 @@ const CryptoService = {
     return cryptoJs.PBKDF2(password, salt, options);
   },
   /**
-   * 
+   *
    * @param {string | cryptoJs.lib.WordArray} password
    * @return {Promise<{ salt: string | cryptoJs.lib.WordArray, hash: string | cryptoJs.lib.WordArray }>} hashed password string
    */
@@ -292,6 +294,7 @@ const CryptoService = {
     let wallet = await this.getWalletFromDb();
     let salt = null;
     if (wallet.length > 0) {
+      // console.log('ima vec salt ', wallet[0].salt);
       salt = wallet[0].salt
     } else {
       console.log('novi salt');
@@ -305,8 +308,8 @@ const CryptoService = {
     }
   },
   /**
-   * 
-   * @param {string} password 
+   *
+   * @param {string} password
    * @return {Promise<*>}
    */
   async storeWalletInDb(password) {
@@ -412,24 +415,48 @@ const CryptoService = {
 
   },
   /**
-   * @param {Object} payload 
-   * @param {string} key 
+   * @param {Object} payload
+   * @param {string} key
    * @return {string}
    */
   AESEncrypt(payload, key = '123456789') {
+    /**  TODO: Check and remove (Matej's code)
+     *   let decData = cryptoJs.enc.Base64.parse(payload).toString(cryptoJs.enc.Utf8)
+         let bytes = cryptoJs.AES.decrypt(decData, key).toString(cryptoJs.enc.Utf8)
+         return JSON.parse(bytes)
+     */
     let encJson = cryptoJs.AES.encrypt(JSON.stringify(payload), key).toString();
     let encData = cryptoJs.enc.Base64.stringify(cryptoJs.enc.Utf8.parse(encJson));
     return encData
   },
   /**
-   * @param {string} payload 
-   * @param {string} key 
+   * @param {string} payload
+   * @param {string} key
    * @return {Object}
    */
   AESDecrypt(payload, key = '123456789') {
     let decData = cryptoJs.enc.Base64.parse(payload).toString(cryptoJs.enc.Utf8);
     let bytes = cryptoJs.AES.decrypt(decData, key).toString(cryptoJs.enc.Utf8);
     return JSON.parse(bytes);
+  },
+  async scanWallet() {
+    console.log('sken voljet');
+    // initially scan all accounts in the wallet for utxos
+    // gethdaccounts retrieves all transactions for a particular account
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise(async (resolve) => {
+      let utxo = 0;
+      const accounts = await this.getAccounts();
+      for (let account of accounts) {
+        const hdAccount = await globalState.rpc('gethdaccount', [account.pk]);
+        console.log('hd account ', hdAccount);
+        for (let tx of hdAccount) {
+          utxo += tx.account_balance_change;
+        }
+
+      }
+      resolve(utxo);
+    });
   }
 };
 
