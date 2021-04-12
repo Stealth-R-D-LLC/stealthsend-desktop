@@ -21,7 +21,7 @@
       <!-- <span class="itemu type">{{ account.isArchived  }}</span> -->
     </div>
     <div class="st-card__row">
-      <span class="item amount">{{ account.balance }} XST</span>
+      <span class="item amount">{{ account.utxo }} XST</span>
       <span class="item fiat">{{ amountInFiat }} EUR</span>
     </div>
   </div>
@@ -29,7 +29,7 @@
 
 <script>
 import { computed } from 'vue';
-const XST_USD = 0.17401; // hardcoded obviously
+const XST_USD = 0.226338; // hardcoded obviously
 export default {
   name: 'StCard',
   props: {
@@ -51,7 +51,7 @@ export default {
   emits: ['archived', 'unarchived', 'click'],
   setup(props, context) {
     const amountInFiat = computed(() => {
-      return props.account.balance * XST_USD;
+      return +props.account.utxo * XST_USD;
     });
 
     const handleClick = (account) => {
