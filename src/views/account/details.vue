@@ -9,21 +9,19 @@
       :archiveable="false"
       :account="{
         label: account.label,
-        utxo: addressInfo.utxo,
+        utxo: account.utxo,
         isArchived: account.isArchived,
       }"
     ></card>
     <StTooltip
       :tooltip-text="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
     >
-      <StCopyToClipboard
+      <!-- <StCopyToClipboard
         :content="account.address"
         @click="handleCopy"
-      ></StCopyToClipboard>
+      ></StCopyToClipboard> -->
     </StTooltip>
     <img :src="qrSrc" />
-    Address: {{ account.address }}
-    template
     <StTable
       :data="trxOutputs"
       :columns="[
@@ -53,7 +51,7 @@ import StTable from '@/components/kit/StTable.vue';
 import { computed, ref } from 'vue';
 import Card from '../../components/elements/Card';
 import VanillaQR from 'vanillaqr';
-import StCopyToClipboard from '@/components/kit/StClipboard.vue';
+// import StCopyToClipboard from '@/components/kit/StClipboard.vue';
 import StTooltip from '@/components/kit/StTooltip.vue';
 import router from '@/router';
 
@@ -62,7 +60,7 @@ export default {
   components: {
     Card,
     StTable,
-    StCopyToClipboard,
+    // StCopyToClipboard,
     StTooltip,
   },
   setup() {
