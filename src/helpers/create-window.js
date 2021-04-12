@@ -1,4 +1,4 @@
-const { app, screen, BrowserWindow } = require('electron')
+const { app, BrowserWindow } = require('electron')
 const windowStateKeeper = require('electron-window-state')
 
 const isProd = app.isPackaged
@@ -9,9 +9,8 @@ switch (process.platform) {
   case 'darwin': icon = 'public/favicon.icns'; break;
   case 'linux': icon = 'public/favicon.png'; break;
 }
-
-
-module.exports = function createWindow(windowName = 'main', options = {}) {
+ 
+module.exports = function createWindow(options = {}) {
   const winOptions = {
     minWidth: 1024,
     minHeight: 768,

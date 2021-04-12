@@ -4,6 +4,7 @@
   --zModal: 3;
   --zTooltip: 4;
   --zGlobalLoading: 5;
+  --zAside: 6;
 }
 
 #app {
@@ -27,7 +28,7 @@
   overflow: auto;
   padding: 0 12px;
   position: relative;
-  margin-left: 280px; /* for fixed sidebar */
+  margin-left: 75px; /*for fixed sidebar */
 }
 
 .default-layout__main .triangle {
@@ -48,6 +49,7 @@
   width: 280px;
   /* fixed and no scrolling  */
   position: fixed;
+  z-index: var(--zAside);
   height: 100%;
 }
 
