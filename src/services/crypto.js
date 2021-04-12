@@ -50,13 +50,25 @@ const CryptoService = {
     // retrieve the stored wallet and generate the master from the stored seed
     let wallet = await this.getWalletFromDb();
     await this.getAccounts();
-    console.log('Wallet: ', wallet);
+    console.log('+Wallet: ', wallet);
     if (wallet.length <= 0) {
       router.push('/welcome');
     } else if (this.isFirstArrival) {
       router.push('/lock');
       this.isFirstArrival = false;
     }
+
+    const result = await this.generateMnemonicAndSeed();
+    // console.log('result - mnemonic and seed', result);
+    const isMnemonicValid = this.isMnemonicValid(result.mnemonic);
+    console.log('valid mnemonic?', isMnemonicValid);
+    console.log('this.network', this.network);
+    console.log('convert WIF to PK');
+    // const keyPair = this.WIFtoPK(this.network.wif.toString());
+    // console.log('keyPair', keyPair);
+    // const child = this.master.derivePath(`m/44'/1'/${this.account}/${this.change}/${this.network.pubKeyHash}`);
+    // console.log('child', child)
+
   },
   /**
    * 
