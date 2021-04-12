@@ -9,7 +9,7 @@
       :archiveable="false"
       :account="{
         label: account.label,
-        balance: addressInfo.balance,
+        utxo: addressInfo.utxo,
         isArchived: account.isArchived,
       }"
     ></card>
@@ -30,7 +30,7 @@
         { key: 'txid', title: 'TRX ID' },
         { key: 'amount', title: 'Amount' },
         { key: 'confirmations', title: 'Confirmations' },
-        { key: 'balance', title: 'Balance' },
+        { key: 'utxo', title: 'Balance' },
       ]"
       @rowClick="openTransaction"
     ></StTable>
@@ -40,7 +40,7 @@
         { key: 'txid', title: 'TRX ID' },
         { key: 'amount', title: 'Amount' },
         { key: 'confirmations', title: 'Confirmations' },
-        { key: 'balance', title: 'Balance' },
+        { key: 'utxo', title: 'Balance' },
       ]"
       @rowClick="openTransaction"
     ></StTable>
