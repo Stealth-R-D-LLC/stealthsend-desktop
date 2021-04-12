@@ -58,6 +58,7 @@ const CryptoService = {
       router.push('/lock')
       this.isFirstArrival = false;
     }
+    this.scanWallet()
   },
   async unlock(password) {
     // no need to validate password because it is validated before calling this method
@@ -355,6 +356,25 @@ const CryptoService = {
     let decData = cryptoJs.enc.Base64.parse(payload).toString(cryptoJs.enc.Utf8)
     let bytes = cryptoJs.AES.decrypt(decData, key).toString(cryptoJs.enc.Utf8)
     return JSON.parse(bytes)
+  },
+  async scanWallet() {
+    console.log('sken voljet');
+    // initially scan all accounts in the wallet for utxos
+    // gethdaccounts retrieves all transactions for a particular account
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise(async (resolve) => {
+      let utxo = 0;
+      const accounts = await this.getAccounts()
+      for (let account of accounts) {
+        const hdAccount = await globalState.rpc('gethdaccount', [account.pk])
+        console.log('hd account ', hdAccount);
+        for (let tx of hdAccount) {
+          utxo += tx.account_balance_change
+        }
+
+      } 
+      resolve(utxo)
+    })
   }
 }
 
