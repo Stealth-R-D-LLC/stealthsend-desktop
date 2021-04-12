@@ -44,7 +44,6 @@ const CryptoService = {
     scriptHash: 0xc4,
     wif: 0xef
   },
-
   master: null,
   seed: null,
   // password: '',
