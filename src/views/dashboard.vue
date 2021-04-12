@@ -1,6 +1,6 @@
 <template>
   <div class="dashbaord-container">
-    Sum of all UXO: {{ utxo }}
+    Sum of all UTXO: {{ utxo }} XST
     <transition-group v-if="accounts.length !== 0" name="list" tag="div">
       <card
         v-for="account in accounts"
@@ -44,10 +44,10 @@ export default {
   setup() {
     // console.log('Init crypto service!')
     const accounts = ref([]);
-    async function getAccounts() {
-      accounts.value = await CryptoService.getAccounts();
-    }
-    getAccounts();
+    // async function getAccounts() {
+    //   accounts.value = await CryptoService.getAccounts();
+    // }
+    // getAccounts();
 
     const utxo = ref(0);
     const txs = ref([]);
@@ -55,6 +55,7 @@ export default {
       const hdWallet = await CryptoService.scanWallet();
       utxo.value = hdWallet.utxo;
       txs.value = hdWallet.txs;
+      accounts.value = hdWallet.accounts;
     }
     scanWallet();
 
