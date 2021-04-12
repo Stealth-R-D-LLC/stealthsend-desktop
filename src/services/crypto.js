@@ -5,6 +5,7 @@ import * as bip39 from 'bip39'
 import * as bitcoin from 'bitcoinjs-lib'
 import { Buffer } from 'buffer'
 import cryptoJs from 'crypto-js'
+import { add, format } from 'mathjs'
 import db from '../db'
 
 // libs.bitcoin.networks.stealthtestnet = {
@@ -58,7 +59,6 @@ const CryptoService = {
       router.push('/lock')
       this.isFirstArrival = false;
     }
-    this.scanWallet()
   },
   async unlock(password) {
     // no need to validate password because it is validated before calling this method
@@ -358,22 +358,33 @@ const CryptoService = {
     return JSON.parse(bytes)
   },
   async scanWallet() {
-    console.log('sken voljet');
     // initially scan all accounts in the wallet for utxos
     // gethdaccounts retrieves all transactions for a particular account
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve) => {
-      let utxo = 0;
       const accounts = await this.getAccounts()
+      let utxo = 0;
+      let txs = []
       for (let account of accounts) {
         const hdAccount = await globalState.rpc('gethdaccount', [account.pk])
-        console.log('hd account ', hdAccount);
         for (let tx of hdAccount) {
-          utxo += tx.account_balance_change
+          utxo = add(utxo, tx.account_balance_change)
+          utxo = format(utxo, {precision: 14})
+          txs.push({
+            amount: tx.account_balance_change,
+            txid: tx.txid,
+            blocktime: tx.txinfo.blocktime,
+            account: account.label,
+            pk: account.pk
+            
+          })
         }
 
-      } 
-      resolve(utxo)
+      }
+      resolve({
+        utxo: utxo, // sum of all utxo
+        txs: txs // all transactions
+      })
     })
   }
 }
