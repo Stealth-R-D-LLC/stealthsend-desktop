@@ -64,40 +64,43 @@ console.dir(trx.build().toHex());
     */
 
     async function sendOpet() {
+      // get it from getaddressoutputs RPC -> param is address from where the funds are sent. we use 1 or more objects
       let addressOutputs = {
-        address: 'n3k1ybJmkZUt9vURTg9Q7SmWSNo8traqj9',
-        amount: 0.08,
-        balance: 0.08,
-        blockhash:
-          '41075c34fa57379ff36351ce67efc4b979696167728e588c4d96f2c3cc9b69a6',
-        blocktime: 1617088334,
-        confirmations: 2200,
-        height: 4481928,
-        isspent: 'false',
         txid:
-          '18b5ca59866e6c5db0fb7fdfa88eed20a2df8ec7d4c77ae03a6b1b5a7a3e21bb',
-        vout: 0,
+          '3826b72aa30fea423796d9cf7f500fb362cbabb9ee8de8d12a6bf26a3bda6e1a',
+        height: 4859577,
         vtx: 0,
+        vout: 0,
+        address: 'msETpzsL7jwgEAqPEQ8W1o7NCM2v6qPzNL',
+        amount: 0.19,
+        balance: 0.29,
+        blockhash:
+          'ac686c57f8b7fa5f094aad5e74821a36ddf72093b313e18b41b852dc7f88840c',
+        confirmations: 16666,
+        blocktime: 1618213064,
+        isspent: 'false',
       };
 
       let rawTransaction = new bitcoin.TransactionBuilder(
         CryptoService.network,
         3000000
       );
-      let prevOutScript = '76a914f3cb3f8187ce7b762ec02ae578f8d598fe32c22588ac';
+      // prevoutscript is retrieved when we go to gettransaction RPC with our txid from the addressoutputs
+      let prevOutScript = '76a914808317660e320209a79fd06405d184bbc85c74bd88ac';
       rawTransaction.addInput(
         addressOutputs.txid,
         0,
         null,
         Buffer.from(prevOutScript, 'hex')
       );
+      // calculated
       let recipient = {
-        address: 'mhjpLAjaHHWnBQHGVtJHPesZQvAhJGYzDX',
+        address: 'mpjUrpqjW18irDo1jgxPg2JLyQLGzK6Agk',
         amount: 0.05 * 1e6,
       };
       let change = {
-        address: 'n3k1ybJmkZUt9vURTg9Q7SmWSNo8traqj9',
-        amount: 0.02 * 1e6,
+        address: 'msETpzsL7jwgEAqPEQ8W1o7NCM2v6qPzNL',
+        amount: 0.13 * 1e6,
       };
       // rawTransaction.addInput("6893ba14a9c77648788bfefd56229bdbc7f5a212d2f15801eacee305d740636a", 0)
 
@@ -107,13 +110,14 @@ console.dir(trx.build().toHex());
       // add the output for the change, send the change back to yourself.
       // Outputs - inputs = transaction fee, so always double-check your math!
       rawTransaction.addOutput(change.address, change.amount);
-      const child = CryptoService.master.derivePath(`m/44'/1'/0'/0/0`);
+      // careful how to derive the path. depends on the account of the address
+      const child = CryptoService.master.derivePath(`m/44'/1'/1'/0/0`);
 
       const keyPair = bitcoin.ECPair.fromWIF(
         child.toWIF(),
         CryptoService.network
       );
-      // console.log('wif', child.toWIF());
+      console.log('wif', child.toWIF());
 
       rawTransaction.sign(0, keyPair);
 
