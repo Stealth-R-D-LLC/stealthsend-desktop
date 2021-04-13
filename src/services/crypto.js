@@ -12,8 +12,8 @@ import db from '../db'
 libs.bitcoin.networks.stealthtestnet = {
   messagePrefix: 'unused',
   bip32: {
-public: 0x043587cf,
-private: 0x04358394,
+    public: 0x043587cf,
+    private: 0x04358394,
   },
   pubKeyHash: 0x6f,
   scriptHash: 0xc4,
@@ -23,8 +23,8 @@ private: 0x04358394,
 libs.bitcoin.networks.stealth = {
   messagePrefix: 'unused',
   bip32: {
-public: 0x0488b21e,
-private: 0x0488ade4
+    public: 0x0488b21e,
+    private: 0x0488ade4
   },
   pubKeyHash: 0x3e,
   scriptHash: 0x85,
@@ -46,60 +46,44 @@ const CryptoService = {
   },
   master: null,
   seed: null,
-  // password: '',
 
+  /**
+   * @description Check if there's already a wallet stored in the db.
+   * If so, ask for password via lock screen and retrieve the stored 
+   * wallet and generate the master from the stored seed.
+   */
   async init() {
-    // check if there's already a wallet stored in the db
-    // if so, ask for password via lock screen and
-    // retrieve the stored wallet and generate the master from the stored seed
     let wallet = await this.getWalletFromDb();
-    await this.getAccounts();
-    console.log('+Wallet: ', wallet);
+    await this.getAccounts(); // TODO: What to do with this call here?
     if (wallet.length <= 0) {
       router.push('/welcome');
     } else if (this.isFirstArrival) {
       router.push('/lock');
       this.isFirstArrival = false;
     }
-    this.scanWallet()
-
-    // TODO: My tests (Josip)
-    // const result = await this.generateMnemonicAndSeed();
-    // // console.log('result - mnemonic and seed', result);
-    // const isMnemonicValid = this.isMnemonicValid(result.mnemonic);
-    // console.log('valid mnemonic?', isMnemonicValid);
-    // console.log('this.network', this.network);
-    // console.log('convert WIF to PK');
-    // const keyPair = this.WIFtoPK(this.network.wif.toString());
-    // console.log('keyPair', keyPair);
-    // const child = this.master.derivePath(`m/44'/1'/${this.account}/${this.change}/${this.network.pubKeyHash}`);
-    // console.log('child', child)
-
+    this.scanWallet();
   },
   /**
-   *
+   * @description Unlock wallet with password.
+   * No need to validate password because it is validated before calling this method.
+   * The seed is stored in a string format because it's the easies to store.
+   * When retrieving, we need to have the seed in buffer type so we can work with it - 
+   * that's why we are converting the seed from string -> uint8array -> buffer
+   * 
    * @param {string} password
    */
   async unlock(password) {
-    // no need to validate password because it is validated before calling this method
-    // const isPasswordValid = await this.validatePassword(password) // compare user prompted password with stored
-    // get password hash so that we can decrypt everything
+    // Get the password hash so that we can decrypt everything
     let { hash } = await this.hashPassword(password);
     let wallet = await this.getWalletFromDb();
-    // seed is stored in a string format because it's the easies to store
-    // when retrieving, we need to have the seed in buffer type so we can work with it
-    // that's why we are converting the seed from string -> uint8array -> buffer
-    // console.log('hash', hash);
-    // console.log('wall', this.hexToArray(this.AESDecrypt(wallet[0].seed, hash).toString(cryptoJs.enc.Utf8)));
-    // // console.log('dec', cryptoJs.AES.decrypt(wallet[0].seed, hash));
-    // console.log('deccc', this.AESDecrypt(wallet[0].seed, hash));
     this.master = bip32.fromSeed(Buffer.from(this.hexToArray(this.AESDecrypt(wallet[0].seed, hash.toString(cryptoJs.enc.Hex)).toString(cryptoJs.enc.Utf8))), this.network);
-    console.log('unlock and set master -> this.master', this.master);
-    // console.log('master!', this.master);
     router.push('/dashboard')
     // this.accountDiscovery()
   },
   /**
+   * @description Wallet Import Format (WIF) - encode a private ECDSA (Eliptic Curve Digital Signature Algorithm) key
+   * so as make it easier to copy. https://en.bitcoin.it/wiki/Wallet_import_format
+   * 
    * @param {string} wif
    * @return {bitcoin.ECPair.ECPairInterface}
    */
@@ -120,12 +104,15 @@ const CryptoService = {
       hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16))
     );
   },
-  async generateMnemonicAndSeed() {
+  /**
+   * @description HD wallets are created from a single root seed, which is a 128-, 256-, or 512-bit random number.
+   * Everything else in the HD wallet is deterministically derived from this root seed,
+   * which makes it possible to re-create the entire HD wallet from that seed in any compatible HD wallet
+   * @return {{mnemonic: string, master: bip32.BIP32Interface}}
+   */
+  generateMnemonicAndSeed() {
     console.log('generateMnemonicAndSeed');
-    // HD wallets are created from a single root seed, which is a 128-, 256-, or 512-bit random number.
-    // Everything else in the HD wallet is deterministically derived from this root seed,
-    // which makes it possible to re-create the entire HD wallet from that seed in any compatible HD wallet
-    const mnemonic = bip39.generateMnemonic(); // string
+    const mnemonic = bip39.generateMnemonic();
     const seed = bip39.mnemonicToSeedSync(mnemonic); // recovery seed of the master bip32 seed.? - seed buffer
     const master = bip32.fromSeed(seed, this.network); // aka. root
     this.master = master;
@@ -135,6 +122,11 @@ const CryptoService = {
       master
     }
   },
+  /**
+   * 
+   * @param {string} path 
+   * @return {{account: number, change: number, address: number}}
+   */
   breakAccountPath(path = "0'/0/0") {
     path = path.replace("'", '');
     const account = +path.split('/')[0];
@@ -151,17 +143,19 @@ const CryptoService = {
    * @param {string} account
    * @param {string} change
    * @param {string} address
-   * @return {object}
+   * @return {{address: string, keyPair: string, pk: string, wif: string, path: string}}
    */
   getChildFromRoot(account, change, address) {
     // child === keypair
-    console.log('getChildFromRoot', account, change, address); // 1 0 0
+    console.log('start::::getChildFromRoot', account, change, address); // 5 0 0
     const child = this.master.derivePath(
       `m/44'/1'/${account}'/${change}/${address}`
     );
     let acc = this.master.derivePath(
       `m/44'/1'/${account}'`
     );
+    console.log('getChildFromRoot - acc', acc);
+    console.log('getChildFromRoot - child', child);
     // this.WIFtoPK(child.toWIF()) // decrypt
     return {
       address: bitcoin.payments.p2pkh({ pubkey: child.publicKey }).address,
@@ -197,10 +191,20 @@ const CryptoService = {
    * @return {Promise<*>}
    */
   async getWalletFromDb() {
+    /**
+     * TODO: remove later (example entries in the DB)
+     *  0: {name: "wallet", archived: false, seed: "VTJGc2RHVmtYMTltKzNDWGN3cThaQTBLM2pzWE5NUS9NNnUvNn…ZWFB4b1BFbk5zSFQwYzVmV21sdFVsaE5aYXFwTWw5QzNFZz09", password:     "7ee408c39256069678029c0740e6931e83f101f415ed29d9db…106c18b19f1b78e984c443903d4e74d0f28f9440733392de1", balance: 0, …}
+        1: {name: "account", address: "mnLNmZCz2Lb1MSVNYHDujE3jKu8soxMZda", label: "brljavko", isArchived: false, balance: 0, …}
+     */
+    // await db.remove({ label: 'testko' }); // TODO: If we want to remove the specific wallet by 'label' field
     let wallet = await db.find({ name: 'wallet' });
     globalState.setWallet(wallet[0]);
     return wallet;
   },
+  /**
+   * 
+   * @return {Promise<Array<*>>} accounts
+   */
   async getAccounts() {
     let accounts = await db.find({ name: 'account' });
     // globalState.setAccounts(accounts)
@@ -432,19 +436,27 @@ const CryptoService = {
   },
 
   /**
+   * @description CryptoJS with custom key `key` encode payload `payload`
+   * Feed the CryptoJS's toString overload the appropriate encoder (cryptoJs.enc.Utf8), else
+   * it defaults to hex.
+   * 
    * @param {string} payload
    * @param {string} key
    * @return {Object}
    */
   AESDecrypt(payload, key = '123456789') {
-    let decData = cryptoJs.enc.Base64.parse(payload).toString(cryptoJs.enc.Utf8);
-    let bytes = cryptoJs.AES.decrypt(decData, key).toString(cryptoJs.enc.Utf8);
+    let decData = cryptoJs.enc.Base64.parse(payload).toString(cryptoJs.enc.Utf8); // encrypted utf8 data
+    let bytes = cryptoJs.AES.decrypt(decData, key).toString(cryptoJs.enc.Utf8); // that goes here with the key/passphrase
     return JSON.parse(bytes);
   },
+
+  /**
+   * @description Scan the wallet. Initially, scan all accounts in the wallet for UTXOs.
+   * gethdaccounts RPC method retrieves all transactions for a particular account.
+   * @return {Promise<*>} 
+   */
   async scanWallet() {
     console.log('sken voljet');
-    // initially scan all accounts in the wallet for utxos
-    // gethdaccounts retrieves all transactions for a particular account
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve) => {
       let utxo = 0;

@@ -20,30 +20,13 @@ const rpc = (method, payload) => {
       params: payload,
     })
       .then((res) => {
-        console.log(`RPC response (${method}): `, res.data.result);
         resolve(res.data.result);
       })
       .catch((err) => {
-        console.error('RPC error: ', err);
         reject(err.response.data.error.message);
       });
   });
 };
-
-/**
- * {
-    "jsonrpc": "2.0",
-    "id": 1,
-    "method": "getaddressinfo",
-    "params": [
-        "mtS8n7jnjpS9upnQtvKpHNxxDeeXiFm5cy"
-    ]
-}
- */
-// TODO: Remove later (intended for testing rpc calls)
-// console.log('rpc', rpc("getaddressinfo", ["miM6d6S71YX9JrRgVfKUeFxGpqdd8o3fKD"]));
-// getnewaddress
-// "result": "mgKQcbQ2pGJRHKAi9T6icaH8QtZReiTPvT"
 
 const startGlobalLoading = () => state.globalLoading = true;
 const stopGlobalLoading = () => state.globalLoading = false;
