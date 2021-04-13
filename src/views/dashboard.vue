@@ -24,7 +24,13 @@
         { key: 'amount', title: 'Amount' },
       ]"
       @rowClick="openTransaction"
-    ></StTable>
+    >
+      <template #amount="{ item }">
+        <span :class="[item.amount > 0 ? 'expense' : 'income']">
+          {{ item.amount > 0 ? '+' : '-' }} {{ Math.abs(item.amount) }}
+        </span>
+      </template>
+    </StTable>
   </div>
 </template>
 
@@ -88,3 +94,14 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.income {
+  font-weight: bold;
+  color: var(--danger);
+}
+.expense {
+  font-weight: bold;
+  color: var(--success);
+}
+</style>
