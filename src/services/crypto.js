@@ -147,15 +147,18 @@ const CryptoService = {
    */
   getChildFromRoot(account, change, address) {
     // child === keypair
-    console.log('start::::getChildFromRoot', account, change, address); // 5 0 0
+    console.log('start!!!!getChildFromRoot', account, change, address); // 5 0 0
+    console.log('IMA LI MASTERA????? this.master', this.master);
+
     const child = this.master.derivePath(
       `m/44'/1'/${account}'/${change}/${address}`
     );
     let acc = this.master.derivePath(
       `m/44'/1'/${account}'`
     );
-    console.log('getChildFromRoot - acc', acc);
-    console.log('getChildFromRoot - child', child);
+    console.log('EEEEE BOTE JESAM TU ILI NISAM!!!!!!!');
+    console.log('getChildFromRoot - acc address', bitcoin.payments.p2pkh({ pubkey: acc.publicKey }).address);
+    console.log('getChildFromRoot - child address', bitcoin.payments.p2pkh({ pubkey: child.publicKey }).address);
     // this.WIFtoPK(child.toWIF()) // decrypt
     return {
       address: bitcoin.payments.p2pkh({ pubkey: child.publicKey }).address,
