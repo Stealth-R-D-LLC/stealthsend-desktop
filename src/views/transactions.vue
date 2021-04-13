@@ -1,10 +1,10 @@
 <template>
-  <div class="address-book-container">Address book</div>
+  <div class="transactions-container">Transactions</div>
 </template>
 
 <script>
 export default {
-  name: 'AddressBook',
+  name: 'Transactions',
   setup() {
     return {}
   }
