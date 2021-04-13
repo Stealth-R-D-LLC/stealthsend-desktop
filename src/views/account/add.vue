@@ -38,69 +38,72 @@
 </template>
 
 <script>
-import CryptoService from '@/services/crypto'
-// import StModal from '@/components/kit/StModal.vue'
-import globalState from '@/store/global'
-import { computed } from 'vue'
+import CryptoService from '@/services/crypto';
+import StModal from '@/components/kit/StModal.vue';
+import globalState from '@/store/global';
+import { computed } from 'vue';
 
-import { ref } from 'vue'
+import { ref } from 'vue';
 export default {
   name: 'StAddAccount',
-  // components: {
-  //   StModal
-  // },
+  components: {
+    StModal,
+  },
   setup() {
     const hasZeroBalance = computed(() => {
-      return false // TODO: hardcoded
+      return false; // TODO: hardcoded
       // return globalState.state.accounts.some((el) => el.balance === 0)
-    })
+    });
 
-    let isAccountModalVisible = ref(false)
-    let account = {}
+    let isAccountModalVisible = ref(false);
+    let account = {};
 
-    const accountName = ref('')
+    const accountName = ref('');
 
     async function getNextAccountPath() {
       let accounts = await CryptoService.getAccounts();
-      let largest = 0
+      let largest = 0;
       for (let acc of accounts) {
         if (parseInt(acc.path) > largest) {
-          largest = parseInt(acc.path)
+          largest = parseInt(acc.path);
         }
-        
       }
       return largest + 1;
     }
 
     async function generateAccount() {
-      isAccountModalVisible.value = false
-      globalState.startGlobalLoading()
+      isAccountModalVisible.value = false;
+      globalState.startGlobalLoading();
 
       let next = await getNextAccountPath();
-      const { address, path, pk, wif } = CryptoService.getChildFromRoot(next, 0, 0)
+      const { address, path, pk, wif } = CryptoService.getChildFromRoot(
+        next,
+        0,
+        0
+      );
       account = {
         pk: pk,
         address: address,
         label: accountName.value,
-        balance: 0,
+        utxo: 0,
         isArchived: false,
         asset: 'XST',
         wif: wif,
-        path: path
-      }
-      
-      CryptoService.storeAccountInDb(account)
-      globalState.stopGlobalLoading()
+        path: path,
+      };
+
+      CryptoService.storeAccountInDb(account);
+      globalState.stopGlobalLoading();
     }
 
     return {
       accountName,
       isAccountModalVisible,
       generateAccount,
-      hasZeroBalance
-    }
-  }
-}
+      hasZeroBalance,
+    };
+  },
+};
 </script>
 
 <style lang="postcss" scoped></style>

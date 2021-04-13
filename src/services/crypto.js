@@ -163,23 +163,25 @@ const CryptoService = {
     return wallet
   },
   async getAccounts() {
+    console.log('getacc');
     let accounts = await db.find({ name: 'account' })
     // globalState.setAccounts(accounts)
     console.log('Accounts: ', accounts)
     return accounts
   },
   async storeAccountInDb(account) {
-    let acc = await db.insert({
-      name: 'account',
-      address: account.address,
-      label: account.label,
-      isArchived: account.isArchived,
-      balance: account.balance,
-      path: account.path,
-      pk: account.pk,
-      asset: account.asset
-    })
-    this.getAccounts()
+    console.log('storam', account);
+      let acc = await db.insert({
+        name: 'account',
+        address: account.address,
+        label: account.label,
+        isArchived: account.isArchived,
+        utxo: account.utxo,
+        path: account.path,
+        pk: account.pk,
+        asset: account.asset
+      })
+    // this.getAccounts()
     return acc
   },
   async archiveAccount(account) {
@@ -190,7 +192,7 @@ const CryptoService = {
         address: account.address,
         label: account.label,
         isArchived: true,
-        balance: account.balance,
+        utxo: account.utxo,
         path: account.path
       }
     )
@@ -204,7 +206,7 @@ const CryptoService = {
         address: account.address,
         label: account.label,
         isArchived: false,
-        balance: account.balance,
+        utxo: account.utxo,
         path: account.path
       }
     )
@@ -284,13 +286,11 @@ const CryptoService = {
       // console.log('enc seed stored: ', encryptedSeed.ciphertext.toString(cryptoJs.enc.Hex));
       // console.log('decrypted', cryptoJs.AES.decrypt(encryptedSeed, hash.toString(cryptoJs.enc.Hex)).toString(cryptoJs.enc.Utf8));
       // console.log('parsed: ', cryptoJs.enc.Hex.parse(encryptedSeed.ciphertext.toString(cryptoJs.enc.Hex)));
-
       const wallet = {
         name: 'wallet',
         archived: false,
         seed: encryptedSeed,
         password: hash.toString(cryptoJs.enc.Hex),
-        balance: 0, // will be calculated after "scanning" for accounts; sum of all accounts
         salt: salt
       }
 
@@ -328,7 +328,7 @@ const CryptoService = {
           name: 'account',
           label: 'Account ' + i + 1,
           isArchived: false,
-          balance: 0,
+          utxo: 0,
           asset: 'XST'
         })
         // get account balance
