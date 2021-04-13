@@ -32,6 +32,11 @@ import db from '../db'
 
 
 const CryptoService = {
+  constraints: {
+    XST_USD: 0.17401,
+    FEE: 0.01,
+    MINIMAL_CHANGE: 0.01
+  },
   isFirstArrival: true,
   network: {
     messagePrefix: 'unused',
@@ -355,7 +360,10 @@ const CryptoService = {
             
           })
         }
-        account.utxo = accUtxo
+        account.utxo = utxo
+        // When a user looks at their wallet, the software aggregates the sum of value of all their
+        // UTXOs and presents it to them as their "balance".
+        // Bitcoin doesn’t know balances associated with an account or username as they appear in banking.
         utxo = add(utxo, accUtxo)
         utxo = format(utxo, {precision: 14})
       }
