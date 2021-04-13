@@ -9,7 +9,8 @@
         </li>
         <li>
           <router-link tag="a" class="item" to="/dashboard">
-            <svg
+            <div class="icon">
+              <svg
               width="24"
               height="24"
               viewBox="0 0 24 24"
@@ -29,12 +30,14 @@
               />
               <path d="M21 1h-8v8h8V1z" stroke="#FAF9FC" stroke-width="2" />
             </svg>
+            </div>
 
             <span class="item__span"> Account Balances </span>
           </router-link>
         </li>
         <li>
           <router-link tag="a" class="item" to="/uikit">
+          <div class="icon">
             <svg
               width="24"
               height="24"
@@ -57,11 +60,13 @@
                 stroke-width="2"
               />
             </svg>
+          </div>
             <span class="item__span"> UI Kit </span>
           </router-link>
         </li>
                 <li>
           <router-link tag="a" class="item" to="/account/add">
+          <div class="icon">
             <svg
               width="24"
               height="24"
@@ -84,16 +89,19 @@
                 stroke-width="2"
               />
             </svg>
+          </div>
             <span class="item__span"> Add Account </span>
           </router-link>
         </li>
         <li>
           <router-link tag="a" class="item" to="/send">
+          <div class="icon">
             <svg width="24" height="24" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M1 11V16H17V11" stroke="#FAF9FC" stroke-width="2"/>
               <path d="M12 5L9 2L6 5" stroke="#FAF9FC" stroke-width="2" stroke-linecap="square"/>
               <path d="M9 2L9 12" stroke="#FAF9FC" stroke-width="2"/>
             </svg>
+          </div>
 
             <!-- <svg
               width="24"
@@ -121,11 +129,13 @@
         </li>
         <li>
           <router-link tag="a" class="item" to="/receive">
+          <div class="icon">
           <svg width="24" height="24" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M1 11V16H17V11" stroke="#FAF9FC" stroke-width="2"/>
             <path d="M6 8L9 11L12 8" stroke="#FAF9FC" stroke-width="2" stroke-linecap="square"/>
             <path d="M9 11V0" stroke="#FAF9FC" stroke-width="2"/>
           </svg>
+          </div>
             <!-- <svg
               width="24"
               height="24"
@@ -157,6 +167,7 @@
         </li>
                 <li>
           <router-link tag="a" class="item" to="/transactions">
+          <div class="icon">
           <svg width="24" height="24" viewBox="0 0 21 14" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M5 1H21" stroke="#FAF9FC" stroke-width="2" stroke-linejoin="round"/>
             <path d="M0 1H2" stroke="#FAF9FC" stroke-width="2" stroke-linejoin="round"/>
@@ -167,6 +178,7 @@
             <path d="M5 13H21" stroke="#FAF9FC" stroke-width="2" stroke-linejoin="round"/>
             <path d="M0 13H2" stroke="#FAF9FC" stroke-width="2" stroke-linejoin="round"/>
           </svg>
+          </div>
 
             <!-- <svg
               width="24"
@@ -204,6 +216,7 @@
         </li>
         <li>
           <router-link tag="a" class="item" to="/account/archived">
+          <div class="icon">
             <svg
               width="24"
               height="24"
@@ -218,6 +231,7 @@
               <path d="M12 4H22" stroke="#FCFAFF" stroke-width="2" />
               <path d="M9 1H1V9H9V1Z" stroke="#FCFAFF" stroke-width="2" />
             </svg>
+          </div>
             <span class="item__span"> Archive </span>
           </router-link>
         </li>
@@ -249,6 +263,7 @@
         </li> -->
         <li>
           <router-link tag="a" class="item" to="/address-book">
+            <div class="icon">
             <svg
               width="24"
               height="24"
@@ -279,6 +294,7 @@
                 stroke-width="2"
               />
             </svg>
+            </div>
 
             <span class="item__span"> Address Book </span>
           </router-link>
@@ -324,17 +340,18 @@ export default {
 }
 
 .default-layout__aside.width .item span {
+  width: 0;
   opacity: 0;
+  margin: 0;
 }
+
 .default-layout__aside nav {
   margin-top: 30px;
-  /* position: relative; */
 }
 
 .default-layout__aside .item__footer{
   position: fixed;
   padding: 12px 0;
-  /* width: 100%; */
   text-decoration: none;
   padding-left: 24px;
   bottom: 32px;
@@ -352,69 +369,53 @@ export default {
 
 .default-layout__aside .item {
   display: block;
-  /* position: relative; */
 }
 
-.default-layout__aside li svg path,
-.default-layout__aside li span {
-  transition: 0.2s;
+.default-layout__aside .icon {
+  display: flex;
+  width: 1.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.default-layout__aside li svg {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .default-layout__aside .item {
   padding: 12px 0;
-  /* width: 100%; */
   text-decoration: none;
   padding-left: 24px;
-  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .default-layout__aside .item span {
-  position: absolute;
+  width: 100%;
   overflow: hidden;
   font-size: 18px;
   line-height: 24px;
   letter-spacing: 0.12px;
-  color: #fcfaff;
+  color:var(--hampton50);
   margin-left: 42px;
   opacity: 1;
-  transition: opacity 0.5;
-  transition-delay: 0.25s;
+  transition: opacity 0.3s ease-in-out;
   white-space: nowrap;
 }
-/* .default-layout__aside li:hover .item span {
-  transition-delay: 0s;
-} */
 
-.default-layout__aside li:hover .item span{
-  transition-delay: 0s;
-}
-
-.default-layout__aside.width .router-link-exact-active.item span{
-  color: var(--hampton50);
-  opacity: 0;
-}
-
-.default-layout__aside .router-link-exact-active span,
-.default-layout__aside .router-link-exact-active svg path {
-  transition-delay: 0.25s;
-  color: var(--marine200);
+.default-layout__aside .item.router-link-exact-active svg path {
   stroke: var(--marine200);
-  
 }
-.default-layout__aside.width .router-link-exact-active span,
-.default-layout__aside.width .router-link-exact-active svg path {
-  color: var(--marine200);
-  stroke: var(--marine200);
-  transition-delay: 0s;
-}
-.default-layout__aside li:hover span {
-  transition-delay: 0s;
+
+.default-layout__aside .item.router-link-exact-active span {
   color: var(--marine200);
 }
 
-.default-layout__aside li:hover svg path{
-    stroke: var(--marine200);
-  /* color: var(--marine200); */
+.default-layout__aside li:hover span, 
+.default-layout__aside li:hover svg path {
+  stroke: var(--marine200);
+  color: var(--marine200);
 }
 
 
@@ -422,9 +423,6 @@ export default {
   0%,
   40% {
     width: 72px;
-  }
-  70%{
-
   }
   100% {
     width: 280px;
