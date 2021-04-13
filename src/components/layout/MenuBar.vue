@@ -30,9 +30,7 @@
               <path d="M21 1h-8v8h8V1z" stroke="#FCFAFF" stroke-width="2" />
             </svg>
 
-            <span>
-              Account Balances
-            </span>
+            <span> Account Balances </span>
           </router-link>
         </li>
         <li>
@@ -59,9 +57,7 @@
                 stroke-width="2"
               />
             </svg>
-            <span>
-              UI Kit
-            </span>
+            <span> UI Kit </span>
           </router-link>
         </li>
         <li>
@@ -87,9 +83,7 @@
               />
               <path d="M14 12.5H25" stroke="#FCFAFF" stroke-width="2" />
             </svg>
-            <span>
-              Send
-            </span>
+            <span> Send </span>
           </router-link>
         </li>
         <li>
@@ -120,9 +114,7 @@
                 stroke-linecap="square"
               />
             </svg>
-            <span>
-              Receive
-            </span>
+            <span> Receive </span>
           </router-link>
         </li>
         <li>
@@ -149,9 +141,7 @@
                 stroke-width="2"
               />
             </svg>
-            <span>
-              Add Account
-            </span>
+            <span> Add Account </span>
           </router-link>
         </li>
         <li>
@@ -170,9 +160,7 @@
               <path d="M12 4H22" stroke="#FCFAFF" stroke-width="2" />
               <path d="M9 1H1V9H9V1Z" stroke="#FCFAFF" stroke-width="2" />
             </svg>
-            <span>
-              Archive
-            </span>
+            <span> Archive </span>
           </router-link>
         </li>
         <li>
@@ -208,9 +196,7 @@
               />
             </svg>
 
-            <span>
-              Address Book
-            </span>
+            <span> Address Book </span>
           </router-link>
         </li>
         <li>
@@ -236,9 +222,43 @@
               />
               <path d="M9 21H22" stroke="#FCFAFF" stroke-width="2" />
             </svg>
-            <span>
-              Settings
-            </span>
+            <span> Settings </span>
+          </router-link>
+        </li>
+        <li>
+          <router-link tag="a" class="item" to="/lock">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M24 23H2C2.27477 18.4999 2.89237 15.6416 3.85279 14.4251C4.64988 13.4154 5.69891 12.7108 6.9999 12.3306"
+                stroke="#EAEAEA"
+                stroke-width="2"
+              />
+              <path
+                d="M17 19H23"
+                stroke="#EAEAEA"
+                stroke-width="2"
+                stroke-linecap="square"
+              />
+              <path
+                d="M17 15H23"
+                stroke="#EAEAEA"
+                stroke-width="2"
+                stroke-linecap="square"
+              />
+              <path
+                d="M10 13C13.3137 13 16 10.3137 16 7C16 3.68629 13.3137 1 10 1C6.68629 1 4 3.68629 4 7C4 10.3137 6.68629 13 10 13Z"
+                stroke="#EAEAEA"
+                stroke-width="2"
+              />
+            </svg>
+
+            <span> Lock screen </span>
           </router-link>
         </li>
       </ul>
@@ -247,22 +267,22 @@
 </template>
 
 <script>
-import { ref } from 'vue'
-import StHamburger from '@/components/elements/StHamburger'
+import { ref } from 'vue';
+import StHamburger from '@/components/elements/StHamburger';
 export default {
   name: 'StMenuBar',
   components: {
-    StHamburger
+    StHamburger,
   },
   setup() {
-    const isCollapsed = ref(false)
+    const isCollapsed = ref(false);
 
     return {
-      isCollapsed
-    }
-  }
-}
-</script>
+      isCollapsed,
+    };
+  },
+};
+</script> 
 
 <style scoped>
 .default-layout__aside {

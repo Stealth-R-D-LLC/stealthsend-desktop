@@ -1,58 +1,72 @@
 <template>
-  <div class="st-card" :class="{'st-card--is-archived': account.isArchived}" @click="handleClick(account)">
-    <a v-if="archiveable" href="" class="archive" @click.prevent="archive(account)"></a>
-    <a v-if="unarchiveable" href="" class="unarchive" @click.prevent="unarchive(account)"></a>
+  <div
+    class="st-card"
+    :class="{ 'st-card--is-archived': account.isArchived }"
+    @click="handleClick(account)"
+  >
+    <a
+      v-if="archiveable"
+      href=""
+      class="archive"
+      @click.prevent="archive(account)"
+    ></a>
+    <a
+      v-if="unarchiveable"
+      href=""
+      class="unarchive"
+      @click.prevent="unarchive(account)"
+    ></a>
     <div class="st-card__row">
       <span class="item title">{{ account.label }}</span>
       <!-- <span class="itemu type">{{ account.isArchived  }}</span> -->
     </div>
     <div class="st-card__row">
-      <span class="item amount">{{ account.balance }} XST</span>
+      <span class="item amount">{{ account.utxo }} XST</span>
       <span class="item fiat">{{ amountInFiat }} EUR</span>
     </div>
   </div>
 </template>
 
 <script>
-import { computed } from 'vue'
-const XST_USD = 0.174010 // hardcoded obviously
+import { computed } from 'vue';
+const XST_USD = 0.226338; // hardcoded obviously
 export default {
   name: 'StCard',
   props: {
-        unarchiveable: {
+    unarchiveable: {
       type: Boolean,
       required: false,
-      default: true
+      default: true,
     },
     archiveable: {
       type: Boolean,
       required: false,
-      default: true
+      default: true,
     },
     account: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   emits: ['archived', 'unarchived', 'click'],
   setup(props, context) {
     const amountInFiat = computed(() => {
-      return props.account.balance * XST_USD
-    })
+      return +props.account.utxo * XST_USD;
+    });
 
     const handleClick = (account) => {
-      context.emit('click', account)
-    }
+      context.emit('click', account);
+    };
 
     const archive = (account) => {
-      context.emit('archived', account)
-    }
+      context.emit('archived', account);
+    };
     const unarchive = (account) => {
-      context.emit('unarchived', account)
-    }
-    return { amountInFiat, archive, unarchive, handleClick }
-  }
-}
+      context.emit('unarchived', account);
+    };
+    return { amountInFiat, archive, unarchive, handleClick };
+  },
+};
 </script>
 
 <style lang="postcss" scoped>
@@ -103,7 +117,8 @@ export default {
   letter-spacing: 0.12px;
 }
 
-.st-card .archive, .st-card .unarchive {
+.st-card .archive,
+.st-card .unarchive {
   width: 20px;
   height: 20px;
   border-radius: 50%;

@@ -1,5 +1,9 @@
 <template>
-  <div v-show="visibility" class="loading-page" :class="{'opaque': opaque, 'transparent': !opaque}">
+  <div
+    v-show="visibility"
+    class="loading-page"
+    :class="{ opaque: opaque, transparent: !opaque }"
+  >
     <img src="../../../static/xstloader.gif" alt="Test gif" />
   </div>
 </template>
@@ -17,16 +21,16 @@ export default {
     opaque: {
       type: Boolean,
       required: false,
-      default: false
-    }
+      default: false,
+    },
   },
   setup(props) {
     // watchEffect(props.visibility, () => {
     //   // when global loading is active, it shouldn't be possible to scroll
     // })
-      document.body.classList.toggle('noscroll', props.visibility)
+    document.body.classList.toggle('noscroll', props.visibility);
   },
-}
+};
 </script>
 
 <style lang="postcss">
@@ -46,9 +50,9 @@ export default {
 }
 
 .transparent {
-  background: rgba(255, 255, 255, 0.8)
+  background: rgba(255, 255, 255, 0.8);
 }
 .opaque {
-  background: rgba(255, 255, 255, 1)
+  background: rgba(255, 255, 255, 1);
 }
 </style>
