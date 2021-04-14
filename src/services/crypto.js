@@ -163,6 +163,7 @@ const CryptoService = {
     let acc = this.master.derivePath(
       `m/44'/1'/${account}'`
     );
+    console.log('this.network', this.network);
     console.log('getChildFromRoot - ACCOUNT address', bitcoin.payments.p2pkh({ pubkey: acc.publicKey }).address);
     console.log('getChildFromRoot - CHILD address', bitcoin.payments.p2pkh({ pubkey: child.publicKey }).address);
     // this.WIFtoPK(child.toWIF()) // decrypt
