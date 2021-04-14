@@ -170,6 +170,8 @@ const CryptoService = {
   },
   async getAccounts() {
     console.log('getacc');
+    console.log('accountssss:::', await db.find({}));
+    await db.remove({ _id: "JMWlWEW7znx9SNU5" });
     let accounts = await db.find({ name: 'account' })
     // globalState.setAccounts(accounts)
     console.log('Accounts: ', accounts)
@@ -177,16 +179,16 @@ const CryptoService = {
   },
   async storeAccountInDb(account) {
     console.log('storam', account);
-      let acc = await db.insert({
-        name: 'account',
-        address: account.address,
-        label: account.label,
-        isArchived: account.isArchived,
-        utxo: account.utxo,
-        path: account.path,
-        pk: account.pk,
-        asset: account.asset
-      })
+    let acc = await db.insert({
+      name: 'account',
+      address: account.address,
+      label: account.label,
+      isArchived: account.isArchived,
+      utxo: account.utxo,
+      path: account.path,
+      pk: account.pk,
+      asset: account.asset
+    })
     // this.getAccounts()
     return acc
   },
@@ -327,16 +329,16 @@ const CryptoService = {
       if (inputs.length > 0) {
         console.log('discovered account: ', acc.path);
         // save account in db?
-        this.storeAccountInDb({
-          address: acc.address,
-          path: acc.path,
-          pk: acc.pk,
-          name: 'account',
-          label: 'Account ' + i + 1,
-          isArchived: false,
-          utxo: 0,
-          asset: 'XST'
-        })
+        // this.storeAccountInDb({
+        //   address: acc.address,
+        //   path: acc.path,
+        //   pk: acc.pk,
+        //   name: 'account',
+        //   label: 'Account ' + i + 1,
+        //   isArchived: false,
+        //   utxo: 0,
+        //   asset: 'XST'
+        // })
         // get account balance
         // if there are some transactions, increase the account index and go to step 1
         // this.accountDiscovery(n+1)
@@ -375,14 +377,14 @@ const CryptoService = {
         const hdAccount = await globalState.rpc('gethdaccount', [account.pk])
         for (let tx of hdAccount) {
           accUtxo = add(accUtxo, tx.account_balance_change)
-          accUtxo = format(accUtxo, {precision: 14})
+          accUtxo = format(accUtxo, { precision: 14 })
           txs.push({
             amount: tx.account_balance_change,
             txid: tx.txid,
             blocktime: tx.txinfo.blocktime,
             account: account.label,
             pk: account.pk
-            
+
           })
         }
         account.utxo = utxo
@@ -390,7 +392,7 @@ const CryptoService = {
         // UTXOs and presents it to them as their "balance".
         // Bitcoin doesn’t know balances associated with an account or username as they appear in banking.
         utxo = add(utxo, accUtxo)
-        utxo = format(utxo, {precision: 14})
+        utxo = format(utxo, { precision: 14 })
       }
       resolve({
         utxo: utxo, // sum of all utxo
