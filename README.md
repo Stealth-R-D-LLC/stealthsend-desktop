@@ -1,7 +1,6 @@
 # Stealth Desktop
 
 Stealth desktop App for MacOs, Linux and Windows.
-
 * Jira board: https://jira.barrage.net/projects/XSTDESKTOP
 * Slack channel: https://wearebarrage.slack.com/archives/G01KQNE67PV
 * Postman Workspace: https://barrage-team.postman.co/workspace/Stealth~d7086fad-cb9c-4467-a6f2-37514d478f79
