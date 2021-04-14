@@ -5,6 +5,7 @@ import * as bip39 from 'bip39'
 import * as bitcoin from 'bitcoinjs-lib'
 import { Buffer } from 'buffer'
 import cryptoJs from 'crypto-js'
+import { add, format } from 'mathjs'
 import db from '../db'
 
 // libs.bitcoin.networks.stealthtestnet = {
@@ -31,6 +32,11 @@ import db from '../db'
 
 
 const CryptoService = {
+  constraints: {
+    XST_USD: 0.17401,
+    FEE: 0.01,
+    MINIMAL_CHANGE: 0.01
+  },
   isFirstArrival: true,
   network: {
     messagePrefix: 'unused',
@@ -355,6 +361,43 @@ const CryptoService = {
     let decData = cryptoJs.enc.Base64.parse(payload).toString(cryptoJs.enc.Utf8)
     let bytes = cryptoJs.AES.decrypt(decData, key).toString(cryptoJs.enc.Utf8)
     return JSON.parse(bytes)
+  },
+  async scanWallet() {
+    // initially scan all accounts in the wallet for utxos
+    // gethdaccounts retrieves all transactions for a particular account
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise(async (resolve) => {
+      const accounts = await this.getAccounts()
+      let utxo = 0;
+      let txs = []
+      for (let account of accounts) {
+        let accUtxo = 0
+        const hdAccount = await globalState.rpc('gethdaccount', [account.pk])
+        for (let tx of hdAccount) {
+          accUtxo = add(accUtxo, tx.account_balance_change)
+          accUtxo = format(accUtxo, {precision: 14})
+          txs.push({
+            amount: tx.account_balance_change,
+            txid: tx.txid,
+            blocktime: tx.txinfo.blocktime,
+            account: account.label,
+            pk: account.pk
+            
+          })
+        }
+        account.utxo = utxo
+        // When a user looks at their wallet, the software aggregates the sum of value of all their
+        // UTXOs and presents it to them as their "balance".
+        // Bitcoin doesn’t know balances associated with an account or username as they appear in banking.
+        utxo = add(utxo, accUtxo)
+        utxo = format(utxo, {precision: 14})
+      }
+      resolve({
+        utxo: utxo, // sum of all utxo
+        txs: txs, // all transactions,
+        accounts: accounts
+      })
+    })
   }
 }
 
