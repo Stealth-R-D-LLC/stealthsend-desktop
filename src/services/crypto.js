@@ -1,12 +1,13 @@
 // @ts-check
 import router from '@/router';
 import globalState from '@/store/global';
-import * as bip32 from 'bip32'
-import * as bip39 from 'bip39'
-import * as bitcoin from 'bitcoinjs-lib'
-import { Buffer } from 'buffer'
-import cryptoJs from 'crypto-js'
-import db from '../db'
+import * as bip32 from 'bip32';
+import * as bip39 from 'bip39';
+import * as bitcoin from 'bitcoinjs-lib';
+import { Buffer } from 'buffer';
+import cryptoJs from 'crypto-js';
+import { add, format } from 'mathjs';
+import db from '../db';
 
 /**
 libs.bitcoin.networks.stealthtestnet = {
@@ -33,6 +34,11 @@ libs.bitcoin.networks.stealth = {
 */
 
 const CryptoService = {
+  constraints: {
+    XST_USD: 0.17401,
+    FEE: 0.01,
+    MINIMAL_CHANGE: 0.01
+  },
   isFirstArrival: true,
   network: {
     messagePrefix: 'unused',
@@ -49,7 +55,7 @@ const CryptoService = {
 
   /**
    * @description Check if there's already a wallet stored in the db.
-   * If so, ask for password via lock screen and retrieve the stored 
+   * If so, ask for password via lock screen and retrieve the stored
    * wallet and generate the master from the stored seed.
    */
   async init() {
@@ -61,15 +67,14 @@ const CryptoService = {
       router.push('/lock');
       this.isFirstArrival = false;
     }
-    this.scanWallet();
   },
   /**
    * @description Unlock wallet with password.
    * No need to validate password because it is validated before calling this method.
    * The seed is stored in a string format because it's the easies to store.
-   * When retrieving, we need to have the seed in buffer type so we can work with it - 
+   * When retrieving, we need to have the seed in buffer type so we can work with it -
    * that's why we are converting the seed from string -> uint8array -> buffer
-   * 
+   *
    * @param {string} password
    */
   async unlock(password) {
@@ -83,7 +88,7 @@ const CryptoService = {
   /**
    * @description Wallet Import Format (WIF) - encode a private ECDSA (Eliptic Curve Digital Signature Algorithm) key
    * so as make it easier to copy. https://en.bitcoin.it/wiki/Wallet_import_format
-   * 
+   *
    * @param {string} wif
    * @return {bitcoin.ECPair.ECPairInterface}
    */
@@ -123,8 +128,8 @@ const CryptoService = {
     }
   },
   /**
-   * 
-   * @param {string} path 
+   *
+   * @param {string} path
    * @return {{account: number, change: number, address: number}}
    */
   breakAccountPath(path = "0'/0/0") {
@@ -205,7 +210,7 @@ const CryptoService = {
     return wallet;
   },
   /**
-   * 
+   *
    * @return {Promise<Array<*>>} accounts
    */
   async getAccounts() {
@@ -220,18 +225,19 @@ const CryptoService = {
    * @returns
    */
   async storeAccountInDb(account) {
-    let acc = await db.insert({
-      name: 'account',
-      address: account.address,
-      label: account.label,
-      isArchived: account.isArchived,
-      balance: account.balance,
-      path: account.path,
-      pk: account.pk,
-      asset: account.asset,
-    });
-    await this.getAccounts(); // TODO: get accounts, and what after we've got them? Maybe we need to get the results of db.insert
-    return acc;
+    console.log('storam', account);
+      let acc = await db.insert({
+        name: 'account',
+        address: account.address,
+        label: account.label,
+        isArchived: account.isArchived,
+        utxo: account.utxo,
+        path: account.path,
+        pk: account.pk,
+        asset: account.asset
+      });
+    // this.getAccounts()
+    return acc
   },
   /**
    *
@@ -246,7 +252,7 @@ const CryptoService = {
         address: account.address,
         label: account.label,
         isArchived: true,
-        balance: account.balance,
+        utxo: account.utxo,
         path: account.path,
       }
     );
@@ -265,7 +271,7 @@ const CryptoService = {
         address: account.address,
         label: account.label,
         isArchived: false,
-        balance: account.balance,
+        utxo: account.utxo,
         path: account.path,
       }
     );
@@ -327,7 +333,7 @@ const CryptoService = {
    */
   async storeWalletInDb(password) {
     // console.log('store wallet in db', password);
-    let { hash, salt } = await this.hashPassword(password)
+    let { hash, salt } = await this.hashPassword(password);
     return new Promise((resolve) => {
       // user security is ultimately dependent on a password,
       // and because a password usually can't be used directly as a cryptographic key,
@@ -365,19 +371,17 @@ const CryptoService = {
       // console.log('enc seed stored: ', encryptedSeed.ciphertext.toString(cryptoJs.enc.Hex));
       // console.log('decrypted', cryptoJs.AES.decrypt(encryptedSeed, hash.toString(cryptoJs.enc.Hex)).toString(cryptoJs.enc.Utf8));
       // console.log('parsed: ', cryptoJs.enc.Hex.parse(encryptedSeed.ciphertext.toString(cryptoJs.enc.Hex)));
-
       const wallet = {
         name: 'wallet',
         archived: false,
         seed: encryptedSeed,
         password: hash.toString(cryptoJs.enc.Hex),
-        balance: 0, // will be calculated after "scanning" for accounts; sum of all accounts
         salt: salt
-      }
+      };
 
       db.insert(wallet, () => {
         console.log('wallet stored in db: ', wallet)
-      })
+      });
 
       resolve(wallet)
     })
@@ -409,7 +413,7 @@ const CryptoService = {
           name: 'account',
           label: 'Account ' + i + 1,
           isArchived: false,
-          balance: 0,
+          utxo: 0,
           asset: 'XST',
         });
         // get account balance
@@ -442,7 +446,7 @@ const CryptoService = {
    * @description CryptoJS with custom key `key` encode payload `payload`
    * Feed the CryptoJS's toString overload the appropriate encoder (cryptoJs.enc.Utf8), else
    * it defaults to hex.
-   * 
+   *
    * @param {string} payload
    * @param {string} key
    * @return {Object}
@@ -456,24 +460,42 @@ const CryptoService = {
   /**
    * @description Scan the wallet. Initially, scan all accounts in the wallet for UTXOs.
    * gethdaccounts RPC method retrieves all transactions for a particular account.
-   * @return {Promise<*>} 
+   * @return {Promise<*>}
    */
   async scanWallet() {
-    console.log('sken voljet');
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve) => {
-      let utxo = 0;
       const accounts = await this.getAccounts();
+      let utxo = 0;
+      let txs = [];
       for (let account of accounts) {
+        let accUtxo = 0;
         const hdAccount = await globalState.rpc('gethdaccount', [account.pk]);
-        console.log('hd account ', hdAccount);
         for (let tx of hdAccount) {
-          utxo += tx.account_balance_change;
-        }
+          accUtxo = add(accUtxo, tx.account_balance_change);
+          accUtxo = format(accUtxo, {precision: 14});
+          txs.push({
+            amount: tx.account_balance_change,
+            txid: tx.txid,
+            blocktime: tx.txinfo.blocktime,
+            account: account.label,
+            pk: account.pk
 
+          })
+        }
+        account.utxo = utxo;
+        // When a user looks at their wallet, the software aggregates the sum of value of all their
+        // UTXOs and presents it to them as their "balance".
+        // Bitcoin doesn’t know balances associated with an account or username as they appear in banking.
+        utxo = add(utxo, accUtxo);
+        utxo = format(utxo, {precision: 14});
       }
-      resolve(utxo);
-    });
+      resolve({
+        utxo: utxo, // sum of all utxo
+        txs: txs, // all transactions,
+        accounts: accounts,
+      })
+    })
   }
 };
 

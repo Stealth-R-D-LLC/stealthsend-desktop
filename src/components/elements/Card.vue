@@ -21,7 +21,7 @@
       <!-- <span class="itemu type">{{ account.isArchived  }}</span> -->
     </div>
     <div class="st-card__row">
-      <span class="item amount">{{ account.balance }} XST</span>
+      <span class="item amount">{{ account.utxo }} XST</span>
       <span class="item fiat">{{ amountInFiat }} EUR</span>
     </div>
   </div>
@@ -51,7 +51,7 @@ export default {
   emits: ['archived', 'unarchived', 'click'],
   setup(props, context) {
     const amountInFiat = computed(() => {
-      return props.account.balance * XST_USD;
+      return +props.account.utxo * XST_USD;
     });
 
     const handleClick = (account) => {

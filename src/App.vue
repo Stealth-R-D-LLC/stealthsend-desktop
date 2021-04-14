@@ -7,7 +7,7 @@
 
 <script>
 import globalState from '@/store/global'
-import StLoading from '@/components/kit/StLoading.vue'
+// import StLoading from '@/components/kit/StLoading.vue'
 import { computed } from 'vue'
 import DefaultLayout from './components/layout/Default.vue'
 import NewUserLayout from './components/layout/NewUser.vue'
@@ -16,9 +16,9 @@ import { useRoute } from 'vue-router'
 
 export default {
   name: 'TsDefault',
-  components: {
-    StLoading
-  },
+  // components: {
+  //   StLoading
+  // },
   setup() {
     const route = useRoute()
     const isLoading = computed(() => {

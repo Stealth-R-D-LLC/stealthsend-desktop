@@ -1,5 +1,15 @@
 <template>
   <div class="send-container">
+    <StMultiselect
+      v-model="sendForm.account"
+      :options="accounts"
+      track-by="_id"
+      value-prop="address"
+      label="label"
+      :object="true"
+      placeholder="Select account"
+      @select="getUnspentOutputs"
+    />
     <StInput
       v-model="sendForm.amount"
       label="Amount"
@@ -20,84 +30,98 @@
     ></StInput>
     <p>Value: {{ sendForm.amount * XST_USD }}</p>
     <p>Network fee: 0.01 XST</p>
-    <!-- <StButton @click="send">Send</StButton> -->
-    <StButton @click="sendOpet">sendOpet</StButton>
+    <StButton @click="send">send</StButton>
+    <StButton @click="testCoinSelection">testCoinSelection</StButton>
   </div>
 </template>
 
 <script>
 const XST_USD = 0.17401; // hardcoded obviously
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import CryptoService from '@/services/crypto';
 import * as bitcoin from 'bitcoinjs-lib';
 import { Buffer } from 'buffer';
-
 import globalState from '@/store/global';
+import useCoinControl from '@/composables/useCoinControl';
 
 export default {
   setup() {
     const sendForm = reactive({
+      account: '',
       amount: '',
       address: '',
       label: '',
     });
 
-    /*
-console.log('/// TRANSACTION BUILDER ///')
-console.log('Trying to create 1-to-1 Raw Transaction');
-let trx = new bitcoin.TransactionBuilder(network, 3000000);
-let trxId = '65bb364cd24d42d147a0c0c15dd4ae66e4931bcd5de313f120ce6a4631e3d393';
-let vOut = 1;
-let sequence = 4294967295;
-let prevOutScript = '76a9144e1b865eed74ce6cfc61c02a9aa18b5a4047867988ac';
-let fromAddressPrivateKeyWIF = 'cPyweJi2XUL14bj7prYPDM1jrJZZQRvsGkBKuzjtd6ksDpfutukt';
-let toAddress = 'mhdA5F46Npznb6sXtLxMvD59Raj3jqfM6w';
-let toAmount = 0.03 * 1e6;
-let changeAddress = 'mndwyUkxE69QPVavKeK56PotK9GKoki2aX';
-let changeAmount = 1 * 1e6;
-trx.setVersion(2);
-trx.addInput(trxId, vOut, sequence, Buffer.from(prevOutScript, 'hex'));
-trx.addOutput(toAddress, toAmount);
-trx.addOutput(changeAddress, changeAmount);
-trx.sign(0, bitcoin.ECPair.fromWIF(fromAddressPrivateKeyWIF, network))
-console.dir(trx.build().toHex());
-    */
+    let unspentOutputs = [];
 
-    async function sendOpet() {
+    const accounts = ref([]);
+    async function getAccounts() {
+      accounts.value = await CryptoService.getAccounts();
+    }
+    getAccounts();
+
+    async function getUnspentOutputs() {
+      const outputs = await globalState.rpc('getaddressoutputs', [
+        sendForm.account.address,
+        1,
+        100,
+      ]);
+
+      unspentOutputs = outputs.filter((el) => el.isspent === 'false');
+
+      console.log('unspent: ', unspentOutputs);
+    }
+
+    function testCoinSelection() {
+      const a = JSON.parse(
+        '[{"txid":"7fdf542cb2304ee4d7b404a5e107f451652b3e40f52146653fb631993601ffbf","height":4859547,"vtx":0,"vout":0,"address":"msETpzsL7jwgEAqPEQ8W1o7NCM2v6qPzNL","amount":0.04,"balance":0.04,"blockhash":"60ddc6f346ecccc204dd9630373e823b9a8c0fce27cceaf6966bd1dc81b0b74a","confirmations":21661,"blocktime":1618212914,"isspent":"false"},{"txid":"c8cf30370d512fef4fae9e02cac78c7755780fd1f5610a6835be088de5fa7ad8","height":4859560,"vtx":0,"vout":0,"address":"msETpzsL7jwgEAqPEQ8W1o7NCM2v6qPzNL","amount":0.06,"balance":0.1,"blockhash":"558fbdd22d7638ce8886d079569ceca23fffb5609a892301c3c4308a494573c0","confirmations":21648,"blocktime":1618212979,"isspent":"false"},{"txid":"fec535de9bfe564354de87ca42fb2d6a5f2a61307927d68d1a097337d56e22b0","height":4859580,"vtx":0,"vout":0,"address":"msETpzsL7jwgEAqPEQ8W1o7NCM2v6qPzNL","amount":0.19,"balance":0.48,"blockhash":"70f04c15a186ef805f1f3dce65fe1554a66648c73a6aaef51da711377e3921b9","confirmations":21628,"blocktime":1618213079,"isspent":"false"},{"txid":"204223ce7ccbd9974b4368a3a5ed15e50cb31ceacb88c035e8883a30223dca6d","height":4860314,"vtx":0,"vout":0,"address":"msETpzsL7jwgEAqPEQ8W1o7NCM2v6qPzNL","amount":0.99,"balance":1.47,"blockhash":"d9fa7e1f22e6899aac95ad96c78225a8dd1effd53e4e181d00a66de35b294214","confirmations":20894,"blocktime":1618216754,"isspent":"false"},{"txid":"ded7afdc8f50e39117fdf788a7669328b57772eee88b8aa303bc56e8ea2f59b0","height":4876422,"vtx":0,"vout":1,"address":"msETpzsL7jwgEAqPEQ8W1o7NCM2v6qPzNL","amount":0.13,"balance":1.41,"blockhash":"a06293e6faf244202bcbd706fb7ef75c8c76b26cb008a262f6208df724917e0d","confirmations":4786,"blocktime":1618297404,"isspent":"false"}]'
+      );
+
+      console.log('ulazi: ', a);
+
+      useCoinControl(a, sendForm.amount);
+    }
+
+    async function send() {
+      // const fee = 0.01
+      // get it from getaddressoutputs RPC -> param is address from where the funds are sent. we use 1 or more objects
       let addressOutputs = {
-        address: 'n3k1ybJmkZUt9vURTg9Q7SmWSNo8traqj9',
-        amount: 0.08,
-        balance: 0.08,
-        blockhash:
-          '41075c34fa57379ff36351ce67efc4b979696167728e588c4d96f2c3cc9b69a6',
-        blocktime: 1617088334,
-        confirmations: 2200,
-        height: 4481928,
-        isspent: 'false',
         txid:
-          '18b5ca59866e6c5db0fb7fdfa88eed20a2df8ec7d4c77ae03a6b1b5a7a3e21bb',
-        vout: 0,
+          '3826b72aa30fea423796d9cf7f500fb362cbabb9ee8de8d12a6bf26a3bda6e1a',
+        height: 4859577,
         vtx: 0,
+        vout: 0,
+        address: 'msETpzsL7jwgEAqPEQ8W1o7NCM2v6qPzNL',
+        amount: 0.19,
+        balance: 0.29,
+        blockhash:
+          'ac686c57f8b7fa5f094aad5e74821a36ddf72093b313e18b41b852dc7f88840c',
+        confirmations: 16666,
+        blocktime: 1618213064,
+        isspent: 'false',
       };
 
       let rawTransaction = new bitcoin.TransactionBuilder(
         CryptoService.network,
         3000000
       );
-      let prevOutScript = '76a914f3cb3f8187ce7b762ec02ae578f8d598fe32c22588ac';
+      // prevoutscript is retrieved when we go to gettransaction RPC with our txid from the addressoutputs
+      let prevOutScript = '76a914808317660e320209a79fd06405d184bbc85c74bd88ac';
       rawTransaction.addInput(
         addressOutputs.txid,
         0,
         null,
         Buffer.from(prevOutScript, 'hex')
       );
+      // calculated
       let recipient = {
-        address: 'mhjpLAjaHHWnBQHGVtJHPesZQvAhJGYzDX',
-        amount: 0.05 * 1e6,
+        address: 'mpjUrpqjW18irDo1jgxPg2JLyQLGzK6Agk',
+        amount: sendForm.amount * 1e6,
       };
       let change = {
-        address: 'n3k1ybJmkZUt9vURTg9Q7SmWSNo8traqj9',
-        amount: 0.02 * 1e6,
+        address: 'msETpzsL7jwgEAqPEQ8W1o7NCM2v6qPzNL',
+        amount: 0.13 * 1e6, // account amount - (send amount + fee)
       };
       // rawTransaction.addInput("6893ba14a9c77648788bfefd56229bdbc7f5a212d2f15801eacee305d740636a", 0)
 
@@ -107,13 +131,14 @@ console.dir(trx.build().toHex());
       // add the output for the change, send the change back to yourself.
       // Outputs - inputs = transaction fee, so always double-check your math!
       rawTransaction.addOutput(change.address, change.amount);
-      const child = CryptoService.master.derivePath(`m/44'/1'/0'/0/0`);
+      // careful how to derive the path. depends on the account of the address
+      const child = CryptoService.master.derivePath(`m/44'/1'/1'/0/0`);
 
       const keyPair = bitcoin.ECPair.fromWIF(
         child.toWIF(),
         CryptoService.network
       );
-      // console.log('wif', child.toWIF());
+      console.log('wif', child.toWIF());
 
       rawTransaction.sign(0, keyPair);
 
@@ -125,115 +150,15 @@ console.dir(trx.build().toHex());
         rawTransactionToHex,
       ]);
       console.log('res', res);
-
-      // const txid = await globalState.rpc('gettransaction', [res])
-      // console.log('txid', txid);
-
-      // pingati stalno dok ne dobijem N confirmacija (1)
-      // namjerno pogresnu da vidis kak izgleda
     }
-
-    // async function send() {
-    //   console.log('sending...', sendForm)
-    //   // https://gist.githubusercontent.com/StealthSend/d24a338b85b5be26073213c44210a11e/raw/3e4827fc354c45d73755dbae63c7d81e2d50a33b/stealth-mainnet-address-regex.txt
-    //   // get current account
-    //   // validate fields (caution with xst address)
-    //   // currency input for amount
-    //   // check if insufficient funds
-
-    //   // In bitcoin transactions, you don’t actually spend the balance of the address
-    //   // instead, you spend transactions received by your address
-    //   // also referred to as UTXO
-    //   // To create a transaction, we’ll need such UTXO to use as input to our next transaction
-    //   let unspentOutput = {
-    //     address: 'miM6d6S71YX9JrRgVfKUeFxGpqdd8o3fKD',
-    //     amount: 1.07,
-    //     balance: 2.3,
-    //     blockhash:
-    //       '5c9c980ee4f84c800f38726d72c9ce91a90360dfb92696ee9cc0d9baefaf82e4',
-    //     blocktime: 1616065534,
-    //     confirmations: 2200,
-    //     height: 4481928,
-    //     isspent: 'false',
-    //     txid:
-    //       'b8b2f84ec9433f025cd265f2f7fdc1a7568876acd46799b6bb7010c8cea689e4',
-    //     vout: 1,
-    //     vtx: 0,
-    //   }
-
-    //   // There are three elements involved in a bitcoin transaction:
-    //   // 1 - a transaction input - the bitcoin address FROM which the money was sent
-    //   // 2 - a transaction output - the bitcoin address TO which the money will be sent
-    //   // 3 -  amount
-
-    //   const psbt = new bitcoin.Psbt(CryptoService.network)
-    //   psbt.setVersion(2) // These are defaults. This line is not needed.
-
-    //   // TODO: somehow locally get transaction in hex
-    //   // const tx = await globalState.rpc('gettransaction', [unspentOutput.txid])
-
-    //   // TODO: somehow locally get transaction in hex
-    //   const txidHex = await globalState.rpc('getrawtransaction', [
-    //     unspentOutput.txid,
-    //   ])
-
-    //   // console.log('1', tx)
-    //   console.log('2', Buffer.from(txidHex, 'hex'))
-    //   console.log('3', txidHex)
-    //   console.log('4', unspentOutput.txid)
-    //   console.log('5', unspentOutput.txid.toString('hex'))
-    //   //       psbt.addInput({
-    //   //   hash: unspentOutput.txid,
-    //   //   index: 0,
-    //   //   nonWitnessUtxo: Buffer.from(txidHex, 'hex'),
-    //   //   // redeemScript: Buffer.from(tx.vin[0].scriptSig.hex, 'hex')
-    //   // })
-    //   // psbt.addInput({
-    //   //   hash: unspentOutput.txid,
-    //   //   index: 1,
-    //   //   nonWitnessUtxo: Buffer.from(txidHex, 'hex'),
-    //   //   // redeemScript: Buffer.from(tx.vin[0].scriptSig.hex, 'hex')
-    //   // })
-
-    //   psbt.addOutput({
-    //     address: 'mhjpLAjaHHWnBQHGVtJHPesZQvAhJGYzDX', // destination address
-    //     value: 0.05 * 1e6, // value in satoshi
-    //   })
-
-    //   psbt.addOutput({
-    //     address: 'miM6d6S71YX9JrRgVfKUeFxGpqdd8o3fKD', // change address
-    //     value: 1.17 * 1e6,
-    //   })
-
-    //   psbt.addInput({
-    //     hash: unspentOutput.txid,
-    //     index: 1,
-    //     nonWitnessUtxo: Buffer.from(txidHex, 'hex'),
-    //     // redeemScript: Buffer.from(tx.vin[0].scriptSig.hex, 'hex')
-    //   })
-
-    //   // TODO: hardcoded, has to be retrieved from every account
-    //   const child = CryptoService.master.derivePath(`m/44'/1'/0'/0/0`)
-
-    //   // const pk = child.privateKey
-    //   console.log('pk: ', child)
-
-    //   const signed = psbt.signInput(0, child)
-    //   psbt.validateSignaturesOfInput(0)
-    //   psbt.finalizeAllInputs()
-
-    //   console.log('signed', signed)
-
-    //   const sent = await globalState.rpc('sendrawtransaction', [signed.hex])
-
-    //   console.log('sent: ', sent)
-    // }
-
     return {
       XST_USD,
       sendForm,
       // send,
-      sendOpet,
+      send,
+      accounts,
+      getUnspentOutputs,
+      testCoinSelection,
     };
   },
 };
