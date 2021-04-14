@@ -152,18 +152,19 @@ const CryptoService = {
    */
   getChildFromRoot(account, change, address) {
     // child === keypair
-    console.log('start!!!!getChildFromRoot', account, change, address); // 5 0 0
+    console.log('start!!!!getChildFromRoot', account, change, address); // 5 0 19
     console.log('IMA LI MASTERA????? this.master', this.master);
 
+    // m/ purpose ' / coin_type' / account' / change / address_index
+    // coin_type' === in our case is 1' (Testnet - all coins)
     const child = this.master.derivePath(
       `m/44'/1'/${account}'/${change}/${address}`
     );
     let acc = this.master.derivePath(
       `m/44'/1'/${account}'`
     );
-    console.log('EEEEE BOTE JESAM TU ILI NISAM!!!!!!!');
-    console.log('getChildFromRoot - acc address', bitcoin.payments.p2pkh({ pubkey: acc.publicKey }).address);
-    console.log('getChildFromRoot - child address', bitcoin.payments.p2pkh({ pubkey: child.publicKey }).address);
+    console.log('getChildFromRoot - ACCOUNT address', bitcoin.payments.p2pkh({ pubkey: acc.publicKey }).address);
+    console.log('getChildFromRoot - CHILD address', bitcoin.payments.p2pkh({ pubkey: child.publicKey }).address);
     // this.WIFtoPK(child.toWIF()) // decrypt
     return {
       address: bitcoin.payments.p2pkh({ pubkey: child.publicKey }).address,
@@ -226,16 +227,16 @@ const CryptoService = {
    */
   async storeAccountInDb(account) {
     console.log('storam', account);
-      let acc = await db.insert({
-        name: 'account',
-        address: account.address,
-        label: account.label,
-        isArchived: account.isArchived,
-        utxo: account.utxo,
-        path: account.path,
-        pk: account.pk,
-        asset: account.asset
-      });
+    let acc = await db.insert({
+      name: 'account',
+      address: account.address,
+      label: account.label,
+      isArchived: account.isArchived,
+      utxo: account.utxo,
+      path: account.path,
+      pk: account.pk,
+      asset: account.asset
+    });
     // this.getAccounts()
     return acc
   },
@@ -398,7 +399,7 @@ const CryptoService = {
       // derive the first account's node (index = 0)
       // derive the external chain node of this account
       const acc = this.getChildFromRoot(`${n}`, '0', `${i}`); // TODO: check `n` argument, should be 'string'
-      // console.log('acc.address', acc.address);
+      console.log('accountDiscovery - acc', acc.address);
       // scan addresses of the external chain; respect the gap limit described below
       // const hdAccount = await globalState.rpc('gethdaccount', [acc.pk])
       // console.log('hdacc', hdAccount);
@@ -472,15 +473,15 @@ const CryptoService = {
         let accUtxo = 0;
         const hdAccount = await globalState.rpc('gethdaccount', [account.pk]);
         for (let tx of hdAccount) {
+          console.log('scanWallet - tx of hdAccount', tx);
           accUtxo = add(accUtxo, tx.account_balance_change);
-          accUtxo = format(accUtxo, {precision: 14});
+          accUtxo = format(accUtxo, { precision: 14 });
           txs.push({
             amount: tx.account_balance_change,
             txid: tx.txid,
             blocktime: tx.txinfo.blocktime,
             account: account.label,
-            pk: account.pk
-
+            pk: account.pk,
           })
         }
         account.utxo = utxo;
@@ -488,14 +489,14 @@ const CryptoService = {
         // UTXOs and presents it to them as their "balance".
         // Bitcoin doesn’t know balances associated with an account or username as they appear in banking.
         utxo = add(utxo, accUtxo);
-        utxo = format(utxo, {precision: 14});
+        utxo = format(utxo, { precision: 14 });
       }
       resolve({
         utxo: utxo, // sum of all utxo
         txs: txs, // all transactions,
         accounts: accounts,
-      })
-    })
+      });
+    });
   }
 };
 
