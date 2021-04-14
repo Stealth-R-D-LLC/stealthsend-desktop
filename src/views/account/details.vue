@@ -4,33 +4,31 @@
     <pre>
       {{ account }}
     </pre>
-    <card
+    <StCard
       class="list-item"
       :archiveable="false"
       :account="{
         label: account.label,
-        balance: addressInfo.balance,
+        utxo: account.utxo,
         isArchived: account.isArchived,
       }"
-    ></card>
+    ></StCard>
     <StTooltip
       :tooltip-text="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
     >
-      <StCopyToClipboard
+      <!-- <StCopyToClipboard
         :content="account.address"
         @click="handleCopy"
-      ></StCopyToClipboard>
+      ></StCopyToClipboard> -->
     </StTooltip>
     <img :src="qrSrc" />
-    Address: {{ account.address }}
-    template
     <StTable
       :data="trxOutputs"
       :columns="[
         { key: 'txid', title: 'TRX ID' },
         { key: 'amount', title: 'Amount' },
         { key: 'confirmations', title: 'Confirmations' },
-        { key: 'balance', title: 'Balance' },
+        { key: 'utxo', title: 'Balance' },
       ]"
       @rowClick="openTransaction"
     ></StTable>
@@ -40,7 +38,7 @@
         { key: 'txid', title: 'TRX ID' },
         { key: 'amount', title: 'Amount' },
         { key: 'confirmations', title: 'Confirmations' },
-        { key: 'balance', title: 'Balance' },
+        { key: 'utxo', title: 'Balance' },
       ]"
       @rowClick="openTransaction"
     ></StTable>
@@ -48,75 +46,73 @@
 </template>
 
 <script>
-import globalState from '@/store/global'
-import StTable from '@/components/kit/StTable.vue'
-import { computed, ref } from 'vue'
-import Card from '../../components/elements/Card'
-import VanillaQR from 'vanillaqr'
-import StCopyToClipboard from '@/components/kit/StClipboard.vue'
-import StTooltip from '@/components/kit/StTooltip.vue'
-import router from '@/router'
+import globalState from '@/store/global';
+import StTable from '@/components/kit/StTable.vue';
+import { computed, ref } from 'vue';
+import VanillaQR from 'vanillaqr';
+// import StCopyToClipboard from '@/components/kit/StClipboard.vue';
+import StTooltip from '@/components/kit/StTooltip.vue';
+import router from '@/router';
 
 export default {
   name: 'StAccountDetails',
   components: {
-    Card,
     StTable,
-    StCopyToClipboard,
+    // StCopyToClipboard,
     StTooltip,
   },
   setup() {
     function openTransaction(trx) {
-      router.push(`/transaction/${trx.txid}`)
+      router.push(`/transaction/${trx.txid}`);
     }
 
     const account = computed(() => {
-      return globalState.state.accountDetails
-    })
+      return globalState.state.accountDetails;
+    });
 
-    const addressInfo = ref({})
-    const trxOutputs = ref([])
-    const trxInputs = ref([])
-    const qrSrc = ref('')
+    const addressInfo = ref({});
+    const trxOutputs = ref([]);
+    const trxInputs = ref([]);
+    const qrSrc = ref('');
 
-    let copyPending = ref(false)
+    let copyPending = ref(false);
     function handleCopy() {
-      copyPending.value = true
+      copyPending.value = true;
       setTimeout(() => {
-        copyPending.value = false
-      }, 2000)
+        copyPending.value = false;
+      }, 2000);
     }
 
     if (account.value) {
       globalState
         .rpc('getaddressinfo', [account.value.address])
         .then((res) => {
-          addressInfo.value = res
+          addressInfo.value = res;
         })
         .catch((err) => {
-          return err
-        })
+          return err;
+        });
       globalState
         .rpc('getaddressinputs', [account.value.address, 1, 10])
         .then((res) => {
-          trxInputs.value = res
+          trxInputs.value = res;
         })
         .catch((err) => {
-          return err
-        })
+          return err;
+        });
       globalState
         .rpc('getaddressoutputs', [account.value.address])
         .then((res) => {
-          trxOutputs.value = res
+          trxOutputs.value = res;
         })
         .catch((err) => {
-          return err
-        })
+          return err;
+        });
 
       var qr = new VanillaQR({
         url: account.value.address,
-      })
-      qrSrc.value = qr.toImage('png').src
+      });
+      qrSrc.value = qr.toImage('png').src;
     }
     return {
       account,
@@ -127,9 +123,9 @@ export default {
       trxInputs,
       qrSrc,
       openTransaction,
-    }
+    };
   },
-}
+};
 </script>
 
 <style lang="scss" scoped></style>

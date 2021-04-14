@@ -8,6 +8,7 @@ import Receive from '@/views/receive.vue'
 import Send from '@/views/send.vue'
 import Settings from '@/views/settings.vue'
 import TransactionDetails from '@/views/transaction-details.vue'
+import Transactions from '@/views/transactions.vue'
 import UIKit from '@/views/uikit.vue'
 import Welcome from '@/views/welcome.vue'
 import { createRouter, createWebHistory } from 'vue-router'
@@ -26,16 +27,20 @@ const routes = [
     path: '/',
     // redirect: 'dashboard',
     pathMatch: 'full',
-    beforeEnter: (to, from, next) => {
-      db.find({ name: 'wallet' }).then(docs => {
-        if (!docs || docs.length === 0) {
-          next('/welcome')
-        } else {
-          next('/dashboard')
-        }
+    // beforeEnter: (_to, _from, _next) => {
+      // db.find({ name: 'wallet' }).then(docs => {
+      //   console.log("DB", db)
+      //   console.log("BEFORE if docs", docs)
+      //   if (!docs || docs.length === 0) {
+      //     console.log("EMTPY docs", docs)
+      //     next('/welcome')
+      //   } else {
+      //     console.log("FULL docs", docs)
+      //     next('/dashboard')
+      //   }
 
-      })
-    }
+      // })
+    //}
   },
   {
     path: '/lock',
@@ -69,9 +74,9 @@ const routes = [
     component: Send
   },
   {
-    path: '/address-book',
-    name: 'AddressBook',
-    component: AddressBook
+    path: '/transactions',
+    name: 'Transactions',
+    component: Transactions
   },
   {
     path: '/settings',
@@ -97,6 +102,11 @@ const routes = [
     path: '/account/archived',
     name: 'ArchivedAccounts',
     component: ArchivedAccounts
+  },
+  {
+    path: '/address-book',
+    name: 'AddressBook',
+    component: AddressBook
   },
   {
     path: '/welcome',
