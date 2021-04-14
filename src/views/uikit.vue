@@ -115,10 +115,10 @@
     <StTooltip
       :tooltip-text="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
     >
-      <StCopyToClipboard
+      <StClipboard
         content="kopirani string"
         @click="handleCopy"
-      ></StCopyToClipboard>
+      ></StClipboard>
     </StTooltip>
     <br />
     <br />
@@ -144,28 +144,28 @@
 </template>
 
 <script>
-import StModal from '@/components/kit/StModal.vue'
-import StTable from '@/components/kit/StTable.vue'
-import StStatus from '@/components/kit/StStatus.vue'
-import StPagination from '@/components/kit/StPagination.vue'
-import StDropdown from '@/components/kit/StDropdown.vue'
-import StCopyToClipboard from '@/components/kit/StClipboard.vue'
-import StTooltip from '@/components/kit/StTooltip.vue'
-import StLoading from '@/components/kit/StLoading.vue'
+// import StModal from '@/components/kit/StModal.vue'
+// import StTable from '@/components/kit/StTable.vue'
+// import StStatus from '@/components/kit/StStatus.vue'
+// import StPagination from '@/components/kit/StPagination.vue'
+// import StDropdown from '@/components/kit/StDropdown.vue'
+// import StCopyToClipboard from '@/components/kit/StClipboard.vue'
+// import StTooltip from '@/components/kit/StTooltip.vue'
+// import StLoading from '@/components/kit/StLoading.vue'
 
 import { ref } from 'vue'
 
 export default {
-  components: {
-    StModal,
-    StTable,
-    StStatus,
-    StPagination,
-    StDropdown,
-    StCopyToClipboard,
-    StTooltip,
-    StLoading,
-  },
+  // components: {
+  //   StModal,
+  //   StTable,
+  //   StStatus,
+  //   StPagination,
+  //   StDropdown,
+  //   StCopyToClipboard,
+  //   StTooltip,
+  //   StLoading,
+  // },
   setup() {
     const tableData = ref([
       {
@@ -256,6 +256,15 @@ export default {
       }, 3000)
     }
 
+    // const customClass = computed(() => {
+    //   return {
+    //     'st-status__dot--red': props.type === 'red',
+    //     'st-status__dot--green': props.type === 'green',
+    //     'st-status__dot--orange': props.type === 'orange',
+    //     'st-status__dot--empty': props.type === 'empty'
+    //   }
+    // })
+
     return {
       clickHandler,
       bla,
@@ -270,9 +279,11 @@ export default {
       multiselectOptions,
       isLoading,
       toggleLoading,
+      // customClass
     }
   },
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+</style>

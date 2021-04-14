@@ -227,7 +227,7 @@ const CryptoService = {
     // console.log('stored pass hash: ', wallet[0].password);
     return hash === wallet[0].password
   },
- async hashPassword(password) {
+  async hashPassword(password) {
     let wallet = await this.getWalletFromDb()
     let salt = null;
     if (wallet.length > 0) {
@@ -261,12 +261,37 @@ const CryptoService = {
       // some processing is required
       // hash the password and store it in the db. PBKDF2 is a one-way hashing algorithm
       // we'll use the hash to encrypt sensitive data like the seed
+      // const salt = cryptoJs.lib.WordArray.random(128 / 8)
+      // const hash = cryptoJs.PBKDF2(password, salt, {
+      //   keySize: 512 / 32,
+      //   iterations: 1000
+      // })
+
+      // let a = cryptoJs.AES.encrypt('poruka', '123')
+      // console.log('---a', a.toString());
+      // console.log('---', cryptoJs.AES.decrypt(a, '123').toString(cryptoJs.enc.Utf8));
+      // console.log('---', Buffer.from(cryptoJs.AES.decrypt(a, '123').words, 'hex'));
+
       // encrypt the seed with the hashed password
       // to decrypt the seed, we need to ask the user for his password and then hash it again.
       // if the resulted hash is the same as the hashed password,
       // then the user entered the correct password and the seed can be decrypted
-
+      // console.log('sad cu kriptirati ovaj seed', this.seed.toString('hex'));
+      // console.log('s ovim hashom', hash.toString(cryptoJs.enc.Hex));
+      // console.log('hash', hash);
+      // const encryptedSeed = cryptoJs.AES.encrypt(
+      //   this.seed.toString('hex'),
+      //   hash
+      // )
       const encryptedSeed = this.AESEncrypt(this.seed.toString('hex'), hash)
+      // console.log('just encrypted: ', encryptedSeed.toString());
+      // console.log('seed', this.seed);
+      // console.log('seed hex', this.seed.toString('hex'));
+      // console.log('pokusaj smrti', this.hexToArray(this.seed.toString('hex')));
+      // console.log('enc seed encrypted raw', encryptedSeed);
+      // console.log('enc seed stored: ', encryptedSeed.ciphertext.toString(cryptoJs.enc.Hex));
+      // console.log('decrypted', cryptoJs.AES.decrypt(encryptedSeed, hash.toString(cryptoJs.enc.Hex)).toString(cryptoJs.enc.Utf8));
+      // console.log('parsed: ', cryptoJs.enc.Hex.parse(encryptedSeed.ciphertext.toString(cryptoJs.enc.Hex)));
       const wallet = {
         name: 'wallet',
         archived: false,

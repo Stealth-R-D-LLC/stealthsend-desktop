@@ -9,7 +9,8 @@
         </li>
         <li>
           <router-link tag="a" class="item" to="/dashboard">
-            <svg
+            <div class="icon">
+              <svg
               width="24"
               height="24"
               viewBox="0 0 24 24"
@@ -18,23 +19,25 @@
             >
               <path
                 d="M9 13H1v8h8v-8zM21 13h-8v8h8v-8z"
-                stroke="#FCFAFF"
+                stroke="#FAF9FC"
                 stroke-width="2"
               />
               <path
                 d="M1 9h8M1 5h8"
-                stroke="#FCFAFF"
+                stroke="#FAF9FC"
                 stroke-width="2"
                 stroke-linecap="square"
               />
-              <path d="M21 1h-8v8h8V1z" stroke="#FCFAFF" stroke-width="2" />
+              <path d="M21 1h-8v8h8V1z" stroke="#FAF9FC" stroke-width="2" />
             </svg>
+            </div>
 
-            <span> Account Balances </span>
+            <span class="item__span"> Account Balances </span>
           </router-link>
         </li>
         <li>
           <router-link tag="a" class="item" to="/uikit">
+          <div class="icon">
             <svg
               width="24"
               height="24"
@@ -42,27 +45,65 @@
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path d="M12 17.5H22" stroke="#FCFAFF" stroke-width="2" />
-              <path d="M17 12.5V22.5" stroke="#FCFAFF" stroke-width="2" />
-              <path d="M0 9.5H10" stroke="#FCFAFF" stroke-width="2" />
-              <path d="M0 5.5H10" stroke="#FCFAFF" stroke-width="2" />
+              <path d="M12 17.5H22" stroke="#FAF9FC" stroke-width="2" />
+              <path d="M17 12.5V22.5" stroke="#FAF9FC" stroke-width="2" />
+              <path d="M0 9.5H10" stroke="#FAF9FC" stroke-width="2" />
+              <path d="M0 5.5H10" stroke="#FAF9FC" stroke-width="2" />
               <path
                 d="M9 13.5H1V21.5H9V13.5Z"
-                stroke="#FCFAFF"
+                stroke="#FAF9FC"
                 stroke-width="2"
               />
               <path
                 d="M21 1.5H13V9.5H21V1.5Z"
-                stroke="#FCFAFF"
+                stroke="#FAF9FC"
                 stroke-width="2"
               />
             </svg>
-            <span> UI Kit </span>
+          </div>
+            <span class="item__span"> UI Kit </span>
+          </router-link>
+        </li>
+                <li>
+          <router-link tag="a" class="item" to="/account/add">
+          <div class="icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M12 17.5H22" stroke="#FAF9FC" stroke-width="2" />
+              <path d="M17 12.5V22.5" stroke="#FAF9FC" stroke-width="2" />
+              <path d="M0 9.5H10" stroke="#FAF9FC" stroke-width="2" />
+              <path d="M0 5.5H10" stroke="#FAF9FC" stroke-width="2" />
+              <path
+                d="M9 13.5H1V21.5H9V13.5Z"
+                stroke="#FAF9FC"
+                stroke-width="2"
+              />
+              <path
+                d="M21 1.5H13V9.5H21V1.5Z"
+                stroke="#FAF9FC"
+                stroke-width="2"
+              />
+            </svg>
+          </div>
+            <span class="item__span"> Add Account </span>
           </router-link>
         </li>
         <li>
           <router-link tag="a" class="item" to="/send">
-            <svg
+          <div class="icon">
+            <svg width="24" height="24" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 11V16H17V11" stroke="#FAF9FC" stroke-width="2"/>
+              <path d="M12 5L9 2L6 5" stroke="#FAF9FC" stroke-width="2" stroke-linecap="square"/>
+              <path d="M9 2L9 12" stroke="#FAF9FC" stroke-width="2"/>
+            </svg>
+          </div>
+
+            <!-- <svg
               width="24"
               height="24"
               viewBox="0 0 24 24"
@@ -71,24 +112,31 @@
             >
               <path
                 d="M19 8.5V6.5H16V1.5L1 1.5V18.5H19L19 16.5"
-                stroke="#FCFAFF"
+                stroke="#FAF9FC"
                 stroke-width="2"
               />
-              <path d="M9 18.5V6.5H16" stroke="#FCFAFF" stroke-width="2" />
+              <path d="M9 18.5V6.5H16" stroke="#FAF9FC" stroke-width="2" />
               <path
                 d="M22 9.5L25 12.5L22 15.5"
-                stroke="#FCFAFF"
+                stroke="#FAF9FC"
                 stroke-width="2"
                 stroke-linecap="square"
               />
-              <path d="M14 12.5H25" stroke="#FCFAFF" stroke-width="2" />
-            </svg>
-            <span> Send </span>
+              <path d="M14 12.5H25" stroke="#FAF9FC" stroke-width="2" />
+            </svg> -->
+            <span class="item__span"> Send </span>
           </router-link>
         </li>
         <li>
           <router-link tag="a" class="item" to="/receive">
-            <svg
+          <div class="icon">
+          <svg width="24" height="24" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 11V16H17V11" stroke="#FAF9FC" stroke-width="2"/>
+            <path d="M6 8L9 11L12 8" stroke="#FAF9FC" stroke-width="2" stroke-linecap="square"/>
+            <path d="M9 11V0" stroke="#FAF9FC" stroke-width="2"/>
+          </svg>
+          </div>
+            <!-- <svg
               width="24"
               height="24"
               viewBox="0 0 24 24"
@@ -97,75 +145,42 @@
             >
               <path
                 d="M5 3.5H1V20.5H19V8.5H16V3.5H13"
-                stroke="#FCFAFF"
+                stroke="#FAF9FC"
                 stroke-width="2"
               />
-              <path d="M9 20.5V14.5" stroke="#FCFAFF" stroke-width="2" />
+              <path d="M9 20.5V14.5" stroke="#FAF9FC" stroke-width="2" />
               <path
                 d="M12 8.5L9 11.5L6 8.5"
-                stroke="#FCFAFF"
+                stroke="#FAF9FC"
                 stroke-width="2"
                 stroke-linecap="square"
               />
               <path
                 d="M9 1.5V10.5"
-                stroke="#FCFAFF"
+                stroke="#FAF9FC"
                 stroke-width="2"
                 stroke-linecap="square"
               />
-            </svg>
-            <span> Receive </span>
+            </svg> -->
+            <span class="item__span"> Receive </span>
           </router-link>
         </li>
-        <li>
-          <router-link tag="a" class="item" to="/account/add">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M12 17.5H22" stroke="#FCFAFF" stroke-width="2" />
-              <path d="M17 12.5V22.5" stroke="#FCFAFF" stroke-width="2" />
-              <path d="M0 9.5H10" stroke="#FCFAFF" stroke-width="2" />
-              <path d="M0 5.5H10" stroke="#FCFAFF" stroke-width="2" />
-              <path
-                d="M9 13.5H1V21.5H9V13.5Z"
-                stroke="#FCFAFF"
-                stroke-width="2"
-              />
-              <path
-                d="M21 1.5H13V9.5H21V1.5Z"
-                stroke="#FCFAFF"
-                stroke-width="2"
-              />
-            </svg>
-            <span> Add Account </span>
-          </router-link>
-        </li>
-        <li>
-          <router-link tag="a" class="item" to="/account/archived">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M12 20H22" stroke="#FCFAFF" stroke-width="2" />
-              <path d="M12 16H22" stroke="#FCFAFF" stroke-width="2" />
-              <path d="M9 13H1V21H9V13Z" stroke="#FCFAFF" stroke-width="2" />
-              <path d="M12 8H22" stroke="#FCFAFF" stroke-width="2" />
-              <path d="M12 4H22" stroke="#FCFAFF" stroke-width="2" />
-              <path d="M9 1H1V9H9V1Z" stroke="#FCFAFF" stroke-width="2" />
-            </svg>
-            <span> Archive </span>
-          </router-link>
-        </li>
-        <li>
-          <router-link tag="a" class="item" to="/address-book">
-            <svg
+                <li>
+          <router-link tag="a" class="item" to="/transactions">
+          <div class="icon">
+          <svg width="24" height="24" viewBox="0 0 21 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 1H21" stroke="#FAF9FC" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M0 1H2" stroke="#FAF9FC" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M5 5H21" stroke="#FAF9FC" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M0 5H2" stroke="#FAF9FC" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M5 9H21" stroke="#FAF9FC" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M0 9H2" stroke="#FAF9FC" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M5 13H21" stroke="#FAF9FC" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M0 13H2" stroke="#FAF9FC" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+          </div>
+
+            <!-- <svg
               width="24"
               height="24"
               viewBox="0 0 24 24"
@@ -194,12 +209,33 @@
                 stroke="#EAEAEA"
                 stroke-width="2"
               />
-            </svg>
+            </svg> -->
 
-            <span> Address Book </span>
+            <span class="item__span"> Transactions </span>
           </router-link>
         </li>
         <li>
+          <router-link tag="a" class="item" to="/account/archived">
+          <div class="icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M12 20H22" stroke="#FCFAFF" stroke-width="2" />
+              <path d="M12 16H22" stroke="#FCFAFF" stroke-width="2" />
+              <path d="M9 13H1V21H9V13Z" stroke="#FCFAFF" stroke-width="2" />
+              <path d="M12 8H22" stroke="#FCFAFF" stroke-width="2" />
+              <path d="M12 4H22" stroke="#FCFAFF" stroke-width="2" />
+              <path d="M9 1H1V9H9V1Z" stroke="#FCFAFF" stroke-width="2" />
+            </svg>
+          </div>
+            <span class="item__span"> Archive </span>
+          </router-link>
+        </li>
+        <!-- <li>
           <router-link tag="a" class="item" to="/settings">
             <svg
               width="24"
@@ -222,11 +258,12 @@
               />
               <path d="M9 21H22" stroke="#FCFAFF" stroke-width="2" />
             </svg>
-            <span> Settings </span>
+            <span class="item__span"> Settings </span>
           </router-link>
-        </li>
+        </li> -->
         <li>
-          <router-link tag="a" class="item" to="/lock">
+          <router-link tag="a" class="item" to="/address-book">
+            <div class="icon">
             <svg
               width="24"
               height="24"
@@ -257,12 +294,20 @@
                 stroke-width="2"
               />
             </svg>
+            </div>
 
-            <span> Lock screen </span>
+            <span class="item__span"> Address Book </span>
           </router-link>
         </li>
       </ul>
     </nav>
+    <router-link tag="a" class="item__footer" to="/lock">
+          <svg width="24" height="24" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="8" width="14" height="8" stroke="#C3A9FB" stroke-width="2"/>
+            <path d="M3 8H13V3C13 1.89543 12.1046 1 11 1H5C3.89543 1 3 1.89543 3 3V8Z" stroke="#C3A9FB" stroke-width="2"/>
+            <path d="M8 11V13" stroke="#C3A9FB" stroke-width="2"/>
+          </svg>
+      </router-link>
   </aside>
 </template>
 
@@ -288,17 +333,30 @@ export default {
 .default-layout__aside {
   transition: width 0.5s ease-out;
   animation: animate-width 1.2s 1 ease-in-out;
+  /* position: relative; */
 }
 .default-layout__aside.width {
   width: 75px;
 }
 
 .default-layout__aside.width .item span {
+  width: 0;
   opacity: 0;
+  margin: 0;
 }
+
 .default-layout__aside nav {
   margin-top: 30px;
 }
+
+.default-layout__aside .item__footer{
+  position: fixed;
+  padding: 12px 0;
+  text-decoration: none;
+  padding-left: 24px;
+  bottom: 32px;
+}
+
 .default-layout__aside li {
   display: block;
   cursor: pointer;
@@ -311,44 +369,55 @@ export default {
 
 .default-layout__aside .item {
   display: block;
-  /* position: relative; */
 }
 
-.default-layout__aside li svg path,
-.default-layout__aside li span {
-  transition: all 0.2s;
+.default-layout__aside .icon {
+  display: flex;
+  width: 1.5rem;
+  align-items: center;
+  justify-content: center;
 }
-.default-layout__aside li:hover svg path,
-.default-layout__aside li:hover span {
-  stroke: var(--success);
-  color: var(--success);
+
+.default-layout__aside li svg {
+  width: 1.5rem;
+  height: 1.5rem;
 }
+
 .default-layout__aside .item {
   padding: 12px 0;
-  /* width: 100%; */
   text-decoration: none;
   padding-left: 24px;
-  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .default-layout__aside .item span {
-  position: absolute;
+  width: 100%;
   overflow: hidden;
   font-size: 18px;
   line-height: 24px;
   letter-spacing: 0.12px;
-  color: #fcfaff;
+  color:var(--hampton50);
   margin-left: 42px;
   opacity: 1;
-  transition: opacity 0.5;
+  transition: opacity 0.3s ease-in-out;
   white-space: nowrap;
 }
 
-.default-layout__aside .router-link-exact-active span,
-.default-layout__aside .router-link-exact-active svg path {
-  color: var(--success);
-  stroke: var(--success);
+.default-layout__aside .item.router-link-exact-active svg path {
+  stroke: var(--marine200);
 }
+
+.default-layout__aside .item.router-link-exact-active span {
+  color: var(--marine200);
+}
+
+.default-layout__aside li:hover span, 
+.default-layout__aside li:hover svg path {
+  stroke: var(--marine200);
+  color: var(--marine200);
+}
+
 
 @keyframes animate-width {
   0%,
