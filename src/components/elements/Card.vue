@@ -29,11 +29,7 @@
 
 <script>
 import { computed } from 'vue';
-<<<<<<< HEAD
-const XST_USD = 0.17401; // hardcoded obviously
-=======
 const XST_USD = 0.226338; // hardcoded obviously
->>>>>>> develop
 export default {
   name: 'StCard',
   props: {
@@ -55,11 +51,7 @@ export default {
   emits: ['archived', 'unarchived', 'click'],
   setup(props, context) {
     const amountInFiat = computed(() => {
-<<<<<<< HEAD
-      return props.account.balance * XST_USD;
-=======
       return +props.account.utxo * XST_USD;
->>>>>>> develop
     });
 
     const handleClick = (account) => {
