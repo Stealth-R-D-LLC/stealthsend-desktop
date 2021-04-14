@@ -35,6 +35,16 @@ export default function useCoinControl(outputs, target) {
         return filteredUtxo[0]
     }
 
+    const removeFromArray = (arr, predicate)  => {
+        var complement = function (f) {
+          return function (x) {
+            return !f(x);
+          }
+        };
+      
+        return arr.filter(complement(predicate));
+      };
+
 
 function exactMatch(utxo, adjustedTarget) {
     console.log('Start exact match', target, utxo);
@@ -141,7 +151,7 @@ function knapsackSelection(utxo, adjustedTarget) {
                                 // deselect last addition and try for better combinations
                                 selectionSum = subtract(selectionSum, tx.amount)
                                 selectionSum = Number(format(selectionSum, {precision: 14}))
-                                selectedUtxos = selectedUtxos.filter(el => el.txid === tx.txid)
+                                selectedUtxos = removeFromArray(selectedUtxos, (el => el.txid === tx.txid))
                             }
                         }
                     }
