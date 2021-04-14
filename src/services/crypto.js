@@ -128,6 +128,7 @@ const CryptoService = {
     }
   },
   getChildFromRoot(account, change, address) {
+    console.log('PA DI CES TI EEEEEEEEEEEEEEEEEEJJJJJJ!');
     // child === keypair
     // console.log('getChildFromRoot', account, change, address);
     const child = this.master.derivePath(
@@ -137,6 +138,8 @@ const CryptoService = {
       `m/44'/1'/${account}'`
     )
     // this.WIFtoPK(child.toWIF()) // decrypt
+    console.log('main account address - acc', bitcoin.payments.p2pkh({ pubkey: acc.publicKey, network: this.network }).address);
+    console.log('child account address - acc', bitcoin.payments.p2pkh({ pubkey: child.publicKey, network: this.network }).address);
     return {
       address: bitcoin.payments.p2pkh({
         pubkey: child.publicKey,
@@ -170,8 +173,6 @@ const CryptoService = {
   },
   async getAccounts() {
     console.log('getacc');
-    console.log('accountssss:::', await db.find({}));
-    await db.remove({ _id: "JMWlWEW7znx9SNU5" });
     let accounts = await db.find({ name: 'account' })
     // globalState.setAccounts(accounts)
     console.log('Accounts: ', accounts)
