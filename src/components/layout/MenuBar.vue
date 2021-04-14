@@ -1,10 +1,10 @@
 <template>
-  <aside class="default-layout__aside" :class="{ width: isCollapsed }">
+  <aside id="aside-menu" class="default-layout__aside" :class="{ width: isCollapsed, animate_width: isCollapsed, animate_fullwidth: delayAnimation }" >
     <nav>
       <ul>
-        <li @click.prevent="isCollapsed = !isCollapsed">
-          <a href="" class="item">
-            <StHamburger :open="!isCollapsed"></StHamburger>
+        <li>
+          <a class="item" @click.prevent="addAnimationClass">
+            <StArrow :open="!isCollapsed"></StArrow>
           </a>
         </li>
         <li>
@@ -102,28 +102,6 @@
               <path d="M9 2L9 12" stroke="#FAF9FC" stroke-width="2"/>
             </svg>
           </div>
-
-            <!-- <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M19 8.5V6.5H16V1.5L1 1.5V18.5H19L19 16.5"
-                stroke="#FAF9FC"
-                stroke-width="2"
-              />
-              <path d="M9 18.5V6.5H16" stroke="#FAF9FC" stroke-width="2" />
-              <path
-                d="M22 9.5L25 12.5L22 15.5"
-                stroke="#FAF9FC"
-                stroke-width="2"
-                stroke-linecap="square"
-              />
-              <path d="M14 12.5H25" stroke="#FAF9FC" stroke-width="2" />
-            </svg> -->
             <span class="item__span"> Send </span>
           </router-link>
         </li>
@@ -136,32 +114,6 @@
             <path d="M9 11V0" stroke="#FAF9FC" stroke-width="2"/>
           </svg>
           </div>
-            <!-- <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M5 3.5H1V20.5H19V8.5H16V3.5H13"
-                stroke="#FAF9FC"
-                stroke-width="2"
-              />
-              <path d="M9 20.5V14.5" stroke="#FAF9FC" stroke-width="2" />
-              <path
-                d="M12 8.5L9 11.5L6 8.5"
-                stroke="#FAF9FC"
-                stroke-width="2"
-                stroke-linecap="square"
-              />
-              <path
-                d="M9 1.5V10.5"
-                stroke="#FAF9FC"
-                stroke-width="2"
-                stroke-linecap="square"
-              />
-            </svg> -->
             <span class="item__span"> Receive </span>
           </router-link>
         </li>
@@ -179,38 +131,6 @@
             <path d="M0 13H2" stroke="#FAF9FC" stroke-width="2" stroke-linejoin="round"/>
           </svg>
           </div>
-
-            <!-- <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M24 23H2C2.27477 18.4999 2.89237 15.6416 3.85279 14.4251C4.64988 13.4154 5.69891 12.7108 6.9999 12.3306"
-                stroke="#EAEAEA"
-                stroke-width="2"
-              />
-              <path
-                d="M17 19H23"
-                stroke="#EAEAEA"
-                stroke-width="2"
-                stroke-linecap="square"
-              />
-              <path
-                d="M17 15H23"
-                stroke="#EAEAEA"
-                stroke-width="2"
-                stroke-linecap="square"
-              />
-              <path
-                d="M10 13C13.3137 13 16 10.3137 16 7C16 3.68629 13.3137 1 10 1C6.68629 1 4 3.68629 4 7C4 10.3137 6.68629 13 10 13Z"
-                stroke="#EAEAEA"
-                stroke-width="2"
-              />
-            </svg> -->
-
             <span class="item__span"> Transactions </span>
           </router-link>
         </li>
@@ -235,32 +155,6 @@
             <span class="item__span"> Archive </span>
           </router-link>
         </li>
-        <!-- <li>
-          <router-link tag="a" class="item" to="/settings">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M8 13H22" stroke="#FCFAFF" stroke-width="2" />
-              <path
-                d="M4.5 17C6.433 17 8 15.433 8 13.5C8 11.567 6.433 10 4.5 10C2.567 10 1 11.567 1 13.5C1 15.433 2.567 17 4.5 17Z"
-                stroke="#FCFAFF"
-                stroke-width="2"
-              />
-              <path d="M0 4H9" stroke="#FCFAFF" stroke-width="2" />
-              <path
-                d="M17.5 8C19.433 8 21 6.433 21 4.5C21 2.567 19.433 1 17.5 1C15.567 1 14 2.567 14 4.5C14 6.433 15.567 8 17.5 8Z"
-                stroke="#FCFAFF"
-                stroke-width="2"
-              />
-              <path d="M9 21H22" stroke="#FCFAFF" stroke-width="2" />
-            </svg>
-            <span class="item__span"> Settings </span>
-          </router-link>
-        </li> -->
         <li>
           <router-link tag="a" class="item" to="/address-book">
             <div class="icon">
@@ -312,37 +206,61 @@
 </template>
 
 <script>
-import { ref } from 'vue';
-import StHamburger from '@/components/elements/StHamburger';
-export default {
+import { ref, defineComponent } from 'vue';
+import StArrow from '@/components/elements/StArrow';
+export default defineComponent({
   name: 'StMenuBar',
   components: {
-    StHamburger,
+    StArrow,
   },
   setup() {
     const isCollapsed = ref(false);
+    const delayAnimation = ref(false);
+    let counterAnimation = ref(0);
+
+    function addAnimationClass(){
+      if(counterAnimation.value === 0){
+        isCollapsed.value = true
+        delayAnimation.value = false
+        counterAnimation.value++;
+      } else {
+        // counterAnimation.value++;
+        isCollapsed.value = !isCollapsed.value
+        delayAnimation.value = true
+      }
+    }
 
     return {
       isCollapsed,
+      delayAnimation,
+      addAnimationClass
+      
     };
-  },
-};
+  }
+});
 </script> 
 
 <style scoped>
 .default-layout__aside {
+  width: 280px;
+}
+
+.animate_width{
   transition: width 0.5s ease-out;
   animation: animate-width 1.2s 1 ease-in-out;
-  /* position: relative; */
 }
+
 .default-layout__aside.width {
   width: 75px;
 }
 
+.animate_fullwidth{
+  transition: width 0.5s ease-out;
+  animation: animate-full-width 1.2s 1 ease-in-out;
+}
+
 .default-layout__aside.width .item span {
-  width: 0;
-  opacity: 0;
-  margin: 0;
+  display: none;
 }
 
 .default-layout__aside nav {
@@ -421,10 +339,20 @@ export default {
 
 @keyframes animate-width {
   0%,
-  40% {
-    width: 72px;
+  10%{
+    width: 280px;
   }
   100% {
+    width: 75px;
+  }
+}
+
+@keyframes animate-full-width {
+  0%,
+  30%{
+    width: 75px;
+  }
+  100%{
     width: 280px;
   }
 }
