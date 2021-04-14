@@ -74,13 +74,14 @@ export default {
     }
 
     function testCoinSelection() {
-      const a = JSON.parse(
-        '[{"txid":"7fdf542cb2304ee4d7b404a5e107f451652b3e40f52146653fb631993601ffbf","height":4859547,"vtx":0,"vout":0,"address":"msETpzsL7jwgEAqPEQ8W1o7NCM2v6qPzNL","amount":0.04,"balance":0.04,"blockhash":"60ddc6f346ecccc204dd9630373e823b9a8c0fce27cceaf6966bd1dc81b0b74a","confirmations":21661,"blocktime":1618212914,"isspent":"false"},{"txid":"c8cf30370d512fef4fae9e02cac78c7755780fd1f5610a6835be088de5fa7ad8","height":4859560,"vtx":0,"vout":0,"address":"msETpzsL7jwgEAqPEQ8W1o7NCM2v6qPzNL","amount":0.06,"balance":0.1,"blockhash":"558fbdd22d7638ce8886d079569ceca23fffb5609a892301c3c4308a494573c0","confirmations":21648,"blocktime":1618212979,"isspent":"false"},{"txid":"fec535de9bfe564354de87ca42fb2d6a5f2a61307927d68d1a097337d56e22b0","height":4859580,"vtx":0,"vout":0,"address":"msETpzsL7jwgEAqPEQ8W1o7NCM2v6qPzNL","amount":0.19,"balance":0.48,"blockhash":"70f04c15a186ef805f1f3dce65fe1554a66648c73a6aaef51da711377e3921b9","confirmations":21628,"blocktime":1618213079,"isspent":"false"},{"txid":"204223ce7ccbd9974b4368a3a5ed15e50cb31ceacb88c035e8883a30223dca6d","height":4860314,"vtx":0,"vout":0,"address":"msETpzsL7jwgEAqPEQ8W1o7NCM2v6qPzNL","amount":0.99,"balance":1.47,"blockhash":"d9fa7e1f22e6899aac95ad96c78225a8dd1effd53e4e181d00a66de35b294214","confirmations":20894,"blocktime":1618216754,"isspent":"false"},{"txid":"ded7afdc8f50e39117fdf788a7669328b57772eee88b8aa303bc56e8ea2f59b0","height":4876422,"vtx":0,"vout":1,"address":"msETpzsL7jwgEAqPEQ8W1o7NCM2v6qPzNL","amount":0.13,"balance":1.41,"blockhash":"a06293e6faf244202bcbd706fb7ef75c8c76b26cb008a262f6208df724917e0d","confirmations":4786,"blocktime":1618297404,"isspent":"false"}]'
-      );
+      const dummyOutputs = [
+        { amount: 0.1, txid: '101' },
+        { amount: 0.3, txid: '102' },
+        { amount: 0.5, txid: '103' },
+        { amount: 0.85, txid: '104' },
+      ];
 
-      console.log('ulazi: ', a);
-
-      useCoinControl(a, sendForm.amount);
+      useCoinControl(dummyOutputs, sendForm.amount);
     }
 
     async function send() {
