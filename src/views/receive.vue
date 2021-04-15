@@ -30,17 +30,19 @@ export default {
       accounts.value = await CryptoService.getAccounts()
     }
     getAccounts()
-    console.log('VUE - accounts', accounts);
 
     const depositAddress = ref('')
     const qrSrc = ref('')
     function changeAccount(acc) {
       const { account, change, address } = CryptoService.breakAccountPath(
         acc.path
-      ) // 5 0 0
+      )
+      console.log('receive - account:::', account);
+      console.log('receive - change:::', change);
+      console.log('receive - address:::', address);
       CryptoService.accountDiscovery(account)
       const child = CryptoService.getChildFromRoot(account, change, address)
-      console.log('VUE child address:::', child);
+      // console.log('receive - child:::', child);
       depositAddress.value = child.address
       var qr = new VanillaQR({
         url: depositAddress.value,

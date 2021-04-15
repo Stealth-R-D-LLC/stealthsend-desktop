@@ -55,7 +55,7 @@ const CryptoService = {
     // check if there's already a wallet stored in the db
     // if so, ask for password via lock screen and 
     // retrieve the stored wallet and generate the master from the stored seed
-    let wallet = await this.getWalletFromDb()
+    let wallet = await this.getWalletFromDb();
     await this.getAccounts()
     console.log('Wallet: ', wallet)
     if (wallet.length <= 0) {
@@ -79,7 +79,13 @@ const CryptoService = {
     // // console.log('dec', cryptoJs.AES.decrypt(wallet[0].seed, hash));
     // console.log('deccc', this.AESDecrypt(wallet[0].seed, hash));
     this.master = await bip32.fromSeed(Buffer.from(this.hexToArray(this.AESDecrypt(wallet[0].seed, hash).toString(cryptoJs.enc.Utf8))), this.network)
-    // console.log('master!', this.master);
+
+    console.log('DAJ MI EXTENDED PUBLIC KEY::::');
+    console.log(this.master.derivePath("m/44'/1'/0/0'"));
+    console.log('neutered:::', this.master.derivePath("m/44'/1'/0/0'").neutered().toBase58());
+    console.log('non-neutoered:::', this.master.derivePath("m/44'/1'/0/0'").toBase58());
+
+
     router.push('/dashboard')
     // this.accountDiscovery()
   },
@@ -101,13 +107,13 @@ const CryptoService = {
       // HD wallets are created from a single root seed, which is a 128-, 256-, or 512-bit random number.
       // Everything else in the HD wallet is deterministically derived from this root seed,
       // which makes it possible to re-create the entire HD wallet from that seed in any compatible HD wallet
-      const mnemonic = await bip39.generateMnemonic()
+      const mnemonic = await bip39.generateMnemonic();
       const seed = await bip39.mnemonicToSeedSync(mnemonic) // recovery seed of the master bip32 seed.?
       const master = await bip32.fromSeed(seed, this.network) // aka. root
       this.master = master
       this.seed = seed
-      // console.log('mnemonic: ', this.mnemonic)
-      // console.log('seed: ', this.seed)
+      console.log('mnemonic: ', this.mnemonic)
+      console.log('seed: ', this.seed)
       // console.log('master: ', this.master)
       resolve({
         mnemonic,
@@ -140,7 +146,12 @@ const CryptoService = {
 
     console.log('master address:::', bitcoin.payments.p2pkh({ pubkey: acc.publicKey, network: this.network }).address);
     console.log('child address:::', bitcoin.payments.p2pkh({ pubkey: child.publicKey, network: this.network }).address);
-    // this.WIFtoPK(child.toWIF()) // decrypt
+    try {
+      this.WIFtoPK('child to WIF:::', child.toWIF()) // decrypt
+      this.WIFtoPK('acc to WIF:::', acc.toWIF()) // decrypt
+    } catch (error) {
+      console.log('TU JE ERROR');
+    }
     return {
       address: bitcoin.payments.p2pkh({
         pubkey: child.publicKey,
@@ -322,13 +333,17 @@ const CryptoService = {
     for (let i = 0; i < GAP_LIMIT; i++) {
       // derive the first account's node (index = 0)
       // derive the external chain node of this account
-      const acc = this.getChildFromRoot(n, 0, i)
+      console.log(`1) sending n: ${n}, 0 and i: ${i} to getChildFromRoot(${n}, 0, ${i})`);
+      const acc = this.getChildFromRoot(n, 0, i);
+      console.log(`2) result of getChildFromRoot(${n}, 0, ${i}) - acc: ${acc.address}`);
       // console.log('acc.address', acc.address);
       // scan addresses of the external chain; respect the gap limit described below
       // const hdAccount = await globalState.rpc('gethdaccount', [acc.pk])
       // console.log('hdacc', hdAccount);
-      const inputs = await globalState.rpc('getaddressoutputs', [acc.address, 1, 10])
+      const inputs = await globalState.rpc('getaddressoutputs', [acc.address, 1, 1]);
+      console.log(`3) sending acc.address: ${acc.address} to 'getaddressoutputs' rpc and getting inputs: ${JSON.stringify(inputs)}`);
       if (inputs.length > 0) {
+        console.log(`3a) if (inputs.length) > 0 enter and set emptyInArow to 0`);
         console.log('discovered account: ', acc.path);
         // save account in db?
         // this.storeAccountInDb({
@@ -343,15 +358,20 @@ const CryptoService = {
         // })
         // get account balance
         // if there are some transactions, increase the account index and go to step 1
-        // this.accountDiscovery(n+1)
+        // this.accountDiscovery(n + 1);
         emptyInARow = 0
         continue
       }
+      console.log(`3b) no transactions, increment counter and go to next address - increment emptyInARow`);
       // if there are no transactions, increment counter and go to next address
       emptyInARow += 1;
 
       // If the software hits 20 unused addresses in a row, it expects there are no used addresses beyond this point and stops searching the address chain
-      if (emptyInARow >= 20) break
+      console.log(`4) If emptyInARow is >=20 break the loop, emptyInArow: ${emptyInARow}`);
+      if (emptyInARow >= 20) {
+        console.log(`emptyInARow >= 20 breaking the loop`);
+        break;
+      }
     }
     // grace concert hunt glide million orange enact habit amazing deal object nurse
 
@@ -371,7 +391,7 @@ const CryptoService = {
     // gethdaccounts retrieves all transactions for a particular account
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve) => {
-      const accounts = await this.getAccounts()
+      const accounts = await this.getAccounts();
       let utxo = 0;
       let txs = []
       for (let account of accounts) {
