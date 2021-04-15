@@ -368,11 +368,13 @@ const CryptoService = {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve) => {
       const accounts = await this.getAccounts()
-      let utxo = 0;
+      let balance = 0;
       let txs = []
+      let newAccounts = [];
       for (let account of accounts) {
         let accUtxo = 0
         const hdAccount = await globalState.rpc('gethdaccount', [account.pk])
+        console.log('hdacc for: ', account.label);
         for (let tx of hdAccount) {
           accUtxo = add(accUtxo, tx.account_balance_change)
           accUtxo = format(accUtxo, {precision: 14})
@@ -382,20 +384,25 @@ const CryptoService = {
             blocktime: tx.txinfo.blocktime,
             account: account.label,
             pk: account.pk
-            
           })
+          console.log('accutxo', accUtxo);
         }
-        account.utxo = utxo
+        newAccounts.push({
+          utxo: Number(accUtxo),
+          ...account
+        })
+        // account['utxo'] = accUtxo
         // When a user looks at their wallet, the software aggregates the sum of value of all their
         // UTXOs and presents it to them as their "balance".
         // Bitcoin doesn’t know balances associated with an account or username as they appear in banking.
-        utxo = add(utxo, accUtxo)
-        utxo = format(utxo, {precision: 14})
+        balance = add(balance, accUtxo)
+        balance = format(balance, {precision: 14})
       }
+      console.log('new accounts', newAccounts);
       resolve({
-        utxo: utxo, // sum of all utxo
+        utxo: balance, // sum of all utxo
         txs: txs, // all transactions,
-        accounts: accounts
+        accounts: newAccounts
       })
     })
   }

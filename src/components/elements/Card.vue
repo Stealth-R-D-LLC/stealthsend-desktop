@@ -21,7 +21,7 @@
       <!-- <span class="itemu type">{{ account.isArchived  }}</span> -->
     </div>
     <div class="st-card__row">
-      <span class="item amount">{{ account.account_balance_change }} XST</span>
+      <span class="item amount">{{ account.utxo }} XST</span>
       <span class="item fiat">{{ amountInFiat }} EUR</span>
     </div>
   </div>
