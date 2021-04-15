@@ -27,14 +27,7 @@ export default function useCoinControl(outputs, target) {
         return Number(sum)
     }
 
-    const getMinSingle = (utxo, target) => {
-        // get min(u ∈ U; u > t + mc)
-        if (utxo.length < 0) return []
-        let filteredUtxo = utxo.filter(el => el.amount > sumOf(target, CryptoService.constraints.MINIMAL_CHANGE))
-        filteredUtxo = orderBy(filteredUtxo, ['amount'], ['asc'])
-        console.log('getMinSingle: ', filteredUtxo[0]);
-        return filteredUtxo[0]
-    }
+
 
     const removeFromArray = (arr, predicate)  => {
         var complement = function (f) {
@@ -46,6 +39,13 @@ export default function useCoinControl(outputs, target) {
       };
 
 
+function getMinSingle (utxo, target) {
+    // get min(u ∈ U; u > t + mc)
+    if (utxo.length < 0) return []
+    let filteredUtxo = utxo.filter(el => el.amount > sumOf(target, CryptoService.constraints.MINIMAL_CHANGE))
+    filteredUtxo = orderBy(filteredUtxo, ['amount'], ['asc'])
+    return filteredUtxo[0]
+}
 function exactMatch(utxo, adjustedTarget) {
     console.log('Start exact match',);
     // pass through the UTXO pool and check if there is one that
@@ -106,6 +106,7 @@ function sumOfSmaller(utxo, adjustedTarget) {
 }
 
 function subsetSum(utxo, adjustedTarget) { 
+    console.log('subsum', utxo, adjustedTarget);
     let sortedUtxo = orderBy(utxo, ['amount'], ['desc'])   
     const sumOfAll = sortedUtxo.map(el => el.amount).reduce((a, b) => sumOf(a, b), 0)
     if (sumOfAll < adjustedTarget) {
@@ -126,11 +127,18 @@ function subsetSum(utxo, adjustedTarget) {
       
           })
         }  else if (sum == target){
-          result.push(JSON.stringify(partial))
+          result.push(partial)
         }
       }
     findSubset(sortedUtxo, adjustedTarget)
-    return result
+    console.log('o jebem ti', result);
+    // obtain smallest array (result) from array of arrays
+    let smallest = []
+    if (result.length > 0) {
+        smallest = result.reduce((prev, next) => prev.length > next.length ? next : prev)
+    }
+    console.log('koji k ', smallest);
+    return smallest
 }
 
 function knapsackSelection(utxo, adjustedTarget) {
@@ -219,20 +227,32 @@ function coinSelection() {
     result = exactMatch(outputs, adjustedTarget)
     if (result.length > 0) {
         bestSet = [...result]
-        result = null
-    }
+        let minSingleUtxo = getMinSingle(outputs, target)
+        if (minSingleUtxo && minSingleUtxo.amount < bestSet.map(el => el.amount).reduce((a, b) => a + b, 0)) {
+            bestSet = minSingleUtxo
+        }
+        console.log('Coin selection end', bestSet);
+        return bestSet    }
 
     result = sumOfSmaller(outputs, adjustedTarget)
     if (result.length > 0) {
         bestSet = [...result]
-        result = null
-    }
+        let minSingleUtxo = getMinSingle(outputs, target)
+        if (minSingleUtxo && minSingleUtxo.amount < bestSet.map(el => el.amount).reduce((a, b) => a + b, 0)) {
+            bestSet = minSingleUtxo
+        }
+        console.log('Coin selection end', bestSet);
+        return bestSet    }
 
     result = subsetSum(outputs, adjustedTarget)
     if (result.length > 0) {
         bestSet = [...result]
-        result = null
-    }
+        let minSingleUtxo = getMinSingle(outputs, target)
+        if (minSingleUtxo && minSingleUtxo.amount < bestSet.map(el => el.amount).reduce((a, b) => a + b, 0)) {
+            bestSet = minSingleUtxo
+        }
+        console.log('Coin selection end', bestSet);
+        return bestSet    }
 
     result = knapsackSelection(outputs, target)
     if (result.length > 0) {
@@ -241,15 +261,19 @@ function coinSelection() {
         if (coinControlSum > adjustedTarget) {
             bestSet = knapsackSelection(outputs, sumOf(target, CryptoService.constraints.MINIMAL_CHANGE)) // treba svim fjama rijesiti parametre a ne da gledaju u globalno
         }
-        result = null
-    }
+        let minSingleUtxo = getMinSingle(outputs, target)
+        if (minSingleUtxo && minSingleUtxo.amount < bestSet.map(el => el.amount).reduce((a, b) => a + b, 0)) {
+            bestSet = minSingleUtxo
+        }
+        console.log('Coin selection end', bestSet);
+        return bestSet    }
 
-    let minSingleUtxo = getMinSingle(outputs, target)
-    if (minSingleUtxo && minSingleUtxo.amount < bestSet.map(el => el.amount).reduce((a, b) => a + b, 0)) {
-        bestSet = minSingleUtxo
-    }
-    console.log('Coin selection end', bestSet);
-    return bestSet
+    // let minSingleUtxo = getMinSingle(outputs, target)
+    // if (minSingleUtxo && minSingleUtxo.amount < bestSet.map(el => el.amount).reduce((a, b) => a + b, 0)) {
+    //     bestSet = minSingleUtxo
+    // }
+    // console.log('Coin selection end', bestSet);
+    // return bestSet
 
 }
 
