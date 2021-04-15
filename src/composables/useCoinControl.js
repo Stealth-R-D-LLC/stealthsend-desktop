@@ -29,6 +29,7 @@ export default function useCoinControl(outputs, target) {
 
     const getMinSingle = (utxo, target) => {
         // get min(u ∈ U; u > t + mc)
+        if (utxo.length < 0) return []
         let filteredUtxo = utxo.filter(el => el.amount > sumOf(target, CryptoService.constraints.MINIMAL_CHANGE))
         filteredUtxo = orderBy(filteredUtxo, ['amount'], ['asc'])
         console.log('getMinSingle: ', filteredUtxo[0]);
@@ -41,13 +42,12 @@ export default function useCoinControl(outputs, target) {
             return !f(x);
           }
         };
-      
         return arr.filter(complement(predicate));
       };
 
 
 function exactMatch(utxo, adjustedTarget) {
-    console.log('Start exact match', target, utxo);
+    console.log('Start exact match',);
     // pass through the UTXO pool and check if there is one that
     // has the exact same value as the adjusted target
     // If a UTXO exists that matches to the satoshi,
@@ -55,8 +55,6 @@ function exactMatch(utxo, adjustedTarget) {
     // steps will be performed unless a new cycle is started
     let best = []
     for (let tx of utxo) {
-        console.log('tx am', tx.amount);
-        console.log('tx am', tx.amount);
         if (tx.amount === adjustedTarget) {
             best.push(tx)
             break;
@@ -107,6 +105,34 @@ function sumOfSmaller(utxo, adjustedTarget) {
     return bestSet
 }
 
+function subsetSum(utxo, adjustedTarget) { 
+    let sortedUtxo = orderBy(utxo, ['amount'], ['desc'])   
+    const sumOfAll = sortedUtxo.map(el => el.amount).reduce((a, b) => sumOf(a, b), 0)
+    if (sumOfAll < adjustedTarget) {
+        // if the sum of all utxos is less than the target, it won't be possible to find the combination
+        // and it doesn't make any sense to start the algorithm
+        return []
+    } else if (sumOfAll === adjustedTarget) {
+        // if the sum of all is equal to the target, then it's the result and the algorithm doesn't have to start
+        return sumOfAll
+    }
+    
+    var result = []
+    const findSubset = (sortedUtxo, target, partial = [], sum = 0) => {
+        if (sum < target) {
+            sortedUtxo.forEach((tx, i) => {
+            let a = partial.concat([tx])           
+            findSubset(sortedUtxo.slice(i + 1), target, a , sumOf(sum, tx.amount));
+      
+          })
+        }  else if (sum == target){
+          result.push(JSON.stringify(partial))
+        }
+      }
+    findSubset(sortedUtxo, adjustedTarget)
+    return result
+}
+
 function knapsackSelection(utxo, adjustedTarget) {
     // Attempt to find an exact match by combining UTXOs from smallerCoins
     // Bitcoin Core runs the knapsack selection  trying to find an exact
@@ -131,33 +157,35 @@ function knapsackSelection(utxo, adjustedTarget) {
 
     const LIMIT = 1000
 
-    console.log('knapsackSelection input', smallerCoins);
+    console.log('Start knapsack input', smallerCoins);
 
     for (let i = 1; i <= LIMIT; i++) {
         if (!targetReached) {
             for (let j = 1; j <= 2; j++) { // two tries?
                 for(let tx of smallerCoins) {
                     if ((j === 2 && !selectedUtxos.some(el => el.txid === tx.txid)) || (j === 1 && Math.random() < 0.5)) {
-                        selectionSum = sumOf(selectionSum, tx.amount)
-                        selectedUtxos.push(tx)
-                        if (selectionSum === adjustedTarget) {
-                            return selectedUtxos
-                        }
-                        if (selectionSum > adjustedTarget) {
-                            targetReached = true
-                            if (selectionSum < bestSetValue) {
-                                bestSet = [...selectedUtxos]
-                                bestSetValue = selectionSum
-                                // deselect last addition and try for better combinations
-                                selectionSum = subtract(selectionSum, tx.amount)
-                                selectionSum = Number(format(selectionSum, {precision: 14}))
-                                selectedUtxos = removeFromArray(selectedUtxos, (el => el.txid === tx.txid))
+                        if (!selectedUtxos.some(el => el.txid === tx.txid)) {
+                            selectionSum = sumOf(selectionSum, tx.amount)
+                            selectedUtxos.push(tx)
+                            if (selectionSum === adjustedTarget) {
+                                return selectedUtxos
+                            }
+                            if (selectionSum > adjustedTarget) {
+                                targetReached = true
+                                if (selectionSum <= bestSetValue) {
+                                    bestSet = [...selectedUtxos]
+                                    bestSetValue = selectionSum
+                                    // deselect last addition and try for better combinations
+                                    selectionSum = subtract(selectionSum, tx.amount)
+                                    selectionSum = Number(format(selectionSum, {precision: 14}))
+                                    selectedUtxos = removeFromArray(selectedUtxos, (el => el.txid === tx.txid))
+                                }
                             }
                         }
                     }
                 }
-    
             }
+    
         }
 
     }
@@ -180,40 +208,44 @@ function coinSelection() {
     // output. Finally, it will pick the smaller out of the knapsack result or the minimal
     // larger UTXO.
 
-    let adjustedTarget = sumOf(target, 0)
+    let adjustedTarget = sumOf(target, CryptoService.constraints.FEE)
 
     console.log('Coin selection start');
     console.log('ADJUSTED TARGET (target + 0.01 fee): ', adjustedTarget);
 
     let bestSet = [...outputs] // fallback
-    // let result = [];
+    let result = null;
 
-    // result = exactMatch(outputs, adjustedTarget)
-    if (exactMatch(outputs, adjustedTarget).length > 0) {
-        bestSet = exactMatch(outputs, adjustedTarget)
-        // return bestSet
+    result = exactMatch(outputs, adjustedTarget)
+    if (result.length > 0) {
+        bestSet = [...result]
+        result = null
     }
 
-    // result = sumOfSmaller(outputs, adjustedTarget)
-    if (sumOfSmaller(outputs, adjustedTarget).length > 0) {
-        bestSet = sumOfSmaller(outputs, adjustedTarget)
-        // return bestSet
+    result = sumOfSmaller(outputs, adjustedTarget)
+    if (result.length > 0) {
+        bestSet = [...result]
+        result = null
     }
 
-    // result = knapsackSelection(outputs, target)
-    if (knapsackSelection(outputs, target).length > 0) {
-        bestSet = knapsackSelection(outputs, target)
+    result = subsetSum(outputs, adjustedTarget)
+    if (result.length > 0) {
+        bestSet = [...result]
+        result = null
+    }
+
+    result = knapsackSelection(outputs, target)
+    if (result.length > 0) {
+        bestSet = [...result]
         let coinControlSum = bestSet.map(el => el.amount).reduce((a, b) => a + b, 0)
         if (coinControlSum > adjustedTarget) {
             bestSet = knapsackSelection(outputs, sumOf(target, CryptoService.constraints.MINIMAL_CHANGE)) // treba svim fjama rijesiti parametre a ne da gledaju u globalno
         }
-        // return bestSet
+        result = null
     }
 
     let minSingleUtxo = getMinSingle(outputs, target)
-    console.log('bokte kako', bestSet.map(el => el.amount).reduce((a, b) => a + b, 0));
-    if (minSingleUtxo.amount < bestSet.map(el => el.amount).reduce((a, b) => a + b, 0)) {
-        console.log('pa manji je');
+    if (minSingleUtxo && minSingleUtxo.amount < bestSet.map(el => el.amount).reduce((a, b) => a + b, 0)) {
         bestSet = minSingleUtxo
     }
     console.log('Coin selection end', bestSet);
@@ -221,7 +253,7 @@ function coinSelection() {
 
 }
 
-coinSelection()
+coinSelection() // run coin selection on init
 
   return {
     coinSelection
