@@ -46,7 +46,7 @@ export default {
     const sendForm = reactive({
       account: '',
       amount: '',
-      address: '',
+      address: 'moZgoSEL3Rvoz6p58DkJsE8NJDBryFtp9i',
       label: '',
     });
 
@@ -76,7 +76,7 @@ export default {
       return best;
     }
 
-    async function send() {
+    function send() {
       const utxo = coinSelection();
       console.log('inputs:', utxo);
       console.log('inputs length', utxo.length);
@@ -86,14 +86,15 @@ export default {
         return;
       }
 
-      let rawTransactionToHex = useTransactionBuilder(utxo, sendForm);
-      console.log('rtx hex', rawTransactionToHex);
+      useTransactionBuilder(utxo, sendForm);
+      // console.log('rawTransaction', rawTransaction);
 
-      const res = await globalState.rpc('sendrawtransaction', [
-        rawTransactionToHex,
-      ]);
+      // const rawTransactionToHex = rawTransaction.build().toHex();
+      // console.log(rawTransactionToHex);
 
-      console.log('res', res);
+      // const res = await globalState.rpc('sendrawtransaction', [rawTransaction]);
+
+      // console.log('res', res);
     }
     return {
       sendForm,
