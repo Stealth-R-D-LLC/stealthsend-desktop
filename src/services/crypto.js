@@ -35,7 +35,7 @@ const CryptoService = {
   constraints: {
     XST_USD: 0.17401,
     FEE: 0.01,
-    MINIMAL_CHANGE: 0.01
+    MINIMAL_CHANGE: 0
   },
   isFirstArrival: true,
   network: {
@@ -53,7 +53,7 @@ const CryptoService = {
   // password: '',
   async init() {
     // check if there's already a wallet stored in the db
-    // if so, ask for password via lock screen and 
+    // if so, ask for password via lock screen and
     // retrieve the stored wallet and generate the master from the stored seed
     let wallet = await this.getWalletFromDb();
     await this.getAccounts()
@@ -136,7 +136,6 @@ const CryptoService = {
   getChildFromRoot(account, change, address) {
     // child === keypair
     // console.log('getChildFromRoot', account, change, address);
-
     const child = this.master.derivePath(
       `m/44'/1'/${account}'/${change}/${address}`
     )
@@ -191,17 +190,16 @@ const CryptoService = {
     return accounts
   },
   async storeAccountInDb(account) {
-    console.log('storam', account);
-    let acc = await db.insert({
-      name: 'account',
-      address: account.address,
-      label: account.label,
-      isArchived: account.isArchived,
-      utxo: account.utxo,
-      path: account.path,
-      pk: account.pk,
-      asset: account.asset
-    })
+      let acc = await db.insert({
+        name: 'account',
+        address: account.address,
+        label: account.label,
+        isArchived: account.isArchived,
+        utxo: account.utxo,
+        path: account.path,
+        pk: account.pk,
+        asset: account.asset
+      })
     // this.getAccounts()
     return acc
   },
@@ -324,7 +322,7 @@ const CryptoService = {
   },
   async accountDiscovery(n = 0) {
     // console.log('start account discovery');
-    //  Address gap limit is currently set to 20. If the software hits 20 unused addresses in a row,
+    //  Address gap limit is currently set  to 20. If the software hits 20 unused addresses in a row,
     // it expects there are no used addresses beyond this point and stops searching the address chain.
     // We scan just the external chains, because internal chains receive only coins that come from the associated external chains.
     const GAP_LIMIT = 20;
@@ -391,9 +389,10 @@ const CryptoService = {
     // gethdaccounts retrieves all transactions for a particular account
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve) => {
-      const accounts = await this.getAccounts();
-      let utxo = 0;
+      const accounts = await this.getAccounts()
+      let balance = 0;
       let txs = []
+      let newAccounts = [];
       for (let account of accounts) {
         let accUtxo = 0
         const hdAccount = await globalState.rpc('gethdaccount', [account.pk])
@@ -406,20 +405,23 @@ const CryptoService = {
             blocktime: tx.txinfo.blocktime,
             account: account.label,
             pk: account.pk
-
           })
         }
-        account.utxo = utxo
+        newAccounts.push({
+          utxo: Number(accUtxo),
+          ...account
+        })
+        // account['utxo'] = accUtxo
         // When a user looks at their wallet, the software aggregates the sum of value of all their
         // UTXOs and presents it to them as their "balance".
         // Bitcoin doesn’t know balances associated with an account or username as they appear in banking.
-        utxo = add(utxo, accUtxo)
-        utxo = format(utxo, { precision: 14 })
+        balance = add(balance, accUtxo)
+        balance = format(balance, {precision: 14})
       }
       resolve({
-        utxo: utxo, // sum of all utxo
+        utxo: balance, // sum of all utxo
         txs: txs, // all transactions,
-        accounts: accounts
+        accounts: newAccounts
       })
     })
   }

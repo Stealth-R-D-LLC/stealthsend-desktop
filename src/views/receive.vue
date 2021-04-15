@@ -42,7 +42,6 @@ export default {
       console.log('receive - address:::', address);
       CryptoService.accountDiscovery(account)
       const child = CryptoService.getChildFromRoot(account, change, address)
-      // console.log('receive - child:::', child);
       depositAddress.value = child.address
       var qr = new VanillaQR({
         url: depositAddress.value,
