@@ -169,14 +169,12 @@ const CryptoService = {
     return wallet
   },
   async getAccounts() {
-    console.log('getacc');
     let accounts = await db.find({ name: 'account' })
     // globalState.setAccounts(accounts)
     console.log('Accounts: ', accounts)
     return accounts
   },
   async storeAccountInDb(account) {
-    console.log('storam', account);
       let acc = await db.insert({
         name: 'account',
         address: account.address,
@@ -374,7 +372,6 @@ const CryptoService = {
       for (let account of accounts) {
         let accUtxo = 0
         const hdAccount = await globalState.rpc('gethdaccount', [account.pk])
-        console.log('hdacc for: ', account.label);
         for (let tx of hdAccount) {
           accUtxo = add(accUtxo, tx.account_balance_change)
           accUtxo = format(accUtxo, {precision: 14})
@@ -385,7 +382,6 @@ const CryptoService = {
             account: account.label,
             pk: account.pk
           })
-          console.log('accutxo', accUtxo);
         }
         newAccounts.push({
           utxo: Number(accUtxo),
@@ -398,7 +394,6 @@ const CryptoService = {
         balance = add(balance, accUtxo)
         balance = format(balance, {precision: 14})
       }
-      console.log('new accounts', newAccounts);
       resolve({
         utxo: balance, // sum of all utxo
         txs: txs, // all transactions,
