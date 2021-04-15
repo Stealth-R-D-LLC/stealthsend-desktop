@@ -309,7 +309,7 @@ const CryptoService = {
   },
   async accountDiscovery(n = 0) {
     // console.log('start account discovery');
-    //  Address gap limit is currently set to 20. If the software hits 20 unused addresses in a row,
+    //  Address gap limit is currently set  to 20. If the software hits 20 unused addresses in a row,
     // it expects there are no used addresses beyond this point and stops searching the address chain.
     // We scan just the external chains, because internal chains receive only coins that come from the associated external chains.
     const GAP_LIMIT = 20;
@@ -327,16 +327,16 @@ const CryptoService = {
       if (inputs.length > 0) {
         console.log('discovered account: ', acc.path);
         // save account in db?
-        this.storeAccountInDb({
-          address: acc.address,
-          path: acc.path,
-          pk: acc.pk,
-          name: 'account',
-          label: 'Account ' + i + 1,
-          isArchived: false,
-          utxo: 0,
-          asset: 'XST'
-        })
+        // this.storeAccountInDb({
+        //   address: acc.address,
+        //   path: acc.path,
+        //   pk: acc.pk,
+        //   name: 'account',
+        //   label: 'Account ' + i + 1,
+        //   isArchived: false,
+        //   utxo: 0,
+        //   asset: 'XST'
+        // })
         // get account balance
         // if there are some transactions, increase the account index and go to step 1
         // this.accountDiscovery(n+1)

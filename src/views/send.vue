@@ -75,10 +75,12 @@ export default {
 
     function testCoinSelection() {
       const dummyOutputs = [
-        { amount: 0.1, txid: '101' },
-        { amount: 0.3, txid: '102' },
-        { amount: 0.5, txid: '103' },
-        { amount: 0.85, txid: '104' },
+        { amount: 0.4, txid: '101' },
+        { amount: 0.5, txid: '102' },
+        { amount: 0.6, txid: '103' },
+        { amount: 0.7, txid: '104' },
+        { amount: 0.8, txid: '105' },
+        { amount: 0.9, txid: '106' },
       ];
 
       useCoinControl(dummyOutputs, sendForm.amount);
