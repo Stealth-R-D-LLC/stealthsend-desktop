@@ -57,6 +57,7 @@ export default {
     const txs = ref([]);
     async function scanWallet() {
       const hdWallet = await CryptoService.scanWallet();
+      console.log('scanned wallet: ', hdWallet);
       utxo.value = hdWallet.utxo;
       txs.value = hdWallet.txs;
       accounts.value = hdWallet.accounts;
