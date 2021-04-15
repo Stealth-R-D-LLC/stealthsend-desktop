@@ -1,5 +1,6 @@
+import StCard from '@/components/elements/Card.vue';
 import Multiselect from '@vueform/multiselect';
-import { StButton, StCard, StCheckbox, StClipboard, StDropdown, StInput, StLink, StLoading, StModal, StPagination, StRadio, StStatus, StTable, StTooltip } from 'stealth-kit';
+import { StButton, StCheckbox, StClipboard, StDropdown, StInput, StLink, StLoading, StModal, StPagination, StRadio, StStatus, StTable, StTooltip } from 'stealth-kit';
 import { createApp } from 'vue';
 import App from './App.vue';
 import directives from "./directives/";

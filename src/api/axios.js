@@ -12,7 +12,7 @@ const API_CONFIG = {
       data = {
         ...data,
         jsonrpc: "2.0",
-        id: 1,
+        id: 666420,
       }
       return JSON.stringify(data)
     }
