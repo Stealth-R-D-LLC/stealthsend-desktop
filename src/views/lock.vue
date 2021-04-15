@@ -3,7 +3,7 @@
     <transition name="fade">
       <StLoading :visibility="isLoading" :opaque="true"></StLoading>
     </transition>
-    <div class="unlock-form">
+    <form class="unlock-form" @submit.prevent>
       <StInput
         v-if="isPasswordFieldVisible"
         v-model="password"
@@ -18,19 +18,17 @@
         @click="isPasswordFieldVisible = true"
         >Unlock
       </StButton>
-    </div>
+    </form>
   </div>
 </template>
 
 <script>
 import { ref } from 'vue';
-import StLoading from '@/components/kit/StLoading.vue';
 import router from '@/router';
 import CryptoService from '@/services/crypto';
 export default {
   name: 'StLock',
   components: {
-    StLoading,
   },
   setup() {
     const isLoading = ref(true);
