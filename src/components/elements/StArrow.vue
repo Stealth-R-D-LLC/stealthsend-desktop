@@ -6,12 +6,12 @@
 
 <script>
 export default {
-  name: 'StHamburger',
+  name: 'StArrow',
   props: {
     open: {
       type: Boolean,
       required: true,
-      default: true,
+      default: false,
     },
   },
   setup() {
