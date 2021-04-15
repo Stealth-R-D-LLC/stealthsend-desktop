@@ -2,7 +2,7 @@
   <div class="dashbaord-container">
     Sum of all UTXO: {{ utxo }} XST
     <transition-group v-if="accounts.length !== 0" name="list" tag="div">
-      <StCard
+      <Card
         v-for="account in accounts"
         :key="account"
         class="list-item"
@@ -13,7 +13,7 @@
         <!-- <template #title>{{ account.label }}</template> -->
         <!-- <template #type>{{ !account.isArchived ? 'Active' : 'Archived' }}</template> -->
         <!-- <template #amount-crypto>{{ account.balance }}</template> -->
-      </StCard>
+      </Card>
     </transition-group>
     <p v-else>You don't have any accounts in your wallet.</p>
     <StTable
@@ -35,15 +35,15 @@
 </template>
 
 <script>
-import StTable from '@/components/kit/StTable.vue';
-import globalState from '@/store/global';
 import { ref } from 'vue';
+import globalState from '@/store/global';
+import Card from '@/components/elements/Card';
 import CryptoService from '../services/crypto';
 import router from '../router';
 export default {
   name: 'StDahboard',
   components: {
-    StTable,
+    Card
   },
   setup() {
     // console.log('Init crypto service!')
