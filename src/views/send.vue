@@ -81,6 +81,13 @@ export default {
         { amount: 0.7, txid: '104' },
         { amount: 0.8, txid: '105' },
         { amount: 0.9, txid: '106' },
+        { amount: 0.14, txid: '107' },
+        { amount: 0.23, txid: '108' },
+        { amount: 0.3, txid: '109' },
+        { amount: 0.32, txid: '110' },
+        { amount: 0.49, txid: '111' },
+        { amount: 0.66, txid: '112' },
+        { amount: 1.9, txid: '113' },
       ];
 
       useCoinControl(dummyOutputs, sendForm.amount);
