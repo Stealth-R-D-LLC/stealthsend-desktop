@@ -62,6 +62,7 @@
     "vue-cli-plugin-electron-builder": "~2.0.0-rc.6"
   },
   "pre-commit": [
+    "make",
     "prettier-format"
   ],
   "config": {
