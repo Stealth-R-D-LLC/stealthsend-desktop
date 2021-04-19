@@ -85,7 +85,6 @@ const CryptoService = {
     console.log('neutered:::', this.master.derivePath("m/44'/1'/0/0'").neutered().toBase58());
     console.log('non-neutoered:::', this.master.derivePath("m/44'/1'/0/0'").toBase58());
 
-
     router.push('/dashboard')
     // this.accountDiscovery()
   },
@@ -190,16 +189,16 @@ const CryptoService = {
     return accounts
   },
   async storeAccountInDb(account) {
-      let acc = await db.insert({
-        name: 'account',
-        address: account.address,
-        label: account.label,
-        isArchived: account.isArchived,
-        utxo: account.utxo,
-        path: account.path,
-        pk: account.pk,
-        asset: account.asset
-      })
+    let acc = await db.insert({
+      name: 'account',
+      address: account.address,
+      label: account.label,
+      isArchived: account.isArchived,
+      utxo: account.utxo,
+      path: account.path,
+      pk: account.pk,
+      asset: account.asset
+    })
     // this.getAccounts()
     return acc
   },
@@ -343,20 +342,6 @@ const CryptoService = {
       if (inputs.length > 0) {
         console.log(`3a) if (inputs.length) > 0 enter and set emptyInArow to 0`);
         console.log('discovered account: ', acc.path);
-        // save account in db?
-        // this.storeAccountInDb({
-        //   address: acc.address,
-        //   path: acc.path,
-        //   pk: acc.pk,
-        //   name: 'account',
-        //   label: 'Account ' + i + 1,
-        //   isArchived: false,
-        //   utxo: 0,
-        //   asset: 'XST'
-        // })
-        // get account balance
-        // if there are some transactions, increase the account index and go to step 1
-        // this.accountDiscovery(n + 1);
         emptyInARow = 0
         continue
       }
@@ -416,7 +401,7 @@ const CryptoService = {
         // UTXOs and presents it to them as their "balance".
         // Bitcoin doesn’t know balances associated with an account or username as they appear in banking.
         balance = add(balance, accUtxo)
-        balance = format(balance, {precision: 14})
+        balance = format(balance, { precision: 14 })
       }
       resolve({
         utxo: balance, // sum of all utxo
