@@ -61,7 +61,9 @@
     "prettier": "^2.0.4",
     "vue-cli-plugin-electron-builder": "~2.0.0-rc.6"
   },
-  "pre-commit": ["prettier-format"],
+  "pre-commit": [
+    "prettier-format"
+  ],
   "config": {
     "forge": {
       "packagerConfig": {},
