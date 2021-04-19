@@ -46,7 +46,6 @@ Deploys for desktop apps are still in research state and this is yet to be docum
 * use GitFlow because it is suitable for handling multiple versions of the same project
 * reference Jira task in the commit message (e.g. "XSTDESKTOP-123 implement login")
 
-
 ### Links
 
 * Jira board: https://jira.barrage.net/projects/XSTDESKTOP
