@@ -28,18 +28,18 @@ const routes = [
     // redirect: 'dashboard',
     pathMatch: 'full',
     // beforeEnter: (_to, _from, _next) => {
-      // db.find({ name: 'wallet' }).then(docs => {
-      //   console.log("DB", db)
-      //   console.log("BEFORE if docs", docs)
-      //   if (!docs || docs.length === 0) {
-      //     console.log("EMTPY docs", docs)
-      //     next('/welcome')
-      //   } else {
-      //     console.log("FULL docs", docs)
-      //     next('/dashboard')
-      //   }
+    // db.find({ name: 'wallet' }).then(docs => {
+    //   console.log("DB", db)
+    //   console.log("BEFORE if docs", docs)
+    //   if (!docs || docs.length === 0) {
+    //     console.log("EMTPY docs", docs)
+    //     next('/welcome')
+    //   } else {
+    //     console.log("FULL docs", docs)
+    //     next('/dashboard')
+    //   }
 
-      // })
+    // })
     //}
   },
   {

@@ -51,6 +51,7 @@ const CryptoService = {
   master: null,
   seed: null,
   // password: '',
+
   async init() {
     // check if there's already a wallet stored in the db
     // if so, ask for password via lock screen and
@@ -80,17 +81,16 @@ const CryptoService = {
     // console.log('deccc', this.AESDecrypt(wallet[0].seed, hash));
     this.master = await bip32.fromSeed(Buffer.from(this.hexToArray(this.AESDecrypt(wallet[0].seed, hash).toString(cryptoJs.enc.Utf8))), this.network)
 
-    console.log('DAJ MI EXTENDED PUBLIC KEY::::');
-    console.log(this.master.derivePath("m/44'/1'/0/0'"));
-    console.log('neutered:::', this.master.derivePath("m/44'/1'/0/0'").neutered().toBase58());
-    console.log('non-neutoered:::', this.master.derivePath("m/44'/1'/0/0'").toBase58());
-
     router.push('/dashboard')
     // this.accountDiscovery()
   },
   WIFtoPK(wif) {
-    const keyPair = bitcoin.ECPair.fromWIF(wif, this.network)
-    // const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: this.network })
+    // To test hardcoed WIF from welcome.vue, change the network from 'this.network' (testnet) to 'bitcoin.networks.bitcoin' (mainnet)
+    const keyPair = bitcoin.ECPair.fromWIF(wif, this.network); // testnet
+    // const keyPair = bitcoin.ECPair.fromWIF(wif, bitcoin.networks.bitcoin); // mainnet
+    // To get the address for the hardcoded WIF, also use 'bitcoin.networks.bitcoin' (currently commented)
+    // const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: this.network }) // testnet
+    // const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: bitcoin.networks.bitcoin }); // mainnet: 1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH
     return keyPair
   },
   hexToArray(hexString) {
@@ -111,9 +111,8 @@ const CryptoService = {
       const master = await bip32.fromSeed(seed, this.network) // aka. root
       this.master = master
       this.seed = seed
-      console.log('mnemonic: ', this.mnemonic)
-      console.log('seed: ', this.seed)
-      // console.log('master: ', this.master)
+      console.log('mnemonic: ', mnemonic);
+      console.log('seed: ', this.seed);
       resolve({
         mnemonic,
         // seed,
@@ -133,23 +132,12 @@ const CryptoService = {
     }
   },
   getChildFromRoot(account, change, address) {
-    // child === keypair
-    // console.log('getChildFromRoot', account, change, address);
     const child = this.master.derivePath(
       `m/44'/1'/${account}'/${change}/${address}`
     )
     let acc = this.master.derivePath(
       `m/44'/1'/${account}'`
     )
-
-    console.log('master address:::', bitcoin.payments.p2pkh({ pubkey: acc.publicKey, network: this.network }).address);
-    console.log('child address:::', bitcoin.payments.p2pkh({ pubkey: child.publicKey, network: this.network }).address);
-    try {
-      this.WIFtoPK('child to WIF:::', child.toWIF()) // decrypt
-      this.WIFtoPK('acc to WIF:::', acc.toWIF()) // decrypt
-    } catch (error) {
-      console.log('TU JE ERROR');
-    }
     return {
       address: bitcoin.payments.p2pkh({
         pubkey: child.publicKey,
@@ -177,7 +165,7 @@ const CryptoService = {
   //   }).address
   // },
   async getWalletFromDb() {
-    let wallet = await db.find({ name: 'wallet' })
+    let wallet = await db.find({ name: 'wallet' });
     globalState.setWallet(wallet[0])
     return wallet
   },
@@ -240,13 +228,13 @@ const CryptoService = {
     return hash === wallet[0].password
   },
   async hashPassword(password) {
-    let wallet = await this.getWalletFromDb()
+    let wallet = await this.getWalletFromDb();
     let salt = null;
     if (wallet.length > 0) {
       // console.log('ima vec salt ', wallet[0].salt);
       salt = wallet[0].salt
     } else {
-      // console.log('novi salt');
+      console.log('novi wallet, wallet');
       salt = cryptoJs.lib.WordArray.random(128 / 8)
     }
     const hash = cryptoJs.PBKDF2(password, salt, {
