@@ -6,9 +6,9 @@
 export default {
   name: 'Transactions',
   setup() {
-    return {}
-  }
-}
+    return {};
+  },
+};
 </script>
 
 <style lang="scss" scoped></style>

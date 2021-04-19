@@ -59,7 +59,7 @@ export default function useTransactionBuilder(utxo, sendForm) {
 
       let sumUtxo = utxo
         .map((el) => el.amount)
-        .reduce((a,  b) => sumOf(a, b), 0);
+        .reduce((a, b) => sumOf(a, b), 0);
       let change = {
         address: sendForm.account.address,
         amount: calculateChange(sumUtxo, Number(sendForm.amount)) * 1e6, // account amount - (send amount + fee)
