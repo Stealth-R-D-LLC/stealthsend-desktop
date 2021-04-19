@@ -109,6 +109,7 @@ export default {
     }
 
     const importWallet = ref(false);
+    // 800000000000000000000000000000000000000000000000000000000000000001014671FC3F
     const wif = ref('KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU73sVHnoWn');
     const imported = ref({});
     async function importWalletFromWif() {
