@@ -6,9 +6,9 @@
 export default {
   name: 'StSettings',
   setup() {
-    return {}
+    return {};
   },
-}
+};
 </script>
 
 <style scoped></style>

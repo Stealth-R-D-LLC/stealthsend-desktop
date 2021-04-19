@@ -1,6 +1,6 @@
 <template>
   <div class="arrow" :class="{ 'is-open': open, 'is-closed': !open }">
-      <div class="arrow-container"></div>
+    <div class="arrow-container"></div>
   </div>
 </template>
 
@@ -45,8 +45,8 @@ export default {
   position: relative;
 }
 
-.arrow-container::after{
-  content: "";
+.arrow-container::after {
+  content: '';
   display: block;
   width: 20px;
   height: 2px;
