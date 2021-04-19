@@ -28,8 +28,7 @@ import router from '@/router';
 import CryptoService from '@/services/crypto';
 export default {
   name: 'StLock',
-  components: {
-  },
+  components: {},
   setup() {
     const isLoading = ref(true);
     const isPasswordFieldVisible = ref(false);
