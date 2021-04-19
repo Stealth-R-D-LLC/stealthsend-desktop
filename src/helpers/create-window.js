@@ -1,15 +1,21 @@
-const { app, BrowserWindow } = require('electron')
-const windowStateKeeper = require('electron-window-state')
+const { app, BrowserWindow } = require('electron');
+const windowStateKeeper = require('electron-window-state');
 
-const isProd = app.isPackaged
+const isProd = app.isPackaged;
 
 let icon;
 switch (process.platform) {
-  case 'win32': icon = 'public/favicon.ico'; break;
-  case 'darwin': icon = 'public/favicon.icns'; break;
-  case 'linux': icon = 'public/favicon.png'; break;
+  case 'win32':
+    icon = 'public/favicon.ico';
+    break;
+  case 'darwin':
+    icon = 'public/favicon.icns';
+    break;
+  case 'linux':
+    icon = 'public/favicon.png';
+    break;
 }
- 
+
 module.exports = function createWindow(options = {}) {
   const winOptions = {
     minWidth: 1024,
@@ -29,14 +35,14 @@ module.exports = function createWindow(options = {}) {
       nodeIntegration: true,
       ...(options.webPreferences || {}),
     },
-  }
+  };
 
   let windowState = windowStateKeeper({
     defaultWidth: winOptions.minWidth,
     defaultHeight: winOptions.minHeight,
-  })
+  });
 
-  let win
+  let win;
 
   win = new BrowserWindow({
     ...winOptions,
@@ -44,13 +50,13 @@ module.exports = function createWindow(options = {}) {
     y: windowState.y,
     width: windowState.width,
     height: windowState.height,
-  })
-  windowState.manage(win)
+  });
+  windowState.manage(win);
 
   win.once('ready-to-show', () => {
-    win.show()
-    win.focus()
-  })
+    win.show();
+    win.focus();
+  });
 
-  return win
-}
+  return win;
+};
