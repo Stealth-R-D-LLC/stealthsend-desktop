@@ -37,9 +37,6 @@ export default {
       const { account, change, address } = CryptoService.breakAccountPath(
         acc.path
       )
-      console.log('receive - account:::', account);
-      console.log('receive - change:::', change);
-      console.log('receive - address:::', address);
       CryptoService.accountDiscovery(account)
       const child = CryptoService.getChildFromRoot(account, change, address)
       depositAddress.value = child.address

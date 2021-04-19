@@ -144,10 +144,8 @@ export default {
       // therefore, new password can be made
       globalState.startGlobalLoading();
       created.value = await CryptoService.generateMnemonicAndSeed();
+      console.log('welcome.vue createNewWallet created.value', created.value);
       await CryptoService.storeWalletInDb(password.value);
-      // setTimeout(async () => {
-      //   await generateAccount();
-      // }, 100);
       globalState.stopGlobalLoading();
     }
 
