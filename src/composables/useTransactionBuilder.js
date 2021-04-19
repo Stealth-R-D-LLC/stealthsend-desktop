@@ -23,9 +23,6 @@ export default function useTransactionBuilder(utxo, sendForm) {
       accountAmount,
       sumOf(sendAmount, CryptoService.constraints.FEE)
     );
-    console.log('acc amount ', accountAmount);
-    console.log('send am', sendAmount);
-    console.log('chage', change);
     return change;
   }
 
@@ -41,8 +38,6 @@ export default function useTransactionBuilder(utxo, sendForm) {
       for (let tx of utxo) {
         // get prevoutscript
         const txDetails = await globalState.rpc('gettransaction', [tx.txid]);
-        console.log('tx details: ', txDetails);
-        console.log('tx prevOutScript: ', txDetails.vout[0].scriptPubKey.hex);
 
         rawTransaction.addInput(
           txDetails.txid,
@@ -85,7 +80,6 @@ export default function useTransactionBuilder(utxo, sendForm) {
         child.toWIF(),
         CryptoService.network
       );
-      console.log('wif', child.toWIF());
 
       rawTransaction.sign(0, keyPair);
 
