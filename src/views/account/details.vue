@@ -49,7 +49,7 @@
 import globalState from '@/store/global';
 import { computed, ref } from 'vue';
 import VanillaQR from 'vanillaqr';
-import Card from '@/components/elements/Card'
+import Card from '@/components/elements/Card';
 // import StCopyToClipboard from '@/components/kit/StClipboard.vue';
 // import StTooltip from '@/components/kit/StTooltip.vue';
 import router from '@/router';
@@ -57,7 +57,7 @@ import router from '@/router';
 export default {
   name: 'StAccountDetails',
   components: {
-    Card
+    Card,
   },
   setup() {
     function openTransaction(trx) {

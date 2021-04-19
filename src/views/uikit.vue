@@ -115,10 +115,7 @@
     <StTooltip
       :tooltip-text="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
     >
-      <StClipboard
-        content="kopirani string"
-        @click="handleCopy"
-      ></StClipboard>
+      <StClipboard content="kopirani string" @click="handleCopy"></StClipboard>
     </StTooltip>
     <br />
     <br />
@@ -153,7 +150,7 @@
 // import StTooltip from '@/components/kit/StTooltip.vue'
 // import StLoading from '@/components/kit/StLoading.vue'
 
-import { ref } from 'vue'
+import { ref } from 'vue';
 
 export default {
   // components: {
@@ -216,7 +213,7 @@ export default {
         subVersion: '2.2.0',
         blockHeight: '12345678',
       },
-    ])
+    ]);
     const tableColumns = ref([
       { key: 'address', title: 'Address' },
       { key: 'protocol', title: 'Protocol' },
@@ -227,33 +224,33 @@ export default {
         customHeaderClass: 'cell-center',
       },
       { key: 'blockHeight', title: 'Blockheight' },
-    ])
-    const bla = ref('')
-    let checkboxPrvi = ref(false)
-    let showModal = ref(false)
+    ]);
+    const bla = ref('');
+    let checkboxPrvi = ref(false);
+    let showModal = ref(false);
 
-    let radioValue = ref('')
+    let radioValue = ref('');
     function clickHandler(test) {
-      console.log('---> ', test)
+      console.log('---> ', test);
     }
 
-    let copyPending = ref(false)
+    let copyPending = ref(false);
     function handleCopy() {
-      copyPending.value = true
+      copyPending.value = true;
       setTimeout(() => {
-        copyPending.value = false
-      }, 2000)
+        copyPending.value = false;
+      }, 2000);
     }
 
-    let multiselectValue = ref(null)
-    let multiselectOptions = ref(['Batman', 'Robin', 'Joker'])
-    const isLoading = ref(false)
+    let multiselectValue = ref(null);
+    let multiselectOptions = ref(['Batman', 'Robin', 'Joker']);
+    const isLoading = ref(false);
 
     function toggleLoading() {
-      isLoading.value = true
+      isLoading.value = true;
       setTimeout(() => {
-        isLoading.value = false
-      }, 3000)
+        isLoading.value = false;
+      }, 3000);
     }
 
     // const customClass = computed(() => {
@@ -280,10 +277,9 @@ export default {
       isLoading,
       toggleLoading,
       // customClass
-    }
+    };
   },
-}
+};
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

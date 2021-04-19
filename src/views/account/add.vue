@@ -45,8 +45,7 @@ import { computed } from 'vue';
 import { ref } from 'vue';
 export default {
   name: 'StAddAccount',
-  components: {
-  },
+  components: {},
   setup() {
     const hasZeroBalance = computed(() => {
       return false; // TODO: hardcoded
