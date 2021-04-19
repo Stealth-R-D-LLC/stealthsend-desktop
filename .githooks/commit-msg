@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
 # set this to your active development branch
-develop_branch="develop"
+# develop_branch="develop"
 current_branch="$(git rev-parse --abbrev-ref HEAD)"
 RED='\033[0;31m'
 
 # only check commit messages on main development branch
-[ "$current_branch" != "$develop_branch" ] && exit 0
+# [ "$current_branch" != "$develop_branch" ] && exit 0
 
 # regex to validate in commit msg
-commit_regex='(GW-[0-9]+|merge)'
+commit_regex='(XST-[0-9]+|merge)'
 error_msg="${RED}Aborting commit! Your commit message is missing a JIRA Issue ('example: XST-123') or a 'merge' word"
 
 if ! grep -iqE "$commit_regex" "$1"; then
