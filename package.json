@@ -17,7 +17,8 @@
     "postuninstall": "electron-builder install-app-deps",
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "make": "electron-forge make"
+    "make": "electron-forge make",
+    "hooks": "make"
   },
   "main": "background.js",
   "dependencies": {
@@ -61,7 +62,10 @@
     "prettier": "^2.0.4",
     "vue-cli-plugin-electron-builder": "~2.0.0-rc.6"
   },
-  "pre-commit": ["prettier-format"],
+  "pre-commit": [
+    "hooks",
+    "prettier-format"
+  ],
   "config": {
     "forge": {
       "packagerConfig": {},
