@@ -45,8 +45,7 @@ import { computed } from 'vue';
 import { ref } from 'vue';
 export default {
   name: 'StAddAccount',
-  components: {
-  },
+  components: {},
   setup() {
     const hasZeroBalance = computed(() => {
       return false; // TODO: hardcoded
@@ -79,7 +78,7 @@ export default {
       const { address, path, pk, wif } = CryptoService.getChildFromRoot(
         next,
         0,
-        0
+        1
       );
       account = {
         pk: pk,

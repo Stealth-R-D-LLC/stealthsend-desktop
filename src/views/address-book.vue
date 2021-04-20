@@ -6,9 +6,9 @@
 export default {
   name: 'AddressBook',
   setup() {
-    return {}
-  }
-}
+    return {};
+  },
+};
 </script>
 
 <style lang="scss" scoped></style>

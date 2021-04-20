@@ -19,31 +19,35 @@
 </template>
 
 <script>
-import { ref } from 'vue'
-import VanillaQR from 'vanillaqr'
-import CryptoService from '@/services/crypto'
+import { ref } from 'vue';
+import VanillaQR from 'vanillaqr';
+import CryptoService from '@/services/crypto';
 export default {
   setup() {
-    const accounts = ref([])
-    const account = ref(null)
+    const accounts = ref([]);
+    const account = ref(null);
     async function getAccounts() {
-      accounts.value = await CryptoService.getAccounts()
+      accounts.value = await CryptoService.getAccounts();
     }
-    getAccounts()
+    getAccounts();
 
-    const depositAddress = ref('')
-    const qrSrc = ref('')
+    const depositAddress = ref('');
+    const qrSrc = ref('');
     function changeAccount(acc) {
       const { account, change, address } = CryptoService.breakAccountPath(
         acc.path
-      )
-      CryptoService.accountDiscovery(account)
-      const child = CryptoService.getChildFromRoot(account, change, address)
-      depositAddress.value = child.address
+      );
+      CryptoService.accountDiscovery(account);
+      const child = CryptoService.getChildFromRoot(
+        account,
+        change,
+        address + 5
+      );
+      depositAddress.value = child.address;
       var qr = new VanillaQR({
         url: depositAddress.value,
-      })
-      qrSrc.value = qr.toImage('png').src
+      });
+      qrSrc.value = qr.toImage('png').src;
     }
 
     return {
@@ -52,9 +56,9 @@ export default {
       depositAddress,
       changeAccount,
       qrSrc,
-    }
+    };
   },
-}
+};
 </script>
 
 <style lang="scss" scoped></style>

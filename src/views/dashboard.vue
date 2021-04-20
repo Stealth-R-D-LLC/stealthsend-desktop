@@ -43,7 +43,7 @@ import router from '../router';
 export default {
   name: 'StDahboard',
   components: {
-    Card
+    Card,
   },
   setup() {
     // console.log('Init crypto service!')
