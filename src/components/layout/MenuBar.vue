@@ -322,7 +322,7 @@ export default defineComponent({
     };
   },
 });
-</script> 
+</script>
 
 <style scoped>
 .default-layout__aside {

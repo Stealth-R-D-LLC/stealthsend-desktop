@@ -1,9 +1,9 @@
-'use strict'
+'use strict';
 
-import { app, BrowserWindow, protocol } from 'electron'
-import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
-import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
-const isDevelopment = process.env.NODE_ENV !== 'production'
+import { app, BrowserWindow, protocol } from 'electron';
+import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
+import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -18,7 +18,6 @@ async function createWindow() {
     minWidth: 1152,
     minHeight: 700,
     webPreferences: {
-
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
@@ -64,7 +63,7 @@ app.on('ready', async () => {
     }
   }
   createWindow();
-})
+});
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {

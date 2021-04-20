@@ -69,10 +69,10 @@
 </template>
 
 <script>
-import { ref } from 'vue' 
-import * as bip39 from 'bip39'
-import * as bip32 from 'bip32' 
-import globalState from '@/store/global'
+import { ref } from 'vue';
+import * as bip39 from 'bip39';
+import * as bip32 from 'bip32';
+import globalState from '@/store/global';
 // import db from '../db'
 import router from '../router';
 import CryptoService from '../services/crypto';
@@ -80,26 +80,28 @@ import CryptoService from '../services/crypto';
 export default {
   name: 'StWelcome',
   setup() {
-    const recoverWallet = ref(false)
-    const mnemonic = ref('core ritual tornado cart chaos rice brave mirror float utility suffer atom')
-    const recovered = ref({})
-    const password = ref('')
+    const recoverWallet = ref(false);
+    const mnemonic = ref(
+      'core ritual tornado cart chaos rice brave mirror float utility suffer atom'
+    );
+    const recovered = ref({});
+    const password = ref('');
 
     async function recover() {
       // recover an existing wallet via mnemonic
       // password is asked because we have to lock the seed in the database
       // user is createing a new password in this step
-      globalState.startGlobalLoading()
-      let bytes = await bip39.mnemonicToSeedSync(mnemonic.value)
-      const master = await bip32.fromSeed(bytes) // root
+      globalState.startGlobalLoading();
+      let bytes = await bip39.mnemonicToSeedSync(mnemonic.value);
+      const master = await bip32.fromSeed(bytes); // root
       recovered.value = {
         seed: bytes.toString('hex'),
         master: master,
-      }
+      };
 
-      CryptoService.seed = bytes.toString('hex')
-      CryptoService.master = master
-      console.log('--', master)
+      CryptoService.seed = bytes.toString('hex');
+      CryptoService.master = master;
+      console.log('--', master);
 
       CryptoService.storeWalletInDb(password.value);
       setTimeout(() => {
@@ -144,8 +146,13 @@ export default {
       // therefore, new password can be made
       globalState.startGlobalLoading();
       created.value = await CryptoService.generateMnemonicAndSeed();
-      console.log('welcome.vue createNewWallet created.value', created.value);
+      console.log(
+        '5) welcome.vue createNewWallet created.value',
+        created.value
+      );
+      console.log('6) Prepare to store wallet in DB...');
       await CryptoService.storeWalletInDb(password.value);
+      console.log('Stored wallet in db');
       globalState.stopGlobalLoading();
     }
 
@@ -170,9 +177,9 @@ export default {
       createWallet,
       created,
       createNewWallet,
-    }
+    };
   },
-}
+};
 </script>
 
 <style scoped>

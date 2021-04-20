@@ -4,13 +4,14 @@ module.exports = {
     browser: true,
     node: true,
   },
+  plugins: ['prettier', 'vue'],
   extends: [
     // 'plugin:vue/vue3-recommended',
     // // 'eslint:recommended',
     // 'prettier/vue',
     // 
-    'plugin:vue/vue3-recommended',
     'eslint:recommended',
+    'plugin:vue/vue3-recommended',
     'prettier',
     'prettier/vue',
   ],
@@ -20,7 +21,6 @@ module.exports = {
   //   allowImportExportEverywhere: true,
   //   experimentalObjectRestSpread: true
   // },
-  plugins: ['prettier', 'vue'],
   // add your custom rules here
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warning' : 'off',

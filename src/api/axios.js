@@ -11,30 +11,29 @@ const API_CONFIG = {
     (data) => {
       data = {
         ...data,
-        jsonrpc: "2.0",
+        jsonrpc: '2.0',
         id: 666420,
-      }
-      return JSON.stringify(data)
-    }
-  ]
-}
+      };
+      return JSON.stringify(data);
+    },
+  ],
+};
 
-export const API = axios.create(API_CONFIG)
+export const API = axios.create(API_CONFIG);
 API.interceptors.request.use(
   (API_CONFIG) => {
-    return API_CONFIG
+    return API_CONFIG;
   },
   (error) => {
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
-)
+);
 
 API.interceptors.response.use(
   (response) => {
-    return response
+    return response;
   },
   (error) => {
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
-)
-
+);
