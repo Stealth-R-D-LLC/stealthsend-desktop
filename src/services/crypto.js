@@ -86,7 +86,6 @@ const CryptoService = {
       ),
       this.network
     );
-    // console.log('master!', this.master);
     router.push('/dashboard');
     // this.accountDiscovery()
   },

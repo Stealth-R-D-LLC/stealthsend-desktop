@@ -59,7 +59,6 @@ export default {
 
     async function getNextAccountPath() {
       let accounts = await CryptoService.getAccounts();
-      console.log('add account, getNextAccountPath - accounts', accounts);
       let largest = 0;
       for (let acc of accounts) {
         if (parseInt(acc.path) > largest) {
@@ -74,11 +73,10 @@ export default {
       globalState.startGlobalLoading();
 
       let next = await getNextAccountPath();
-      console.log('generateAccount, next account:', next);
       const { address, path, pk, wif } = CryptoService.getChildFromRoot(
         next,
         0,
-        1
+        0
       );
       account = {
         pk: pk,
@@ -90,7 +88,7 @@ export default {
         wif: wif,
         path: path,
       };
-      console.log('account', JSON.stringify(account));
+      console.log('account:::::::', account);
 
       CryptoService.storeAccountInDb(account);
       globalState.stopGlobalLoading();
