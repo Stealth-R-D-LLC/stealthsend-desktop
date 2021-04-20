@@ -35,15 +35,17 @@ export default function useTransactionBuilder(utxo, sendForm) {
       );
 
       // add all outputs
-      for (let tx of utxo) {
+      for await (let tx of utxo) {
         // get prevoutscript
         const txDetails = await globalState.rpc('gettransaction', [tx.txid]);
 
+        let vout = txDetails.vout.find(el => el.value === tx.amount);
+
         rawTransaction.addInput(
           txDetails.txid,
-          txDetails.vout[0].n,
+          vout.n,
           null,
-          Buffer.from(txDetails.vout[0].scriptPubKey.hex, 'hex')
+          Buffer.from(vout.scriptPubKey.hex, 'hex')
         );
       }
 
@@ -68,7 +70,6 @@ export default function useTransactionBuilder(utxo, sendForm) {
       rawTransaction.addOutput(change.address, change.amount);
 
       // careful how to derive the path. depends on the account of the address
-      // TODO account index?
       let { account: accountIndex } = CryptoService.breakAccountPath(
         sendForm.account.path
       );
@@ -81,7 +82,11 @@ export default function useTransactionBuilder(utxo, sendForm) {
         CryptoService.network
       );
 
-      rawTransaction.sign(0, keyPair);
+      for (let i = 0; i < utxo.length; i++) {
+              rawTransaction.sign(i, keyPair);
+
+      }
+      // rawTransaction.sign(0, keyPair);
 
       console.dir(rawTransaction);
 
