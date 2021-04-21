@@ -73,9 +73,7 @@ export default function useTransactionBuilder(utxo, sendForm) {
       let { account: accountIndex } = CryptoService.breakAccountPath(
         sendForm.account.path
       );
-      const child = CryptoService.master.derivePath(
-        `m/44'/1'/${accountIndex}'/0/0`
-      );
+      const child = CryptoService.master.derivePath(`m/44'/1'/${accountIndex}'/0/0`);
 
       const keyPair = bitcoin.ECPair.fromWIF(
         child.toWIF(),
