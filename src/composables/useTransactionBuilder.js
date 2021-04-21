@@ -39,7 +39,7 @@ export default function useTransactionBuilder(utxo, sendForm) {
         // get prevoutscript
         const txDetails = await globalState.rpc('gettransaction', [tx.txid]);
 
-        let vout = txDetails.vout.find(el => el.value === tx.amount);
+        let vout = txDetails.vout.find((el) => el.value === tx.amount);
 
         rawTransaction.addInput(
           txDetails.txid,
@@ -77,14 +77,12 @@ export default function useTransactionBuilder(utxo, sendForm) {
         `m/44'/1'/${accountIndex}'/0/0`
       );
 
-      const keyPair = bitcoin.ECPair.fromWIF(
-        child.toWIF(),
+      const keyPair = bitcoin.ECPair.fromWIF(child.toWIF(),
         CryptoService.network
       );
 
       for (let i = 0; i < utxo.length; i++) {
-              rawTransaction.sign(i, keyPair);
-
+        rawTransaction.sign(i, keyPair);
       }
       // rawTransaction.sign(0, keyPair);
 
