@@ -1,13 +1,17 @@
 Build Linux:
   image: nexus.barrage.net:13455/barrage-internal/electronjs-builder
   script:
+    - pwd
+    - npm config ls
+    - export HOME=/project
     - npm ci
     - npx vue-cli-service electron:build --linux
   tags:
     - docker-executor
   artifacts:
     paths:
-      - dist_electron/
+      - dist_electron/*.AppImage
+      - dist_electron/*.deb
 
 Build MacOS:
   script:
@@ -18,4 +22,5 @@ Build MacOS:
     - macos-electronjs
   artifacts:
     paths:
-      - dist_electron/
+      - dist_electron/*.dmg
+      - dist_electron/*.pkg
