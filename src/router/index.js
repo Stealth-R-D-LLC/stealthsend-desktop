@@ -22,6 +22,11 @@ import db from '../db';
   console.log('Database: ', a);
 })();
 
+// (async function bla2() {
+//   console.log('uso');
+//   await db.remove({address: 'msETpzsL7jwgEAqPEQ8W1o7NCM2v6qPzNL'}, { multi: true });
+// })();
+
 const routes = [
   {
     path: '/',
