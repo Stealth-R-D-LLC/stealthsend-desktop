@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import router from '@/router';
 import globalState from '@/store/global';
 import * as bip32 from 'bip32';
@@ -343,31 +344,33 @@ const CryptoService = {
     const GAP_LIMIT = 20;
 
     let emptyInARow = 0;
+    const accounts = [];
+    // call 'gethdaccount' outside a loop? does not make sense to call it n-times for the same information
+    for (let i = 0; i < GAP_LIMIT; i++) {
+      accounts.push(this.getChildFromRoot(n, 0, i));
+    }
+    // TODO: Filter matched response objects for each 'address' from the accounts - use this in the next for loop to detect gaps and select
+    // next available address to select for receiving
+    if (accounts.length) {
+      const result = await globalState.rpc('gethdaccount', [accounts[0].pk]);
+      console.log('<<<<<result>>>>', result);
+    }
     for (let i = 0; i < GAP_LIMIT; i++) {
       // derive the first account's node (index = 0)
       // derive the external chain node of this account
+      // external chain is for a public (receiving) values - 0, internal chain is not public, serves as changeback to 'yourself' - 1
       const acc = this.getChildFromRoot(n, 0, i);
-      // console.log('>>>get address', this.getChildFromRoot(n + 1, 0, i));
-      // console.log('acc.address', acc.address);
       // scan addresses of the external chain; respect the gap limit described below
-      // const hdAccount = await globalState.rpc('gethdaccount', [acc.pk])
-      // console.log('hdacc', hdAccount);
-      try {
-        // const outputs = await globalState.rpc('getaddressinfo', [acc]);
-        console.log('----account', acc);
-        const outputs = await globalState.rpc('gethdaccount', [acc.pk]);
-        console.log('outputs::', outputs);
-        if (outputs > 0) {
-          console.log('discovered account: ', acc.path);
-          emptyInARow = 0;
-          continue;
-        }
-        // If the software hits 20 unused addresses in a row, it expects there are no used addresses beyond this point and stops searching the address chain
-        if (emptyInARow >= 20) break;
-      } catch (error) {
-        // if there are no transactions, increment counter and go to next address
-        emptyInARow += 1;
-      }
+      // const outputs = await globalState.rpc('gethdaccount', [acc.pk]);
+      // if (outputs > 0) {
+      //   console.log('discovered account: ', acc.path);
+      //   emptyInARow = 0;
+      //   continue;
+      // }
+      // if there are no transactions, increment counter and go to next address
+      // emptyInARow += 1;
+      // If the software hits 20 unused addresses in a row, it expects there are no used addresses beyond this point and stops searching the address chain
+      // if (emptyInARow >= 20) break;
     }
     // grace concert hunt glide million orange enact habit amazing deal object nurse
   },

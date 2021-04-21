@@ -87,14 +87,6 @@ export default {
       }
 
       useTransactionBuilder(utxo, sendForm);
-      // console.log('rawTransaction', rawTransaction);
-
-      // const rawTransactionToHex = rawTransaction.build().toHex();
-      // console.log(rawTransactionToHex);
-
-      // const res = await globalState.rpc('sendrawtransaction', [rawTransaction]);
-
-      // console.log('res', res);
     }
     return {
       sendForm,
