@@ -1,0 +1,22 @@
+Build Linux:
+  image: nexus.barrage.net:13455/barrage-internal/electronjs-builder
+  script:
+    - npm ci
+    - vue-cli-service electron:build --linux
+  tags:
+    - docker-executor
+  artifacts:
+    paths:
+      - dist_electron/
+
+Build MacOS:
+  script:
+    - |
+      source ~/.zshrc
+      npm ci
+      vue-cli-service electron:build --mac
+  tags:
+    - macos-electronjs
+  artifacts:
+    paths:
+      - dist_electron/
