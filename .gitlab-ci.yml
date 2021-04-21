@@ -3,7 +3,7 @@ Build Linux:
   script:
     - pwd
     - npm config ls -l
-    - cp .npmrc /root/.npmrc
+    - cp /project/.npmrc .npmrc
     - npm ci
     - npx vue-cli-service electron:build --linux
   tags:
