@@ -11,10 +11,9 @@ Build Linux:
 
 Build MacOS:
   script:
-    - |
-      source ~/.zshrc
-      npm ci
-      npx vue-cli-service electron:build --mac
+    - source ~/.zshrc
+    - npm ci
+    - npx vue-cli-service electron:build --mac
   tags:
     - macos-electronjs
   artifacts:
