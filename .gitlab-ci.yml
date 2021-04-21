@@ -2,8 +2,7 @@ Build Linux:
   image: nexus.barrage.net:13455/barrage-internal/electronjs-builder
   script:
     - pwd
-    - npm config ls
-    - export HOME=/project
+    - npm config ls -l
     - npm ci
     - npx vue-cli-service electron:build --linux
   tags:
