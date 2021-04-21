@@ -78,6 +78,7 @@ const CryptoService = {
     // console.log('wall', this.hexToArray(this.AESDecrypt(wallet[0].seed, hash).toString(cryptoJs.enc.Utf8)));
     // // console.log('dec', cryptoJs.AES.decrypt(wallet[0].seed, hash));
     // console.log('deccc', this.AESDecrypt(wallet[0].seed, hash));
+    // master key
     this.master = await bip32.fromSeed(
       Buffer.from(
         this.hexToArray(
