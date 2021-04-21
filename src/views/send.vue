@@ -87,7 +87,6 @@ export default {
       }
 
       useTransactionBuilder(utxo, sendForm);
-
     }
     return {
       sendForm,
