@@ -134,21 +134,24 @@ const CryptoService = {
     };
   },
   getChildFromRoot(account, change, address) {
-    // child === keypair
-    // console.log('getChildFromRoot', account, change, address);
-    const child = this.master.derivePath(
+    // With non-hardened keys, you can prove a child public key is linked to a parent public key
+    // using just the public keys.
+    // You can also derive public child keys from a public parent key,
+    // which enables watch-only wallets.
+    // With hardened child keys, you cannot prove that a child public key is linked to a parent public key.
+    const keypair = this.master.derivePath(
       `m/44'/1'/${account}'/${change}/${address}`
     );
     let acc = this.master.derivePath(`m/44'/1'/${account}'`);
     // this.WIFtoPK(child.toWIF()) // decrypt
     return {
       address: bitcoin.payments.p2pkh({
-        pubkey: child.publicKey,
+        pubkey: keypair.publicKey,
         network: this.network,
       }).address,
-      keyPair: child,
+      keyPair: keypair,
       pk: String(acc.neutered().toBase58()),
-      wif: child.toWIF(),
+      wif: keypair.toWIF(),
       // sk: child.privateKey,
       path: `${account}'/${change}/${address}`,
     };

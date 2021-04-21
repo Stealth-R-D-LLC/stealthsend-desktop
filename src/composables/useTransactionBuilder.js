@@ -62,12 +62,16 @@ export default function useTransactionBuilder(utxo, sendForm) {
         amount: calculateChange(sumUtxo, Number(sendForm.amount)) * 1e6, // account amount - (send amount + fee)
       };
 
+      console.log('change: ', change.amount);
+
       // add the output for recipient
       rawTransaction.addOutput(recipient.address, recipient.amount);
 
       // add the output for the change, send the change back to yourself.
       // Outputs - inputs = transaction fee, so always double-check your math!
-      rawTransaction.addOutput(change.address, change.amount);
+      if (change.amount > 0) {
+        rawTransaction.addOutput(change.address, change.amount);
+      }
 
       // careful how to derive the path. depends on the account of the address
       let { account: accountIndex } = CryptoService.breakAccountPath(
@@ -84,7 +88,6 @@ export default function useTransactionBuilder(utxo, sendForm) {
       for (let i = 0; i < utxo.length; i++) {
         rawTransaction.sign(i, keyPair);
       }
-      // rawTransaction.sign(0, keyPair);
 
       console.dir(rawTransaction);
 

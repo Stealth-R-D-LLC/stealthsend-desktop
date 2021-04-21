@@ -67,19 +67,17 @@ export default {
 
       unspentOutputs = outputs.filter((el) => el.isspent === 'false');
 
-      console.log('unspent: ', unspentOutputs);
+      console.log('candidates for inputs: ', unspentOutputs);
     }
 
     function coinSelection() {
       const { best } = useCoinControl(unspentOutputs, sendForm.amount);
-      console.log('bestic', best);
       return best;
     }
 
     function send() {
       const utxo = coinSelection();
       console.log('inputs:', utxo);
-      console.log('inputs length', utxo.length);
 
       if (utxo.length === 0) {
         console.log('ne mogu sastaviti transakciju');
