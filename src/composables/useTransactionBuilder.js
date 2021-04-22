@@ -51,7 +51,7 @@ export default function useTransactionBuilder(utxo, sendForm) {
 
       let recipient = {
         address: sendForm.address,
-        amount: Number(sendForm.amount) * 1e6,
+        amount: Number(sumOf(sendForm.amount, -0.01)) * 1e6,
       };
 
       let sumUtxo = utxo

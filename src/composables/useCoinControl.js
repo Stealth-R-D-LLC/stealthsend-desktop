@@ -216,7 +216,7 @@ export default function useCoinControl(outputs, target) {
     // output. Finally, it will pick the smaller out of the knapsack result or the minimal
     // larger UTXO.
 
-    let adjustedTarget = sumOf(target, CryptoService.constraints.FEE);
+    let adjustedTarget = sumOf(target, 0); // CryptoService.constraints.FEE
 
     console.log('Coin selection start');
     console.log('ADJUSTED TARGET (target + 0.01 fee): ', adjustedTarget);
