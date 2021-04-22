@@ -1,3 +1,4 @@
+import useFeeEstimator from '@/composables/useFeeEstimator';
 import CryptoService from '@/services/crypto';
 import globalState from '@/store/global';
 import * as bitcoin from 'bitcoinjs-lib';
@@ -6,6 +7,8 @@ import { add, format, subtract } from 'mathjs';
 
 export default function useTransactionBuilder(utxo, sendForm) {
   console.log('start tx builder');
+
+  const { fee } = useFeeEstimator(utxo.length);
 
   const sumOf = (x = 0, y = 0) => {
     let sum = add(x, y);
@@ -19,10 +22,7 @@ export default function useTransactionBuilder(utxo, sendForm) {
     return Number(diff);
   };
   function calculateChange(accountAmount, sendAmount) {
-    let change = subtractOf(
-      accountAmount,
-      sumOf(sendAmount, CryptoService.constraints.FEE)
-    );
+    let change = subtractOf(accountAmount, sumOf(sendAmount, fee));
     return change;
   }
 
@@ -51,7 +51,7 @@ export default function useTransactionBuilder(utxo, sendForm) {
 
       let recipient = {
         address: sendForm.address,
-        amount: Number(sendForm.amount) * 1e6,
+        amount: Number(sumOf(sendForm.amount, fee * -1)) * 1e6,
       };
 
       let sumUtxo = utxo
@@ -62,12 +62,16 @@ export default function useTransactionBuilder(utxo, sendForm) {
         amount: calculateChange(sumUtxo, Number(sendForm.amount)) * 1e6, // account amount - (send amount + fee)
       };
 
+      console.log('change: ', change, recipient);
+
       // add the output for recipient
       rawTransaction.addOutput(recipient.address, recipient.amount);
 
       // add the output for the change, send the change back to yourself.
       // Outputs - inputs = transaction fee, so always double-check your math!
-      rawTransaction.addOutput(change.address, change.amount);
+      if (change.amount > 0) {
+        rawTransaction.addOutput(change.address, change.amount);
+      }
 
       // careful how to derive the path. depends on the account of the address
       let { account: accountIndex } = CryptoService.breakAccountPath(
@@ -77,14 +81,14 @@ export default function useTransactionBuilder(utxo, sendForm) {
         `m/44'/1'/${accountIndex}'/0/0`
       );
 
-      const keyPair = bitcoin.ECPair.fromWIF(child.toWIF(),
+      const keyPair = bitcoin.ECPair.fromWIF(
+        child.toWIF(),
         CryptoService.network
       );
 
       for (let i = 0; i < utxo.length; i++) {
         rawTransaction.sign(i, keyPair);
       }
-      // rawTransaction.sign(0, keyPair);
 
       console.dir(rawTransaction);
 
