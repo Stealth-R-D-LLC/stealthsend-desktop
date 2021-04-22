@@ -33,16 +33,22 @@ export default {
 
     const depositAddress = ref('');
     const qrSrc = ref('');
-    function changeAccount(acc) {
+    async function changeAccount(acc) {
+      // eslint-disable-next-line no-unused-vars
       const { account, change, address } = CryptoService.breakAccountPath(
         acc.path
       );
-      CryptoService.accountDiscovery(account);
+      const discoveredAddresses = await CryptoService.accountDiscovery(account);
+      console.log('>>>>>discoveredAddresses<<<<<', discoveredAddresses);
+      let nextFreeAddress = CryptoService.nextToUse(discoveredAddresses.freeAddresses);
+      
+      console.log('>>>>>>nextFreeAddress<<<<<<', nextFreeAddress);
+      const next = CryptoService.breakAccountPath(nextFreeAddress);
+      
       const child = CryptoService.getChildFromRoot(
         account,
         change,
-        // address + 5
-        address,
+        next.address,
       );
       depositAddress.value = child.address;
       var qr = new VanillaQR({
@@ -58,7 +64,7 @@ export default {
       changeAccount,
       qrSrc,
     };
-  },
+  }
 };
 </script>
 

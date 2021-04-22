@@ -337,43 +337,37 @@ const CryptoService = {
     });
   },
   async accountDiscovery(n = 0) {
-    console.log('!!!!start account discovery');
-    //  Address gap limit is currently set  to 20. If the software hits 20 unused addresses in a row,
-    // it expects there are no used addresses beyond this point and stops searching the address chain.
-    // We scan just the external chains, because internal chains receive only coins that come from the associated external chains.
     const GAP_LIMIT = 20;
-
     let emptyInARow = 0;
-    const accounts = [];
-    // call 'gethdaccount' outside a loop? does not make sense to call it n-times for the same information
+    let freeAddresses = [];
     for (let i = 0; i < GAP_LIMIT; i++) {
-      accounts.push(this.getChildFromRoot(n, 0, i));
-    }
-    // TODO: Filter matched response objects for each 'address' from the accounts - use this in the next for loop to detect gaps and select
-    // next available address to select for receiving
-    if (accounts.length) {
-      const result = await globalState.rpc('gethdaccount', [accounts[0].pk]);
-      console.log('<<<<<result>>>>', result);
-    }
-    for (let i = 0; i < GAP_LIMIT; i++) {
-      // derive the first account's node (index = 0)
-      // derive the external chain node of this account
-      // external chain is for a public (receiving) values - 0, internal chain is not public, serves as changeback to 'yourself' - 1
       const acc = this.getChildFromRoot(n, 0, i);
-      // scan addresses of the external chain; respect the gap limit described below
-      // const outputs = await globalState.rpc('gethdaccount', [acc.pk]);
-      // if (outputs > 0) {
-      //   console.log('discovered account: ', acc.path);
-      //   emptyInARow = 0;
-      //   continue;
-      // }
+      const outputs = await globalState.rpc('getaddressoutputs', [
+        acc.address,
+        1,
+        1,
+      ]);
+      if (outputs.length > 0) {
+        emptyInARow = 0;
+        continue;
+      }
       // if there are no transactions, increment counter and go to next address
-      // emptyInARow += 1;
+      emptyInARow += 1;
+      freeAddresses.push(acc.path);
+
       // If the software hits 20 unused addresses in a row, it expects there are no used addresses beyond this point and stops searching the address chain
-      // if (emptyInARow >= 20) break;
+      if (emptyInARow >= 20) {
+        break;
+      }
     }
+    console.log('@@@@freeAddresses@@@@', freeAddresses);
+    return {
+      freeAddresses,
+    };
     // grace concert hunt glide million orange enact habit amazing deal object nurse
   },
+
+
   AESEncrypt(payload, key = '123456789') {
     let encJson = cryptoJs.AES.encrypt(JSON.stringify(payload), key).toString();
     let encData = cryptoJs.enc.Base64.stringify(
@@ -428,6 +422,17 @@ const CryptoService = {
         accounts: newAccounts,
       });
     });
+  },
+  nextToUse(freeAddresses) {
+    for (let i = 0; i < freeAddresses.length; i++) {
+      if (parseInt(freeAddresses[i + 1].split('/')[2]) - parseInt(freeAddresses[i].split('/')[2]) === 1) {
+        if (i === 0) {
+          return freeAddresses[i];
+        } else {
+          return freeAddresses[i - 1];
+        }
+      }
+    }
   },
 };
 
