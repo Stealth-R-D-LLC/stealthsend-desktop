@@ -81,7 +81,8 @@ export default function useTransactionBuilder(utxo, sendForm) {
         `m/44'/1'/${accountIndex}'/0/0`
       );
 
-      const keyPair = bitcoin.ECPair.fromWIF(child.toWIF(),
+      const keyPair = bitcoin.ECPair.fromWIF(
+        child.toWIF(),
         CryptoService.network
       );
 

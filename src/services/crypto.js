@@ -398,10 +398,9 @@ const CryptoService = {
           });
         }
         newAccounts.push({
-          utxo: Number(accUtxo),
           ...account,
+          utxo: Number(accUtxo),
         });
-        // account['utxo'] = accUtxo
         // When a user looks at their wallet, the software aggregates the sum of value of all their
         // UTXOs and presents it to them as their "balance".
         // Bitcoin doesn’t know balances associated with an account or username as they appear in banking.
