@@ -29,11 +29,13 @@ const rpc = (method, payload) => {
       params: payload,
     })
       .then((res) => {
-        console.log(`RPC response (${method}): `, res.data.result);
+        // TODO: Remove or uncomment to see rpc response
+        // console.log(`RPC response (${method}): `, res.data.result);
         resolve(res.data.result);
       })
       .catch((err) => {
-        console.error('RPC error: ', err);
+        // TODO: Remove or uncomment to see rpc error message
+        // console.error('RPC error: ', err);
         reject(err.response.data.error.message);
       });
   });
