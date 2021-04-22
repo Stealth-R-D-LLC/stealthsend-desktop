@@ -40,6 +40,7 @@ import CryptoService from '@/services/crypto';
 import globalState from '@/store/global';
 import useCoinControl from '@/composables/useCoinControl';
 import useTransactionBuilder from '@/composables/useTransactionBuilder';
+// import useFeeEstimator from '@/composables/useFeeEstimator';
 
 export default {
   setup() {
