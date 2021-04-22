@@ -1,11 +1,10 @@
 Build Linux:
   image: nexus.barrage.net:13455/barrage-internal/electronjs-builder
   script:
-    - pwd
-    - npm config ls -l
-    - cp /project/.npmrc .npmrc
-    - npm ci
-    - npx vue-cli-service electron:build --linux
+    - cp -R ./ /project
+    - cd /project
+    - npm install --only=prod --no-package-lock
+    - npm run electron:build --linux
   tags:
     - docker-executor
   artifacts:
@@ -16,8 +15,10 @@ Build Linux:
 Build MacOS:
   script:
     - source ~/.zshrc
-    - npm ci
-    - npx vue-cli-service electron:build --mac
+    - cp -R ./ /Users/barrage/projects/vue-electronjs
+    - cd /Users/barrage/projects/vue-electronjs
+    - npm install --only=prod --no-package-lock
+    - npm run electron:build --mac
   tags:
     - macos-electronjs
   artifacts:
