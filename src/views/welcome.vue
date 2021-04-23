@@ -101,7 +101,6 @@ export default {
 
       CryptoService.seed = bytes.toString('hex');
       CryptoService.master = master;
-      console.log('--', master);
 
       CryptoService.storeWalletInDb(password.value);
       setTimeout(() => {
@@ -111,6 +110,7 @@ export default {
     }
 
     const importWallet = ref(false);
+    // 800000000000000000000000000000000000000000000000000000000000000001014671FC3F
     const wif = ref('KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU73sVHnoWn');
     const imported = ref({});
     async function importWalletFromWif() {
@@ -146,9 +146,6 @@ export default {
       globalState.startGlobalLoading();
       created.value = await CryptoService.generateMnemonicAndSeed();
       await CryptoService.storeWalletInDb(password.value);
-      // setTimeout(async () => {
-      //   await generateAccount();
-      // }, 100);
       globalState.stopGlobalLoading();
     }
 

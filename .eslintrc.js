@@ -9,7 +9,7 @@ module.exports = {
     // 'plugin:vue/vue3-recommended',
     // // 'eslint:recommended',
     // 'prettier/vue',
-    // 
+    //
     'eslint:recommended',
     'plugin:vue/vue3-recommended',
     'prettier',
