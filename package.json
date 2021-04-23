@@ -1,7 +1,9 @@
 {
   "name": "stealth-desktop-app",
+  "author": "Stealth R&D LLC",
   "license": "UNLICENSED",
   "description": "Stealth Desktop",
+  "homepage": "https://stealth.org",
   "version": "0.1.1",
   "private": true,
   "scripts": {
@@ -63,32 +65,5 @@
     "husky": "^6.0.0",
     "prettier": "^2.0.4",
     "vue-cli-plugin-electron-builder": "~2.0.0-rc.6"
-  },
-  "config": {
-    "forge": {
-      "packagerConfig": {},
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "stealth_desktop_app"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ]
-    }
   }
 }

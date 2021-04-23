@@ -39,10 +39,7 @@ export default {
         acc.path
       );
       const discoveredAddresses = await CryptoService.accountDiscovery(account);
-      console.log('>>>>>discoveredAddresses<<<<<', discoveredAddresses);
       let nextFreeAddress = CryptoService.nextToUse(discoveredAddresses.freeAddresses);
-      
-      console.log('>>>>>>nextFreeAddress<<<<<<', nextFreeAddress);
       const next = CryptoService.breakAccountPath(nextFreeAddress);
       
       const child = CryptoService.getChildFromRoot(
@@ -50,9 +47,6 @@ export default {
         change,
         next.address,
       );
-      // TODO: Remove later, here to track external and change address chains
-      console.log(`^^^^ RECEIVING external address chain ${child.address}`);
-      console.log(`∆∆∆∆ RECEIVING change address chain ${CryptoService.getChildFromRoot(account, change + 1, next.address).address}`);
       depositAddress.value = child.address;
       var qr = new VanillaQR({
         url: depositAddress.value,

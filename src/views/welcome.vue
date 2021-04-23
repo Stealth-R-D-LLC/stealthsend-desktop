@@ -101,7 +101,6 @@ export default {
 
       CryptoService.seed = bytes.toString('hex');
       CryptoService.master = master;
-      console.log('--', master);
 
       CryptoService.storeWalletInDb(password.value);
       setTimeout(() => {
@@ -146,13 +145,7 @@ export default {
       // therefore, new password can be made
       globalState.startGlobalLoading();
       created.value = await CryptoService.generateMnemonicAndSeed();
-      console.log(
-        '5) welcome.vue createNewWallet created.value',
-        created.value
-      );
-      console.log('6) Prepare to store wallet in DB...');
       await CryptoService.storeWalletInDb(password.value);
-      console.log('Stored wallet in db');
       globalState.stopGlobalLoading();
     }
 

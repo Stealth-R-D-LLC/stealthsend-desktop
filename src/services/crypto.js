@@ -34,7 +34,6 @@ import db from '../db';
 const CryptoService = {
   constraints: {
     XST_USD: 0.17401,
-    FEE: 0.01,
     MINIMAL_CHANGE: 0,
   },
   isFirstArrival: true,
@@ -77,7 +76,7 @@ const CryptoService = {
     // that's why we are converting the seed from string -> uint8array -> buffer
     // console.log('hash', hash);
     // console.log('wall', this.hexToArray(this.AESDecrypt(wallet[0].seed, hash).toString(cryptoJs.enc.Utf8)));
-    // // console.log('dec', cryptoJs.AES.decrypt(wallet[0].seed, hash));
+    // console.log('dec', cryptoJs.AES.decrypt(wallet[0].seed, hash));
     // console.log('deccc', this.AESDecrypt(wallet[0].seed, hash));
     // master key
     this.master = await bip32.fromSeed(
@@ -110,17 +109,8 @@ const CryptoService = {
       // Everything else in the HD wallet is deterministically derived from this root seed,
       // which makes it possible to re-create the entire HD wallet from that seed in any compatible HD wallet
       const mnemonic = await bip39.generateMnemonic();
-      console.log('Create new wallet\n');
-      console.log('1) prepare mnemonic, mnemonic', mnemonic);
       const seed = await bip39.mnemonicToSeedSync(mnemonic); // recovery seed of the master bip32 seed.?
-      console.log('2) calculate seed from mnemonic, seed', seed);
-      console.log(
-        '2b) seed from mnemonic in hex, seed (hex)',
-        seed.toString('hex')
-      );
-      console.log('3) network used, this.network', this.network);
       const master = await bip32.fromSeed(seed, this.network); // aka. root
-      console.log('4) master derived from seed, master', master);
       this.master = master;
       this.seed = seed;
       // console.log('mnemonic: ', this.mnemonic)
@@ -145,21 +135,24 @@ const CryptoService = {
     };
   },
   getChildFromRoot(account, change, address) {
-    // child === keypair
-    // console.log('getChildFromRoot', account, change, address);
-    const child = this.master.derivePath(
+    // With non-hardened keys, you can prove a child public key is linked to a parent public key
+    // using just the public keys.
+    // You can also derive public child keys from a public parent key,
+    // which enables watch-only wallets.
+    // With hardened child keys, you cannot prove that a child public key is linked to a parent public key.
+    const keypair = this.master.derivePath(
       `m/44'/1'/${account}'/${change}/${address}`
     );
     let acc = this.master.derivePath(`m/44'/1'/${account}'`);
     // this.WIFtoPK(child.toWIF()) // decrypt
     return {
       address: bitcoin.payments.p2pkh({
-        pubkey: child.publicKey,
+        pubkey: keypair.publicKey,
         network: this.network,
       }).address,
-      keyPair: child,
+      keyPair: keypair,
       pk: String(acc.neutered().toBase58()),
-      wif: child.toWIF(),
+      wif: keypair.toWIF(),
       // sk: child.privateKey,
       path: `${account}'/${change}/${address}`,
     };
@@ -241,23 +234,18 @@ const CryptoService = {
     return hash === wallet[0].password;
   },
   async hashPassword(password) {
-    console.log('8) creating password hash from provided password');
     let wallet = await this.getWalletFromDb();
     let salt = null;
     if (wallet.length > 0) {
       // console.log('ima vec salt ', wallet[0].salt);
       salt = wallet[0].salt;
     } else {
-      console.log('8a) no wallet, then create salt');
       salt = cryptoJs.lib.WordArray.random(128 / 8);
-      console.log('8b) created hash salt, salt:', salt);
     }
-    console.log('9) ...now we have salt, create hash via PBKDF2...');
     const hash = cryptoJs.PBKDF2(password, salt, {
       keySize: 512 / 32,
       iterations: 1000,
     });
-    console.log('10) created hash, hash', hash);
     // console.log('passses', {
     //   storedPassword: wallet[0].password,
     //   hash: hash,
@@ -270,11 +258,7 @@ const CryptoService = {
     };
   },
   async storeWalletInDb(password) {
-    console.log('7) storing wallet in db...');
-    // console.log('store wallet in db', password);
     let { hash, salt } = await this.hashPassword(password);
-    console.log('11) created hash', hash);
-    console.log('12) created salt', salt);
     return new Promise((resolve) => {
       // user security is ultimately dependent on a password,
       // and because a password usually can't be used directly as a cryptographic key,
@@ -303,12 +287,7 @@ const CryptoService = {
       //   this.seed.toString('hex'),
       //   hash
       // )
-      console.log('13) encrypting seed with hash...');
       const encryptedSeed = this.AESEncrypt(this.seed.toString('hex'), hash);
-      console.log(
-        '14) just encrypted, encryptedSeed: ',
-        encryptedSeed.toString()
-      );
       // console.log('seed', this.seed);
       // console.log('seed hex', this.seed.toString('hex'));
       // console.log('pokusaj smrti', this.hexToArray(this.seed.toString('hex')));
@@ -323,15 +302,10 @@ const CryptoService = {
         password: hash.toString(cryptoJs.enc.Hex),
         salt: salt,
       };
-      console.log(
-        '15) the wallet just to be saved in the db',
-        JSON.stringify(wallet)
-      );
 
       db.insert(wallet, () => {
         console.log('wallet stored in db: ', wallet);
       });
-      console.log('16) wallet saved in the db');
 
       resolve(wallet);
     });
@@ -360,7 +334,6 @@ const CryptoService = {
         break;
       }
     }
-    console.log('@@@@freeAddresses@@@@', freeAddresses);
     return {
       freeAddresses,
     };
@@ -406,10 +379,9 @@ const CryptoService = {
           });
         }
         newAccounts.push({
-          utxo: Number(accUtxo),
           ...account,
+          utxo: Number(accUtxo),
         });
-        // account['utxo'] = accUtxo
         // When a user looks at their wallet, the software aggregates the sum of value of all their
         // UTXOs and presents it to them as their "balance".
         // Bitcoin doesn’t know balances associated with an account or username as they appear in banking.
