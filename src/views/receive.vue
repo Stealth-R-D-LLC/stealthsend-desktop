@@ -34,8 +34,7 @@ export default {
     const depositAddress = ref('');
     const qrSrc = ref('');
     async function changeAccount(acc) {
-      // eslint-disable-next-line no-unused-vars
-      const { account, change, address } = CryptoService.breakAccountPath(
+      const { account, change } = CryptoService.breakAccountPath(
         acc.path
       );
       const discoveredAddresses = await CryptoService.accountDiscovery(account);
