@@ -88,7 +88,6 @@ export default {
         wif: wif,
         path: path,
       };
-      console.log('account:::::::', account);
 
       CryptoService.storeAccountInDb(account);
       globalState.stopGlobalLoading();

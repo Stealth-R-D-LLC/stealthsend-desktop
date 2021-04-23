@@ -9,7 +9,7 @@ module.exports = {
     // 'plugin:vue/vue3-recommended',
     // // 'eslint:recommended',
     // 'prettier/vue',
-    // 
+    //
     'eslint:recommended',
     'plugin:vue/vue3-recommended',
     'prettier',
@@ -23,7 +23,7 @@ module.exports = {
   // },
   // add your custom rules here
   rules: {
-    'no-console': process.env.NODE_ENV === 'production' ? 'warning' : 'off',
+    'no-console': 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
   },
 }
