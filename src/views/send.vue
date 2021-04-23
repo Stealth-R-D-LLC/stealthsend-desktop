@@ -57,7 +57,7 @@ export default {
       accounts.value = await CryptoService.getAccounts();
     }
     getAccounts();
-
+    
     async function getUnspentOutputs() {
       const outputs = await globalState.rpc('getaddressoutputs', [
         sendForm.account.address,
@@ -67,7 +67,7 @@ export default {
 
       unspentOutputs = outputs.filter((el) => el.isspent === 'false');
 
-      console.log('unspent: ', unspentOutputs);
+      console.log('unspent: ', unspentOutputs.length);
     }
 
     function coinSelection() {
