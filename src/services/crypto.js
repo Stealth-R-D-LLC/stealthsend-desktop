@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import router from '@/router';
 import globalState from '@/store/global';
 import * as bip32 from 'bip32';
@@ -311,17 +310,43 @@ const CryptoService = {
     });
   },
   async accountDiscovery(n = 0) {
+    // console.log('start account discovery');
+    //  Address gap limit is currently set  to 20. If the software hits 20 unused addresses in a row,
+    // it expects there are no used addresses beyond this point and stops searching the address chain.
+    // We scan just the external chains, because internal chains receive only coins that come from the associated external chains.
     const GAP_LIMIT = 20;
+
     let emptyInARow = 0;
     let freeAddresses = [];
     for (let i = 0; i < GAP_LIMIT; i++) {
+      // derive the first account's node (index = 0)
+      // derive the external chain node of this account
       const acc = this.getChildFromRoot(n, 0, i);
+      // console.log('acc.address', acc.address);
+      // scan addresses of the external chain; respect the gap limit described below
+      // const hdAccount = await globalState.rpc('gethdaccount', [acc.pk])
+      // console.log('hdacc', hdAccount);
       const outputs = await globalState.rpc('getaddressoutputs', [
         acc.address,
         1,
         1,
       ]);
       if (outputs.length > 0) {
+        console.log('discovered account: ', acc.path);
+        // save account in db?
+        // this.storeAccountInDb({
+        //   address: acc.address,
+        //   path: acc.path,
+        //   pk: acc.pk,
+        //   name: 'account',
+        //   label: 'Account ' + i + 1,
+        //   isArchived: false,
+        //   utxo: 0,
+        //   asset: 'XST'
+        // })
+        // get account balance
+        // if there are some transactions, increase the account index and go to step 1
+        // this.accountDiscovery(n+1)
         emptyInARow = 0;
         continue;
       }
@@ -330,10 +355,9 @@ const CryptoService = {
       freeAddresses.push(acc.path);
 
       // If the software hits 20 unused addresses in a row, it expects there are no used addresses beyond this point and stops searching the address chain
-      if (emptyInARow >= 20) {
-        break;
-      }
+      if (emptyInARow >= 20) break;
     }
+    // Return free account addresses to the calling code
     return {
       freeAddresses,
     };
