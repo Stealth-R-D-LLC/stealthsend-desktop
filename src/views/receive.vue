@@ -33,15 +33,18 @@ export default {
 
     const depositAddress = ref('');
     const qrSrc = ref('');
-    function changeAccount(acc) {
-      const { account, change, address } = CryptoService.breakAccountPath(
+    async function changeAccount(acc) {
+      const { account, change } = CryptoService.breakAccountPath(
         acc.path
       );
-      CryptoService.accountDiscovery(account);
+      const discoveredAddresses = await CryptoService.accountDiscovery(account);
+      let nextFreeAddress = CryptoService.nextToUse(discoveredAddresses.freeAddresses);
+      const next = CryptoService.breakAccountPath(nextFreeAddress);
+      
       const child = CryptoService.getChildFromRoot(
         account,
         change,
-        address + 5
+        next.address,
       );
       depositAddress.value = child.address;
       var qr = new VanillaQR({
@@ -57,7 +60,7 @@ export default {
       changeAccount,
       qrSrc,
     };
-  },
+  }
 };
 </script>
 

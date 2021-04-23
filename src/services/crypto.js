@@ -39,8 +39,8 @@ const CryptoService = {
   network: {
     messagePrefix: 'unused',
     bip32: {
-      public: 0x043587cf,
-      private: 0x04358394,
+      public: 0x043587cf, // testnet XPUB
+      private: 0x04358394, // testbet XPRV
     },
     pubKeyHash: 0x6f,
     scriptHash: 0xc4,
@@ -49,6 +49,7 @@ const CryptoService = {
   master: null,
   seed: null,
   // password: '',
+
   async init() {
     // check if there's already a wallet stored in the db
     // if so, ask for password via lock screen and
@@ -74,8 +75,9 @@ const CryptoService = {
     // that's why we are converting the seed from string -> uint8array -> buffer
     // console.log('hash', hash);
     // console.log('wall', this.hexToArray(this.AESDecrypt(wallet[0].seed, hash).toString(cryptoJs.enc.Utf8)));
-    // // console.log('dec', cryptoJs.AES.decrypt(wallet[0].seed, hash));
+    // console.log('dec', cryptoJs.AES.decrypt(wallet[0].seed, hash));
     // console.log('deccc', this.AESDecrypt(wallet[0].seed, hash));
+    // master key
     this.master = await bip32.fromSeed(
       Buffer.from(
         this.hexToArray(
@@ -84,7 +86,6 @@ const CryptoService = {
       ),
       this.network
     );
-    // console.log('master!', this.master);
     router.push('/dashboard');
     // this.accountDiscovery()
   },
@@ -238,7 +239,6 @@ const CryptoService = {
       // console.log('ima vec salt ', wallet[0].salt);
       salt = wallet[0].salt;
     } else {
-      // console.log('novi salt');
       salt = cryptoJs.lib.WordArray.random(128 / 8);
     }
     const hash = cryptoJs.PBKDF2(password, salt, {
@@ -257,7 +257,6 @@ const CryptoService = {
     };
   },
   async storeWalletInDb(password) {
-    // console.log('store wallet in db', password);
     let { hash, salt } = await this.hashPassword(password);
     return new Promise((resolve) => {
       // user security is ultimately dependent on a password,
@@ -288,7 +287,6 @@ const CryptoService = {
       //   hash
       // )
       const encryptedSeed = this.AESEncrypt(this.seed.toString('hex'), hash);
-      // console.log('just encrypted: ', encryptedSeed.toString());
       // console.log('seed', this.seed);
       // console.log('seed hex', this.seed.toString('hex'));
       // console.log('pokusaj smrti', this.hexToArray(this.seed.toString('hex')));
@@ -319,6 +317,7 @@ const CryptoService = {
     const GAP_LIMIT = 20;
 
     let emptyInARow = 0;
+    let freeAddresses = [];
     for (let i = 0; i < GAP_LIMIT; i++) {
       // derive the first account's node (index = 0)
       // derive the external chain node of this account
@@ -327,12 +326,12 @@ const CryptoService = {
       // scan addresses of the external chain; respect the gap limit described below
       // const hdAccount = await globalState.rpc('gethdaccount', [acc.pk])
       // console.log('hdacc', hdAccount);
-      const inputs = await globalState.rpc('getaddressoutputs', [
+      const outputs = await globalState.rpc('getaddressoutputs', [
         acc.address,
         1,
-        10,
+        1,
       ]);
-      if (inputs.length > 0) {
+      if (outputs.length > 0) {
         console.log('discovered account: ', acc.path);
         // save account in db?
         // this.storeAccountInDb({
@@ -353,12 +352,19 @@ const CryptoService = {
       }
       // if there are no transactions, increment counter and go to next address
       emptyInARow += 1;
+      freeAddresses.push(acc.path);
 
       // If the software hits 20 unused addresses in a row, it expects there are no used addresses beyond this point and stops searching the address chain
       if (emptyInARow >= 20) break;
     }
+    // Return free account addresses to the calling code
+    return {
+      freeAddresses,
+    };
     // grace concert hunt glide million orange enact habit amazing deal object nurse
   },
+
+
   AESEncrypt(payload, key = '123456789') {
     let encJson = cryptoJs.AES.encrypt(JSON.stringify(payload), key).toString();
     let encData = cryptoJs.enc.Base64.stringify(
@@ -412,6 +418,17 @@ const CryptoService = {
         accounts: newAccounts,
       });
     });
+  },
+  nextToUse(freeAddresses) {
+    for (let i = 0; i < freeAddresses.length; i++) {
+      if (parseInt(freeAddresses[i + 1].split('/')[2]) - parseInt(freeAddresses[i].split('/')[2]) === 1) {
+        if (i === 0) {
+          return freeAddresses[i];
+        } else {
+          return freeAddresses[i - 1];
+        }
+      }
+    }
   },
 };
 
