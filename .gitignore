@@ -5,7 +5,7 @@ build
 *.local
 yarn-error.log
 .vscode
-.idea/
+.idea
 
 #Electron-builder output
 /dist_electron
