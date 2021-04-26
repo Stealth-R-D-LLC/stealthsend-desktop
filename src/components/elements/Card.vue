@@ -18,11 +18,11 @@
     ></a>
     <div class="st-card__row">
       <span class="item title">{{ account.label }}</span>
-      <!-- <span class="itemu type">{{ account.isArchived  }}</span> -->
+      <span class="itemu type"><span class="bold">XST</span>/USD</span>
     </div>
     <div class="st-card__row">
-      <span class="item amount">{{ account.utxo }} XST</span>
-      <span class="item fiat">{{ amountInFiat }} EUR</span>
+      <span class="item amount">{{ account.utxo }}</span>
+      <span class="item fiat">${{ amountInFiat }}</span>
     </div>
   </div>
 </template>
@@ -33,6 +33,16 @@ const XST_USD = 0.226338; // hardcoded obviously
 export default {
   name: 'StCard',
   props: {
+    type: {
+      type: Number,
+      required: false,
+      default: () => {
+        return 0
+      },
+      validator: (value) => {
+        return [0,1,2].includes(value)
+      }
+    },
     unarchiveable: {
       type: Boolean,
       required: false,
@@ -103,6 +113,11 @@ export default {
   font-weight: 600;
   line-height: 24px;
   letter-spacing: 0.32px;
+
+      width: 50%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .st-card .item.type {
   font-size: 16px;

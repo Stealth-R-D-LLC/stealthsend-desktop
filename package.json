@@ -36,7 +36,7 @@
     "electron-squirrel-startup": "^1.0.0",
     "mathjs": "^9.3.1",
     "nedb-promise": "^2.0.1",
-    "stealth-kit": "^0.1.13",
+    "stealth-kit": "^0.1.17",
     "vanillaqr": "^1.0.0",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0"
