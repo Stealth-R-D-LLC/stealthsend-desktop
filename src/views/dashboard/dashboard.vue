@@ -36,7 +36,7 @@ export default {
     Side,
   },
   setup() {
-    console.log('Init crypto service!')
+    console.log('Init crypto service!');
     const accounts = ref([]);
     async function getAccounts() {
       accounts.value = await CryptoService.getAccounts();

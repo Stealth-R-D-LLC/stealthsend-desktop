@@ -15,7 +15,7 @@ export default {
 </script>
 
 <style scoped>
- .default-layout__header {
-   border-bottom: 1px solid var(--grey100);
- }
+.default-layout__header {
+  border-bottom: 1px solid var(--grey100);
+}
 </style>
