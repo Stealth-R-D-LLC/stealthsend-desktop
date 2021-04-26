@@ -45,9 +45,7 @@
     </p>
     <div class="st-switcher__details">
       <span class="amount-fiat">${{ amountFiat }}</span>
-      <StTag>
-+123.99%
-      </StTag>
+      <StTag> +123.99% </StTag>
     </div>
   </div>
 </template>
@@ -91,7 +89,7 @@ export default {
 
     function changeStep(i) {
       step.value = i;
-      ctx.emit('change', i)
+      ctx.emit('change', i);
     }
     return {
       step,

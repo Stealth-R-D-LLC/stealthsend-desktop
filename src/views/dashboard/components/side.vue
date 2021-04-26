@@ -51,9 +51,9 @@ export default {
       CryptoService.archiveAccount(account);
     };
 
-    const step = ref(0)
+    const step = ref(0);
     function switcherChange(value) {
-        step.value = value
+      step.value = value;
     }
 
     return {
@@ -61,7 +61,7 @@ export default {
       accounts,
       archiveAccount,
       switcherChange,
-      step
+      step,
     };
   },
 };
@@ -71,5 +71,9 @@ export default {
 .side {
   padding: 32px 24px;
   background: var(--background100);
+}
+
+.side__accounts {
+    margin: 8px 0;
 }
 </style>
