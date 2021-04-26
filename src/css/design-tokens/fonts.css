@@ -1,7 +1,45 @@
 /* fonts  */
 
+@font-face {
+  font-family: 'Source Sans Pro';
+  font-display: swap;
+  src: local('NotoSourceSansProSans'), local('SourceSansPro'),
+    url('./fonts/SourceSansPro/SourceSansPro-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Source Sans Pro';
+  font-display: swap;
+  src: local('NotoSans'), local('NotoSans'),
+    url('./fonts/SourceSansPro/SourceSansPro-Bold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-display: swap;
+  src: local('NotoSans'), local('NotoSans'),
+    url('./fonts/NotoSans/NotoSans-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-display: swap;
+  src: local('NotoSans'), local('NotoSans'),
+    url('./fonts/NotoSans/NotoSans-Bold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+
 :root {
   --primary-font: 'Source Sans Pro', Sans-serif;
+  --secondary-font: 'Noto Sans', Sans-serif;
 }
 
 html,

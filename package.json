@@ -8,6 +8,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
+    "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint --ext .js,.vue src",
@@ -37,7 +38,7 @@
     "electron-squirrel-startup": "^1.0.0",
     "mathjs": "^9.3.1",
     "nedb-promise": "^2.0.1",
-    "stealth-kit": "^0.1.13",
+    "stealth-kit": "^0.1.18",
     "vanillaqr": "^1.0.0",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0"

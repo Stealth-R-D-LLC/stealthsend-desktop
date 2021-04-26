@@ -3,7 +3,6 @@
     <MenuBar></MenuBar>
     <main class="default-layout__main">
       <router-view v-slot="{ Component }">
-        <TopBar></TopBar>
         <!-- <transition name="fade" mode="out-in"> -->
         <component :is="Component" />
         <!-- </transition> -->
