@@ -72,7 +72,8 @@ export default {
 <style lang="postcss" scoped>
 .st-card {
   padding: 12px 16px;
-  min-width: 320px;
+  /* min-width: 320px; */
+  width: 100%;
   height: 80px;
   background: white;
   border: 1px solid #eeeff9;
@@ -81,16 +82,14 @@ export default {
   justify-content: space-between;
   box-sizing: border-box;
   box-shadow: 9px 10px 16px rgba(34, 3, 101, 0.1);
-  margin: 10px;
+  margin: 10px 0;
   position: relative;
+  cursor: pointer;
 }
 
 .st-card:hover {
   transition: all 0.2s ease-out;
-  /* box-shadow: 0px 4px 8px rgba(38, 38, 38, 0.2);
-    top: -4px;
-    border: 1px solid #cccccc; */
-  background-color: var(--mint50);
+  background-color: var(--purple50);
 }
 
 .st-card__row {
