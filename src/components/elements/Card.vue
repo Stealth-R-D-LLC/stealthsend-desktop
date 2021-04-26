@@ -37,11 +37,11 @@ export default {
       type: Number,
       required: false,
       default: () => {
-        return 0
+        return 0;
       },
       validator: (value) => {
-        return [0,1,2].includes(value)
-      }
+        return [0, 1, 2].includes(value);
+      },
     },
     unarchiveable: {
       type: Boolean,
@@ -114,10 +114,10 @@ export default {
   line-height: 24px;
   letter-spacing: 0.32px;
 
-      width: 50%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  width: 50%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .st-card .item.type {
   font-size: 16px;

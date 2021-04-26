@@ -13,8 +13,8 @@ import {
   StRadio,
   StStatus,
   StTable,
-
-  StTag, StTooltip
+  StTag,
+  StTooltip,
 } from 'stealth-kit';
 import { createApp } from 'vue';
 import App from './App.vue';
