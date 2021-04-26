@@ -150,21 +150,21 @@
 // import StCopyToClipboard from '@/components/kit/StClipboard.vue'
 // import StTooltip from '@/components/kit/StTooltip.vue'
 // import StLoading from '@/components/kit/StLoading.vue'
-import StSwitcher from '@/components/elements/StSwitcher.vue'
+import StSwitcher from '@/components/elements/StSwitcher.vue';
 
 import { ref } from 'vue';
 
 export default {
   components: {
-    StSwitcher
-  //   StModal,
-  //   StTable,
-  //   StStatus,
-  //   StPagination,
-  //   StDropdown,
-  //   StCopyToClipboard,
-  //   StTooltip,
-  //   StLoading,
+    StSwitcher,
+    //   StModal,
+    //   StTable,
+    //   StStatus,
+    //   StPagination,
+    //   StDropdown,
+    //   StCopyToClipboard,
+    //   StTooltip,
+    //   StLoading,
   },
   setup() {
     const tableData = ref([

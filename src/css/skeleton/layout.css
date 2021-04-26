@@ -26,9 +26,11 @@
   /* background-color: #220365; */
   flex: 1;
   overflow: auto;
-  padding: 0 12px;
+  /* padding: 0 12px; */
   position: relative;
   margin-left: 75px; /*for fixed sidebar */
+  display: grid;
+  grid-template-columns: 392px 11fr;
 }
 
 .default-layout__main .triangle {
