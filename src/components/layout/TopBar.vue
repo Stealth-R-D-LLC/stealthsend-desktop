@@ -1,5 +1,7 @@
 <template>
-  <header class="default-layout__header"></header>
+  <header class="default-layout__header">
+    ovdje ide header koji nema smisla
+  </header>
 </template>
 
 <script>
@@ -11,3 +13,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+ .default-layout__header {
+   border-bottom: 1px solid var(--grey100);
+ }
+</style>

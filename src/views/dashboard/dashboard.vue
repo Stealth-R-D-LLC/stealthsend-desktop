@@ -1,21 +1,9 @@
 <template>
-  <div class="dashbaord-container">
+  <Side></Side>
+  <div class="dashboard-container">
+    <TopBar></TopBar>
     Sum of all UTXO: {{ utxo }} XST
-    <transition-group v-if="accounts.length !== 0" name="list" tag="div">
-      <Card
-        v-for="account in accounts"
-        :key="account"
-        class="list-item"
-        :account="account"
-        @click="openAccountDetails"
-        @archived="archiveAccount"
-      >
-        <!-- <template #title>{{ account.label }}</template> -->
-        <!-- <template #type>{{ !account.isArchived ? 'Active' : 'Archived' }}</template> -->
-        <!-- <template #amount-crypto>{{ account.balance }}</template> -->
-      </Card>
-    </transition-group>
-    <p v-else>You don't have any accounts in your wallet.</p>
+    <!-- <p v-else>You don't have any accounts in your wallet.</p> -->
     <StTable
       :data="txs"
       :columns="[
@@ -36,22 +24,24 @@
 
 <script>
 import { ref } from 'vue';
-import globalState from '@/store/global';
-import Card from '@/components/elements/Card';
-import CryptoService from '../services/crypto';
-import router from '../router';
+// import globalState from '@/store/global';
+import TopBar from '@/components/layout/TopBar.vue';
+import Side from './components/side';
+import CryptoService from '@/services/crypto';
+import router from '@/router';
 export default {
   name: 'StDahboard',
   components: {
-    Card,
+    TopBar,
+    Side,
   },
   setup() {
-    // console.log('Init crypto service!')
+    console.log('Init crypto service!')
     const accounts = ref([]);
-    // async function getAccounts() {
-    //   accounts.value = await CryptoService.getAccounts();
-    // }
-    // getAccounts();
+    async function getAccounts() {
+      accounts.value = await CryptoService.getAccounts();
+    }
+    getAccounts();
 
     const utxo = ref(0);
     const txs = ref([]);
@@ -68,10 +58,10 @@ export default {
     //   return globalState.state.accounts.filter((el) => !el.isArchived)
     // })
 
-    const openAccountDetails = (account) => {
-      globalState.setAccountDetails(account);
-      router.push('/account/details');
-    };
+    // const openAccountDetails = (account) => {
+    //   globalState.setAccountDetails(account);
+    //   router.push('/account/details');
+    // };
 
     function openTransaction(trx) {
       console.log('trx', trx);
@@ -82,8 +72,8 @@ export default {
       CryptoService.archiveAccount(account);
     };
     return {
-      openAccountDetails,
-      accounts,
+      // openAccountDetails,
+      // accounts,
       archiveAccount,
 
       utxo,
@@ -102,5 +92,8 @@ export default {
 .expense {
   font-weight: bold;
   color: var(--success);
+}
+.dashboard-container {
+  padding: 24px;
 }
 </style>

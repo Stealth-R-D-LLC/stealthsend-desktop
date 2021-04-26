@@ -13,6 +13,7 @@ import {
   StRadio,
   StStatus,
   StTable,
+  StTag,
   StTooltip,
 } from 'stealth-kit';
 import { createApp } from 'vue';
@@ -39,6 +40,7 @@ app.component('StStatus', StStatus);
 app.component('StDropdown', StDropdown);
 app.component('StLoading', StLoading);
 app.component('StCard', StCard);
+app.component('StTag', StTag);
 // end global components
 
 // register all directives

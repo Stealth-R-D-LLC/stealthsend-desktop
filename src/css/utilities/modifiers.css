@@ -1,3 +1,7 @@
 .noscroll {
       overflow: hidden;
 }
+
+.bold {
+      font-weight: 600;
+    }
