@@ -74,6 +74,6 @@ export default {
 }
 
 .side__accounts {
-    margin: 8px 0;
+  margin: 8px 0;
 }
 </style>
