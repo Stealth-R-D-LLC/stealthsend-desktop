@@ -30,7 +30,7 @@ import CryptoService from '@/services/crypto';
 export default {
   name: 'StDahboard',
   components: {
-    Side
+    Side,
   },
   setup() {
     // console.log('Init crypto service!')

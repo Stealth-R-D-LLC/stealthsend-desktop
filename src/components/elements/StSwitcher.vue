@@ -44,15 +44,17 @@
       {{ isHidden ? '*****' : steps[step].amount }}
     </p>
     <div class="st-switcher__details">
-        <span class="amount-fiat">${{amountFiat}}</span>
-        <span class="amount-delta">+123.99%</span>
+      <span class="amount-fiat">${{ amountFiat }}</span>
+      <StTag>
++123.99%
+      </StTag>
     </div>
   </div>
 </template>
 
 <script>
 import { ref, computed } from 'vue';
-import CryptoService from '@/services/crypto'
+import CryptoService from '@/services/crypto';
 export default {
   name: 'StSwitcher',
   props: {
@@ -64,7 +66,8 @@ export default {
       },
     },
   },
-  setup(props) {
+  emits: ['change'],
+  setup(props, ctx) {
     const step = ref(0);
     const isHidden = ref(false);
     const steps = ref([
@@ -83,18 +86,19 @@ export default {
     ]);
 
     const amountFiat = computed(() => {
-        return props.amount * CryptoService.constraints.XST_USD
-    })
- 
+      return props.amount * CryptoService.constraints.XST_USD;
+    });
+
     function changeStep(i) {
       step.value = i;
+      ctx.emit('change', i)
     }
     return {
       step,
       steps,
       changeStep,
       isHidden,
-      amountFiat
+      amountFiat,
     };
   },
 };
@@ -102,7 +106,7 @@ export default {
 
 <style scoped>
 .st-switcher {
-    border-bottom: 1px solid var(--grey100);
+  border-bottom: 1px solid var(--grey100);
 }
 
 .st-switcher__asset {
@@ -119,7 +123,7 @@ export default {
   flex-direction: row;
   justify-content: space-between;
   margin: 16px 0;
-width: 220px;
+  width: 220px;
 }
 
 .step {
@@ -136,20 +140,20 @@ width: 220px;
 }
 
 .st-switcher__details {
-    display: flex;
-    justify-content: space-between;
-    padding: 16px 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 0;
 
-    font-family: Noto Sans;
-font-style: normal;
-font-weight: normal;
-font-size: 16px;
-line-height: 24px;
-letter-spacing: 0.12px;
+  font-family: Noto Sans;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.12px;
 
-/* Text colors / Text dark */
+  /* Text colors / Text dark */
 
-color: #1C1A1C;
+  color: #1c1a1c;
 }
 
 .step--active {
