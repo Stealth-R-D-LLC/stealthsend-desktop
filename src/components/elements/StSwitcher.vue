@@ -32,19 +32,22 @@
       </svg>
     </p>
     <div class="st-switcher__steps">
-      <span
-        v-for="(s, index) in steps"
-        :key="index"
+      <div v-for="(s, index) in steps" :key="index"
         class="step"
         :class="{ 'step--active': step === index }"
         @click="changeStep(index)"
-      ></span>
+>
+      <span></span>
+
+      </div>
     </div>
     <p class="st-switcher__amount">
       {{ isHidden ? '*****' : steps[step].amountTop }}
     </p>
     <div class="st-switcher__details">
-      <span class="amount-fiat">{{ isHidden ? '*****' : steps[step].amountBottom }}</span>
+      <span class="amount-fiat">{{
+        isHidden ? '*****' : steps[step].amountBottom
+      }}</span>
       <StTag> {{ isHidden ? '*****' : steps[step].percentage }}% </StTag>
     </div>
   </div>
@@ -60,8 +63,8 @@ export default {
       type: Number,
       required: true,
       default: () => {
-        return 0
-      }
+        return 0;
+      },
     },
   },
   emits: ['change'],
@@ -75,22 +78,22 @@ export default {
           asset: 'XST',
           amountTop: `${props.amount}`,
           amountBottom: `$${props.amount * CryptoService.constraints.XST_USD}`,
-          percentage: `+100`
+          percentage: `+100`,
         },
         {
           asset: 'EUR',
           amountTop: `$${props.amount * CryptoService.constraints.XST_USD}`,
-          amountBottom: `${props.amount} XST` ,
-          percentage: `+90`
+          amountBottom: `${props.amount} XST`,
+          percentage: `+90`,
         },
         {
           asset: 'BTC',
-          amountTop: props.amount * CryptoService.constraints.XST_BTC, 
+          amountTop: props.amount * CryptoService.constraints.XST_BTC,
           amountBottom: `${props.amount} XST`,
-          percentage: `+22`
+          percentage: `+22`,
         },
-      ]
-    })
+      ];
+    });
 
     function changeStep(i) {
       step.value = i;
@@ -124,14 +127,20 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin: 16px 0;
   width: 220px;
 }
 
 .step {
+  cursor: pointer;
+  padding: 16px 0;
+}
+
+.step span {
+  display: block;
+  background-color: var(--grey100);
   height: 4px;
   width: 40px;
-  background-color: var(--grey100);
+  transition: 0.3s;
 }
 
 .st-switcher__amount {
@@ -145,20 +154,16 @@ export default {
   display: flex;
   justify-content: space-between;
   padding: 16px 0;
-
   font-family: Noto Sans;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
   line-height: 24px;
   letter-spacing: 0.12px;
-
-  /* Text colors / Text dark */
-
   color: #1c1a1c;
 }
 
-.step--active {
+.step--active span {
   background-color: var(--marine500);
   width: 100px;
 }

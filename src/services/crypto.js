@@ -365,7 +365,6 @@ const CryptoService = {
     // grace concert hunt glide million orange enact habit amazing deal object nurse
   },
 
-
   AESEncrypt(payload, key = '123456789') {
     let encJson = cryptoJs.AES.encrypt(JSON.stringify(payload), key).toString();
     let encData = cryptoJs.enc.Base64.stringify(
@@ -422,7 +421,11 @@ const CryptoService = {
   },
   nextToUse(freeAddresses) {
     for (let i = 0; i < freeAddresses.length; i++) {
-      if (parseInt(freeAddresses[i + 1].split('/')[2]) - parseInt(freeAddresses[i].split('/')[2]) === 1) {
+      if (
+        parseInt(freeAddresses[i + 1].split('/')[2]) -
+          parseInt(freeAddresses[i].split('/')[2]) ===
+        1
+      ) {
         if (i === 0) {
           return freeAddresses[i];
         } else {

@@ -4,10 +4,11 @@
     <div class="side__accounts">
       <Card
         v-for="account in accounts"
-        :key="account"
+        :key="account.address"
         class="list-item"
         :account="account"
         :type="step"
+        :rates="constraints"
         @click="openAccountDetails"
         @archived="archiveAccount"
       >
@@ -20,7 +21,7 @@
 import StSwitcher from '@/components/elements/StSwitcher.vue';
 import Card from '@/components/elements/Card';
 import CryptoService from '@/services/crypto';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import globalState from '@/store/global';
 import router from '@/router';
 
@@ -43,6 +44,11 @@ export default {
     }
     scanWallet();
 
+        const constraints = computed(() => {
+          if (!CryptoService.constraints) return null
+          return CryptoService.constraints
+        })
+
     const openAccountDetails = (account) => {
       globalState.setAccountDetails(account);
       router.push('/account/details');
@@ -62,7 +68,8 @@ export default {
       archiveAccount,
       switcherChange,
       step,
-      utxo
+      utxo,
+      constraints
     };
   },
 };
