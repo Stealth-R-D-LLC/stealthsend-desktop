@@ -2,32 +2,43 @@
   <Side></Side>
   <div class="dashboard-container">
     <TopBar></TopBar>
-    <template v-for="date in txDates"     :key="date">
+    <template v-for="date in txDates" :key="date">
       <p class="tx-date">
-        <span v-if="['TODAY', 'YESTERDAY'].includes(todayOrYesteday(date).toUpperCase())" class="relative">
+        <span
+          v-if="
+            ['TODAY', 'YESTERDAY'].includes(todayOrYesteday(date).toUpperCase())
+          "
+          class="relative"
+        >
           {{ todayOrYesteday(date) }},
         </span>
-       {{date}}
+        {{ date }}
       </p>
-    <StTable
-
-      :data="txs[date]"
-      :columns="[
-        { key: 'blocktime', title: 'Time' },
-        { key: 'account', title: 'Account' },
-        { key: 'amount', title: 'Amount' },
-      ]"
-      @rowClick="openTransaction"
-    >
-      <template #amount="{ item }">
-        <span :class="[item.amount > 0 ? 'expense' : 'income']">
-          {{ item.amount > 0 ? '+' : '-' }} {{ Math.abs(item.amount) }}
-        </span>
-      </template>
-      <template #blocktime="{ item }">
-        {{ formatBlocktime(item.blocktime) }}
-      </template>
-    </StTable>
+      <StTable
+        :data="txs[date]"
+        :has-header="false"
+        :columns="[
+          { key: 'blocktime', title: 'Time' },
+          { key: 'account', title: 'Account' },
+          { key: 'amount', title: 'Amount' },
+          { key: 'amountFiat', title: 'Amount (USD)' },
+        ]"
+        @rowClick="openTransaction"
+      >
+        <template #amount="{ item }">
+          <span :class="[item.amount > 0 ? 'expense' : 'income']">
+            {{ item.amount > 0 ? '+' : '-' }} {{ formatAmount(Math.abs(item.amount)) }} XST
+          </span>
+        </template>
+                <template #amountFiat="{ item }">
+          <span :class="[item.amount > 0 ? 'expense' : 'income']">
+            {{ item.amount > 0 ? '+' : '-' }} {{ formatAmount(Math.abs(item.amount * XST_USD_RATE), true) }} USD
+          </span>
+        </template>
+        <template #blocktime="{ item }">
+          {{ formatBlocktime(item.blocktime) }}
+        </template>
+      </StTable>
     </template>
   </div>
 </template>
@@ -39,8 +50,9 @@ import Side from './components/side';
 import CryptoService from '@/services/crypto';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import format from 'date-fns/format';
-import isToday from 'date-fns/isToday'
-import isYesterday from 'date-fns/isYesterday'
+import isToday from 'date-fns/isToday';
+import isYesterday from 'date-fns/isYesterday';
+import { round } from 'mathjs';
 
 
 import router from '@/router';
@@ -64,12 +76,17 @@ export default {
       const hdWallet = await CryptoService.scanWallet();
       console.log('scanned wallet: ', hdWallet);
       utxo.value = hdWallet.utxo;
-      const transactionsTmp = hdWallet.txs.map(el => {
-        const obj = Object.assign({}, el)
-        obj['blocktimeDate'] = format(fromUnixTime(el['blocktime']), 'd MMM, Y')
-        return obj
-      }).sort((a, b) => (a.blocktime < b.blocktime) ? 1 : -1);
-      txs.value = groupBy(transactionsTmp, 'blocktimeDate')
+      const transactionsTmp = hdWallet.txs
+        .map((el) => {
+          const obj = Object.assign({}, el);
+          obj['blocktimeDate'] = format(
+            fromUnixTime(el['blocktime']),
+            'd MMM, Y'
+          );
+          return obj;
+        })
+        .sort((a, b) => (a.blocktime < b.blocktime ? 1 : -1));
+      txs.value = groupBy(transactionsTmp, 'blocktimeDate');
       accounts.value = hdWallet.accounts;
     }
     scanWallet();
@@ -97,34 +114,49 @@ export default {
     };
 
     function todayOrYesteday(date) {
-      let relative = ''
-      if (isToday(new Date(date))) relative = 'Today'
-      if (isYesterday(new Date(date))) relative = 'Yesterday'
-      return relative
+      let relative = '';
+      if (isToday(new Date(date))) relative = 'Today';
+      if (isYesterday(new Date(date))) relative = 'Yesterday';
+      return relative;
+    }
+
+    function formatAmount(amount, roundDecimals = false) {
+      if (roundDecimals) {
+        return new Intl.NumberFormat('en-IN').format(amount)
+      }
+      return new Intl.NumberFormat('en-IN').format(round(amount, 2))
     }
 
     const txDates = computed(() => {
-      if (txs.value.length === 0) return []
-      return Object.keys(txs.value)
-    })
+      if (txs.value.length === 0) return [];
+      return Object.keys(txs.value);
+    });
 
-  // helper for groupig transactions by date
-  const groupBy = (collection, iteratee = (x) => x) => {
-    const it = typeof iteratee === 'function' ? 
-      iteratee : ({ [iteratee]: prop }) => prop;
+        const XST_USD_RATE = computed(() => {
+      return CryptoService.constraints.XST_USD || 1;
+    });
 
-    const array = Array.isArray(collection) ? collection : Object.values(collection);
+    // helper for groupig transactions by date
+    const groupBy = (collection, iteratee = (x) => x) => {
+      const it =
+        typeof iteratee === 'function'
+          ? iteratee
+          : ({ [iteratee]: prop }) => prop;
 
-    return array.reduce((r, e) => {
-      const k = it(e);
-      
-      r[k] = r[k] || [];
-      
-      r[k].push(e);
-      
-      return r;
-    }, {});
-};
+      const array = Array.isArray(collection)
+        ? collection
+        : Object.values(collection);
+
+      return array.reduce((r, e) => {
+        const k = it(e);
+
+        r[k] = r[k] || [];
+
+        r[k].push(e);
+
+        return r;
+      }, {});
+    };
 
     return {
       // openAccountDetails,
@@ -136,7 +168,9 @@ export default {
       openTransaction,
       formatBlocktime,
       todayOrYesteday,
-      txDates
+      XST_USD_RATE,
+      formatAmount,
+      txDates,
     };
   },
 };
@@ -157,11 +191,11 @@ export default {
 
 .dashboard-container .tx-date {
   font-family: Noto Sans;
-font-style: normal;
-font-size: 12px;
-line-height: 24px;
-letter-spacing: 0.12px;
-color: var(--text);
+  font-style: normal;
+  font-size: 12px;
+  line-height: 24px;
+  letter-spacing: 0.12px;
+  color: var(--text);
   margin: 22px 0;
 }
 
