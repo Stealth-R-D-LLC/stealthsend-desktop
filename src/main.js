@@ -15,7 +15,7 @@ import {
   StStatus,
   StTable,
   StTag,
-  StTooltip
+  StTooltip,
 } from 'stealth-kit';
 import { createApp } from 'vue';
 import App from './App.vue';
@@ -23,10 +23,8 @@ import directives from './directives/';
 import './index.css';
 import router from './router';
 
-
-
 const app = createApp(App);
-app.use(createPinia())
+app.use(createPinia());
 
 // global components
 app.component('StButton', StButton);

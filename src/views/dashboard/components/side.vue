@@ -22,7 +22,7 @@ import StSwitcher from '@/components/elements/StSwitcher.vue';
 import Card from '@/components/elements/Card';
 import CryptoService from '@/services/crypto';
 import { ref, computed } from 'vue';
-import { useMainStore } from '@/store'
+import { useMainStore } from '@/store';
 
 import router from '@/router';
 
@@ -32,7 +32,7 @@ export default {
     Card,
   },
   setup() {
-            const mainStore = useMainStore()
+    const mainStore = useMainStore();
 
     const accounts = ref([]);
     const utxo = ref(0);

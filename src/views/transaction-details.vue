@@ -10,11 +10,11 @@
 <script>
 import { useRoute } from 'vue-router';
 import { ref } from 'vue';
-import { useMainStore } from '@/store'
+import { useMainStore } from '@/store';
 
 export default {
   setup() {
-            const mainStore = useMainStore()
+    const mainStore = useMainStore();
 
     const route = useRoute();
     const tx = ref({});

@@ -14,34 +14,33 @@ export const useMainStore = defineStore({
   getters: {},
   actions: {
     SET_ACCOUNT_DETAILS(payload) {
-        this.accountDetails = payload
+      this.accountDetails = payload;
     },
     SET_AMOUNTS_HIDDEN(payload) {
-        this.isAmountsHidden = payload
+      this.isAmountsHidden = payload;
     },
     startGlobalLoading() {
-        this.globalLoading = true
+      this.globalLoading = true;
     },
     stopGlobalLoading() {
-        this.globalLoading = false
+      this.globalLoading = false;
     },
 
     rpc(method, payload) {
-        return new Promise((resolve, reject) => {
-            API.post('', {
-              method: method,
-              params: payload,
-            })
-              .then((res) => {
-                console.log(`RPC response (${method}): `, res.data.result);
-                resolve(res.data.result);
-              })
-              .catch((err) => {
-                console.error('RPC error: ', err);
-                reject(err.response.data.error.message);
-              });
+      return new Promise((resolve, reject) => {
+        API.post('', {
+          method: method,
+          params: payload,
+        })
+          .then((res) => {
+            console.log(`RPC response (${method}): `, res.data.result);
+            resolve(res.data.result);
+          })
+          .catch((err) => {
+            console.error('RPC error: ', err);
+            reject(err.response.data.error.message);
           });
-    }
-
+      });
+    },
   },
-})
+});

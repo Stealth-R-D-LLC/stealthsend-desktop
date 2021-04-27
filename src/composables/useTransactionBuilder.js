@@ -5,10 +5,9 @@ import * as bitcoin from 'bitcoinjs-lib';
 import { Buffer } from 'buffer';
 import { add, format, subtract } from 'mathjs';
 
-
 export default function useTransactionBuilder(utxo, sendForm) {
   console.log('start tx builder');
-  const mainStore = useMainStore()
+  const mainStore = useMainStore();
 
   const { fee } = useFeeEstimator(utxo.length);
 

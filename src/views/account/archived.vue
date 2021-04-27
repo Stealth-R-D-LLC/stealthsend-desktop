@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { useMainStore } from '@/store'
+import { useMainStore } from '@/store';
 
 // import StCard from '@/components/elements/Card'
 import { computed } from 'vue';
@@ -26,7 +26,7 @@ export default {
   //     Card
   // },
   setup() {
-            const mainStore = useMainStore()
+    const mainStore = useMainStore();
 
     const accounts = computed(() => {
       return mainStore.state.accounts.filter((el) => el.isArchived);

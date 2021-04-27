@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { useMainStore } from '@/store'
+import { useMainStore } from '@/store';
 import { computed, ref } from 'vue';
 import VanillaQR from 'vanillaqr';
 import Card from '@/components/elements/Card';
@@ -60,7 +60,7 @@ export default {
     Card,
   },
   setup() {
-            const mainStore = useMainStore()
+    const mainStore = useMainStore();
 
     function openTransaction(trx) {
       router.push(`/transaction/${trx.txid}`);

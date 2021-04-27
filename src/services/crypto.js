@@ -309,7 +309,7 @@ const CryptoService = {
     });
   },
   async accountDiscovery(n = 0) {
-    const mainStore = useMainStore()
+    const mainStore = useMainStore();
     // console.log('start account discovery');
     //  Address gap limit is currently set  to 20. If the software hits 20 unused addresses in a row,
     // it expects there are no used addresses beyond this point and stops searching the address chain.
@@ -378,7 +378,7 @@ const CryptoService = {
     return JSON.parse(bytes);
   },
   async scanWallet() {
-    const mainStore = useMainStore()
+    const mainStore = useMainStore();
     // initially scan all accounts in the wallet for utxos
     // gethdaccounts retrieves all transactions for a particular account
     // eslint-disable-next-line no-async-promise-executor

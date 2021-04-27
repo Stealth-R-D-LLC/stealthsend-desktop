@@ -57,7 +57,7 @@
 <script>
 import { ref, computed } from 'vue';
 import CryptoService from '@/services/crypto';
-import { useMainStore } from '@/store'
+import { useMainStore } from '@/store';
 
 export default {
   name: 'StSwitcher',
@@ -72,7 +72,7 @@ export default {
   },
   emits: ['change'],
   setup(props, ctx) {
-        const mainStore = useMainStore()
+    const mainStore = useMainStore();
 
     const step = ref(0);
     const steps = computed(() => {
@@ -100,11 +100,11 @@ export default {
     });
 
     const isHiddenAmounts = computed(() => {
-      return mainStore.isAmountsHidden
-    })
+      return mainStore.isAmountsHidden;
+    });
 
     function toggleHiddenAmounts() {
-      mainStore.SET_AMOUNTS_HIDDEN(!isHiddenAmounts.value)
+      mainStore.SET_AMOUNTS_HIDDEN(!isHiddenAmounts.value);
     }
 
     function changeStep(i) {
@@ -116,7 +116,7 @@ export default {
       steps,
       changeStep,
       toggleHiddenAmounts,
-      isHiddenAmounts
+      isHiddenAmounts,
     };
   },
 };
@@ -136,7 +136,7 @@ export default {
   letter-spacing: 0.56px;
   color: var(--text);
 }
-.st-switcher__asset svg{
+.st-switcher__asset svg {
   cursor: pointer;
 }
 .st-switcher__steps {
