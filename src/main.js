@@ -1,5 +1,6 @@
 import StCard from '@/components/elements/Card.vue';
 import Multiselect from '@vueform/multiselect';
+import { createPinia } from 'pinia';
 import {
   StButton,
   StCheckbox,
@@ -23,6 +24,7 @@ import './index.css';
 import router from './router';
 
 const app = createApp(App);
+app.use(createPinia());
 
 // global components
 app.component('StButton', StButton);

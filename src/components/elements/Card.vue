@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="steps.length > 0"
     class="st-card"
     :class="{ 'st-card--is-archived': account.isArchived }"
     @click="handleClick(account)"
@@ -21,15 +22,20 @@
       <span class="itemu type"><span class="bold">XST</span>/USD</span>
     </div>
     <div class="st-card__row">
-      <span class="item amount">{{ account.utxo }}</span>
-      <span class="item fiat">${{ amountInFiat }}</span>
+      <span class="item amount">{{
+        isHiddenAmounts ? '****' : steps[type].amountLeft
+      }}</span>
+      <span class="item fiat">{{
+        isHiddenAmounts ? '****' : steps[type].amountRight
+      }}</span>
     </div>
   </div>
 </template>
 
 <script>
 import { computed } from 'vue';
-const XST_USD = 0.226338; // hardcoded obviously
+import { useMainStore } from '@/store';
+
 export default {
   name: 'StCard',
   props: {
@@ -57,11 +63,40 @@ export default {
       type: Object,
       required: true,
     },
+    rates: {
+      type: Object,
+      required: true,
+    },
   },
   emits: ['archived', 'unarchived', 'click'],
   setup(props, context) {
-    const amountInFiat = computed(() => {
-      return +props.account.utxo * XST_USD;
+    const mainStore = useMainStore();
+    const steps = computed(() => {
+      if (!props.rates) return [];
+      // TODO: hardcoded stuff
+      return [
+        {
+          assetA: 'XST',
+          assetB: 'USD',
+          amountLeft: `${props.account.utxo}`,
+          amountRight: `$${props.account.utxo * props.rates.XST_USD}`,
+          percentage: `+100`,
+        },
+        {
+          assetA: 'USD',
+          assetB: 'XST',
+          amountLeft: `$${props.account.utxo * props.rates.XST_USD}`,
+          amountRight: `${props.account.utxo} XST`,
+          percentage: `+90`,
+        },
+        {
+          assetA: 'BTC',
+          assetB: 'XST',
+          amountLeft: props.account.utxo * props.rates.XST_BTC,
+          amountRight: `${props.account.utxo} XST`,
+          percentage: `+22`,
+        },
+      ];
     });
 
     const handleClick = (account) => {
@@ -74,7 +109,13 @@ export default {
     const unarchive = (account) => {
       context.emit('unarchived', account);
     };
-    return { amountInFiat, archive, unarchive, handleClick };
+    return {
+      archive,
+      unarchive,
+      handleClick,
+      steps,
+      isHiddenAmounts: computed(() => mainStore.isAmountsHidden),
+    };
   },
 };
 </script>
