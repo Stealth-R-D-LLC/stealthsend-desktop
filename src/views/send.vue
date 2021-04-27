@@ -39,13 +39,13 @@ import { reactive, ref } from 'vue';
 import CryptoService from '@/services/crypto';
 import useCoinControl from '@/composables/useCoinControl';
 import useTransactionBuilder from '@/composables/useTransactionBuilder';
-import { useMainStore } from '@/store'
+import { useMainStore } from '@/store';
 
 // import useFeeEstimator from '@/composables/useFeeEstimator';
 
 export default {
   setup() {
-            const mainStore = useMainStore()
+    const mainStore = useMainStore();
 
     const sendForm = reactive({
       account: '',

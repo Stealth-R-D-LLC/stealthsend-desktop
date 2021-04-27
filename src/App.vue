@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { useMainStore } from '@/store'
+import { useMainStore } from '@/store';
 
 // import StLoading from '@/components/kit/StLoading.vue'
 import { computed } from 'vue';
@@ -21,7 +21,7 @@ export default {
   //   StLoading
   // },
   setup() {
-            const mainStore = useMainStore()
+    const mainStore = useMainStore();
 
     const route = useRoute();
     const isLoading = computed(() => {

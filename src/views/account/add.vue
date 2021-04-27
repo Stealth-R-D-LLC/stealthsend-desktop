@@ -39,7 +39,7 @@
 
 <script>
 import CryptoService from '@/services/crypto';
-import { useMainStore } from '@/store'
+import { useMainStore } from '@/store';
 
 import { computed } from 'vue';
 
@@ -48,7 +48,7 @@ export default {
   name: 'StAddAccount',
   components: {},
   setup() {
-            const mainStore = useMainStore()
+    const mainStore = useMainStore();
 
     const hasZeroBalance = computed(() => {
       return false; // TODO: hardcoded

@@ -22,15 +22,19 @@
       <span class="itemu type"><span class="bold">XST</span>/USD</span>
     </div>
     <div class="st-card__row">
-      <span class="item amount">{{ isHiddenAmounts ? '****' : steps[type].amountLeft }}</span>
-      <span class="item fiat">{{ isHiddenAmounts ? '****' : steps[type].amountRight }}</span>
+      <span class="item amount">{{
+        isHiddenAmounts ? '****' : steps[type].amountLeft
+      }}</span>
+      <span class="item fiat">{{
+        isHiddenAmounts ? '****' : steps[type].amountRight
+      }}</span>
     </div>
   </div>
 </template>
 
 <script>
 import { computed } from 'vue';
-import { useMainStore } from '@/store'
+import { useMainStore } from '@/store';
 
 export default {
   name: 'StCard',
@@ -66,7 +70,7 @@ export default {
   },
   emits: ['archived', 'unarchived', 'click'],
   setup(props, context) {
-    const mainStore = useMainStore()
+    const mainStore = useMainStore();
     const steps = computed(() => {
       if (!props.rates) return [];
       // TODO: hardcoded stuff
@@ -105,9 +109,12 @@ export default {
     const unarchive = (account) => {
       context.emit('unarchived', account);
     };
-    return { archive, unarchive, handleClick, steps,
-            isHiddenAmounts: computed(() => mainStore.isAmountsHidden),
-
+    return {
+      archive,
+      unarchive,
+      handleClick,
+      steps,
+      isHiddenAmounts: computed(() => mainStore.isAmountsHidden),
     };
   },
 };

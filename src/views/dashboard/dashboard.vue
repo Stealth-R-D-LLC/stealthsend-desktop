@@ -2,7 +2,6 @@
   <Side></Side>
   <div class="dashboard-container">
     <TopBar></TopBar>
-    Sum of all UTXO: {{ utxo }} XST
     <StTable
       :data="txs"
       :columns="[
@@ -17,6 +16,9 @@
           {{ item.amount > 0 ? '+' : '-' }} {{ Math.abs(item.amount) }}
         </span>
       </template>
+            <template #blocktime="{ item }">
+          {{ formatBlocktime(item.blocktime) }}
+      </template>
     </StTable>
   </div>
 </template>
@@ -26,6 +28,8 @@ import { ref } from 'vue';
 import TopBar from '@/components/layout/TopBar.vue';
 import Side from './components/side';
 import CryptoService from '@/services/crypto';
+import fromUnixTime from 'date-fns/fromUnixTime'
+
 import router from '@/router';
 export default {
   name: 'StDahboard',
@@ -61,6 +65,11 @@ export default {
     //   router.push('/account/details');
     // };
 
+    function formatBlocktime(blocktime) {
+      console.log('aa', fromUnixTime(blocktime));
+      return fromUnixTime(blocktime)
+    }
+
     function openTransaction(trx) {
       console.log('trx', trx);
       router.push(`/transaction/${trx.txid}`);
@@ -77,6 +86,7 @@ export default {
       utxo,
       txs,
       openTransaction,
+      formatBlocktime
     };
   },
 };

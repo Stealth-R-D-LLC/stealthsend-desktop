@@ -72,7 +72,7 @@
 import { ref } from 'vue';
 import * as bip39 from 'bip39';
 import * as bip32 from 'bip32';
-import { useMainStore } from '@/store'
+import { useMainStore } from '@/store';
 
 // import db from '../db'
 import router from '../router';
@@ -81,7 +81,7 @@ import CryptoService from '../services/crypto';
 export default {
   name: 'StWelcome',
   setup() {
-            const mainStore = useMainStore()
+    const mainStore = useMainStore();
 
     const recoverWallet = ref(false);
     const mnemonic = ref(
