@@ -37,13 +37,16 @@
 <script>
 import { reactive, ref } from 'vue';
 import CryptoService from '@/services/crypto';
-import globalState from '@/store/global';
 import useCoinControl from '@/composables/useCoinControl';
 import useTransactionBuilder from '@/composables/useTransactionBuilder';
+import { useMainStore } from '@/store'
+
 // import useFeeEstimator from '@/composables/useFeeEstimator';
 
 export default {
   setup() {
+            const mainStore = useMainStore()
+
     const sendForm = reactive({
       account: '',
       amount: '',
@@ -60,14 +63,13 @@ export default {
     getAccounts();
 
     async function getUnspentOutputs() {
-      const outputs = await globalState.rpc('getaddressoutputs', [
+      const outputs = await mainStore.rpc('getaddressoutputs', [
         sendForm.account.address,
         1,
         100,
       ]);
 
       unspentOutputs = outputs.filter((el) => el.isspent === 'false');
-
       console.log('candidates for inputs: ', unspentOutputs);
     }
 

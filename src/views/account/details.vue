@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import globalState from '@/store/global';
+import { useMainStore } from '@/store'
 import { computed, ref } from 'vue';
 import VanillaQR from 'vanillaqr';
 import Card from '@/components/elements/Card';
@@ -60,12 +60,14 @@ export default {
     Card,
   },
   setup() {
+            const mainStore = useMainStore()
+
     function openTransaction(trx) {
       router.push(`/transaction/${trx.txid}`);
     }
 
     const account = computed(() => {
-      return globalState.state.accountDetails;
+      return mainStore.accountDetails;
     });
 
     const addressInfo = ref({});
@@ -82,7 +84,7 @@ export default {
     }
 
     if (account.value) {
-      globalState
+      mainStore
         .rpc('getaddressinfo', [account.value.address])
         .then((res) => {
           addressInfo.value = res;
@@ -90,7 +92,7 @@ export default {
         .catch((err) => {
           return err;
         });
-      globalState
+      mainStore
         .rpc('getaddressinputs', [account.value.address, 1, 10])
         .then((res) => {
           trxInputs.value = res;
@@ -98,7 +100,7 @@ export default {
         .catch((err) => {
           return err;
         });
-      globalState
+      mainStore
         .rpc('getaddressoutputs', [account.value.address])
         .then((res) => {
           trxOutputs.value = res;

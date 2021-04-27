@@ -22,7 +22,8 @@ import StSwitcher from '@/components/elements/StSwitcher.vue';
 import Card from '@/components/elements/Card';
 import CryptoService from '@/services/crypto';
 import { ref, computed } from 'vue';
-import globalState from '@/store/global';
+import { useMainStore } from '@/store'
+
 import router from '@/router';
 
 export default {
@@ -31,6 +32,8 @@ export default {
     Card,
   },
   setup() {
+            const mainStore = useMainStore()
+
     const accounts = ref([]);
     const utxo = ref(0);
     const txs = ref([]);
@@ -50,7 +53,7 @@ export default {
     });
 
     const openAccountDetails = (account) => {
-      globalState.setAccountDetails(account);
+      mainStore.SET_ACCOUNT_DETAILS(account);
       router.push('/account/details');
     };
     const archiveAccount = (account) => {
