@@ -39,7 +39,8 @@
 
 <script>
 import CryptoService from '@/services/crypto';
-import globalState from '@/store/global';
+import { useMainStore } from '@/store'
+
 import { computed } from 'vue';
 
 import { ref } from 'vue';
@@ -47,6 +48,8 @@ export default {
   name: 'StAddAccount',
   components: {},
   setup() {
+            const mainStore = useMainStore()
+
     const hasZeroBalance = computed(() => {
       return false; // TODO: hardcoded
       // return globalState.state.accounts.some((el) => el.balance === 0)
@@ -70,7 +73,7 @@ export default {
 
     async function generateAccount() {
       isAccountModalVisible.value = false;
-      globalState.startGlobalLoading();
+      mainStore.START_GLOBAL_LOADING();
 
       let next = await getNextAccountPath();
       const { address, path, pk, wif } = CryptoService.getChildFromRoot(
@@ -90,7 +93,7 @@ export default {
       };
 
       CryptoService.storeAccountInDb(account);
-      globalState.stopGlobalLoading();
+      mainStore.STOP_GLOBAL_LOADING();
     }
 
     return {

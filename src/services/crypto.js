@@ -1,5 +1,5 @@
 import router from '@/router';
-import globalState from '@/store/global';
+import { useMainStore } from '@/store';
 import * as bip32 from 'bip32';
 import * as bip39 from 'bip39';
 import * as bitcoin from 'bitcoinjs-lib';
@@ -173,12 +173,10 @@ const CryptoService = {
   // },
   async getWalletFromDb() {
     let wallet = await db.find({ name: 'wallet' });
-    globalState.setWallet(wallet[0]);
     return wallet;
   },
   async getAccounts() {
     let accounts = await db.find({ name: 'account' });
-    // globalState.setAccounts(accounts)
     console.log('Accounts: ', accounts);
     return accounts;
   },
@@ -311,6 +309,7 @@ const CryptoService = {
     });
   },
   async accountDiscovery(n = 0) {
+    const mainStore = useMainStore()
     // console.log('start account discovery');
     //  Address gap limit is currently set  to 20. If the software hits 20 unused addresses in a row,
     // it expects there are no used addresses beyond this point and stops searching the address chain.
@@ -325,9 +324,8 @@ const CryptoService = {
       const acc = this.getChildFromRoot(n, 0, i);
       // console.log('acc.address', acc.address);
       // scan addresses of the external chain; respect the gap limit described below
-      // const hdAccount = await globalState.rpc('gethdaccount', [acc.pk])
       // console.log('hdacc', hdAccount);
-      const outputs = await globalState.rpc('getaddressoutputs', [
+      const outputs = await mainStore.rpc('getaddressoutputs', [
         acc.address,
         1,
         1,
@@ -380,6 +378,7 @@ const CryptoService = {
     return JSON.parse(bytes);
   },
   async scanWallet() {
+    const mainStore = useMainStore()
     // initially scan all accounts in the wallet for utxos
     // gethdaccounts retrieves all transactions for a particular account
     // eslint-disable-next-line no-async-promise-executor
@@ -390,7 +389,7 @@ const CryptoService = {
       let newAccounts = [];
       for (let account of accounts) {
         let accUtxo = 0;
-        const hdAccount = await globalState.rpc('gethdaccount', [account.pk]);
+        const hdAccount = await mainStore.rpc('gethdaccount', [account.pk]);
         for (let tx of hdAccount) {
           accUtxo = add(accUtxo, tx.account_balance_change);
           accUtxo = format(accUtxo, { precision: 14 });

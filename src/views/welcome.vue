@@ -72,7 +72,8 @@
 import { ref } from 'vue';
 import * as bip39 from 'bip39';
 import * as bip32 from 'bip32';
-import globalState from '@/store/global';
+import { useMainStore } from '@/store'
+
 // import db from '../db'
 import router from '../router';
 import CryptoService from '../services/crypto';
@@ -80,6 +81,8 @@ import CryptoService from '../services/crypto';
 export default {
   name: 'StWelcome',
   setup() {
+            const mainStore = useMainStore()
+
     const recoverWallet = ref(false);
     const mnemonic = ref(
       'core ritual tornado cart chaos rice brave mirror float utility suffer atom'
@@ -91,7 +94,7 @@ export default {
       // recover an existing wallet via mnemonic
       // password is asked because we have to lock the seed in the database
       // user is createing a new password in this step
-      globalState.startGlobalLoading();
+      mainStore.startGlobalLoading();
       let bytes = await bip39.mnemonicToSeedSync(mnemonic.value);
       const master = await bip32.fromSeed(bytes); // root
       recovered.value = {
@@ -105,7 +108,7 @@ export default {
       CryptoService.storeWalletInDb(password.value);
       setTimeout(() => {
         goToDashboard();
-        globalState.stopGlobalLoading();
+        mainStore.stopGlobalLoading();
       }, 3000);
     }
 
@@ -143,10 +146,10 @@ export default {
     async function createNewWallet() {
       // new wallet is created
       // therefore, new password can be made
-      globalState.startGlobalLoading();
+      mainStore.startGlobalLoading();
       created.value = await CryptoService.generateMnemonicAndSeed();
       await CryptoService.storeWalletInDb(password.value);
-      globalState.stopGlobalLoading();
+      mainStore.stopGlobalLoading();
     }
 
     function goToDashboard() {

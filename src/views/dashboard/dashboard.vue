@@ -23,7 +23,6 @@
 
 <script>
 import { ref } from 'vue';
-// import globalState from '@/store/global';
 import TopBar from '@/components/layout/TopBar.vue';
 import Side from './components/side';
 import CryptoService from '@/services/crypto';

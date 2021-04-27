@@ -14,7 +14,8 @@
 </template>
 
 <script>
-import globalState from '@/store/global';
+import { useMainStore } from '@/store'
+
 // import StCard from '@/components/elements/Card'
 import { computed } from 'vue';
 import CryptoService from '@/services/crypto';
@@ -25,8 +26,10 @@ export default {
   //     Card
   // },
   setup() {
+            const mainStore = useMainStore()
+
     const accounts = computed(() => {
-      return globalState.state.accounts.filter((el) => el.isArchived);
+      return mainStore.state.accounts.filter((el) => el.isArchived);
     });
     function unarchieve(account) {
       CryptoService.unarchiveAccount(account);

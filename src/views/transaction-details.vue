@@ -10,10 +10,12 @@
 <script>
 import { useRoute } from 'vue-router';
 import { ref } from 'vue';
-import globalState from '@/store/global';
+import { useMainStore } from '@/store'
 
 export default {
   setup() {
+            const mainStore = useMainStore()
+
     const route = useRoute();
     const tx = ref({});
 
@@ -21,7 +23,7 @@ export default {
     getTx(txid);
 
     async function getTx(txid) {
-      const res = await globalState.rpc('gettransaction', [txid]);
+      const res = await mainStore.rpc('gettransaction', [txid]);
       tx.value = res;
     }
     return { tx };

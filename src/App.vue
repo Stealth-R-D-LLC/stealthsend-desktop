@@ -6,7 +6,8 @@
 </template>
 
 <script>
-import globalState from '@/store/global';
+import { useMainStore } from '@/store'
+
 // import StLoading from '@/components/kit/StLoading.vue'
 import { computed } from 'vue';
 import DefaultLayout from './components/layout/Default.vue';
@@ -20,9 +21,11 @@ export default {
   //   StLoading
   // },
   setup() {
+            const mainStore = useMainStore()
+
     const route = useRoute();
     const isLoading = computed(() => {
-      return globalState.state.globalLoading;
+      return mainStore.globalLoading;
     });
     const layout = computed(() => {
       if (!route && !route.name) return;
