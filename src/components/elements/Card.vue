@@ -59,15 +59,13 @@ export default {
     },
     rates: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   emits: ['archived', 'unarchived', 'click'],
   setup(props, context) {
     const steps = computed(() => {
-      console.log('propsaaaaaaaa', props.rates);
-      if (!props.rates) return []
-      console.log('uso');
+      if (!props.rates) return [];
       // TODO: hardcoded stuff
       return [
         {
@@ -78,14 +76,14 @@ export default {
           percentage: `+100`,
         },
         {
-                    assetA: 'USD',
+          assetA: 'USD',
           assetB: 'XST',
           amountLeft: `$${props.account.utxo * props.rates.XST_USD}`,
           amountRight: `${props.account.utxo} XST`,
           percentage: `+90`,
         },
         {
-                    assetA: 'BTC',
+          assetA: 'BTC',
           assetB: 'XST',
           amountLeft: props.account.utxo * props.rates.XST_BTC,
           amountRight: `${props.account.utxo} XST`,

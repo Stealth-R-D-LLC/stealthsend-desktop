@@ -32,13 +32,14 @@
       </svg>
     </p>
     <div class="st-switcher__steps">
-      <div v-for="(s, index) in steps" :key="index"
+      <div
+        v-for="(s, index) in steps"
+        :key="index"
         class="step"
         :class="{ 'step--active': step === index }"
         @click="changeStep(index)"
->
-      <span></span>
-
+      >
+        <span></span>
       </div>
     </div>
     <p class="st-switcher__amount">
