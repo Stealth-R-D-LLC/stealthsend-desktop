@@ -44,10 +44,10 @@ export default {
     }
     scanWallet();
 
-        const constraints = computed(() => {
-          if (!CryptoService.constraints) return null
-          return CryptoService.constraints
-        })
+    const constraints = computed(() => {
+      if (!CryptoService.constraints) return null;
+      return CryptoService.constraints;
+    });
 
     const openAccountDetails = (account) => {
       globalState.setAccountDetails(account);
@@ -69,7 +69,7 @@ export default {
       switcherChange,
       step,
       utxo,
-      constraints
+      constraints,
     };
   },
 };
