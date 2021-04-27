@@ -3,7 +3,6 @@
   <div class="dashboard-container">
     <TopBar></TopBar>
     Sum of all UTXO: {{ utxo }} XST
-    <!-- <p v-else>You don't have any accounts in your wallet.</p> -->
     <StTable
       :data="txs"
       :columns="[

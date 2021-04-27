@@ -32,7 +32,8 @@ import db from '../db';
 
 const CryptoService = {
   constraints: {
-    XST_USD: 0.17401,
+    XST_USD: 0.199,
+    XST_BTC: 0.00000364,
     MINIMAL_CHANGE: 0,
   },
   isFirstArrival: true,

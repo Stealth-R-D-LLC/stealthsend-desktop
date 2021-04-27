@@ -1,6 +1,6 @@
 <template>
   <div class="side">
-    <StSwitcher :amount="1.23" @change="switcherChange"></StSwitcher>
+    <StSwitcher :amount="utxo" @change="switcherChange"></StSwitcher>
     <div class="side__accounts">
       <Card
         v-for="account in accounts"
@@ -37,7 +37,7 @@ export default {
     async function scanWallet() {
       const hdWallet = await CryptoService.scanWallet();
       console.log('scanned wallet: ', hdWallet);
-      utxo.value = hdWallet.utxo;
+      utxo.value = Number(hdWallet.utxo);
       txs.value = hdWallet.txs;
       accounts.value = hdWallet.accounts;
     }
@@ -62,6 +62,7 @@ export default {
       archiveAccount,
       switcherChange,
       step,
+      utxo
     };
   },
 };
