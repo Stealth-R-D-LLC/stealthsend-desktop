@@ -16,8 +16,8 @@
           {{ item.amount > 0 ? '+' : '-' }} {{ Math.abs(item.amount) }}
         </span>
       </template>
-            <template #blocktime="{ item }">
-          {{ formatBlocktime(item.blocktime) }}
+      <template #blocktime="{ item }">
+        {{ formatBlocktime(item.blocktime) }}
       </template>
     </StTable>
   </div>
@@ -28,7 +28,8 @@ import { ref } from 'vue';
 import TopBar from '@/components/layout/TopBar.vue';
 import Side from './components/side';
 import CryptoService from '@/services/crypto';
-import fromUnixTime from 'date-fns/fromUnixTime'
+import fromUnixTime from 'date-fns/fromUnixTime';
+import format from 'date-fns/format';
 
 import router from '@/router';
 export default {
@@ -66,8 +67,7 @@ export default {
     // };
 
     function formatBlocktime(blocktime) {
-      console.log('aa', fromUnixTime(blocktime));
-      return fromUnixTime(blocktime)
+      return format(fromUnixTime(blocktime), 'h:m:s a');
     }
 
     function openTransaction(trx) {
@@ -86,7 +86,7 @@ export default {
       utxo,
       txs,
       openTransaction,
-      formatBlocktime
+      formatBlocktime,
     };
   },
 };
