@@ -1,12 +1,13 @@
 import useFeeEstimator from '@/composables/useFeeEstimator';
 import CryptoService from '@/services/crypto';
-import globalState from '@/store/global';
+import { useMainStore } from '@/store';
 import * as bitcoin from 'bitcoinjs-lib';
 import { Buffer } from 'buffer';
 import { add, format, subtract } from 'mathjs';
 
 export default function useTransactionBuilder(utxo, sendForm) {
   console.log('start tx builder');
+  const mainStore = useMainStore();
 
   const { fee } = useFeeEstimator(utxo.length);
 
@@ -37,7 +38,7 @@ export default function useTransactionBuilder(utxo, sendForm) {
       // add all outputs
       for await (let tx of utxo) {
         // get prevoutscript
-        const txDetails = await globalState.rpc('gettransaction', [tx.txid]);
+        const txDetails = await mainStore.rpc('gettransaction', [tx.txid]);
 
         let vout = txDetails.vout.find((el) => el.value === tx.amount);
 
@@ -95,7 +96,7 @@ export default function useTransactionBuilder(utxo, sendForm) {
       const rawTransactionToHex = rawTransaction.build().toHex();
       console.log(rawTransactionToHex);
 
-      const res = await globalState.rpc('sendrawtransaction', [
+      const res = await mainStore.rpc('sendrawtransaction', [
         rawTransactionToHex,
       ]);
 

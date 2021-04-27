@@ -1,13 +1,14 @@
 <template>
   <div class="side">
-    <StSwitcher :amount="1.23" @change="switcherChange"></StSwitcher>
+    <StSwitcher :amount="utxo" @change="switcherChange"></StSwitcher>
     <div class="side__accounts">
       <Card
         v-for="account in accounts"
-        :key="account"
+        :key="account.address"
         class="list-item"
         :account="account"
         :type="step"
+        :rates="constraints"
         @click="openAccountDetails"
         @archived="archiveAccount"
       >
@@ -20,8 +21,9 @@
 import StSwitcher from '@/components/elements/StSwitcher.vue';
 import Card from '@/components/elements/Card';
 import CryptoService from '@/services/crypto';
-import { ref } from 'vue';
-import globalState from '@/store/global';
+import { ref, computed } from 'vue';
+import { useMainStore } from '@/store';
+
 import router from '@/router';
 
 export default {
@@ -30,6 +32,8 @@ export default {
     Card,
   },
   setup() {
+    const mainStore = useMainStore();
+
     const accounts = ref([]);
     const utxo = ref(0);
     const txs = ref([]);
@@ -37,14 +41,19 @@ export default {
     async function scanWallet() {
       const hdWallet = await CryptoService.scanWallet();
       console.log('scanned wallet: ', hdWallet);
-      utxo.value = hdWallet.utxo;
+      utxo.value = Number(hdWallet.utxo);
       txs.value = hdWallet.txs;
       accounts.value = hdWallet.accounts;
     }
     scanWallet();
 
+    const constraints = computed(() => {
+      if (!CryptoService.constraints) return null;
+      return CryptoService.constraints;
+    });
+
     const openAccountDetails = (account) => {
-      globalState.setAccountDetails(account);
+      mainStore.SET_ACCOUNT_DETAILS(account);
       router.push('/account/details');
     };
     const archiveAccount = (account) => {
@@ -62,6 +71,8 @@ export default {
       archiveAccount,
       switcherChange,
       step,
+      utxo,
+      constraints,
     };
   },
 };

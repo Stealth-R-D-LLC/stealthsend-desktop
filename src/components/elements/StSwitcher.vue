@@ -1,14 +1,14 @@
 <template>
-  <div v-if="steps" class="st-switcher">
+  <div v-if="steps && steps[step]" class="st-switcher">
     <p class="st-switcher__asset">
       <span class="asset">{{ steps[step].asset }}</span>
       <svg
-        v-if="isHidden"
+        v-if="isHiddenAmounts"
         width="22"
         height="16"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        @click="isHidden = !isHidden"
+        @click="toggleHiddenAmounts"
       >
         <path
           d="M11 3C7.686 3 4.686 4.667 2 8c2.686 3.333 5.686 5 9 5s6.314-1.667 9-5a17.964 17.964 0 00-1.864-2M6 8h6M19 1L5 15"
@@ -17,12 +17,12 @@
         />
       </svg>
       <svg
-        v-if="!isHidden"
+        v-if="!isHiddenAmounts"
         width="20"
         height="8"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        @click="isHidden = !isHidden"
+        @click="toggleHiddenAmounts"
       >
         <path
           d="M8 1.5h4M1 1.5c3 3.333 6 5 9 5s6-1.667 9-5"
@@ -32,20 +32,24 @@
       </svg>
     </p>
     <div class="st-switcher__steps">
-      <span
+      <div
         v-for="(s, index) in steps"
         :key="index"
         class="step"
         :class="{ 'step--active': step === index }"
         @click="changeStep(index)"
-      ></span>
+      >
+        <span></span>
+      </div>
     </div>
     <p class="st-switcher__amount">
-      {{ isHidden ? '*****' : steps[step].amount }}
+      {{ isHiddenAmounts ? '*****' : steps[step].amountTop }}
     </p>
     <div class="st-switcher__details">
-      <span class="amount-fiat">${{ amountFiat }}</span>
-      <StTag> +123.99% </StTag>
+      <span class="amount-fiat">{{
+        isHiddenAmounts ? '*****' : steps[step].amountBottom
+      }}</span>
+      <StTag v-if="!isHiddenAmounts"> {{ steps[step].percentage }}% </StTag>
     </div>
   </div>
 </template>
@@ -53,6 +57,8 @@
 <script>
 import { ref, computed } from 'vue';
 import CryptoService from '@/services/crypto';
+import { useMainStore } from '@/store';
+
 export default {
   name: 'StSwitcher',
   props: {
@@ -66,26 +72,40 @@ export default {
   },
   emits: ['change'],
   setup(props, ctx) {
-    const step = ref(0);
-    const isHidden = ref(false);
-    const steps = ref([
-      {
-        asset: 'XST',
-        amount: props.amount,
-      },
-      {
-        asset: 'EUR',
-        amount: props.amount * 2,
-      },
-      {
-        asset: 'BTC',
-        amount: props.amount / 8,
-      },
-    ]);
+    const mainStore = useMainStore();
 
-    const amountFiat = computed(() => {
-      return props.amount * CryptoService.constraints.XST_USD;
+    const step = ref(0);
+    const steps = computed(() => {
+      return [
+        // TODO: hardcoded stuff
+        {
+          asset: 'XST',
+          amountTop: `${props.amount}`,
+          amountBottom: `$${props.amount * CryptoService.constraints.XST_USD}`,
+          percentage: `+100`,
+        },
+        {
+          asset: 'EUR',
+          amountTop: `$${props.amount * CryptoService.constraints.XST_USD}`,
+          amountBottom: `${props.amount} XST`,
+          percentage: `+90`,
+        },
+        {
+          asset: 'BTC',
+          amountTop: props.amount * CryptoService.constraints.XST_BTC,
+          amountBottom: `${props.amount} XST`,
+          percentage: `+22`,
+        },
+      ];
     });
+
+    const isHiddenAmounts = computed(() => {
+      return mainStore.isAmountsHidden;
+    });
+
+    function toggleHiddenAmounts() {
+      mainStore.SET_AMOUNTS_HIDDEN(!isHiddenAmounts.value);
+    }
 
     function changeStep(i) {
       step.value = i;
@@ -95,8 +115,8 @@ export default {
       step,
       steps,
       changeStep,
-      isHidden,
-      amountFiat,
+      toggleHiddenAmounts,
+      isHiddenAmounts,
     };
   },
 };
@@ -116,18 +136,27 @@ export default {
   letter-spacing: 0.56px;
   color: var(--text);
 }
+.st-switcher__asset svg {
+  cursor: pointer;
+}
 .st-switcher__steps {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin: 16px 0;
   width: 220px;
 }
 
 .step {
+  cursor: pointer;
+  padding: 16px 0;
+}
+
+.step span {
+  display: block;
+  background-color: var(--grey100);
   height: 4px;
   width: 40px;
-  background-color: var(--grey100);
+  transition: 0.3s;
 }
 
 .st-switcher__amount {
@@ -141,20 +170,16 @@ export default {
   display: flex;
   justify-content: space-between;
   padding: 16px 0;
-
   font-family: Noto Sans;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
   line-height: 24px;
   letter-spacing: 0.12px;
-
-  /* Text colors / Text dark */
-
   color: #1c1a1c;
 }
 
-.step--active {
+.step--active span {
   background-color: var(--marine500);
   width: 100px;
 }
