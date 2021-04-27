@@ -1,5 +1,5 @@
 <template>
-  <div v-if="steps" class="st-switcher">
+  <div v-if="steps && steps[step]" class="st-switcher">
     <p class="st-switcher__asset">
       <span class="asset">{{ steps[step].asset }}</span>
       <svg
@@ -41,11 +41,11 @@
       ></span>
     </div>
     <p class="st-switcher__amount">
-      {{ isHidden ? '*****' : steps[step].amount }}
+      {{ isHidden ? '*****' : steps[step].amountTop }}
     </p>
     <div class="st-switcher__details">
-      <span class="amount-fiat">${{ amountFiat }}</span>
-      <StTag> +123.99% </StTag>
+      <span class="amount-fiat">{{ isHidden ? '*****' : steps[step].amountBottom }}</span>
+      <StTag> {{ isHidden ? '*****' : steps[step].percentage }}% </StTag>
     </div>
   </div>
 </template>
@@ -60,32 +60,37 @@ export default {
       type: Number,
       required: true,
       default: () => {
-        return 0;
-      },
+        return 0
+      }
     },
   },
   emits: ['change'],
   setup(props, ctx) {
     const step = ref(0);
     const isHidden = ref(false);
-    const steps = ref([
-      {
-        asset: 'XST',
-        amount: props.amount,
-      },
-      {
-        asset: 'EUR',
-        amount: props.amount * 2,
-      },
-      {
-        asset: 'BTC',
-        amount: props.amount / 8,
-      },
-    ]);
-
-    const amountFiat = computed(() => {
-      return props.amount * CryptoService.constraints.XST_USD;
-    });
+    const steps = computed(() => {
+      return [
+        // TODO: hardcoded stuff
+        {
+          asset: 'XST',
+          amountTop: `${props.amount}`,
+          amountBottom: `$${props.amount * CryptoService.constraints.XST_USD}`,
+          percentage: `+100`
+        },
+        {
+          asset: 'EUR',
+          amountTop: `$${props.amount * CryptoService.constraints.XST_USD}`,
+          amountBottom: `${props.amount} XST` ,
+          percentage: `+90`
+        },
+        {
+          asset: 'BTC',
+          amountTop: props.amount * CryptoService.constraints.XST_BTC, 
+          amountBottom: `${props.amount} XST`,
+          percentage: `+22`
+        },
+      ]
+    })
 
     function changeStep(i) {
       step.value = i;
@@ -96,7 +101,6 @@ export default {
       steps,
       changeStep,
       isHidden,
-      amountFiat,
     };
   },
 };
