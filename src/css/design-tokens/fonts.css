@@ -1,16 +1,25 @@
 /* fonts  */
 
 @font-face {
-  font-family: 'Source Sans Pro';
+  font-family: var(--primary-font);
   font-display: swap;
-  src: local('NotoSourceSansProSans'), local('SourceSansPro'),
+  src: local('SourceSansPro'), local('SourceSansPro'),
     url('./fonts/SourceSansPro/SourceSansPro-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Source Sans Pro';
+  font-family: var(--primary-font);
+  font-display: swap;
+  src: local('SourceSansPro'), local('SourceSansPro'),
+    url('./fonts/SourceSansPro/SourceSansPro-Bold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: var(--primary-font);
   font-display: swap;
   src: local('NotoSans'), local('NotoSans'),
     url('./fonts/SourceSansPro/SourceSansPro-Bold.ttf') format('truetype');
@@ -19,7 +28,7 @@
 }
 
 @font-face {
-  font-family: 'Noto Sans';
+  font-family: var(--secondary-font);
   font-display: swap;
   src: local('NotoSans'), local('NotoSans'),
     url('./fonts/NotoSans/NotoSans-Regular.ttf') format('truetype');
@@ -28,7 +37,7 @@
 }
 
 @font-face {
-  font-family: 'Noto Sans';
+  font-family: var(--secondary-font);
   font-display: swap;
   src: local('NotoSans'), local('NotoSans'),
     url('./fonts/NotoSans/NotoSans-Bold.ttf') format('truetype');

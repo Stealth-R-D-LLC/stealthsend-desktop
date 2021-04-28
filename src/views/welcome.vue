@@ -73,8 +73,6 @@ import { ref } from 'vue';
 import * as bip39 from 'bip39';
 import * as bip32 from 'bip32';
 import { useMainStore } from '@/store';
-
-// import db from '../db'
 import router from '../router';
 import CryptoService from '../services/crypto';
 
