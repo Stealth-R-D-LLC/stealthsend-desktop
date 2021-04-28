@@ -52,8 +52,7 @@ import fromUnixTime from 'date-fns/fromUnixTime';
 import format from 'date-fns/format';
 import isToday from 'date-fns/isToday';
 import isYesterday from 'date-fns/isYesterday';
-import { round } from 'mathjs';
-
+import useHelpers from '@/composables/useHelpers';
 
 import router from '@/router';
 export default {
@@ -65,10 +64,10 @@ export default {
   setup() {
     console.log('Init crypto service!');
     const accounts = ref([]);
+    
     async function getAccounts() {
       accounts.value = await CryptoService.getAccounts();
     }
-    getAccounts();
 
     const utxo = ref(0);
     const txs = ref([]);
@@ -89,20 +88,6 @@ export default {
       txs.value = groupBy(transactionsTmp, 'blocktimeDate');
       accounts.value = hdWallet.accounts;
     }
-    scanWallet();
-
-    // const accounts = computed(() => {
-    //   return globalState.state.accounts.filter((el) => !el.isArchived)
-    // })
-
-    // const openAccountDetails = (account) => {
-    //   globalState.setAccountDetails(account);
-    //   router.push('/account/details');
-    // };
-
-    function formatBlocktime(blocktime) {
-      return format(fromUnixTime(blocktime), 'h:m:s a');
-    }
 
     function openTransaction(trx) {
       console.log('trx', trx);
@@ -120,13 +105,6 @@ export default {
       return relative;
     }
 
-    function formatAmount(amount, roundDecimals = false) {
-      if (roundDecimals) {
-        return new Intl.NumberFormat('en-IN').format(amount)
-      }
-      return new Intl.NumberFormat('en-IN').format(round(amount, 2))
-    }
-
     const txDates = computed(() => {
       if (txs.value.length === 0) return [];
       return Object.keys(txs.value);
@@ -136,41 +114,22 @@ export default {
       return CryptoService.constraints.XST_USD || 1;
     });
 
-    // helper for groupig transactions by date
-    const groupBy = (collection, iteratee = (x) => x) => {
-      const it =
-        typeof iteratee === 'function'
-          ? iteratee
-          : ({ [iteratee]: prop }) => prop;
+    getAccounts();
+    scanWallet();
 
-      const array = Array.isArray(collection)
-        ? collection
-        : Object.values(collection);
-
-      return array.reduce((r, e) => {
-        const k = it(e);
-
-        r[k] = r[k] || [];
-
-        r[k].push(e);
-
-        return r;
-      }, {});
-    };
+    const { formatBlocktime, groupBy, formatAmount } =  useHelpers()
 
     return {
-      // openAccountDetails,
-      // accounts,
       archiveAccount,
-
       utxo,
       txs,
       openTransaction,
-      formatBlocktime,
       todayOrYesteday,
       XST_USD_RATE,
       formatAmount,
       txDates,
+      formatBlocktime,
+      groupBy
     };
   },
 };
