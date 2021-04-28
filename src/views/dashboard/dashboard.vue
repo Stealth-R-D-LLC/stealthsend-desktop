@@ -27,12 +27,14 @@
       >
         <template #amount="{ item }">
           <span :class="[item.amount > 0 ? 'expense' : 'income']">
-            {{ item.amount > 0 ? '+' : '-' }} {{ formatAmount(Math.abs(item.amount)) }} XST
+            {{ item.amount > 0 ? '+' : '-' }}
+            {{ formatAmount(Math.abs(item.amount)) }} XST
           </span>
         </template>
-                <template #amountFiat="{ item }">
+        <template #amountFiat="{ item }">
           <span :class="[item.amount > 0 ? 'expense' : 'income']">
-            {{ item.amount > 0 ? '+' : '-' }} {{ formatAmount(Math.abs(item.amount * XST_USD_RATE), true) }} USD
+            {{ item.amount > 0 ? '+' : '-' }}
+            {{ formatAmount(Math.abs(item.amount * XST_USD_RATE), true) }} USD
           </span>
         </template>
         <template #blocktime="{ item }">
@@ -64,7 +66,7 @@ export default {
   setup() {
     console.log('Init crypto service!');
     const accounts = ref([]);
-    
+
     async function getAccounts() {
       accounts.value = await CryptoService.getAccounts();
     }
@@ -110,14 +112,14 @@ export default {
       return Object.keys(txs.value);
     });
 
-        const XST_USD_RATE = computed(() => {
+    const XST_USD_RATE = computed(() => {
       return CryptoService.constraints.XST_USD || 1;
     });
 
     getAccounts();
     scanWallet();
 
-    const { formatBlocktime, groupBy, formatAmount } =  useHelpers()
+    const { formatBlocktime, groupBy, formatAmount } = useHelpers();
 
     return {
       archiveAccount,
@@ -129,7 +131,7 @@ export default {
       formatAmount,
       txDates,
       formatBlocktime,
-      groupBy
+      groupBy,
     };
   },
 };
