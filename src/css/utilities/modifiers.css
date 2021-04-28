@@ -5,3 +5,8 @@
 .bold {
       font-weight: 600;
     }
+
+.flex-center-vertical {
+      display: flex;
+      align-items: center;
+}

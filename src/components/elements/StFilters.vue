@@ -24,31 +24,29 @@ export default {
   emits: ['change'],
   setup(_, ctx) {
     const filters = ref([
-        {
-            label: '1d',
-            value: 1
-        },
-                {
-                            label: '3d',
-            value: 3
-        },
-               
-               
-               
-               {
-            label: '1w',
-            value: 7
-        },
-                {
-            label: '1m',
-            value: 30
-        },
-                {
-            label: 'All',
-            value: Infinity
-        },
+      {
+        label: '1d',
+        value: 1,
+      },
+      {
+        label: '3d',
+        value: 3,
+      },
+
+      {
+        label: '1w',
+        value: 7,
+      },
+      {
+        label: '1m',
+        value: 30,
+      },
+      {
+        label: 'All',
+        value: Infinity,
+      },
     ]);
-    const currentFilter = ref({label: 'All', value: Infinity});
+    const currentFilter = ref({ label: 'All', value: Infinity });
 
     function changeFilter(filter) {
       currentFilter.value = filter;
