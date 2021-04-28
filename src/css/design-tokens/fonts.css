@@ -3,9 +3,18 @@
 @font-face {
   font-family: var(--primary-font);
   font-display: swap;
-  src: local('NotoSourceSansProSans'), local('SourceSansPro'),
+  src: local('SourceSansPro'), local('SourceSansPro'),
     url('./fonts/SourceSansPro/SourceSansPro-Regular.ttf') format('truetype');
   font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: var(--primary-font);
+  font-display: swap;
+  src: local('SourceSansPro'), local('SourceSansPro'),
+    url('./fonts/SourceSansPro/SourceSansPro-Bold.ttf') format('truetype');
+  font-weight: 600;
   font-style: normal;
 }
 

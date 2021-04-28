@@ -1,7 +1,7 @@
 <template>
   <div class="st-filters">
     <div class="st-filters__left">
-        <slot>Transactions</slot>
+      <slot>Transactions</slot>
     </div>
     <div class="st-filters__right">
       <p
@@ -10,8 +10,9 @@
         :class="{ 'filter-item--active': currentFilter === filter }"
         class="filter-item"
         @click="changeFilter(filter)"
-        >{{ filter }}</p
       >
+        {{ filter }}
+      </p>
     </div>
   </div>
 </template>
@@ -23,11 +24,11 @@ export default {
   emits: ['change'],
   setup(_, ctx) {
     const filters = ref(['1d', '3d', '1w', '1m', 'All']);
-    const currentFilter = ref('1d');
+    const currentFilter = ref('All');
 
     function changeFilter(filter) {
       currentFilter.value = filter;
-      ctx.emit('change', filter)
+      ctx.emit('change', filter);
     }
     return {
       changeFilter,
@@ -47,7 +48,7 @@ export default {
 }
 
 .st-filters__right {
-    display: flex;
+  display: flex;
 }
 
 .st-filters .filter-item {
@@ -62,15 +63,15 @@ export default {
   cursor: pointer;
 
   font-family: var(--secondary-font);
-font-style: normal;
-font-weight: normal;
-font-size: 12px;
-line-height: 24px;
-display: flex;
-align-items: center;
-justify-content: center;
-text-align: center;
-letter-spacing: 0.12px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  letter-spacing: 0.12px;
 }
 
 .st-filters .filter-item:hover {
@@ -84,7 +85,6 @@ letter-spacing: 0.12px;
   color: var(--marine500);
   transition: 0.2s;
   font-weight: 600;
-    /* padding: 19px; */
-
+  /* padding: 19px; */
 }
 </style>
