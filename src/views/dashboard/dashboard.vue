@@ -2,6 +2,7 @@
   <Side></Side>
   <div class="dashboard-container">
     <TopBar></TopBar>
+    <Filters></Filters>
     <template v-for="date in txDates" :key="date">
       <p class="tx-date">
         <span
@@ -55,6 +56,7 @@ import format from 'date-fns/format';
 import isToday from 'date-fns/isToday';
 import isYesterday from 'date-fns/isYesterday';
 import useHelpers from '@/composables/useHelpers';
+import Filters from '@/components/elements/StFilters';
 
 import router from '@/router';
 export default {
@@ -62,6 +64,7 @@ export default {
   components: {
     TopBar,
     Side,
+    Filters,
   },
   setup() {
     console.log('Init crypto service!');
@@ -151,7 +154,7 @@ export default {
 }
 
 .dashboard-container .tx-date {
-  font-family: Noto Sans;
+  font-family: var(--secondary-font);
   font-style: normal;
   font-size: 12px;
   line-height: 24px;
