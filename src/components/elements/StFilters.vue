@@ -6,12 +6,12 @@
     <div class="st-filters__right">
       <p
         v-for="filter in filters"
-        :key="filter"
-        :class="{ 'filter-item--active': currentFilter === filter }"
+        :key="filter.label"
+        :class="{ 'filter-item--active': currentFilter.value === filter.value }"
         class="filter-item"
         @click="changeFilter(filter)"
       >
-        {{ filter }}
+        {{ filter.label }}
       </p>
     </div>
   </div>
@@ -23,8 +23,32 @@ export default {
   name: 'StFilters',
   emits: ['change'],
   setup(_, ctx) {
-    const filters = ref(['1d', '3d', '1w', '1m', 'All']);
-    const currentFilter = ref('All');
+    const filters = ref([
+        {
+            label: '1d',
+            value: 1
+        },
+                {
+                            label: '3d',
+            value: 3
+        },
+               
+               
+               
+               {
+            label: '1w',
+            value: 7
+        },
+                {
+            label: '1m',
+            value: 30
+        },
+                {
+            label: 'All',
+            value: Infinity
+        },
+    ]);
+    const currentFilter = ref({label: 'All', value: Infinity});
 
     function changeFilter(filter) {
       currentFilter.value = filter;

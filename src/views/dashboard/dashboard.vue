@@ -57,7 +57,7 @@ import isToday from 'date-fns/isToday';
 import isYesterday from 'date-fns/isYesterday';
 import useHelpers from '@/composables/useHelpers';
 import Filters from '@/components/elements/StFilters';
-import differenceInCalendarDays from 'date-fns/differenceInCalendarDays'
+import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
 
 import router from '@/router';
 export default {
@@ -77,17 +77,17 @@ export default {
 
     const utxo = ref(0);
     const txs = ref([]);
-    let transactions = []
+    let transactions = [];
     async function scanWallet() {
       const hdWallet = await CryptoService.scanWallet();
       console.log('scanned wallet: ', hdWallet);
       utxo.value = hdWallet.utxo;
-      transactions = hdWallet.txs
+      transactions = hdWallet.txs;
       accounts.value = hdWallet.accounts;
-      orderTransactions()
+      orderTransactions();
     }
 
-    function orderTransactions(filter = 'All') {
+    function orderTransactions(filter) {
       // sort transactions by blocktime
       const transactionsTmp = transactions
         .map((el) => {
@@ -99,24 +99,15 @@ export default {
           return obj;
         })
         .sort((a, b) => (a.blocktime < b.blocktime ? 1 : -1));
-        // filter transactions based on selected filter
-        let filtered = filterTransactions(filter, transactionsTmp)
-        // group transactions by date
-        txs.value = groupBy(filtered, 'blocktimeDate');
+      // filter transactions based on selected filter
+      let filtered = filterTransactions(filter, transactionsTmp);
+      // group transactions by date
+      txs.value = groupBy(filtered, 'blocktimeDate');
     }
 
     function filterTransactions(filter, transactions) {
-      let filtered = []
-      if (filter === '1d') {
-        filtered = transactions.filter(el => isToday(new Date(el.blocktimeDate)))
-      } else if (filter === '3d') {
-        filtered = transactions.filter(el => differenceInCalendarDays( new Date(), fromUnixTime(el.blocktime)) <= 3)
-      }
-
-      else {
-        filtered = [...transactions]
-      }
-      return filtered
+      if (!filter || filter === Infinity) return transactions;
+      return transactions.filter((el) => differenceInCalendarDays(new Date(), fromUnixTime(el.blocktime)) < filter.value)
     }
 
     function openTransaction(trx) {
@@ -161,7 +152,7 @@ export default {
       formatBlocktime,
       groupBy,
       filterTransactions,
-      orderTransactions
+      orderTransactions,
     };
   },
 };
