@@ -5,7 +5,7 @@ import { round } from 'mathjs';
 export default function useHelpers() {
   // unix timestamp to 9:45:59 AM
   function formatBlocktime(blocktime) {
-    return format(fromUnixTime(blocktime), 'h:mm:s a');
+    return format(fromUnixTime(blocktime), 'h:mm:ss a');
   }
 
   // 2nd argument is usually for rounding fiat to 2 decimal places

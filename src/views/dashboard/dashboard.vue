@@ -19,27 +19,29 @@
         :data="txs[date]"
         :has-header="false"
         :columns="[
-          { key: 'blocktime', title: 'Time' },
+          { key: 'blocktime', title: 'Time', customCellClass: 'blocktime' },
           { key: 'account', title: 'Account' },
-          { key: 'amount', title: 'Amount' },
           { key: 'amountFiat', title: 'Amount (USD)' },
+          { key: 'amount', title: 'Amount' },
         ]"
         @rowClick="openTransaction"
       >
         <template #amount="{ item }">
-          <span :class="[item.amount > 0 ? 'expense' : 'income']">
             {{ item.amount > 0 ? '+' : '-' }}
             {{ formatAmount(Math.abs(item.amount)) }} XST
-          </span>
         </template>
         <template #amountFiat="{ item }">
-          <span :class="[item.amount > 0 ? 'expense' : 'income']">
             {{ item.amount > 0 ? '+' : '-' }}
             {{ formatAmount(Math.abs(item.amount * XST_USD_RATE), true) }} USD
-          </span>
         </template>
         <template #blocktime="{ item }">
+          <div class="flex-center-vertical">
+          <svg v-if="item.amount > 0" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="12" fill="#D6F8F0"/><path d="M7 14v3h10v-3" stroke="#07AC82" stroke-width="2"/><path d="M10 11l2 2 2-2" stroke="#07AC82" stroke-width="2" stroke-linecap="square"/><path d="M12 6v7" stroke="#07AC82" stroke-width="2"/></svg>
+          <svg v-else-if="item.amount < 0" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="12" fill="#E5E4E8"/><path d="M7 13v3h10v-3" stroke="#8B8A8D" stroke-width="2"/><path d="M14 8l-2-2-2 2" stroke="#8B8A8D" stroke-width="2" stroke-linecap="square"/><path d="M12 6v7" stroke="#8B8A8D" stroke-width="2"/></svg>
+          <span>
           {{ formatBlocktime(item.blocktime) }}
+          </span>
+          </div>
         </template>
       </StTable>
     </template>
@@ -107,7 +109,11 @@ export default {
 
     function filterTransactions(filter, transactions) {
       if (!filter || filter === Infinity) return transactions;
-      return transactions.filter((el) => differenceInCalendarDays(new Date(), fromUnixTime(el.blocktime)) < filter.value)
+      return transactions.filter(
+        (el) =>
+          differenceInCalendarDays(new Date(), fromUnixTime(el.blocktime)) <
+          filter.value
+      );
     }
 
     function openTransaction(trx) {
@@ -159,14 +165,6 @@ export default {
 </script>
 
 <style scoped>
-.income {
-  font-weight: bold;
-  color: var(--danger);
-}
-.expense {
-  font-weight: bold;
-  color: var(--success);
-}
 .dashboard-container {
   padding: 24px;
 }
@@ -184,4 +182,13 @@ export default {
 .dashboard-container .tx-date .relative {
   font-weight: bold;
 }
+
+.blocktime span{
+  margin-left: 16px;
+}
+</style>
+<style>
+  .blocktime {
+    width: 160px
+  }
 </style>
