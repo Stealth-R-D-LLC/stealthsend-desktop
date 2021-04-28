@@ -170,7 +170,7 @@ export default {
   display: flex;
   justify-content: space-between;
   padding: 16px 0;
-  font-family: Noto Sans;
+  font-family: var(--secondary-font);
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
