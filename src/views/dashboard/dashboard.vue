@@ -27,20 +27,52 @@
         @rowClick="openTransaction"
       >
         <template #amount="{ item }">
-            {{ item.amount > 0 ? '+' : '-' }}
-            {{ formatAmount(Math.abs(item.amount)) }} XST
+          {{ item.amount > 0 ? '+' : '-' }}
+          {{ formatAmount(Math.abs(item.amount)) }} XST
         </template>
         <template #amountFiat="{ item }">
-            {{ item.amount > 0 ? '+' : '-' }}
-            {{ formatAmount(Math.abs(item.amount * XST_USD_RATE), true) }} USD
+          {{ item.amount > 0 ? '+' : '-' }}
+          {{ formatAmount(Math.abs(item.amount * XST_USD_RATE), true) }} USD
         </template>
         <template #blocktime="{ item }">
           <div class="flex-center-vertical">
-          <svg v-if="item.amount > 0" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="12" fill="#D6F8F0"/><path d="M7 14v3h10v-3" stroke="#07AC82" stroke-width="2"/><path d="M10 11l2 2 2-2" stroke="#07AC82" stroke-width="2" stroke-linecap="square"/><path d="M12 6v7" stroke="#07AC82" stroke-width="2"/></svg>
-          <svg v-else-if="item.amount < 0" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="12" fill="#E5E4E8"/><path d="M7 13v3h10v-3" stroke="#8B8A8D" stroke-width="2"/><path d="M14 8l-2-2-2 2" stroke="#8B8A8D" stroke-width="2" stroke-linecap="square"/><path d="M12 6v7" stroke="#8B8A8D" stroke-width="2"/></svg>
-          <span>
-          {{ formatBlocktime(item.blocktime) }}
-          </span>
+            <svg
+              v-if="item.amount > 0"
+              width="24"
+              height="24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="12" cy="12" r="12" fill="#D6F8F0" />
+              <path d="M7 14v3h10v-3" stroke="#07AC82" stroke-width="2" />
+              <path
+                d="M10 11l2 2 2-2"
+                stroke="#07AC82"
+                stroke-width="2"
+                stroke-linecap="square"
+              />
+              <path d="M12 6v7" stroke="#07AC82" stroke-width="2" />
+            </svg>
+            <svg
+              v-else-if="item.amount < 0"
+              width="24"
+              height="24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="12" cy="12" r="12" fill="#E5E4E8" />
+              <path d="M7 13v3h10v-3" stroke="#8B8A8D" stroke-width="2" />
+              <path
+                d="M14 8l-2-2-2 2"
+                stroke="#8B8A8D"
+                stroke-width="2"
+                stroke-linecap="square"
+              />
+              <path d="M12 6v7" stroke="#8B8A8D" stroke-width="2" />
+            </svg>
+            <span>
+              {{ formatBlocktime(item.blocktime) }}
+            </span>
           </div>
         </template>
       </StTable>
@@ -183,12 +215,12 @@ export default {
   font-weight: bold;
 }
 
-.blocktime span{
+.blocktime span {
   margin-left: 16px;
 }
 </style>
 <style>
-  .blocktime {
-    width: 160px
-  }
+.blocktime {
+  width: 160px;
+}
 </style>

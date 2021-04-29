@@ -31,13 +31,11 @@ export default {
   justify-content: space-between;
 }
 
-.default-layout__header svg{
+.default-layout__header svg {
   margin: 0 10px;
 }
 
-.default-layout__header svg:hover{
-  cursor: pointer
+.default-layout__header svg:hover {
+  cursor: pointer;
 }
-
-
 </style>

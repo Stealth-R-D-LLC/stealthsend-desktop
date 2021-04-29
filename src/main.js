@@ -16,7 +16,7 @@ import {
   StTable,
   StTag,
   StIcon,
-  StTooltip
+  StTooltip,
 } from 'stealth-kit';
 import { createApp } from 'vue';
 import App from './App.vue';
