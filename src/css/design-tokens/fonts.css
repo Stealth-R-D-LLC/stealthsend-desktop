@@ -19,15 +19,6 @@
 }
 
 @font-face {
-  font-family: var(--primary-font);
-  font-display: swap;
-  src: local('NotoSans'), local('NotoSans'),
-    url('./fonts/SourceSansPro/SourceSansPro-Bold.ttf') format('truetype');
-  font-weight: 600;
-  font-style: normal;
-}
-
-@font-face {
   font-family: var(--secondary-font);
   font-display: swap;
   src: local('NotoSans'), local('NotoSans'),
