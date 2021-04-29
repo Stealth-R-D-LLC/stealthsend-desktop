@@ -81,9 +81,7 @@ export default {
   border-radius: 50%;
   background: var(--grey50);
   color: var(--grey900);
-  /* padding: 10px; */
   cursor: pointer;
-
   font-family: var(--secondary-font);
   font-style: normal;
   font-weight: normal;
