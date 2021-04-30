@@ -3,15 +3,13 @@
     id="aside-menu"
     class="default-layout__aside"
     :class="{
-      width: isCollapsed,
-      animate_width: isCollapsed,
-      animate_fullwidth: delayAnimation,
+      width: !isCollapsed,
     }"
   >
     <nav>
       <ul>
         <li>
-          <a class="item" @click.prevent="addAnimationClass">
+          <a class="item" @click.prevent="toggleMenu">
             <StArrow :open="!isCollapsed"></StArrow>
           </a>
         </li>
@@ -291,34 +289,29 @@
 </template>
 
 <script>
-import { ref, defineComponent } from 'vue';
+import { ref, defineComponent} from 'vue';
 import StArrow from '@/components/elements/StArrow';
+import { useRouter } from 'vue-router';
+
 export default defineComponent({
   name: 'StMenuBar',
   components: {
     StArrow,
   },
   setup() {
-    const isCollapsed = ref(false);
-    const delayAnimation = ref(false);
-    let counterAnimation = ref(0);
+    const router = useRouter();
+    const isCollapsed = ref(true);
 
-    function addAnimationClass() {
-      if (counterAnimation.value === 0) {
-        isCollapsed.value = true;
-        delayAnimation.value = false;
-        counterAnimation.value++;
-      } else {
-        // counterAnimation.value++;
-        isCollapsed.value = !isCollapsed.value;
-        delayAnimation.value = true;
-      }
+    router.afterEach(() => {
+      !isCollapsed.value ? isCollapsed.value = true : null
+    })
+    function toggleMenu() {
+      isCollapsed.value = !isCollapsed.value
     }
 
     return {
       isCollapsed,
-      delayAnimation,
-      addAnimationClass,
+      toggleMenu,
     };
   },
 });
@@ -326,25 +319,16 @@ export default defineComponent({
 
 <style scoped>
 .default-layout__aside {
-  width: 280px;
+  width: 75px;
+  transition: 0.3s;
 }
 
 .animate_width {
   transition: width 0.5s ease-out;
-  animation: animate-width 1.2s 1 ease-in-out;
 }
 
 .default-layout__aside.width {
-  width: 75px;
-}
-
-.animate_fullwidth {
-  transition: width 0.5s ease-out;
-  animation: animate-full-width 1.2s 1 ease-in-out;
-}
-
-.default-layout__aside.width .item span {
-  display: none;
+  width: 280px;
 }
 
 .default-layout__aside nav {
