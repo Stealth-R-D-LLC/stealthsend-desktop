@@ -289,7 +289,7 @@
 </template>
 
 <script>
-import { ref, defineComponent} from 'vue';
+import { ref, defineComponent } from 'vue';
 import StArrow from '@/components/elements/StArrow';
 import { useRouter } from 'vue-router';
 
@@ -303,10 +303,10 @@ export default defineComponent({
     const isCollapsed = ref(true);
 
     router.afterEach(() => {
-      !isCollapsed.value ? isCollapsed.value = true : null
-    })
+      !isCollapsed.value ? (isCollapsed.value = true) : null;
+    });
     function toggleMenu() {
-      isCollapsed.value = !isCollapsed.value
+      isCollapsed.value = !isCollapsed.value;
     }
 
     return {
