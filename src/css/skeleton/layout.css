@@ -13,16 +13,17 @@
   display: grid;
 }
 
-.default-layout {
+.layout {
   display: flex;
   z-index: var(--zApp);
   height: 100%;
 }
 
-.default-layout__header {
-  padding: 12px 0;
+.layout__header {
+  /* padding: 12px 0; */
+  padding: 32px 24px 24px 24px;
 }
-.default-layout__main {
+.layout__main {
   /* background-color: #220365; */
   flex: 1;
   overflow: auto;
@@ -33,7 +34,18 @@
   grid-template-columns: 392px 11fr;
 }
 
-.default-layout__main .triangle {
+.layout__single {
+    /* background-color: #220365; */
+    flex: 1;
+    overflow: auto;
+    /* padding: 0 12px; */
+    position: relative;
+    margin-left: 75px; /*for fixed sidebar */
+    /* display: grid;
+    grid-template-columns: 12fr; */
+}
+
+.layout__main .triangle {
   clip-path: polygon(0 0, 0% 100%, 100% 100%);
   background-color: white;
   width: 66vw;
@@ -46,7 +58,7 @@
   background-color: transparent; */
 }
 
-.default-layout__aside {
+.layout__aside {
   background-color: var(--marine900);
   width: 280px;
   /* fixed and no scrolling  */
