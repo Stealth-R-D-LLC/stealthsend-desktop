@@ -98,8 +98,8 @@ const routes = [
     name: 'AccountDetails',
     component: AccountDetails,
     meta: {
-      layout: 'single'
-    }
+      layout: 'single',
+    },
   },
   {
     path: '/transaction/:id',

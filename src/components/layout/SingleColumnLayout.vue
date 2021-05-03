@@ -3,7 +3,10 @@
     <MenuBar></MenuBar>
     <main class="layout__single">
       <router-view v-slot="{ Component }">
-        <component :is="Component" />
+        <div>
+          <TopBar></TopBar>
+          <component :is="Component" />
+        </div>
       </router-view>
     </main>
   </div>
@@ -13,11 +16,13 @@
 import MenuBar from '@/components/layout/MenuBar.vue';
 import TopBar from '@/components/layout/TopBar.vue';
 import CryptoService from '../../services/crypto';
+
 export default {
   name: 'TsDefault',
   components: {
     MenuBar,
     TopBar,
+
   },
   setup() {
     CryptoService.init();

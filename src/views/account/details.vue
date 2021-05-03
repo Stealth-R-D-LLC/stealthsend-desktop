@@ -109,3 +109,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.account-details-container {
+  padding: 24px;
+}
+</style>

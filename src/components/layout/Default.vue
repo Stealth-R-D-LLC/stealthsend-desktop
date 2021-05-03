@@ -2,10 +2,12 @@
   <div class="layout">
     <MenuBar></MenuBar>
     <main class="layout__main">
+      <Side></Side>
       <router-view v-slot="{ Component }">
-        <!-- <transition name="fade" mode="out-in"> -->
-        <component :is="Component" />
-        <!-- </transition> -->
+        <div>
+          <TopBar></TopBar>
+          <component :is="Component" />
+        </div>
       </router-view>
     </main>
   </div>
@@ -15,11 +17,14 @@
 import MenuBar from '@/components/layout/MenuBar.vue';
 import TopBar from '@/components/layout/TopBar.vue';
 import CryptoService from '../../services/crypto';
+import Side from '@/views/dashboard/components/side.vue';
+
 export default {
   name: 'TsDefault',
   components: {
     MenuBar,
     TopBar,
+    Side
   },
   setup() {
     CryptoService.init();
