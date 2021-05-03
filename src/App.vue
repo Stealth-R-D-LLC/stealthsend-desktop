@@ -12,6 +12,7 @@ import { useMainStore } from '@/store';
 import { computed } from 'vue';
 import DefaultLayout from './components/layout/Default.vue';
 import NewUserLayout from './components/layout/NewUser.vue';
+import SingleColumnLayout from './components/layout/SingleColumnLayout.vue';
 import LockLayout from './components/layout/Lock.vue';
 import { useRoute } from 'vue-router';
 
@@ -36,6 +37,8 @@ export default {
         return NewUserLayout;
       } else if (layout === 'lock') {
         return LockLayout;
+      } else if (layout === 'single') {
+        return SingleColumnLayout;
       } else {
         console.warn('Layout error');
         return DefaultLayout;

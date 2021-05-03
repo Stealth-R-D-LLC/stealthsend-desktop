@@ -1,8 +1,7 @@
 <template>
   <div class="layout">
     <MenuBar></MenuBar>
-    <main class="layout__main">
-      <Side></Side>
+    <main class="layout__single">
       <router-view v-slot="{ Component }">
         <div>
           <TopBar></TopBar>
@@ -17,14 +16,12 @@
 import MenuBar from '@/components/layout/MenuBar.vue';
 import TopBar from '@/components/layout/TopBar.vue';
 import CryptoService from '../../services/crypto';
-import Side from '@/views/dashboard/components/side.vue';
 
 export default {
   name: 'TsDefault',
   components: {
     MenuBar,
     TopBar,
-    Side,
   },
   setup() {
     CryptoService.init();
