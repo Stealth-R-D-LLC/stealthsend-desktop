@@ -86,7 +86,14 @@ export default {
       mainStore
         .rpc('getaddressoutputs', [account.value.address])
         .then((res) => {
-          transactions.value = transactions.value.concat(res);
+          let mappedAmounts = res.map(el => {
+            return {
+              ...el,
+              amount: el.amount * (-1)
+            }
+          })
+          console.log('mapped', mappedAmounts);
+          transactions.value = transactions.value.concat(mappedAmounts);
         })
         .catch((err) => {
           return err;
