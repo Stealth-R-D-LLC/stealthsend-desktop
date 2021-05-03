@@ -24,7 +24,7 @@ export default {
   components: {
     MenuBar,
     TopBar,
-    Side
+    Side,
   },
   setup() {
     CryptoService.init();
