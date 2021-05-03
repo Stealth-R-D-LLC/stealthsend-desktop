@@ -1,13 +1,16 @@
 <template>
   <div class="account-details-container">
     <h1>Account details</h1>
-    <div class="account-details-container__top">top</div>
-    <div class="account-details-container__body">
-      body
-      <pre>
+    <div class="account-details-container__top">
+            <pre>
       {{ account }}
     </pre
       >
+          <img :src="qrSrc" />
+
+    </div>
+    <div class="account-details-container__body">
+      <TransactionList :transactions="transactions"></TransactionList>
     </div>
     <Card
       class="list-item"
@@ -21,32 +24,7 @@
     <StTooltip
       :tooltip-text="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
     >
-      <!-- <StCopyToClipboard
-        :content="account.address"
-        @click="handleCopy"
-      ></StCopyToClipboard> -->
     </StTooltip>
-    <img :src="qrSrc" />
-    <StTable
-      :data="trxOutputs"
-      :columns="[
-        { key: 'txid', title: 'TRX ID' },
-        { key: 'amount', title: 'Amount' },
-        { key: 'confirmations', title: 'Confirmations' },
-        { key: 'utxo', title: 'Balance' },
-      ]"
-      @rowClick="openTransaction"
-    ></StTable>
-    <StTable
-      :data="trxInputs"
-      :columns="[
-        { key: 'txid', title: 'TRX ID' },
-        { key: 'amount', title: 'Amount' },
-        { key: 'confirmations', title: 'Confirmations' },
-        { key: 'utxo', title: 'Balance' },
-      ]"
-      @rowClick="openTransaction"
-    ></StTable>
   </div>
 </template>
 
@@ -55,6 +33,7 @@ import { useMainStore } from '@/store';
 import { computed, ref } from 'vue';
 import VanillaQR from 'vanillaqr';
 import Card from '@/components/elements/Card';
+import TransactionList from '@/components/partials/TransactionList';
 // import StCopyToClipboard from '@/components/kit/StClipboard.vue';
 // import StTooltip from '@/components/kit/StTooltip.vue';
 import router from '@/router';
@@ -63,6 +42,7 @@ export default {
   name: 'StAccountDetails',
   components: {
     Card,
+    TransactionList
   },
   setup() {
     const mainStore = useMainStore();
@@ -76,8 +56,7 @@ export default {
     });
 
     const addressInfo = ref({});
-    const trxOutputs = ref([]);
-    const trxInputs = ref([]);
+    const transactions = ref([])
     const qrSrc = ref('');
 
     let copyPending = ref(false);
@@ -98,9 +77,9 @@ export default {
           return err;
         });
       mainStore
-        .rpc('getaddressinputs', [account.value.address, 1, 10])
+        .rpc('getaddressinputs', [account.value.address])
         .then((res) => {
-          trxInputs.value = res;
+          transactions.value = transactions.value.concat(res)
         })
         .catch((err) => {
           return err;
@@ -108,7 +87,8 @@ export default {
       mainStore
         .rpc('getaddressoutputs', [account.value.address])
         .then((res) => {
-          trxOutputs.value = res;
+          transactions.value = transactions.value.concat(res)
+
         })
         .catch((err) => {
           return err;
@@ -122,12 +102,11 @@ export default {
     return {
       account,
       addressInfo,
-      trxOutputs,
       copyPending,
       handleCopy,
-      trxInputs,
       qrSrc,
       openTransaction,
+      transactions
     };
   },
 };

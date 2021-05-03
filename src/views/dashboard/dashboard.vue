@@ -54,5 +54,4 @@ export default {
 .dashboard-container {
   padding: 24px;
 }
-
 </style>
