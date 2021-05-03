@@ -1,9 +1,14 @@
 <template>
   <div class="account-details-container">
     <h1>Account details</h1>
-    <pre>
+    <div class="account-details-container__top">top</div>
+    <div class="account-details-container__body">
+      body
+      <pre>
       {{ account }}
-    </pre>
+    </pre
+      >
+    </div>
     <Card
       class="list-item"
       :archiveable="false"
