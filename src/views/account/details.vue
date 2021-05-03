@@ -1,9 +1,9 @@
 <template>
   <div class="account-details-container">
     <div class="account-details-container__top">
-      <p>xst balance: {{account.utxo}}</p>
-      <p>usd value: {{usdAmount}}</p>
-      <p>xst btc value: {{btcAmount}}</p>
+      <p>xst balance: {{ account.utxo }}</p>
+      <p>usd value: {{ usdAmount }}</p>
+      <p>xst btc value: {{ btcAmount }}</p>
     </div>
     <div class="account-details-container__body">
       <TransactionList :transactions="transactions"></TransactionList>
@@ -62,12 +62,18 @@ export default {
       }, 2000);
     }
 
-          const usdAmount = computed(() => {
-        return Number(addressInfo.value.balance) * CryptoService.constraints.XST_USD || 0
-      })
-            const btcAmount = computed(() => {
-        return Number(addressInfo.value.balance) * CryptoService.constraints.XST_BTC || 0
-      })
+    const usdAmount = computed(() => {
+      return (
+        Number(addressInfo.value.balance) * CryptoService.constraints.XST_USD ||
+        0
+      );
+    });
+    const btcAmount = computed(() => {
+      return (
+        Number(addressInfo.value.balance) * CryptoService.constraints.XST_BTC ||
+        0
+      );
+    });
 
     if (account.value) {
       mainStore
@@ -105,7 +111,6 @@ export default {
       //   url: account.value.address,
       // });
       // qrSrc.value = qr.toImage('png').src;
-
     }
     return {
       account,
@@ -116,7 +121,7 @@ export default {
       openTransaction,
       transactions,
       usdAmount,
-      btcAmount
+      btcAmount,
     };
   },
 };
