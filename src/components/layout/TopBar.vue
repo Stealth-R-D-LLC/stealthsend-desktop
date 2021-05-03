@@ -1,5 +1,5 @@
 <template>
-  <header class="default-layout__header">
+  <header class="layout__header">
     <div class="header-left">
       <StIcon name="chart"></StIcon>
       <StIcon name="tx-list"></StIcon>
@@ -25,17 +25,17 @@ export default {
 </script>
 
 <style scoped>
-.default-layout__header {
+.layout__header {
   border-bottom: 1px solid var(--grey100);
   display: flex;
   justify-content: space-between;
 }
 
-.default-layout__header svg {
+.layout__header svg {
   margin: 0 10px;
 }
 
-.default-layout__header svg:hover {
+.layout__header svg:hover {
   cursor: pointer;
 }
 </style>

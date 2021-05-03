@@ -1,7 +1,7 @@
 <template>
   <aside
     id="aside-menu"
-    class="default-layout__aside"
+    class="layout__aside"
     :class="{
       width: !isCollapsed,
     }"
@@ -318,7 +318,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.default-layout__aside {
+.layout__aside {
   width: 75px;
   transition: 0.3s;
 }
@@ -327,15 +327,15 @@ export default defineComponent({
   transition: width 0.5s ease-out;
 }
 
-.default-layout__aside.width {
+.layout__aside.width {
   width: 280px;
 }
 
-.default-layout__aside nav {
+.layout__aside nav {
   margin-top: 30px;
 }
 
-.default-layout__aside .item__footer {
+.layout__aside .item__footer {
   position: fixed;
   padding: 12px 0;
   text-decoration: none;
@@ -343,33 +343,33 @@ export default defineComponent({
   bottom: 32px;
 }
 
-.default-layout__aside li {
+.layout__aside li {
   display: block;
   cursor: pointer;
   position: relative;
 }
 
-.default-layout__aside li:first-child {
+.layout__aside li:first-child {
   margin-bottom: 120px;
 }
 
-.default-layout__aside .item {
+.layout__aside .item {
   display: block;
 }
 
-.default-layout__aside .icon {
+.layout__aside .icon {
   display: flex;
   width: 1.5rem;
   align-items: center;
   justify-content: center;
 }
 
-.default-layout__aside li svg {
+.layout__aside li svg {
   width: 1.5rem;
   height: 1.5rem;
 }
 
-.default-layout__aside .item {
+.layout__aside .item {
   padding: 12px 0;
   text-decoration: none;
   padding-left: 24px;
@@ -377,7 +377,7 @@ export default defineComponent({
   align-items: center;
 }
 
-.default-layout__aside .item span {
+.layout__aside .item span {
   width: 100%;
   overflow: hidden;
   font-size: 18px;
@@ -390,16 +390,16 @@ export default defineComponent({
   white-space: nowrap;
 }
 
-.default-layout__aside .item.router-link-exact-active svg path {
+.layout__aside .item.router-link-exact-active svg path {
   stroke: var(--marine200);
 }
 
-.default-layout__aside .item.router-link-exact-active span {
+.layout__aside .item.router-link-exact-active span {
   color: var(--marine200);
 }
 
-.default-layout__aside li:hover span,
-.default-layout__aside li:hover svg path {
+.layout__aside li:hover span,
+.layout__aside li:hover svg path {
   stroke: var(--marine200);
   color: var(--marine200);
 }
