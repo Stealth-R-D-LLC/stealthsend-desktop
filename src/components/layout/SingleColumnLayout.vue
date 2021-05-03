@@ -1,11 +1,9 @@
 <template>
   <div class="layout">
     <MenuBar></MenuBar>
-    <main class="layout__main">
+    <main class="layout__single">
       <router-view v-slot="{ Component }">
-        <!-- <transition name="fade" mode="out-in"> -->
         <component :is="Component" />
-        <!-- </transition> -->
       </router-view>
     </main>
   </div>

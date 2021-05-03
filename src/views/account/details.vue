@@ -2,12 +2,11 @@
   <div class="account-details-container">
     <h1>Account details</h1>
     <div class="account-details-container__top">
-            <pre>
+      <pre>
       {{ account }}
     </pre
       >
-          <img :src="qrSrc" />
-
+      <img :src="qrSrc" />
     </div>
     <div class="account-details-container__body">
       <TransactionList :transactions="transactions"></TransactionList>
@@ -42,7 +41,7 @@ export default {
   name: 'StAccountDetails',
   components: {
     Card,
-    TransactionList
+    TransactionList,
   },
   setup() {
     const mainStore = useMainStore();
@@ -56,7 +55,7 @@ export default {
     });
 
     const addressInfo = ref({});
-    const transactions = ref([])
+    const transactions = ref([]);
     const qrSrc = ref('');
 
     let copyPending = ref(false);
@@ -79,7 +78,7 @@ export default {
       mainStore
         .rpc('getaddressinputs', [account.value.address])
         .then((res) => {
-          transactions.value = transactions.value.concat(res)
+          transactions.value = transactions.value.concat(res);
         })
         .catch((err) => {
           return err;
@@ -87,8 +86,7 @@ export default {
       mainStore
         .rpc('getaddressoutputs', [account.value.address])
         .then((res) => {
-          transactions.value = transactions.value.concat(res)
-
+          transactions.value = transactions.value.concat(res);
         })
         .catch((err) => {
           return err;
@@ -106,10 +104,8 @@ export default {
       handleCopy,
       qrSrc,
       openTransaction,
-      transactions
+      transactions,
     };
   },
 };
 </script>
-
-<style lang="scss" scoped></style>

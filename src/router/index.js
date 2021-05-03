@@ -97,6 +97,9 @@ const routes = [
     path: '/account/details',
     name: 'AccountDetails',
     component: AccountDetails,
+    meta: {
+      layout: 'single'
+    }
   },
   {
     path: '/transaction/:id',
