@@ -156,10 +156,12 @@ export default {
       router.push(`/transaction/${trx.txid}`);
     }
 
-    watch(() => props.transactions, () => {
+    watch(
+      () => props.transactions,
+      () => {
         orderTransactions();
-    });
-
+      }
+    );
 
     return {
       openTransaction,
@@ -171,7 +173,7 @@ export default {
       XST_USD_RATE,
       txDates,
       orderTransactions,
-      txs
+      txs,
     };
   },
 };
@@ -195,7 +197,6 @@ export default {
 .blocktime span {
   margin-left: 16px;
 }
-
 </style>
 <style scoped>
 .blocktime {
