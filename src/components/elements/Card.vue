@@ -151,7 +151,7 @@ export default {
 
 .st-card .item.title {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 24px;
   letter-spacing: 0.32px;
 
@@ -162,7 +162,7 @@ export default {
 }
 .st-card .item.type {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 24px;
   letter-spacing: 0.32px;
 }

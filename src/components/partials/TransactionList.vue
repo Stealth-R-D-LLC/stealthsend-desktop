@@ -191,7 +191,7 @@ export default {
 }
 
 .st-transaction-list .tx-date .relative {
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .blocktime span {
