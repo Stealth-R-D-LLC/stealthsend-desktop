@@ -15,7 +15,7 @@
       </p>
       <StTable
         :data="txs[date]"
-        :has-header="false"
+        :has-header="hasTableHeader"
         :columns="[
           { key: 'blocktime', title: 'Time', customCellClass: 'blocktime' },
           { key: 'account', title: 'Account' },
@@ -103,6 +103,13 @@ export default {
         return [];
       },
     },
+    hasTableHeader: {
+        type: Boolean,
+        required: true,
+        default: () => {
+            return false;
+        }
+    }
   },
   setup(props) {
     const { formatBlocktime, groupBy, formatAmount } = useHelpers();

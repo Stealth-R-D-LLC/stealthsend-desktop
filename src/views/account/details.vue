@@ -6,12 +6,12 @@
         <StLabel label="USD Value">${{ usdAmount }}</StLabel>
         <StLabel label="BTC Value">{{ btcAmount }}</StLabel>
         <StLabel label="24h %"><StTag> +280.88% </StTag> </StLabel>
-        <StButton>Send</StButton>
-        <StButton>Receive</StButton>
+        <StButton disabled>Send</StButton>
+        <StButton disabled>Receive</StButton>
       </div>
     </div>
     <div class="account-details-container__body">
-      <TransactionList :transactions="transactions"></TransactionList>
+      <TransactionList has-table-header :transactions="transactions"></TransactionList>
     </div>
     <Card
       class="list-item"
@@ -95,7 +95,12 @@ export default {
       mainStore
         .rpc('getaddressinputs', [account.value.address])
         .then((res) => {
-          transactions.value = transactions.value.concat(res);
+                    let mappedAmounts = res.map((el) => {
+            return {
+              ...el,
+              account: 'todo hardcoded'            };
+          });
+          transactions.value = transactions.value.concat(mappedAmounts);
         })
         .catch((err) => {
           return err;
@@ -107,6 +112,7 @@ export default {
           let mappedAmounts = res.map((el) => {
             return {
               ...el,
+              account: 'todo hardcoded',
               amount: el.amount * -1,
             };
           });
@@ -147,7 +153,7 @@ export default {
 }
 .account-details-container__body {
   padding: 24px 24px 24px 24px;
-  background: #FFFFFF;
+  background: #ffffff;
 }
 .account-details-container__top .left {
   display: grid;
