@@ -1,5 +1,8 @@
 <template>
-  <header class="layout__header" :class="{'layout__header--is-grey' : headerStyle === 'grey'}">
+  <header
+    class="layout__header"
+    :class="{ 'layout__header--is-grey': headerStyle === 'grey' }"
+  >
     <div class="header-left">
       <StIcon name="chart"></StIcon>
       <StIcon name="tx-list"></StIcon>
@@ -17,13 +20,13 @@
 <script>
 import pkgjson from '../../../package.json';
 import { useMainStore } from '@/store';
-import {computed } from 'vue'
+import { computed } from 'vue';
 export default {
   setup() {
-        const mainStore = useMainStore();
+    const mainStore = useMainStore();
     let version = pkgjson.version;
 
-    return { 
+    return {
       version,
       headerStyle: computed(() => mainStore.headerStyle),
     };

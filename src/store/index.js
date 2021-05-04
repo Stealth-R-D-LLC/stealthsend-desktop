@@ -21,11 +21,11 @@ export const useMainStore = defineStore({
       this.isAmountsHidden = payload;
     },
     SET_HEADER_STYLE(payload) {
-      if(['default', 'grey'].includes(payload)) {
-        this.headerStyle = payload
-        return
+      if (['default', 'grey'].includes(payload)) {
+        this.headerStyle = payload;
+        return;
       }
-      console.error("SET_HEADER_STYLE: Invalid header style.")
+      console.error('SET_HEADER_STYLE: Invalid header style.');
     },
     START_GLOBAL_LOADING() {
       this.globalLoading = true;

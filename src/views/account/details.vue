@@ -48,7 +48,7 @@ export default {
   },
   setup() {
     const mainStore = useMainStore();
-    mainStore.SET_HEADER_STYLE('grey')
+    mainStore.SET_HEADER_STYLE('grey');
 
     function openTransaction(trx) {
       router.push(`/transaction/${trx.txid}`);
@@ -138,11 +138,16 @@ export default {
 
 <style scoped>
 .account-details-container {
-  padding: 24px;
+  /* padding: 24px; */
   background: var(--background100);
 }
 
 .account-details-container__top {
+  padding: 24px 24px 24px 24px;
+}
+.account-details-container__body {
+  padding: 24px 24px 24px 24px;
+  background: #FFFFFF;
 }
 .account-details-container__top .left {
   display: grid;
