@@ -1,9 +1,16 @@
 <template>
   <div class="account-details-container">
     <div class="account-details-container__top">
-      <p>xst balance: {{ account.utxo }}</p>
-      <p>usd value: {{ usdAmount }}</p>
-      <p>xst btc value: {{ btcAmount }}</p>
+      <div class="left">
+      <StLabel label="XST Balance" bold>{{ account.utxo }}</StLabel>
+      <StLabel label="USD Value">${{ usdAmount }}</StLabel>
+      <StLabel label="BTC Value">{{ btcAmount }}</StLabel>
+      <StLabel label="24h %"><StTag> +280.88% </StTag>
+</StLabel>
+            <StButton >Send</StButton>
+    <StButton >Receive</StButton>
+      </div>
+
     </div>
     <div class="account-details-container__body">
       <TransactionList :transactions="transactions"></TransactionList>
@@ -27,6 +34,7 @@
 <script>
 import { useMainStore } from '@/store';
 import { computed, ref } from 'vue';
+import StLabel from '@/components/elements/StLabel';
 // import VanillaQR from 'vanillaqr';
 import Card from '@/components/elements/Card';
 import TransactionList from '@/components/partials/TransactionList';
@@ -38,6 +46,7 @@ export default {
   components: {
     Card,
     TransactionList,
+    StLabel
   },
   setup() {
     const mainStore = useMainStore();
@@ -95,6 +104,7 @@ export default {
       mainStore
         .rpc('getaddressoutputs', [account.value.address])
         .then((res) => {
+          // output amounts should be shown as negatives in the transaction table
           let mappedAmounts = res.map((el) => {
             return {
               ...el,
@@ -130,5 +140,15 @@ export default {
 <style scoped>
 .account-details-container {
   padding: 24px;
+  background: var(--background100);
+}
+
+.account-details-container__top{
+
+}
+.account-details-container__top .left{
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(15ch, 1fr));
 }
 </style>
