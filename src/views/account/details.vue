@@ -101,7 +101,7 @@ export default {
           let mappedAmounts = res.map((el) => {
             return {
               ...el,
-              account: 'todo hardcoded',
+              account: account.value.label,
             };
           });
           transactions.value = transactions.value.concat(mappedAmounts);
@@ -116,7 +116,7 @@ export default {
           let mappedAmounts = res.map((el) => {
             return {
               ...el,
-              account: 'todo hardcoded',
+              account: account.value.label,
               amount: el.amount * -1,
             };
           });
