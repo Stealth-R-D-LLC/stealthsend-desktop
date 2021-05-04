@@ -48,6 +48,7 @@ export default {
   },
   setup() {
     const mainStore = useMainStore();
+    mainStore.SET_HEADER_STYLE('grey')
 
     function openTransaction(trx) {
       router.push(`/transaction/${trx.txid}`);
