@@ -11,7 +11,10 @@
       </div>
     </div>
     <div class="account-details-container__body">
-      <TransactionList has-table-header :transactions="transactions"></TransactionList>
+      <TransactionList
+        has-table-header
+        :transactions="transactions"
+      ></TransactionList>
     </div>
     <Card
       class="list-item"
@@ -95,10 +98,11 @@ export default {
       mainStore
         .rpc('getaddressinputs', [account.value.address])
         .then((res) => {
-                    let mappedAmounts = res.map((el) => {
+          let mappedAmounts = res.map((el) => {
             return {
               ...el,
-              account: 'todo hardcoded'            };
+              account: 'todo hardcoded',
+            };
           });
           transactions.value = transactions.value.concat(mappedAmounts);
         })

@@ -1,7 +1,9 @@
 <template>
   <div class="lock-layout">
     <router-view v-slot="{ Component }">
-      <component :is="Component" />
+      <transition name="fade">
+        <component :is="Component" />
+      </transition>
     </router-view>
   </div>
 </template>
