@@ -7,6 +7,7 @@ export const useMainStore = defineStore({
   id: 'main',
   state: () => ({
     globalLoading: false,
+    headerStyle: 'default', // has grey style on some screens and default white on most of them
     wallet: null,
     accountDetails: null,
     isAmountsHidden: false,
@@ -19,10 +20,17 @@ export const useMainStore = defineStore({
     SET_AMOUNTS_HIDDEN(payload) {
       this.isAmountsHidden = payload;
     },
-    startGlobalLoading() {
+    SET_HEADER_STYLE(payload) {
+      if(['default', 'grey'].includes(payload)) {
+        this.headerStyle = payload
+        return
+      }
+      console.error("SET_HEADER_STYLE: Invalid header style.")
+    },
+    START_GLOBAL_LOADING() {
       this.globalLoading = true;
     },
-    stopGlobalLoading() {
+    STOP_GLOBAL_LOADING() {
       this.globalLoading = false;
     },
 

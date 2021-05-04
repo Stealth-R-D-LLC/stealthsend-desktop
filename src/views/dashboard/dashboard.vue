@@ -9,6 +9,7 @@
 import { ref } from 'vue';
 import TransactionList from '@/components/partials/TransactionList.vue';
 import CryptoService from '@/services/crypto';
+import { useMainStore } from '@/store';
 
 export default {
   name: 'StDahboard',
@@ -16,7 +17,9 @@ export default {
     TransactionList,
   },
   setup() {
+    const mainStore = useMainStore()
     console.log('Init crypto service!');
+    mainStore.SET_HEADER_STYLE('default')
 
     const accounts = ref([]);
     const utxo = ref(0);

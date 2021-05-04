@@ -1,5 +1,5 @@
 <template>
-  <header class="layout__header">
+  <header class="layout__header" :class="{'layout__header--is-grey' : headerStyle === 'grey'}">
     <div class="header-left">
       <StIcon name="chart"></StIcon>
       <StIcon name="tx-list"></StIcon>
@@ -16,10 +16,17 @@
 
 <script>
 import pkgjson from '../../../package.json';
+import { useMainStore } from '@/store';
+import {computed } from 'vue'
 export default {
   setup() {
+        const mainStore = useMainStore();
     let version = pkgjson.version;
-    return { version };
+
+    return { 
+      version,
+      headerStyle: computed(() => mainStore.headerStyle),
+    };
   },
 };
 </script>
@@ -29,6 +36,10 @@ export default {
   border-bottom: 1px solid var(--grey100);
   display: flex;
   justify-content: space-between;
+}
+
+.layout__header--is-grey {
+  background: var(--background100);
 }
 
 .layout__header svg {
