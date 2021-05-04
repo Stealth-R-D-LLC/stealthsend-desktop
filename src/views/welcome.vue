@@ -92,7 +92,7 @@ export default {
       // recover an existing wallet via mnemonic
       // password is asked because we have to lock the seed in the database
       // user is createing a new password in this step
-      mainStore.START_GLOBAL_LOADING()
+      mainStore.START_GLOBAL_LOADING();
       let bytes = await bip39.mnemonicToSeedSync(mnemonic.value);
       const master = await bip32.fromSeed(bytes); // root
       recovered.value = {
@@ -106,7 +106,7 @@ export default {
       CryptoService.storeWalletInDb(password.value);
       setTimeout(() => {
         goToDashboard();
-        mainStore.STOP_GLOBAL_LOADING()
+        mainStore.STOP_GLOBAL_LOADING();
       }, 3000);
     }
 
@@ -144,10 +144,10 @@ export default {
     async function createNewWallet() {
       // new wallet is created
       // therefore, new password can be made
-      mainStore.START_GLOBAL_LOADING()
+      mainStore.START_GLOBAL_LOADING();
       created.value = await CryptoService.generateMnemonicAndSeed();
       await CryptoService.storeWalletInDb(password.value);
-      mainStore.STOP_GLOBAL_LOADING()
+      mainStore.STOP_GLOBAL_LOADING();
     }
 
     function goToDashboard() {

@@ -17,9 +17,9 @@ export default {
     TransactionList,
   },
   setup() {
-    const mainStore = useMainStore()
+    const mainStore = useMainStore();
     console.log('Init crypto service!');
-    mainStore.SET_HEADER_STYLE('default')
+    mainStore.SET_HEADER_STYLE('default');
 
     const accounts = ref([]);
     const utxo = ref(0);
