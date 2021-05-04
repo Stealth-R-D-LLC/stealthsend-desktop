@@ -104,12 +104,12 @@ export default {
       },
     },
     hasTableHeader: {
-        type: Boolean,
-        required: true,
-        default: () => {
-            return false;
-        }
-    }
+      type: Boolean,
+      required: true,
+      default: () => {
+        return false;
+      },
+    },
   },
   setup(props) {
     const { formatBlocktime, groupBy, formatAmount } = useHelpers();
