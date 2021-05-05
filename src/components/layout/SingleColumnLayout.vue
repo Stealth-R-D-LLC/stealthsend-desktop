@@ -3,10 +3,12 @@
     <MenuBar></MenuBar>
     <main class="layout__single">
       <router-view v-slot="{ Component }">
-        <div>
-          <TopBar></TopBar>
-          <component :is="Component" />
-        </div>
+        <transition name="fade">
+          <div>
+            <TopBar></TopBar>
+            <component :is="Component" />
+          </div>
+        </transition>
       </router-view>
     </main>
   </div>

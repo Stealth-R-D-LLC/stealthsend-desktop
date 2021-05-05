@@ -14,7 +14,7 @@
   font-display: swap;
   src: local('SourceSansPro'), local('SourceSansPro'),
     url('./fonts/SourceSansPro/SourceSansPro-Bold.ttf') format('truetype');
-  font-weight: 600;
+  font-weight: 700;
   font-style: normal;
 }
 
@@ -32,7 +32,7 @@
   font-display: swap;
   src: local('NotoSans'), local('NotoSans'),
     url('./fonts/NotoSans/NotoSans-Bold.ttf') format('truetype');
-  font-weight: 600;
+  font-weight: 700;
   font-style: normal;
 }
 

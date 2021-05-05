@@ -104,7 +104,7 @@ export default {
   background: var(--grey100);
   color: var(--marine500);
   transition: 0.2s;
-  font-weight: 600;
+  font-weight: 700;
   /* padding: 19px; */
 }
 </style>
