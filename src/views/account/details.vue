@@ -1,12 +1,20 @@
 <template>
   <div class="account-details-container">
     <div class="account-details-container__top">
-      <p>xst balance: {{ account.utxo }}</p>
-      <p>usd value: {{ usdAmount }}</p>
-      <p>xst btc value: {{ btcAmount }}</p>
+      <div class="left">
+        <StLabel label="XST Balance" bold>{{ account.utxo }}</StLabel>
+        <StLabel label="USD Value">${{ usdAmount }}</StLabel>
+        <StLabel label="BTC Value">{{ btcAmount }}</StLabel>
+        <StLabel label="24h %"><StTag> +280.88% </StTag> </StLabel>
+        <StButton disabled>Send</StButton>
+        <StButton disabled>Receive</StButton>
+      </div>
     </div>
     <div class="account-details-container__body">
-      <TransactionList :transactions="transactions"></TransactionList>
+      <TransactionList
+        has-table-header
+        :transactions="transactions"
+      ></TransactionList>
     </div>
     <Card
       class="list-item"
@@ -27,7 +35,7 @@
 <script>
 import { useMainStore } from '@/store';
 import { computed, ref } from 'vue';
-// import VanillaQR from 'vanillaqr';
+import StLabel from '@/components/elements/StLabel';
 import Card from '@/components/elements/Card';
 import TransactionList from '@/components/partials/TransactionList';
 import CryptoService from '@/services/crypto';
@@ -38,9 +46,11 @@ export default {
   components: {
     Card,
     TransactionList,
+    StLabel,
   },
   setup() {
     const mainStore = useMainStore();
+    mainStore.SET_HEADER_STYLE('grey');
 
     function openTransaction(trx) {
       router.push(`/transaction/${trx.txid}`);
@@ -87,7 +97,13 @@ export default {
       mainStore
         .rpc('getaddressinputs', [account.value.address])
         .then((res) => {
-          transactions.value = transactions.value.concat(res);
+          let mappedAmounts = res.map((el) => {
+            return {
+              ...el,
+              account: account.value.label,
+            };
+          });
+          transactions.value = transactions.value.concat(mappedAmounts);
         })
         .catch((err) => {
           return err;
@@ -98,6 +114,8 @@ export default {
           let mappedAmounts = res.map((el) => {
             return {
               ...el,
+              account: account.value.label,
+              // output amounts should be shown as negatives in the transaction table
               amount: el.amount * -1,
             };
           });
@@ -106,18 +124,12 @@ export default {
         .catch((err) => {
           return err;
         });
-
-      // var qr = new VanillaQR({
-      //   url: account.value.address,
-      // });
-      // qrSrc.value = qr.toImage('png').src;
     }
     return {
       account,
       addressInfo,
       copyPending,
       handleCopy,
-      // qrSrc,
       openTransaction,
       transactions,
       usdAmount,
@@ -129,6 +141,20 @@ export default {
 
 <style scoped>
 .account-details-container {
-  padding: 24px;
+  /* padding: 24px; */
+  background: var(--background100);
+}
+
+.account-details-container__top {
+  padding: 24px 24px 24px 24px;
+}
+.account-details-container__body {
+  padding: 24px 24px 24px 24px;
+  background: #ffffff;
+}
+.account-details-container__top .left {
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(15ch, 1fr));
 }
 </style>

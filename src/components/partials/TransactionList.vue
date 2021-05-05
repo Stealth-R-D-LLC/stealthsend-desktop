@@ -15,7 +15,7 @@
       </p>
       <StTable
         :data="txs[date]"
-        :has-header="false"
+        :has-header="hasTableHeader"
         :columns="[
           { key: 'blocktime', title: 'Time', customCellClass: 'blocktime' },
           { key: 'account', title: 'Account' },
@@ -101,6 +101,13 @@ export default {
       required: true,
       default: () => {
         return [];
+      },
+    },
+    hasTableHeader: {
+      type: Boolean,
+      required: true,
+      default: () => {
+        return false;
       },
     },
   },
@@ -191,7 +198,7 @@ export default {
 }
 
 .st-transaction-list .tx-date .relative {
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .blocktime span {
