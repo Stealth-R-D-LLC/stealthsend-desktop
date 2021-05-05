@@ -132,7 +132,7 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   box-sizing: border-box;
-  box-shadow: 9px 10px 16px rgba(34, 3, 101, 0.1);
+  box-shadow: 0px 8px 24px -8px rgba(34, 3, 101, 0.1);
   margin: 10px 0;
   position: relative;
   cursor: pointer;
@@ -140,7 +140,8 @@ export default {
 
 .st-card:hover {
   transition: all 0.2s ease-out;
-  background-color: var(--purple50);
+  background-color: var(--background50);
+  box-shadow: 0px 8px 24px -4px rgba(34, 3, 101, 0.1);
 }
 
 .st-card__row {
@@ -172,7 +173,7 @@ export default {
   letter-spacing: 0.12px;
 }
 
-.st-card .archive,
+/* .st-card .archive,
 .st-card .unarchive {
   width: 20px;
   height: 20px;
@@ -182,7 +183,7 @@ export default {
   top: -8px;
   right: -8px;
   display: none;
-}
+} */
 
 .st-card:not(.st-card--is-archived):hover .archive {
   display: block;

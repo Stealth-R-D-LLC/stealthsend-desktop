@@ -36,7 +36,6 @@
 import { useMainStore } from '@/store';
 import { computed, ref } from 'vue';
 import StLabel from '@/components/elements/StLabel';
-// import VanillaQR from 'vanillaqr';
 import Card from '@/components/elements/Card';
 import TransactionList from '@/components/partials/TransactionList';
 import CryptoService from '@/services/crypto';
@@ -112,11 +111,11 @@ export default {
       mainStore
         .rpc('getaddressoutputs', [account.value.address])
         .then((res) => {
-          // output amounts should be shown as negatives in the transaction table
           let mappedAmounts = res.map((el) => {
             return {
               ...el,
               account: account.value.label,
+              // output amounts should be shown as negatives in the transaction table
               amount: el.amount * -1,
             };
           });
@@ -125,18 +124,12 @@ export default {
         .catch((err) => {
           return err;
         });
-
-      // var qr = new VanillaQR({
-      //   url: account.value.address,
-      // });
-      // qrSrc.value = qr.toImage('png').src;
     }
     return {
       account,
       addressInfo,
       copyPending,
       handleCopy,
-      // qrSrc,
       openTransaction,
       transactions,
       usdAmount,
