@@ -105,7 +105,7 @@ export default {
     },
     hasTableHeader: {
       type: Boolean,
-      required: true,
+      required: false,
       default: () => {
         return false;
       },

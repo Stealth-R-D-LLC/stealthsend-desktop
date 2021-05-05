@@ -11,9 +11,18 @@ export const useMainStore = defineStore({
     wallet: null,
     accountDetails: null,
     isAmountsHidden: false,
+
+    // modals visibility
+    modals: {
+      receive: false,
+      send: false,
+    },
   }),
   getters: {},
   actions: {
+    SET_MODAL_VISIBILITY(modal, visibility) {
+      this.modals[modal] = visibility;
+    },
     SET_ACCOUNT_DETAILS(payload) {
       this.accountDetails = payload;
     },

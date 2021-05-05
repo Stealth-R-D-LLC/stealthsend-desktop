@@ -114,8 +114,8 @@
             <span class="item__span"> Send </span>
           </router-link>
         </li>
-        <li>
-          <router-link tag="a" class="item" to="/receive">
+        <li @click="openModal('receive')">
+          <span class="item">
             <div class="icon">
               <svg
                 width="24"
@@ -135,7 +135,7 @@
               </svg>
             </div>
             <span class="item__span"> Receive </span>
-          </router-link>
+          </span>
         </li>
         <li>
           <router-link tag="a" class="item" to="/transactions">
@@ -292,6 +292,7 @@
 import { ref, defineComponent } from 'vue';
 import StArrow from '@/components/elements/StArrow';
 import { useRouter } from 'vue-router';
+import { useMainStore } from '@/store';
 
 export default defineComponent({
   name: 'StMenuBar',
@@ -299,6 +300,7 @@ export default defineComponent({
     StArrow,
   },
   setup() {
+    const mainStore = useMainStore();
     const router = useRouter();
     const isCollapsed = ref(true);
 
@@ -309,9 +311,14 @@ export default defineComponent({
       isCollapsed.value = !isCollapsed.value;
     }
 
+    function openModal(modal) {
+      mainStore.SET_MODAL_VISIBILITY(modal, true);
+    }
+
     return {
       isCollapsed,
       toggleMenu,
+      openModal,
     };
   },
 });

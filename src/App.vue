@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <ReceiveModal :steps="3" :current-step="1"></ReceiveModal>
     <StLoading :visibility="isLoading" :opaque="true"></StLoading>
     <component :is="layout"> </component>
   </div>
@@ -14,13 +15,14 @@ import DefaultLayout from './components/layout/Default.vue';
 import NewUserLayout from './components/layout/NewUser.vue';
 import SingleColumnLayout from './components/layout/SingleColumnLayout.vue';
 import LockLayout from './components/layout/Lock.vue';
+import ReceiveModal from './components/partials/ReceiveModal.vue';
 import { useRoute } from 'vue-router';
 
 export default {
   name: 'TsDefault',
-  // components: {
-  //   StLoading
-  // },
+  components: {
+    ReceiveModal,
+  },
   setup() {
     const mainStore = useMainStore();
 
