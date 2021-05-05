@@ -1,31 +1,82 @@
 <template>
-  <StModal :visible="isVisible" @close="closeModal">
+  <StModal
+    :steps="3"
+    :current-step="currentStep"
+    :visible="isVisible"
+    @close="closeModal"
+  >
     <template #header>Receive XST</template>
     <template #body>
-      <StMultiselect
-        v-model="account"
-        :options="accounts"
-        track-by="_id"
-        value-prop="address"
-        label="label"
-        :object="true"
-        placeholder="Select account"
-        @select="changeAccount"
-      />
-      <StInput v-model="amount" label="Amount" color="dark" placeholder="Amount"></StInput>
-      <StInput
-        v-model="depositAddress"
-        placeholder="Deposit address"
-        label="Address"
-        color="dark"
-        disabled
-      ></StInput>
-        <!-- <img :src="qrSrc" /> -->
+      <template v-if="currentStep === 1">
+        <StMultiselect
+          v-model="account"
+          :options="accounts"
+          track-by="_id"
+          value-prop="address"
+          label="label"
+          :object="true"
+          placeholder="Select account"
+          @select="changeAccount"
+        />
+        <StInput
+          v-model="amount"
+          label="Amount"
+          color="dark"
+          placeholder="Amount"
+        ></StInput>
+        <StInput
+          v-model="depositAddress"
+          placeholder="Deposit address"
+          label="Address"
+          color="dark"
+          disabled
+        ></StInput>
+      </template>
+      <template v-if="currentStep === 2">
+        <StInput
+          v-model="depositAddress"
+          placeholder="Deposit address"
+          label="Address"
+          color="dark"
+          disabled
+        ></StInput>
+        <StTooltip
+          :tooltip-text="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
+        >
+          <StClipboard
+            :content="depositAddress"
+            @click="handleCopy"
+          ></StClipboard>
+        </StTooltip>
+        <img :src="qrSrc" />
+      </template>
+      <template v-if="currentStep === 3">
+        <StInput
+          v-model="email"
+          label="Email"
+          color="dark"
+          placeholder="Email"
+        ></StInput>
+        <p>
+          Using this option you will share receive details via default email
+          client
+        </p>
+      </template>
     </template>
     <template #footer class="flex-center-all">
-      <StButton color="white" @click="showModal = false"
-        >Generate QR Code</StButton
-      >
+      <template v-if="currentStep === 1">
+        <StButton color="white" @click="currentStep = 2"
+          >Generate QR Code</StButton
+        >
+      </template>
+      <template v-if="currentStep === 2">
+        <StButton color="white" @click="currentStep = 3"
+          >Share via Email</StButton
+        >
+      </template>
+      <template v-if="currentStep === 3">
+        <StButton color="white" @click="closeModal">Send Email</StButton>
+      </template>
     </template>
   </StModal>
 </template>
@@ -44,6 +95,8 @@ export default {
     const isVisible = computed(() => {
       return mainStore.modals.receive;
     });
+
+    const currentStep = ref(1);
 
     function closeModal() {
       mainStore.SET_MODAL_VISIBILITY('receive', false);
@@ -74,8 +127,20 @@ export default {
       depositAddress.value = child.address;
       var qr = new VanillaQR({
         url: depositAddress.value,
+        noBorder: true,
+        colorDark: '#140435',
+        colorLight: '#FAF9FC',
+        size: 260,
       });
       qrSrc.value = qr.toImage('png').src;
+    }
+
+    let copyPending = ref(false);
+    function handleCopy() {
+      copyPending.value = true;
+      setTimeout(() => {
+        copyPending.value = false;
+      }, 2000);
     }
 
     return {
@@ -87,6 +152,11 @@ export default {
       depositAddress,
       changeAccount,
       qrSrc,
+
+      currentStep,
+
+      handleCopy,
+      copyPending,
     };
   },
 };
