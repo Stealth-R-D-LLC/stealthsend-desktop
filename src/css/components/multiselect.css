@@ -1,4 +1,4 @@
-/* .multiselect {
+.multiselect {
 }
 .multiselect-input {
   border: 0;
@@ -7,7 +7,7 @@
 }
 
 .multiselect-single-label {
-  color: var(--grey1000);
+  color: var(--grey100);
   font-size: 18px;
   letter-spacing: 0.32px;
   line-height: 26px;
@@ -45,4 +45,12 @@
 
 .multiselect-option.is-pointed.is-selected {
     background: var(--purple50);
-} */
+}
+
+.multiselect-clear {
+  display: none;
+}
+
+.multiselect-multiple-label, .multiselect-placeholder, .multiselect-single-label {
+  padding-left: 0;
+}

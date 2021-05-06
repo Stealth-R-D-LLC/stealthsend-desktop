@@ -1,5 +1,6 @@
 <template>
   <StModal
+    show-back-button
     :steps="3"
     :current-step="currentStep"
     :visible="isVisible"
@@ -8,29 +9,47 @@
     <template #header>Receive XST</template>
     <template #body>
       <template v-if="currentStep === 1">
-        <StMultiselect
-          v-model="account"
-          :options="accounts"
-          track-by="_id"
-          value-prop="address"
-          label="label"
-          :object="true"
-          placeholder="Select account"
-          @select="changeAccount"
-        />
-        <StInput
-          v-model="amount"
-          label="Amount"
-          color="dark"
-          placeholder="Amount"
-        ></StInput>
-        <StInput
-          v-model="depositAddress"
-          placeholder="Deposit address"
-          label="Address"
-          color="dark"
-          disabled
-        ></StInput>
+        <div class="form-item">
+          <StMultiselect
+            v-model="account"
+            :options="accounts"
+            track-by="_id"
+            value-prop="address"
+            label="label"
+            :object="true"
+            :can-deselect="false"
+            placeholder="Select account"
+            @select="changeAccount"
+          >
+          
+    <template #singlelabel="{ value }">
+      <div class="multiselect-single-label">
+         {{ value.label }} ({{value.utxo}})
+      </div>
+    </template>
+
+    <template #option="{ option }">
+      {{ option.label }} ({{option.utxo}})
+    </template>
+          </StMultiselect>
+        </div>
+        <div class="form-item">
+          <StInput
+            v-model="amount"
+            label="Amount"
+            color="dark"
+            placeholder="Amount"
+          ></StInput>
+        </div>
+        <div class="form-item">
+          <StInput
+            v-model="depositAddress"
+            placeholder="Deposit address"
+            label="Address"
+            color="dark"
+            disabled
+          ></StInput>
+        </div>
       </template>
       <template v-if="currentStep === 2">
         <StInput
@@ -162,4 +181,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.form-item {
+  margin: 44px 0;
+}
+</style>
