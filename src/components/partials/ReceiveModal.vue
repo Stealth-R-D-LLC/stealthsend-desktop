@@ -4,6 +4,7 @@
     :steps="3"
     :current-step="currentStep"
     :visible="isVisible"
+    class="receive-modal"
     @close="closeModal"
   >
     <template #header>Receive XST</template>
@@ -25,10 +26,10 @@
             <template #singlelabel="{ value }">
               <div class="multiselect-single-label">
                 <p class="account-label">
-                {{ value.label }}
+                  {{ value.label }}
                 </p>
                 <p class="account-utxo">
-                {{ value.utxo }}
+                  {{ value.utxo }}
                 </p>
               </div>
             </template>
@@ -89,12 +90,12 @@
     </template>
     <template #footer class="flex-center-all">
       <template v-if="currentStep === 1">
-        <StButton color="white" @click="currentStep = 2"
+        <StButton color="white" @click="changeStep(2)"
           >Generate QR Code</StButton
         >
       </template>
       <template v-if="currentStep === 2">
-        <StButton color="white" @click="currentStep = 3"
+        <StButton color="white" @click="changeStep(3)"
           >Share via Email</StButton
         >
       </template>
@@ -107,7 +108,7 @@
 
 <script>
 import { useMainStore } from '@/store';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import VanillaQR from 'vanillaqr';
 import CryptoService from '@/services/crypto';
 
@@ -120,22 +121,27 @@ export default {
       return mainStore.modals.receive;
     });
 
+    watch(() => isVisible.value, () => {
+      scanWallet()
+    })
+
     const currentStep = ref(1);
 
     function closeModal() {
       mainStore.SET_MODAL_VISIBILITY('receive', false);
       // reset all variables
-      account.value = null
-      accounts.value = []
-      currentStep.value = 1
-      depositAddress.value = ''
-      qrSrc.value = ''
+      account.value = null;
+      accounts.value = [];
+      currentStep.value = 1;
+      depositAddress.value = '';
+      qrSrc.value = '';
     }
 
     const accounts = ref([]);
     const account = ref(null);
 
     async function scanWallet() {
+      console.log('majku bozju');
       const hdWallet = await CryptoService.scanWallet();
       accounts.value = hdWallet.accounts;
 
@@ -146,7 +152,7 @@ export default {
       // console.log('scan?');
     }
 
-    scanWallet()
+    scanWallet();
 
     const depositAddress = ref('');
     const qrSrc = ref('');
@@ -182,6 +188,10 @@ export default {
       }, 2000);
     }
 
+    function changeStep(step) {
+      currentStep.value = step
+    }
+
     //     onMounted(() => {
     //       console.log('mounted=======');
     //   scanWallet();
@@ -198,6 +208,7 @@ export default {
       qrSrc,
 
       currentStep,
+      changeStep,
 
       handleCopy,
       copyPending,
@@ -217,8 +228,8 @@ export default {
 }
 
 .form-item.account label {
-      position: absolute;
-    top: -46px;
+  position: absolute;
+  top: -46px;
 }
 .multiselect-single-label {
   display: flex;
@@ -228,36 +239,39 @@ export default {
   position: absolute;
   top: -24px;
 }
-.multiselect-single-label .account-utxo{
+.multiselect-single-label .account-utxo {
   margin-top: 6px;
   font-size: 12px;
   font-family: Noto Sans;
-font-style: normal;
-font-weight: normal;
-font-size: 12px;
-line-height: 24px;
-/* identical to box height, or 200% */
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 24px;
+  /* identical to box height, or 200% */
 
-letter-spacing: 0.12px;
+  letter-spacing: 0.12px;
 }
-.multiselect-single-label .account-label{
+.multiselect-single-label .account-label {
   font-size: 12px;
   font-family: Noto Sans;
-font-style: normal;
-font-weight: normal;
-font-size: 12px;
-line-height: 24px;
-height: 48px;
-top: -14px;
-/* identical to box height, or 200% */
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 24px;
+  height: 48px;
+  top: -14px;
+  /* identical to box height, or 200% */
 
-letter-spacing: 0.12px;
+  letter-spacing: 0.12px;
 }
 
-.st-modal__footer {
-      display: flex;
-    align-items: center;
-    justify-content: center;
+</style>
+
+<style>
+.receive-modal .st-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 </style>
