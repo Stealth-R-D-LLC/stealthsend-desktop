@@ -9,7 +9,8 @@
     <template #header>Receive XST</template>
     <template #body>
       <template v-if="currentStep === 1">
-        <div class="form-item">
+        <div class="form-item account">
+          <label for="multiselect">Account</label>
           <StMultiselect
             v-model="account"
             :options="accounts"
@@ -19,18 +20,22 @@
             :object="true"
             :can-deselect="false"
             placeholder="Select account"
-            @select="changeAccount"
+            @change="changeAccount"
           >
-          
-    <template #singlelabel="{ value }">
-      <div class="multiselect-single-label">
-         {{ value.label }} ({{value.utxo}})
-      </div>
-    </template>
+            <template #singlelabel="{ value }">
+              <div class="multiselect-single-label">
+                <p class="account-label">
+                {{ value.label }}
+                </p>
+                <p class="account-utxo">
+                {{ value.utxo }}
+                </p>
+              </div>
+            </template>
 
-    <template #option="{ option }">
-      {{ option.label }} ({{option.utxo}})
-    </template>
+            <template #option="{ option }">
+              {{ option.label }} ({{ option.utxo }})
+            </template>
           </StMultiselect>
         </div>
         <div class="form-item">
@@ -119,14 +124,29 @@ export default {
 
     function closeModal() {
       mainStore.SET_MODAL_VISIBILITY('receive', false);
+      // reset all variables
+      account.value = null
+      accounts.value = []
+      currentStep.value = 1
+      depositAddress.value = ''
+      qrSrc.value = ''
     }
 
     const accounts = ref([]);
     const account = ref(null);
-    async function getAccounts() {
-      accounts.value = await CryptoService.getAccounts();
+
+    async function scanWallet() {
+      const hdWallet = await CryptoService.scanWallet();
+      accounts.value = hdWallet.accounts;
+
+      // select first option
+      // account.value = hdWallet.accounts[0]
+      // // manually start finding address for preselected account
+      // changeAccount(account.value)
+      // console.log('scan?');
     }
-    getAccounts();
+
+    scanWallet()
 
     const depositAddress = ref('');
     const qrSrc = ref('');
@@ -162,6 +182,11 @@ export default {
       }, 2000);
     }
 
+    //     onMounted(() => {
+    //       console.log('mounted=======');
+    //   scanWallet();
+    // })
+
     return {
       isVisible,
       closeModal,
@@ -185,4 +210,54 @@ export default {
 .form-item {
   margin: 44px 0;
 }
+
+.form-item.account {
+  position: relative;
+  margin-top: 92px;
+}
+
+.form-item.account label {
+      position: absolute;
+    top: -46px;
+}
+.multiselect-single-label {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  position: absolute;
+  top: -24px;
+}
+.multiselect-single-label .account-utxo{
+  margin-top: 6px;
+  font-size: 12px;
+  font-family: Noto Sans;
+font-style: normal;
+font-weight: normal;
+font-size: 12px;
+line-height: 24px;
+/* identical to box height, or 200% */
+
+letter-spacing: 0.12px;
+}
+.multiselect-single-label .account-label{
+  font-size: 12px;
+  font-family: Noto Sans;
+font-style: normal;
+font-weight: normal;
+font-size: 12px;
+line-height: 24px;
+height: 48px;
+top: -14px;
+/* identical to box height, or 200% */
+
+letter-spacing: 0.12px;
+}
+
+.st-modal__footer {
+      display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 </style>
