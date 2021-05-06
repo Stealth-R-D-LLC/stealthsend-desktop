@@ -121,9 +121,12 @@ export default {
       return mainStore.modals.receive;
     });
 
-    watch(() => isVisible.value, () => {
-      scanWallet()
-    })
+    watch(
+      () => isVisible.value,
+      () => {
+        scanWallet();
+      }
+    );
 
     const currentStep = ref(1);
 
@@ -189,7 +192,7 @@ export default {
     }
 
     function changeStep(step) {
-      currentStep.value = step
+      currentStep.value = step;
     }
 
     //     onMounted(() => {
@@ -264,7 +267,6 @@ export default {
 
   letter-spacing: 0.12px;
 }
-
 </style>
 
 <style>
@@ -273,5 +275,4 @@ export default {
   align-items: center;
   justify-content: center;
 }
-
 </style>
