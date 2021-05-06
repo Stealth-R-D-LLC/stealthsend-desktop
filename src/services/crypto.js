@@ -176,6 +176,7 @@ const CryptoService = {
     return wallet;
   },
   async getAccounts() {
+    // TODO deprecated. use scanWallet() instead
     let accounts = await db.find({ name: 'account' });
     console.log('Accounts: ', accounts);
     return accounts;
