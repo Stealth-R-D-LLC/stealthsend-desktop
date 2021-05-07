@@ -1,57 +1,59 @@
 <template>
-<div class="off-canvas" aria-hidden="true">
-        <div class="off-canvas-wrapper" :class="{ open: isOpen }" :aria-hidden="open ? 'true' : 'false'" @click="closeCanvas">
-            <div class="off-canvas-menu" :class="{ open: isOpen }" @click.stop>
-                <div class="top">
-                    <span>{{title}}</span>
-                                  <span
-                class="close-button"
-              >
-                <svg
-                  width="18"
-                  height="14"
-                  viewBox="0 0 18 14"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M3 1l12 12M3 13L15 1"
-                    stroke="#FAF9FC"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </span>
-
-                </div>
-                <div class="body"></div>
-            </div>
+  <div class="off-canvas" aria-hidden="true">
+    <div
+      class="off-canvas-wrapper"
+      :class="{ open: isOpen }"
+      :aria-hidden="open ? 'true' : 'false'"
+      @click="closeCanvas"
+    >
+      <div class="off-canvas-menu" :class="{ open: isOpen }" @click.stop>
+        <div class="top">
+          <span>{{ title }}</span>
+          <span class="close-button">
+            <svg
+              width="18"
+              height="14"
+              viewBox="0 0 18 14"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M3 1l12 12M3 13L15 1"
+                stroke="#FAF9FC"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </span>
         </div>
+        <div class="body"></div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
-import {computed } from 'vue'
+import { computed } from 'vue';
 import { useMainStore } from '@/store';
 
 export default {
-    setup () {
+  setup() {
     const mainStore = useMainStore();
 
-        const isOpen = computed(() => {
-            return mainStore.isDrawerOpened
-        })
+    const isOpen = computed(() => {
+      return mainStore.isDrawerOpened;
+    });
 
-        function closeCanvas() {
-            mainStore.TOGGLE_DRAWER(false)
-        }
-
-        return {
-            isOpen,
-            closeCanvas
-        }
+    function closeCanvas() {
+      mainStore.TOGGLE_DRAWER(false);
     }
-}
+
+    return {
+      isOpen,
+      closeCanvas,
+    };
+  },
+};
 </script>
 
 <style scoped>

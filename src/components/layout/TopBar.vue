@@ -28,13 +28,13 @@ export default {
     let version = pkgjson.version;
 
     function toggleDrawer() {
-      mainStore.TOGGLE_DRAWER(true)
+      mainStore.TOGGLE_DRAWER(true);
     }
 
     return {
       version,
       headerStyle: computed(() => mainStore.headerStyle),
-      toggleDrawer
+      toggleDrawer,
     };
   },
 };
