@@ -17,6 +17,7 @@ export const useMainStore = defineStore({
       receive: false,
       send: false,
     },
+    isDrawerOpened: false,
   }),
   getters: {},
   actions: {
@@ -41,6 +42,9 @@ export const useMainStore = defineStore({
     },
     STOP_GLOBAL_LOADING() {
       this.globalLoading = false;
+    },
+    TOGGLE_DRAWER(payload = false) {
+      this.isDrawerOpened = payload;
     },
 
     rpc(method, payload) {
