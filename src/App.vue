@@ -24,7 +24,7 @@ export default {
   name: 'TsDefault',
   components: {
     ReceiveModal,
-    OffCanvas
+    OffCanvas,
   },
   setup() {
     const mainStore = useMainStore();
