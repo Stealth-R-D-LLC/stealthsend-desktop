@@ -6,7 +6,6 @@
     <div class="header-left">
       <StIcon name="chart"></StIcon>
       <StIcon name="tx-list"></StIcon>
-      <button @click="toggleDrawer">test</button>
     </div>
     <div class="header-right">
       <StIcon name="sync-status"></StIcon>
@@ -27,14 +26,9 @@ export default {
     const mainStore = useMainStore();
     let version = pkgjson.version;
 
-    function toggleDrawer() {
-      mainStore.TOGGLE_DRAWER(true);
-    }
-
     return {
       version,
       headerStyle: computed(() => mainStore.headerStyle),
-      toggleDrawer,
     };
   },
 };
