@@ -192,6 +192,7 @@ export default {
     }
 
     function changeStep(step) {
+      console.log('change step: ', step);
       currentStep.value = step;
     }
 
