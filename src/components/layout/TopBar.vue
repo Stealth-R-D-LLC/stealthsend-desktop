@@ -39,7 +39,7 @@ export default {
   border-bottom: 1px solid var(--grey100);
   display: flex;
   justify-content: space-between;
-}
+}h
 
 .layout__header--is-grey {
   background: var(--background100);
