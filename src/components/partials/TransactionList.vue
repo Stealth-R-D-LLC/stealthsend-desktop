@@ -30,7 +30,9 @@
           {{ formatAmount(Math.abs(item.amount)) }} XST
         </template>
         <template #label="{ item }">
-          {{ findLabelForTx(item.txid) ? findLabelForTx(item.txid) : 'No label' }}
+          {{
+            findLabelForTx(item.txid) ? findLabelForTx(item.txid) : 'No label'
+          }}
         </template>
         <template #amountFiat="{ item }">
           {{ item.amount > 0 ? '+' : '-' }}
@@ -169,7 +171,7 @@ export default {
     }
 
     function findLabelForTx(tx) {
-      return CryptoService.txWithLabels[tx]
+      return CryptoService.txWithLabels[tx];
     }
 
     watch(
@@ -190,7 +192,7 @@ export default {
       txDates,
       orderTransactions,
       txs,
-      findLabelForTx
+      findLabelForTx,
     };
   },
 };

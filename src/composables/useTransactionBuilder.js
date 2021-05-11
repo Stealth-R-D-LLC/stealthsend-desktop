@@ -109,6 +109,6 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
   return {
     buildTransaction,
-    txid
+    txid,
   };
 }

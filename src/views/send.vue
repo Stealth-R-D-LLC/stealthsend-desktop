@@ -88,9 +88,8 @@ export default {
         return;
       }
 
-      let {txid} = await useTransactionBuilder(utxo, sendForm);
-      CryptoService.storeTxAndLabel(txid, sendForm.label)
-
+      let { txid } = await useTransactionBuilder(utxo, sendForm);
+      CryptoService.storeTxAndLabel(txid, sendForm.label);
     }
     return {
       sendForm,
