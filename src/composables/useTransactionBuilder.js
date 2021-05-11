@@ -5,7 +5,7 @@ import * as bitcoin from 'bitcoinjs-lib';
 import { Buffer } from 'buffer';
 import { add, format, subtract } from 'mathjs';
 
-export default function useTransactionBuilder(utxo, sendForm) {
+export default async function useTransactionBuilder(utxo, sendForm) {
   console.log('start tx builder');
   const mainStore = useMainStore();
 
@@ -101,13 +101,14 @@ export default function useTransactionBuilder(utxo, sendForm) {
       ]);
 
       console.log('res', res);
-      resolve();
+      resolve(res);
     });
   }
 
-  buildTransaction(utxo, sendForm);
+  const txid = await buildTransaction(utxo, sendForm);
 
   return {
     buildTransaction,
+    txid
   };
 }
