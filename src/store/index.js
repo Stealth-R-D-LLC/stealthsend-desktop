@@ -1,6 +1,6 @@
 import { API } from '@/api/axios';
 import { defineStore } from 'pinia';
-import CryptoService from '@/services/crypto'
+import CryptoService from '@/services/crypto';
 
 export const useMainStore = defineStore({
   // name of the store
@@ -66,17 +66,20 @@ export const useMainStore = defineStore({
     },
     getMarketInfo() {
       return new Promise((resolve, reject) => {
-        API.get('https://api.stealth.org/api/market/info').then((res) => {
-          console.log('market info response: ', res);
-          CryptoService.constraints.XST_USD = res.data.priceUsd;
-          CryptoService.constraints.XST_BTC = res.data.priceBTC;
-          CryptoService.constraints.changePercentage24Hr = res.data.changePercentage24Hr;
-          resolve(res.data)
-        }).catch((err) => {
-          console.log('get market info error: ', err);
-          reject(err)
-        })
-      })
-    }
+        API.get('https://api.stealth.org/api/market/info')
+          .then((res) => {
+            console.log('market info response: ', res);
+            CryptoService.constraints.XST_USD = res.data.priceUsd;
+            CryptoService.constraints.XST_BTC = res.data.priceBTC;
+            CryptoService.constraints.changePercentage24Hr =
+              res.data.changePercentage24Hr;
+            resolve(res.data);
+          })
+          .catch((err) => {
+            console.log('get market info error: ', err);
+            reject(err);
+          });
+      });
+    },
   },
 });
