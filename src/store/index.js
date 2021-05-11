@@ -81,5 +81,18 @@ export const useMainStore = defineStore({
           });
       });
     },
+    getChartData() {
+      return new Promise((resolve, reject) => {
+        API.get('https://api.stealth.org/api/charts/homepage?period=1d')
+          .then((res) => {
+            console.log('getChartData response: ', res);
+            resolve(res.data);
+          })
+          .catch((err) => {
+            console.log('getChartData error: ', err);
+            reject(err);
+          });
+      });
+    },
   },
 });
