@@ -20,8 +20,7 @@ export default {
     const mainStore = useMainStore();
     console.log('Init crypto service!');
     mainStore.SET_HEADER_STYLE('default');
-    mainStore.getMarketInfo()
-
+    mainStore.getMarketInfo();
 
     const accounts = ref([]);
     const utxo = ref(0);
