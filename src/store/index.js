@@ -68,7 +68,6 @@ export const useMainStore = defineStore({
       return new Promise((resolve, reject) => {
         API.get('https://api.stealth.org/api/market/info')
           .then((res) => {
-            console.log('market info response: ', res);
             CryptoService.constraints.XST_USD = res.data.priceUsd;
             CryptoService.constraints.XST_BTC = res.data.priceBTC;
             CryptoService.constraints.changePercentage24Hr =
@@ -76,7 +75,6 @@ export const useMainStore = defineStore({
             resolve(res.data);
           })
           .catch((err) => {
-            console.log('get market info error: ', err);
             reject(err);
           });
       });
@@ -85,11 +83,9 @@ export const useMainStore = defineStore({
       return new Promise((resolve, reject) => {
         API.get('https://api.stealth.org/api/charts/homepage?period=1d')
           .then((res) => {
-            console.log('getChartData response: ', res);
             resolve(res.data);
           })
           .catch((err) => {
-            console.log('getChartData error: ', err);
             reject(err);
           });
       });
