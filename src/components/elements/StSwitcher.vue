@@ -58,6 +58,8 @@
 import { ref, computed } from 'vue';
 import CryptoService from '@/services/crypto';
 import { useMainStore } from '@/store';
+  import useHelpers from '@/composables/useHelpers';
+import { multiply } from 'mathjs';
 
 export default {
   name: 'StSwitcher',
@@ -73,27 +75,27 @@ export default {
   emits: ['change'],
   setup(props, ctx) {
     const mainStore = useMainStore();
+    const { formatAmount } = useHelpers();
 
     const step = ref(0);
     const steps = computed(() => {
       return [
-        // TODO: hardcoded stuff
         {
           asset: 'XST',
-          amountTop: `${props.amount}`,
-          amountBottom: `$${props.amount * CryptoService.constraints.XST_USD}`,
+          amountTop: `${formatAmount(props.amount, true, 2)}`,
+          amountBottom: `$${formatAmount(multiply(props.amount, CryptoService.constraints.XST_USD), true, 2)}`,
           percentage: `+100`,
         },
         {
           asset: 'EUR',
-          amountTop: `$${props.amount * CryptoService.constraints.XST_USD}`,
-          amountBottom: `${props.amount} XST`,
+          amountTop: `$${formatAmount(multiply(props.amount, CryptoService.constraints.XST_USD), true, 2)}`,
+          amountBottom: `${formatAmount(props.amount, true, 8)} XST`,
           percentage: `+90`,
         },
         {
           asset: 'BTC',
-          amountTop: props.amount * CryptoService.constraints.XST_BTC,
-          amountBottom: `${props.amount} XST`,
+          amountTop: formatAmount(multiply(props.amount, CryptoService.constraints.XST_BTC), true, 8),
+          amountBottom: `${formatAmount(props.amount, true, 8)} XST`,
           percentage: `+22`,
         },
       ];
