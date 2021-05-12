@@ -21,6 +21,7 @@ Build MacOS:
     - npm install
     - npm run electron:build --mac
     - echo $CI_PROJECT_DIR
+    - cd $CI_PROJECT_DIR
     - rsync -r $WORKDIR/dist_electron ./
     - ls dist_electron
   tags:
