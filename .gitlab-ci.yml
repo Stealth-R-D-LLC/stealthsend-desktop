@@ -5,6 +5,8 @@ Build Linux:
     - cd /project
     - npm install --only=prod --no-package-lock
     - npm run electron:build --linux
+    - cd $CI_PROJECT_DIR
+    - rsync -r /project/dist_electron ./
   tags:
     - docker-executor
   artifacts:
@@ -20,10 +22,8 @@ Build MacOS:
     - cd "$WORKDIR"
     - npm install
     - npm run electron:build --mac
-    - echo $CI_PROJECT_DIR
     - cd $CI_PROJECT_DIR
     - rsync -r $WORKDIR/dist_electron ./
-    - ls dist_electron
   tags:
     - macos-electronjs
   artifacts:
