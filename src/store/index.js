@@ -77,8 +77,8 @@ export const useMainStore = defineStore({
           .then((res) => {
             CryptoService.constraints.XST_USD = res.data.priceUsd;
             CryptoService.constraints.XST_BTC = res.data.priceBTC;
-            CryptoService.constraints.changePercentage24Hr =
-              res.data.changePercentage24Hr;
+            CryptoService.constraints.changePercent24Hr =
+              res.data.changePercent24Hr;
             resolve(res.data);
           })
           .catch((err) => {
