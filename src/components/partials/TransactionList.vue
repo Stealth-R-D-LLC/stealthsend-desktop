@@ -19,6 +19,7 @@
         :columns="[
           { key: 'blocktime', title: 'Time', customCellClass: 'blocktime' },
           { key: 'account', title: 'Account' },
+          { key: 'label', title: 'Label' },
           { key: 'amountFiat', title: 'Amount (USD)' },
           { key: 'amount', title: 'Amount' },
         ]"
@@ -27,6 +28,11 @@
         <template #amount="{ item }">
           {{ item.amount > 0 ? '+' : '-' }}
           {{ formatAmount(Math.abs(item.amount)) }} XST
+        </template>
+        <template #label="{ item }">
+          {{
+            findLabelForTx(item.txid) ? findLabelForTx(item.txid) : 'No label'
+          }}
         </template>
         <template #amountFiat="{ item }">
           {{ item.amount > 0 ? '+' : '-' }}
@@ -112,6 +118,7 @@ export default {
     },
   },
   setup(props) {
+    CryptoService.getTxWithLabels();
     const { formatBlocktime, groupBy, formatAmount } = useHelpers();
     const txs = ref([]);
 
@@ -163,6 +170,10 @@ export default {
       router.push(`/transaction/${trx.txid}`);
     }
 
+    function findLabelForTx(tx) {
+      return CryptoService.txWithLabels[tx];
+    }
+
     watch(
       () => props.transactions,
       () => {
@@ -181,6 +192,7 @@ export default {
       txDates,
       orderTransactions,
       txs,
+      findLabelForTx,
     };
   },
 };

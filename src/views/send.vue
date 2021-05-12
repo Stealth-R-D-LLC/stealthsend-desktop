@@ -40,6 +40,7 @@ import CryptoService from '@/services/crypto';
 import useCoinControl from '@/composables/useCoinControl';
 import useTransactionBuilder from '@/composables/useTransactionBuilder';
 import { useMainStore } from '@/store';
+// import { applyTransformDependencies } from 'mathjs';
 
 // import useFeeEstimator from '@/composables/useFeeEstimator';
 
@@ -78,7 +79,7 @@ export default {
       return best;
     }
 
-    function send() {
+    async function send() {
       const utxo = coinSelection();
       console.log('inputs:', utxo);
 
@@ -87,7 +88,8 @@ export default {
         return;
       }
 
-      useTransactionBuilder(utxo, sendForm);
+      let { txid } = await useTransactionBuilder(utxo, sendForm);
+      CryptoService.storeTxAndLabel(txid, sendForm.label);
     }
     return {
       sendForm,

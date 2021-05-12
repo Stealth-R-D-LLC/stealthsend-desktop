@@ -16,6 +16,7 @@ import db from '../db';
 
 // dump whole db
 // db.remove({}, { multi: true });
+// db.remove ({name:'tx'}, {});
 
 (async function bla() {
   let a = await db.find({}, { multi: true });
