@@ -20,7 +20,6 @@ Build MacOS:
     - cd "$WORKDIR"
     - npm install --no-package-lock
     - npm run electron:build --mac
-    - npm run clean
   tags:
     - macos-electronjs
   artifacts:
