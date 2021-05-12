@@ -25,5 +25,5 @@ Build MacOS:
     - macos-electronjs
   artifacts:
     paths:
-      - /"$WORKDIR"/dist_electron/*.dmg
-      - /"$WORKDIR"/dist_electron/*.pkg
+      - dist_electron/StealthSend-Desktop-0.1.1.dmg
+      - dist_electron/StealthSend-Desktop-0.1.1.pkg
