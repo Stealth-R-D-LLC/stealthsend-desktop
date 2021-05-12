@@ -1,14 +1,14 @@
 <template>
   <StModal
     show-back-button
-    :steps="3"
+    :steps="4"
     :current-step="currentStep"
     :visible="isVisible"
-    class="receive-modal"
+    class="send-modal"
     @close="closeModal"
     @back="goBack"
   >
-    <template #header>Receive XST</template>
+    <template #header>Send XST</template>
     <template #body>
       <template v-if="currentStep === 1">
         <div class="form-item account">
@@ -126,15 +126,17 @@
             </svg>
           </StAmount>
         </div>
+      </template>
+      <template v-if="currentStep === 2">
         <div class="form-item">
           <StInput
-            v-model="depositAddress"
-            placeholder="Deposit address"
-            label="Address"
-            color="dark"
-            disabled
-          >
-            <StTooltip
+          v-model="depositAddress"
+          placeholder="Deposit address"
+          label="Receiving Address"
+          color="dark"
+          disabled
+        >
+        <StTooltip
               v-if="depositAddress"
               :tooltip-text="
                 copyPending ? 'Copied to clipboard!' : 'Click to copy'
@@ -162,54 +164,49 @@
                 </svg>
               </StClipboard>
             </StTooltip>
-          </StInput>
+        </StInput>
+        </div>
+        <div class="form-item">
+          <StInput v-model="label" label="Label" color="dark" placeholder="Add a label to your transaction" />
         </div>
       </template>
-      <template v-if="currentStep === 2">
-        <StInput
-          class="address-input"
-          v-model="depositAddress"
-          placeholder="Deposit address"
-          label="Receiving Address"
-          color="dark"
-          disabled
-        ></StInput>
-        <StTooltip
-          class="tooltip"
-          :tooltip-text="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
-        >
-          <StClipboard :content="depositAddress" @click="handleCopy"
-            >Copy to Clipboard</StClipboard
-          >
-        </StTooltip>
-        <img class="qr-img" :src="qrSrc" />
-      </template>
       <template v-if="currentStep === 3">
-        <StInput
-          v-model="email"
-          label="Email"
-          color="dark"
-          placeholder="Email"
-        ></StInput>
-        <p class="email-desc">
-          Using this option you will share receive details via default email
-          client
-        </p>
+        <div class="payment">
+          <h5>Payment Details</h5>
+        <div class="payment-grid">
+          <p class="bold">Account:</p>
+          <p>{{ account.label }}</p>
+          <p class="bold">Amount:</p>
+          <p>{{ amount }}</p>
+          <p class="bold">Address</p>
+          <p>{{ depositAddress }}</p>
+          <p class="bold">Label:</p>
+          <p>{{ label }}</p>
+          <p class="bold">Fee:</p>
+          <p>0.0 XST</p>
+        </div>
+        </div>
+      </template>
+      <template v-if="currentStep === 4">
+        <StInput color="dark" class="payment-input" label="Payment Code" />
       </template>
     </template>
     <template #footer class="flex-center-all">
       <template v-if="currentStep === 1">
         <StButton color="white" @click="changeStep(2)"
-          >Generate QR Code</StButton
+          >Proceed</StButton
         >
       </template>
       <template v-if="currentStep === 2">
         <StButton color="white" @click="changeStep(3)"
-          >Share via Email</StButton
+          >Proceed</StButton
         >
       </template>
       <template v-if="currentStep === 3">
-        <StButton color="white" @click="closeModal">Send Email</StButton>
+        <StButton color="white" @click="changeStep(4)">Confirm</StButton>
+      </template>
+      <template v-if="currentStep === 4">
+        <StButton color="white" disabled>Confirm payment</StButton>
       </template>
     </template>
   </StModal>
@@ -218,16 +215,15 @@
 <script>
 import { useMainStore } from '@/store';
 import { computed, ref, watch } from 'vue';
-import VanillaQR from 'vanillaqr';
 import CryptoService from '@/services/crypto';
 
 export default {
-  name: 'StReceiveModal',
+  name: 'StSendModal',
   setup() {
     const mainStore = useMainStore();
 
     const isVisible = computed(() => {
-      return mainStore.modals.receive;
+      return mainStore.modals.send;
     });
     const inputAmountState = ref('XST');
 
@@ -241,19 +237,20 @@ export default {
     const currentStep = ref(1);
 
     function closeModal() {
-      mainStore.SET_MODAL_VISIBILITY('receive', false);
+      mainStore.SET_MODAL_VISIBILITY('send', false);
       // reset all variables
       account.value = null;
       accounts.value = [];
       amount.value = null;
       currentStep.value = 1;
       depositAddress.value = '';
-      qrSrc.value = '';
+      label.value = ''
     }
 
     const accounts = ref([]);
     const account = ref(null);
     const amount = ref(null);
+    const label = ref('')
 
     async function scanWallet() {
       console.log('majku bozju');
@@ -270,7 +267,6 @@ export default {
     scanWallet();
 
     const depositAddress = ref('');
-    const qrSrc = ref('');
     async function changeAccount(acc) {
       const { account, change } = CryptoService.breakAccountPath(acc.path);
       const discoveredAddresses = await CryptoService.accountDiscovery(account);
@@ -285,14 +281,6 @@ export default {
         next.address
       );
       depositAddress.value = child.address;
-      var qr = new VanillaQR({
-        url: depositAddress.value,
-        noBorder: true,
-        colorDark: '#140435',
-        colorLight: '#FAF9FC',
-        size: 260,
-      });
-      qrSrc.value = qr.toImage('png').src;
     }
 
     let copyPending = ref(false);
@@ -325,8 +313,8 @@ export default {
       account,
       amount,
       depositAddress,
+      label,
       changeAccount,
-      qrSrc,
 
       currentStep,
       changeStep,
@@ -353,32 +341,33 @@ export default {
   position: absolute;
   top: -46px;
 }
-::v-deep .address-input > .st-input__inner {
-  text-align: center;
-}
-::v-deep .address-input > label {
-  left: 0;
-  right: 0;
-  text-align: center;
-}
 .tooltip {
   margin-top: 40px;
   display: block;
   width: 100%;
   text-align: center;
 }
-.qr-img {
-  margin: 46px auto 0;
-  display: block;
-  width: 100%;
-  max-width: 120px;
-}
-.email-desc {
-  margin-top: 10px;
-  color: var(--grey400);
-}
 ::v-deep .st-amount > .st-icon {
   cursor: pointer;
+}
+.switch > p {
+  margin-left: 20px;
+}
+.payment > h5 {
+  font-size: 14px;
+  line-height: 24px;
+  color: var(--white);
+}
+.payment-grid {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: auto 11fr;
+  grid-gap: 16px 24px;
+}
+::v-deep .payment-input > label {
+  left: 0;
+  right: 0;
+  text-align: center;
 }
 .multiselect-single-label {
   display: flex;
@@ -414,7 +403,7 @@ export default {
 </style>
 
 <style>
-.receive-modal .st-modal__footer {
+.send-modal .st-modal__footer {
   display: flex;
   align-items: center;
   justify-content: center;

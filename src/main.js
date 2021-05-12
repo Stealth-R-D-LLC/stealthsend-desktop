@@ -2,21 +2,22 @@ import StCard from '@/components/elements/Card.vue';
 import Multiselect from '@vueform/multiselect';
 import { createPinia } from 'pinia';
 import {
+  StAmount,
   StButton,
   StCheckbox,
   StClipboard,
   StDropdown,
-  StInput,
+  StIcon, StInput,
   StLink,
   StLoading,
   StModal,
   StPagination,
   StRadio,
   StStatus,
+  StSwitch,
   StTable,
   StTag,
-  StIcon,
-  StTooltip,
+  StTooltip
 } from 'stealth-kit';
 import { createApp } from 'vue';
 import App from './App.vue';
@@ -28,6 +29,8 @@ const app = createApp(App);
 app.use(createPinia());
 
 // global components
+app.component('StAmount', StAmount);
+app.component('StSwitch', StSwitch);
 app.component('StButton', StButton);
 app.component('StMultiselect', Multiselect);
 app.component('StLink', StLink);

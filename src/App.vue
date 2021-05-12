@@ -1,6 +1,7 @@
 <template>
   <div class="container">
-    <ReceiveModal :steps="3" :current-step="1"></ReceiveModal>
+    <ReceiveModal :steps="3" :current-step="1" />
+    <SendModal :steps="3" :current-step="1" />
     <StLoading :visibility="isLoading" :opaque="true"></StLoading>
     <component :is="layout"> </component>
     <OffCanvas></OffCanvas>
@@ -18,12 +19,14 @@ import SingleColumnLayout from './components/layout/SingleColumnLayout.vue';
 import OffCanvas from './components/elements/StOffCanvas.vue';
 import LockLayout from './components/layout/Lock.vue';
 import ReceiveModal from './components/partials/ReceiveModal.vue';
+import SendModal from './components/partials/SendModal.vue';
 import { useRoute } from 'vue-router';
 
 export default {
   name: 'TsDefault',
   components: {
     ReceiveModal,
+    SendModal,
     OffCanvas,
   },
   setup() {

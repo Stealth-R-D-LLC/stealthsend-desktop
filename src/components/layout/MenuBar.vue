@@ -91,8 +91,8 @@
             <span class="item__span"> Add Account </span>
           </router-link>
         </li>
-        <li>
-          <router-link tag="a" class="item" to="/send">
+        <li @click="openModal('send')">
+          <span class="item">
             <div class="icon">
               <svg
                 width="24"
@@ -112,7 +112,7 @@
               </svg>
             </div>
             <span class="item__span"> Send </span>
-          </router-link>
+          </span>
         </li>
         <li @click="openModal('receive')">
           <span class="item">
