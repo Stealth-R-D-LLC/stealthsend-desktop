@@ -20,7 +20,6 @@ Build MacOS:
     - cd "$WORKDIR"
     - npm install
     - npm run electron:build --mac
-    - ls dist_electron
   tags:
     - macos-electronjs
   artifacts:
