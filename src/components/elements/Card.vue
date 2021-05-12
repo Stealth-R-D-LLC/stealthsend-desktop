@@ -35,6 +35,8 @@
 <script>
 import { computed } from 'vue';
 import { useMainStore } from '@/store';
+import { multiply } from 'mathjs';
+  import useHelpers from '@/composables/useHelpers';
 
 export default {
   name: 'StCard',
@@ -71,6 +73,8 @@ export default {
   emits: ['archived', 'unarchived', 'click'],
   setup(props, context) {
     const mainStore = useMainStore();
+        const { formatAmount } = useHelpers();
+
     const steps = computed(() => {
       if (!props.rates) return [];
       // TODO: hardcoded stuff
@@ -78,22 +82,22 @@ export default {
         {
           assetA: 'XST',
           assetB: 'USD',
-          amountLeft: `${props.account.utxo}`,
-          amountRight: `$${props.account.utxo * props.rates.XST_USD}`,
+          amountLeft: `${formatAmount(props.account.utxo, true, 8)}`,
+          amountRight: `$${formatAmount(multiply(props.account.utxo, props.rates.XST_USD, true, 2))}`,
           percentage: `+100`,
         },
         {
           assetA: 'USD',
           assetB: 'XST',
-          amountLeft: `$${props.account.utxo * props.rates.XST_USD}`,
-          amountRight: `${props.account.utxo} XST`,
+          amountLeft: `$${formatAmount(multiply(props.account.utxo, props.rates.XST_USD, true, 2))}`,
+          amountRight: `${formatAmount(props.account.utxo, true, 8)} XST`,
           percentage: `+90`,
         },
         {
           assetA: 'BTC',
           assetB: 'XST',
-          amountLeft: props.account.utxo * props.rates.XST_BTC,
-          amountRight: `${props.account.utxo} XST`,
+          amountLeft: formatAmount(multiply(props.account.utxo, props.rates.XST_BTC), true, 8),
+          amountRight: `${formatAmount(props.account.utxo, true, 8)} XST`,
           percentage: `+22`,
         },
       ];
