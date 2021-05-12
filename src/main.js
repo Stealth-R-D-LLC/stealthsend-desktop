@@ -2,6 +2,7 @@ import StCard from '@/components/elements/Card.vue';
 import Multiselect from '@vueform/multiselect';
 import { createPinia } from 'pinia';
 import {
+  StAmount,
   StButton,
   StCheckbox,
   StClipboard,
@@ -28,6 +29,7 @@ const app = createApp(App);
 app.use(createPinia());
 
 // global components
+app.component('StAmount', StAmount);
 app.component('StButton', StButton);
 app.component('StMultiselect', Multiselect);
 app.component('StLink', StLink);
