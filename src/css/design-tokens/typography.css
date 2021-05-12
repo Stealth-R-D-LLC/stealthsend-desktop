@@ -34,3 +34,12 @@ h5 {
   letter-spacing: 0.32px;
   line-height: 24px;
 }
+
+p {
+  font-size: 12px;
+  letter-spacing: 0.12px;
+  line-height: 24px;
+}
+.bold {
+  font-weight: 700;
+}

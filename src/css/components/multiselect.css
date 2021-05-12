@@ -1,9 +1,40 @@
 .multiselect {
 }
 .multiselect-input {
+  position: relative;
   border: 0;
   border-radius: 0;
   border-bottom: 2px solid var(--grey100);
+}
+
+.multiselect-input > .multiselect-placeholder {
+  color: var(--grey100);
+  font-size: 14px;
+}
+
+.multiselect-input::after {
+  content: '';
+  display: block;
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  width: 60px;
+  background-color: var(--marine500);
+  height: 2px;
+  border: none;
+  font-size: 1px;
+  transition: all 200ms ease-out;
+}
+
+.is-open > .multiselect-input::after {
+  width: 100%;
+}
+
+.multiselect-filled > .multiselect-input::after {
+  width: 100%;
 }
 
 .multiselect-single-label {
