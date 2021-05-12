@@ -40,8 +40,7 @@ export default {
   display: flex;
   justify-content: space-between;
 }
-
-.layout__header--is-grey {
+h .layout__header--is-grey {
   background: var(--background100);
 }
 

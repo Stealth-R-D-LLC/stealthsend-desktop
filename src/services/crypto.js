@@ -34,6 +34,7 @@ const CryptoService = {
   constraints: {
     XST_USD: 0.199,
     XST_BTC: 0.00000364,
+    changePercentage24Hr: 0,
     MINIMAL_CHANGE: 0,
   },
   isFirstArrival: true,
@@ -49,6 +50,7 @@ const CryptoService = {
   },
   master: null,
   seed: null,
+  txWithLabels: {},
   // password: '',
 
   async init() {
@@ -180,6 +182,45 @@ const CryptoService = {
     let accounts = await db.find({ name: 'account' });
     console.log('Accounts: ', accounts);
     return accounts;
+  },
+  async storeTxAndLabel(txid, label) {
+    let tx = await db.find({ name: 'tx' });
+    if (tx.length > 0) {
+      // already have txs, update them with the new tx
+      let stare = { ...tx[0].txs };
+      await db.update(
+        {
+          name: 'tx',
+        },
+        {
+          name: 'tx',
+          txs: {
+            ...stare,
+            [txid]: label,
+          },
+        }
+      );
+    } else {
+      // first tx in the db
+      await db.insert({
+        name: 'tx',
+        txs: {
+          [txid]: label,
+        },
+      });
+    }
+    this.getTx();
+    return {
+      txid,
+      label,
+    };
+  },
+  async getTxWithLabels() {
+    // transactions with labels are stored in the local db
+    // because we dont have any other way to remember labels for particular transactions
+    // so we have to fetch them from the db
+    let data = await db.find({ name: 'tx' });
+    this.txWithLabels = { ...data[0].txs };
   },
   async storeAccountInDb(account) {
     let acc = await db.insert({

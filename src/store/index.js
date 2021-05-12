@@ -1,5 +1,6 @@
 import { API } from '@/api/axios';
 import { defineStore } from 'pinia';
+import CryptoService from '@/services/crypto';
 
 export const useMainStore = defineStore({
   // name of the store
@@ -60,6 +61,32 @@ export const useMainStore = defineStore({
           .catch((err) => {
             console.error('RPC error: ', err);
             reject(err.response.data.error.message);
+          });
+      });
+    },
+    getMarketInfo() {
+      return new Promise((resolve, reject) => {
+        API.get('https://api.stealth.org/api/market/info')
+          .then((res) => {
+            CryptoService.constraints.XST_USD = res.data.priceUsd;
+            CryptoService.constraints.XST_BTC = res.data.priceBTC;
+            CryptoService.constraints.changePercentage24Hr =
+              res.data.changePercentage24Hr;
+            resolve(res.data);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    getChartData() {
+      return new Promise((resolve, reject) => {
+        API.get('https://api.stealth.org/api/charts/homepage?period=1d')
+          .then((res) => {
+            resolve(res.data);
+          })
+          .catch((err) => {
+            reject(err);
           });
       });
     },
