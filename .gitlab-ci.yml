@@ -25,5 +25,5 @@ Build MacOS:
     - macos-electronjs
   artifacts:
     paths:
-      - dist_electron/*.dmg
-      - dist_electron/*.pkg
+      - /"$WORKDIR"/dist_electron/*.dmg
+      - /"$WORKDIR"/dist_electron/*.pkg
