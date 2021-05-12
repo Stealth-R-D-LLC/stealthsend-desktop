@@ -9,8 +9,8 @@ Build Linux:
     - docker-executor
   artifacts:
     paths:
-      - dist_electron/*.AppImage
-      - dist_electron/*.deb
+      - /project/dist_electron/*.AppImage
+      - /project/dist_electron/*.deb
 
 Build MacOS:
   script:
