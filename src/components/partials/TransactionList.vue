@@ -174,8 +174,8 @@ export default {
     }
 
     onMounted(() => {
-      orderTransactions({label: "All", value: Infinity})
-    })
+      orderTransactions({ label: 'All', value: Infinity });
+    });
 
     watch(
       () => props.transactions,

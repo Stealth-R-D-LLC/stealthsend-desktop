@@ -2,7 +2,10 @@
   <div class="dashboard-container">
     <!-- <TopBar></TopBar> -->
     <Chart v-if="componentVisibility.chart"></Chart>
-    <TransactionList v-if="componentVisibility.txDashboard" :transactions="transactions"></TransactionList>
+    <TransactionList
+      v-if="componentVisibility.txDashboard"
+      :transactions="transactions"
+    ></TransactionList>
   </div>
 </template>
 
@@ -30,7 +33,7 @@ export default {
 
     const componentVisibility = computed(() => {
       return mainStore.componentVisibility;
-    })
+    });
 
     async function scanWallet() {
       const hdWallet = await CryptoService.scanWallet();

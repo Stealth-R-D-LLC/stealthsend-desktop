@@ -5,8 +5,14 @@
   >
     <div class="header-left">
       <template v-if="checkVisibilityForRoute(['Dashboard'])">
-        <StIcon name="chart" @click="toggleComponentVisibility('chart')" ></StIcon>
-        <StIcon name="tx-list" @click="toggleComponentVisibility('txDashboard')" ></StIcon>
+        <StIcon
+          name="chart"
+          @click="toggleComponentVisibility('chart')"
+        ></StIcon>
+        <StIcon
+          name="tx-list"
+          @click="toggleComponentVisibility('txDashboard')"
+        ></StIcon>
       </template>
     </div>
     <div class="header-right">
@@ -32,20 +38,23 @@ export default {
     const route = useRoute();
 
     const currentRoute = computed(() => {
-      return route.name
-    })
+      return route.name;
+    });
 
-        const componentVisibility = computed(() => {
+    const componentVisibility = computed(() => {
       return mainStore.componentVisibility;
-    })
+    });
 
     function checkVisibilityForRoute(routes = []) {
-      if (!currentRoute.value) return false
-      return routes.includes(currentRoute.value)
+      if (!currentRoute.value) return false;
+      return routes.includes(currentRoute.value);
     }
 
     function toggleComponentVisibility(component) {
-      mainStore.SET_COMPONENT_VISIBILITY(component, !componentVisibility.value[component])
+      mainStore.SET_COMPONENT_VISIBILITY(
+        component,
+        !componentVisibility.value[component]
+      );
     }
 
     return {

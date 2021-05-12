@@ -22,12 +22,12 @@ export const useMainStore = defineStore({
     componentVisibility: {
       chart: true, // chart on dashboard,
       txDashboard: true, // tx list on dashboard
-    }
+    },
   }),
   getters: {},
   actions: {
     SET_COMPONENT_VISIBILITY(component, visibility = false) {
-      this.componentVisibility[component] = visibility
+      this.componentVisibility[component] = visibility;
     },
     SET_MODAL_VISIBILITY(modal, visibility) {
       this.modals[modal] = visibility;
