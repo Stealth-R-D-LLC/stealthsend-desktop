@@ -88,7 +88,11 @@ export default {
             true,
             2
           )}`,
-          percentage: formatAmount(CryptoService.constraints.changePercent24Hr, false, 2),
+          percentage: formatAmount(
+            CryptoService.constraints.changePercent24Hr,
+            false,
+            2
+          ),
         },
         {
           asset: 'EUR',
@@ -98,7 +102,11 @@ export default {
             2
           )}`,
           amountBottom: `${formatAmount(props.amount, true, 8)} XST`,
-          percentage: formatAmount(CryptoService.constraints.changePercent24Hr, false, 2),
+          percentage: formatAmount(
+            CryptoService.constraints.changePercent24Hr,
+            false,
+            2
+          ),
         },
         {
           asset: 'BTC',
@@ -108,7 +116,11 @@ export default {
             8
           ),
           amountBottom: `${formatAmount(props.amount, true, 8)} XST`,
-          percentage: formatAmount(CryptoService.constraints.changePercent24Hr, false, 2),
+          percentage: formatAmount(
+            CryptoService.constraints.changePercent24Hr,
+            false,
+            2
+          ),
         },
       ];
     });
