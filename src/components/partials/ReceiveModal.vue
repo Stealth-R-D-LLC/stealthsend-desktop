@@ -13,6 +13,7 @@
         <div class="form-item account">
           <label for="multiselect">Account</label>
           <StMultiselect
+          :class="{ 'multiselect-filled': account }"
             v-model="account"
             :options="accounts"
             track-by="_id"
@@ -41,12 +42,60 @@
         </div>
         <div class="form-item">
           <StAmount
+          v-if="inputAmountState === 'XST'"
+            v-model="amount"
+            label="Amount"
+            color="dark"
+            placeholder="Amount"
+            :options="{
+              locale: 'en',
+          currency: 'XST',
+          distractionFree: false,
+          valueAsInteger: false,
+          useGrouping: true,
+          precision: 2,
+          allowNegative: false
+            }"
+          >
+            <svg
+            @click="inputAmountState = 'USD'"
+              width="19"
+              height="16"
+              viewBox="0 0 19 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
+                stroke="#E5E4E8"
+                stroke-width="2"
+              />
+              <path
+                d="M14.2222 14.2222L14.2222 1.77773"
+                stroke="#E5E4E8"
+                stroke-width="2"
+              />
+              <path
+                d="M4.77777 1.77783V14.2223"
+                stroke="#E5E4E8"
+                stroke-width="2"
+              />
+              <path
+                d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
+                stroke="#E5E4E8"
+                stroke-width="2"
+              />
+            </svg>
+          </StAmount>
+          <StAmount
+          v-else-if="inputAmountState === 'USD'"
             v-model="amount"
             label="Amount"
             color="dark"
             placeholder="Amount"
           >
             <svg
+            @click="inputAmountState = 'XST'"
               width="19"
               height="16"
               viewBox="0 0 19 16"
@@ -85,6 +134,7 @@
             disabled
           >
             <StTooltip
+            v-if="depositAddress"
               :tooltip-text="
                 copyPending ? 'Copied to clipboard!' : 'Click to copy'
               "
@@ -92,28 +142,36 @@
               <StClipboard
                 :content="depositAddress"
                 @click="handleCopy"
-              ></StClipboard>
+              >
+              <svg width="15" height="19" viewBox="0 0 15 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M10 5.5H1V17.5H10V5.5Z" stroke="#E5E4E8" stroke-width="2"/>
+<path d="M14 14.5L14 0.500013" stroke="#E5E4E8" stroke-width="2"/>
+<path d="M2 1.5L14 1.5" stroke="#E5E4E8" stroke-width="2"/>
+</svg>
+              </StClipboard>
             </StTooltip>
           </StInput>
         </div>
       </template>
       <template v-if="currentStep === 2">
         <StInput
+          class="address-input"
           v-model="depositAddress"
           placeholder="Deposit address"
-          label="Address"
+          label="Receiving Address"
           color="dark"
           disabled
         ></StInput>
         <StTooltip
+        class="tooltip"
           :tooltip-text="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
         >
           <StClipboard
             :content="depositAddress"
             @click="handleCopy"
-          ></StClipboard>
+          >Copy to Clipboard</StClipboard>
         </StTooltip>
-        <img :src="qrSrc" />
+        <img class="qr-img" :src="qrSrc" />
       </template>
       <template v-if="currentStep === 3">
         <StInput
@@ -122,7 +180,7 @@
           color="dark"
           placeholder="Email"
         ></StInput>
-        <p>
+        <p class="email-desc">
           Using this option you will share receive details via default email
           client
         </p>
@@ -160,6 +218,7 @@ export default {
     const isVisible = computed(() => {
       return mainStore.modals.receive;
     });
+    const inputAmountState = ref('XST')
 
     watch(
       () => isVisible.value,
@@ -246,6 +305,7 @@ export default {
     return {
       isVisible,
       closeModal,
+      inputAmountState,
 
       accounts,
       account,
@@ -277,6 +337,33 @@ export default {
 .form-item.account label {
   position: absolute;
   top: -46px;
+}
+::v-deep .address-input > .st-input__inner {
+  text-align: center;
+}
+::v-deep .address-input > label {
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+.tooltip {
+  margin-top: 40px;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+.qr-img {
+  margin: 46px auto 0;
+  display: block;
+  width: 100%;
+  max-width: 120px;
+}
+.email-desc {
+  margin-top: 10px;
+  color: var(--grey400);
+}
+::v-deep .st-amount > .st-icon {
+  cursor: pointer;
 }
 .multiselect-single-label {
   display: flex;
