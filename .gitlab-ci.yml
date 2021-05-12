@@ -1,8 +1,7 @@
 Build Linux:
   image: nexus.barrage.net:13455/barrage-internal/electronjs-builder
   script:
-    - wget -nc https://dl.winehq.org/wine-builds/winehq.key
-    - apt-key add winehq.key
+    - apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys DFA175A75104960E
     - apt update ; apt --yes install rsync
     - cp -R ./ /project
     - cd /project
