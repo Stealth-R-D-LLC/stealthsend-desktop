@@ -11,17 +11,24 @@ export const useMainStore = defineStore({
     headerStyle: 'default', // has grey style on some screens and default white on most of them
     wallet: null,
     accountDetails: null,
-    isAmountsHidden: false,
+    isAmountsHidden: false, // all amounts are visible or hidden as ***
+    isDrawerOpened: false, // drawer on the right side
 
     // modals visibility
     modals: {
       receive: false,
       send: false,
     },
-    isDrawerOpened: false,
+    componentVisibility: {
+      chart: true, // chart on dashboard,
+      txDashboard: true, // tx list on dashboard
+    }
   }),
   getters: {},
   actions: {
+    SET_COMPONENT_VISIBILITY(component, visibility = false) {
+      this.componentVisibility[component] = visibility
+    },
     SET_MODAL_VISIBILITY(modal, visibility) {
       this.modals[modal] = visibility;
     },

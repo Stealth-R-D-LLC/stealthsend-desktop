@@ -23,6 +23,7 @@ export default {
               show: false,
             },
             width: '100%',
+            height: '400px',
             offsetX: -5,
             zoom: {
               enabled: false,
