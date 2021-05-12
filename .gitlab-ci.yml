@@ -1,6 +1,7 @@
 Build Linux:
   image: nexus.barrage.net:13455/barrage-internal/electronjs-builder
   script:
+    - apt update ; apt --yes install rsync
     - cp -R ./ /project
     - cd /project
     - npm install --only=prod --no-package-lock
