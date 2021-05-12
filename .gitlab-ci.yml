@@ -9,8 +9,8 @@ Build Linux:
     - docker-executor
   artifacts:
     paths:
-      - /project/dist_electron/*.AppImage
-      - /project/dist_electron/*.deb
+      - dist_electron/*.AppImage
+      - dist_electron/*.deb
 
 Build MacOS:
   script:
@@ -20,11 +20,12 @@ Build MacOS:
     - cd "$WORKDIR"
     - npm install
     - npm run electron:build --mac
-    - ls dist_electron
     - echo $CI_PROJECT_DIR
+    - rsync -r $WORKDIR/dist_electron ./
+    - ls dist_electron
   tags:
     - macos-electronjs
   artifacts:
     paths:
-      - $WORKDIR/dist_electron/*.dmg
-      - $WORKDIR/dist_electron/*.pkg
+      - dist_electron/*.dmg
+      - dist_electron/*.pkg
