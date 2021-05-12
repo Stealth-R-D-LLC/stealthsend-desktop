@@ -14,6 +14,7 @@ Build Linux:
 
 Build MacOS:
   script:
+    - whoami
     - source ~/.zshrc
     - cp -R ./ /Users/barrage/projects/vue-electronjs
     - cd /Users/barrage/projects/vue-electronjs
