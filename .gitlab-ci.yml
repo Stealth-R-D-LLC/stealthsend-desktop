@@ -15,8 +15,8 @@ Build Linux:
 Build MacOS:
   script:
     - source ~/.zshrc
-    - cp -R ./ /project
-    - cd /project
+    - cp -R ./ /Users/barrage/projects/vue-electronjs
+    - cd /Users/barrage/projects/vue-electronjs
     - npm install --only=prod --no-package-lock
     - npm run electron:build --mac
   tags:
