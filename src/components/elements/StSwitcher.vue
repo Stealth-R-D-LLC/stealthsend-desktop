@@ -58,7 +58,7 @@
 import { ref, computed } from 'vue';
 import CryptoService from '@/services/crypto';
 import { useMainStore } from '@/store';
-  import useHelpers from '@/composables/useHelpers';
+import useHelpers from '@/composables/useHelpers';
 import { multiply } from 'mathjs';
 
 export default {
@@ -83,18 +83,30 @@ export default {
         {
           asset: 'XST',
           amountTop: `${formatAmount(props.amount, true, 2)}`,
-          amountBottom: `$${formatAmount(multiply(props.amount, CryptoService.constraints.XST_USD), true, 2)}`,
+          amountBottom: `$${formatAmount(
+            multiply(props.amount, CryptoService.constraints.XST_USD),
+            true,
+            2
+          )}`,
           percentage: `+100`,
         },
         {
           asset: 'EUR',
-          amountTop: `$${formatAmount(multiply(props.amount, CryptoService.constraints.XST_USD), true, 2)}`,
+          amountTop: `$${formatAmount(
+            multiply(props.amount, CryptoService.constraints.XST_USD),
+            true,
+            2
+          )}`,
           amountBottom: `${formatAmount(props.amount, true, 8)} XST`,
           percentage: `+90`,
         },
         {
           asset: 'BTC',
-          amountTop: formatAmount(multiply(props.amount, CryptoService.constraints.XST_BTC), true, 8),
+          amountTop: formatAmount(
+            multiply(props.amount, CryptoService.constraints.XST_BTC),
+            true,
+            8
+          ),
           amountBottom: `${formatAmount(props.amount, true, 8)} XST`,
           percentage: `+22`,
         },
