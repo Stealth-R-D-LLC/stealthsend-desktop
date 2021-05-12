@@ -15,11 +15,12 @@ Build Linux:
 Build MacOS:
   script:
     - source ~/.zshrc
-    - npm run clean-post
+    - npm run clean
     - rsync -r --exclude=.git ./ /Users/barrage/projects/vue-electronjs
     - cd /Users/barrage/projects/vue-electronjs
     - npm install --only=prod --no-package-lock
     - npm run electron:build --mac
+    - npm run clean
   tags:
     - macos-electronjs
   artifacts:
