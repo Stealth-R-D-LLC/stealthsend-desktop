@@ -92,7 +92,7 @@ import isToday from 'date-fns/isToday';
 import isYesterday from 'date-fns/isYesterday';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import router from '@/router';
 import CryptoService from '@/services/crypto';
 
@@ -166,13 +166,16 @@ export default {
     });
 
     function openTransaction(trx) {
-      console.log('trx', trx);
       router.push(`/transaction/${trx.txid}`);
     }
 
     function findLabelForTx(tx) {
       return CryptoService.txWithLabels[tx];
     }
+
+    onMounted(() => {
+      orderTransactions({label: "All", value: Infinity})
+    })
 
     watch(
       () => props.transactions,
