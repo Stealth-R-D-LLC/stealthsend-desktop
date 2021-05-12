@@ -15,7 +15,6 @@ Build Linux:
 Build MacOS:
   script:
     - source ~/.zshrc
-    - npm run clean-post
     - rsync -r --exclude=.git ./ /Users/barrage/projects/vue-electronjs
     - cd /Users/barrage/projects/vue-electronjs
     - npm install --only=prod --no-package-lock
@@ -25,5 +24,5 @@ Build MacOS:
     - macos-electronjs
   artifacts:
     paths:
-      - /Users/barrage/projects/vue-electronjs/dist_electron/*.dmg
-      - /Users/barrage/projects/vue-electronjs/dist_electron/*.pkg
+      - dist_electron/'*.dmg'
+      - dist_electron/'*.pkg'
