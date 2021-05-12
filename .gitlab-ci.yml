@@ -21,9 +21,10 @@ Build MacOS:
     - npm install
     - npm run electron:build --mac
     - ls dist_electron
+    - echo $CI_PROJECT_DIR
   tags:
     - macos-electronjs
   artifacts:
     paths:
-      - dist_electron/StealthSend-Desktop-0.1.1.dmg
-      - dist_electron/StealthSend-Desktop-0.1.1.pkg
+      - dist_electron/*.dmg
+      - dist_electron/*.pkg
