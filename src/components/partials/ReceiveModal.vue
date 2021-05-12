@@ -13,7 +13,7 @@
         <div class="form-item account">
           <label for="multiselect">Account</label>
           <StMultiselect
-          :class="{ 'multiselect-filled': account }"
+            :class="{ 'multiselect-filled': account }"
             v-model="account"
             :options="accounts"
             track-by="_id"
@@ -42,23 +42,23 @@
         </div>
         <div class="form-item">
           <StAmount
-          v-if="inputAmountState === 'XST'"
+            v-if="inputAmountState === 'XST'"
             v-model="amount"
             label="Amount"
             color="dark"
             placeholder="Amount"
             :options="{
               locale: 'en',
-          currency: 'XST',
-          distractionFree: false,
-          valueAsInteger: false,
-          useGrouping: true,
-          precision: 2,
-          allowNegative: false
+              currency: 'XST',
+              distractionFree: false,
+              valueAsInteger: false,
+              useGrouping: true,
+              precision: 2,
+              allowNegative: false,
             }"
           >
             <svg
-            @click="inputAmountState = 'USD'"
+              @click="inputAmountState = 'USD'"
               width="19"
               height="16"
               viewBox="0 0 19 16"
@@ -88,14 +88,14 @@
             </svg>
           </StAmount>
           <StAmount
-          v-else-if="inputAmountState === 'USD'"
+            v-else-if="inputAmountState === 'USD'"
             v-model="amount"
             label="Amount"
             color="dark"
             placeholder="Amount"
           >
             <svg
-            @click="inputAmountState = 'XST'"
+              @click="inputAmountState = 'XST'"
               width="19"
               height="16"
               viewBox="0 0 19 16"
@@ -134,20 +134,31 @@
             disabled
           >
             <StTooltip
-            v-if="depositAddress"
+              v-if="depositAddress"
               :tooltip-text="
                 copyPending ? 'Copied to clipboard!' : 'Click to copy'
               "
             >
-              <StClipboard
-                :content="depositAddress"
-                @click="handleCopy"
-              >
-              <svg width="15" height="19" viewBox="0 0 15 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M10 5.5H1V17.5H10V5.5Z" stroke="#E5E4E8" stroke-width="2"/>
-<path d="M14 14.5L14 0.500013" stroke="#E5E4E8" stroke-width="2"/>
-<path d="M2 1.5L14 1.5" stroke="#E5E4E8" stroke-width="2"/>
-</svg>
+              <StClipboard :content="depositAddress" @click="handleCopy">
+                <svg
+                  width="15"
+                  height="19"
+                  viewBox="0 0 15 19"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M10 5.5H1V17.5H10V5.5Z"
+                    stroke="#E5E4E8"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M14 14.5L14 0.500013"
+                    stroke="#E5E4E8"
+                    stroke-width="2"
+                  />
+                  <path d="M2 1.5L14 1.5" stroke="#E5E4E8" stroke-width="2" />
+                </svg>
               </StClipboard>
             </StTooltip>
           </StInput>
@@ -163,13 +174,12 @@
           disabled
         ></StInput>
         <StTooltip
-        class="tooltip"
+          class="tooltip"
           :tooltip-text="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
         >
-          <StClipboard
-            :content="depositAddress"
-            @click="handleCopy"
-          >Copy to Clipboard</StClipboard>
+          <StClipboard :content="depositAddress" @click="handleCopy"
+            >Copy to Clipboard</StClipboard
+          >
         </StTooltip>
         <img class="qr-img" :src="qrSrc" />
       </template>
@@ -218,7 +228,7 @@ export default {
     const isVisible = computed(() => {
       return mainStore.modals.receive;
     });
-    const inputAmountState = ref('XST')
+    const inputAmountState = ref('XST');
 
     watch(
       () => isVisible.value,
