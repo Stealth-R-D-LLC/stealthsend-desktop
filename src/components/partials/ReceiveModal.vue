@@ -40,12 +40,19 @@
           </StMultiselect>
         </div>
         <div class="form-item">
-          <StInput
+          <StAmount
             v-model="amount"
             label="Amount"
             color="dark"
             placeholder="Amount"
-          ></StInput>
+          >
+          <svg width="19" height="16" viewBox="0 0 19 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10.4445 11.5557L14.2222 14.2223L18 11.5557" stroke="#E5E4E8" stroke-width="2"/>
+            <path d="M14.2222 14.2222L14.2222 1.77773" stroke="#E5E4E8" stroke-width="2"/>
+            <path d="M4.77777 1.77783V14.2223" stroke="#E5E4E8" stroke-width="2"/>
+            <path d="M1 4.4445L4.77778 1.77783L8.55555 4.4445" stroke="#E5E4E8" stroke-width="2"/>
+          </svg>
+          </StAmount>
         </div>
         <div class="form-item">
           <StInput
@@ -54,7 +61,16 @@
             label="Address"
             color="dark"
             disabled
-          ></StInput>
+          >
+            <StTooltip
+              :tooltip-text="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
+            >
+              <StClipboard
+                :content="depositAddress"
+                @click="handleCopy"
+              ></StClipboard>
+            </StTooltip>
+          </StInput>
         </div>
       </template>
       <template v-if="currentStep === 2">
@@ -135,6 +151,7 @@ export default {
       // reset all variables
       account.value = null;
       accounts.value = [];
+      amount.value = null;
       currentStep.value = 1;
       depositAddress.value = '';
       qrSrc.value = '';
@@ -142,6 +159,7 @@ export default {
 
     const accounts = ref([]);
     const account = ref(null);
+    const amount = ref(null)
 
     async function scanWallet() {
       console.log('majku bozju');
@@ -207,6 +225,7 @@ export default {
 
       accounts,
       account,
+      amount,
       depositAddress,
       changeAccount,
       qrSrc,
@@ -241,27 +260,25 @@ export default {
   justify-content: flex-start;
   align-items: flex-start;
   position: absolute;
-  top: -24px;
+  top: -13px;
 }
 .multiselect-single-label .account-utxo {
   margin-top: 6px;
-  font-size: 12px;
   font-family: Noto Sans;
   font-style: normal;
   font-weight: normal;
-  font-size: 12px;
-  line-height: 24px;
+  font-size: 14px;
+  line-height: 14px;
   /* identical to box height, or 200% */
 
   letter-spacing: 0.12px;
 }
 .multiselect-single-label .account-label {
-  font-size: 12px;
   font-family: Noto Sans;
   font-style: normal;
   font-weight: normal;
-  font-size: 12px;
-  line-height: 24px;
+  font-size: 14px;
+  line-height: 14px;
   height: 48px;
   top: -14px;
   /* identical to box height, or 200% */

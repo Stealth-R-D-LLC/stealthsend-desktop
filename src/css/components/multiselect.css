@@ -6,6 +6,11 @@
   border-bottom: 2px solid var(--grey100);
 }
 
+.multiselect-input > .multiselect-placeholder {
+  color: var(--grey100);
+  font-size: 14px;
+}
+
 .multiselect-single-label {
   color: var(--grey100);
   font-size: 18px;
