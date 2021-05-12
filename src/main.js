@@ -7,17 +7,17 @@ import {
   StCheckbox,
   StClipboard,
   StDropdown,
-  StInput,
+  StIcon, StInput,
   StLink,
   StLoading,
   StModal,
   StPagination,
   StRadio,
   StStatus,
+  StSwitch,
   StTable,
   StTag,
-  StIcon,
-  StTooltip,
+  StTooltip
 } from 'stealth-kit';
 import { createApp } from 'vue';
 import App from './App.vue';
@@ -30,6 +30,7 @@ app.use(createPinia());
 
 // global components
 app.component('StAmount', StAmount);
+app.component('StSwitch', StSwitch);
 app.component('StButton', StButton);
 app.component('StMultiselect', Multiselect);
 app.component('StLink', StLink);

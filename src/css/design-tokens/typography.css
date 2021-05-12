@@ -40,3 +40,6 @@ p {
   letter-spacing: 0.12px;
   line-height: 24px;
 }
+.bold {
+  font-weight: 700;
+}
