@@ -14,8 +14,8 @@
         <div class="form-item account">
           <label for="multiselect">Account</label>
           <StMultiselect
-            :class="{ 'multiselect-filled': account }"
             v-model="account"
+            :class="{ 'multiselect-filled': account }"
             :options="accounts"
             track-by="_id"
             value-prop="address"
@@ -23,7 +23,7 @@
             :object="true"
             :can-deselect="false"
             placeholder="Select account"
-            @change="changeAccount"
+                  @select="getUnspentOutputs"
           >
             <template #singlelabel="{ value }">
               <div class="multiselect-single-label">
@@ -59,12 +59,12 @@
             }"
           >
             <svg
-              @click="inputAmountState = 'USD'"
               width="19"
               height="16"
               viewBox="0 0 19 16"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
+              @click="inputAmountState = 'USD'"
             >
               <path
                 d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
@@ -96,12 +96,12 @@
             placeholder="Amount"
           >
             <svg
-              @click="inputAmountState = 'XST'"
               width="19"
               height="16"
               viewBox="0 0 19 16"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
+              @click="inputAmountState = 'XST'"
             >
               <path
                 d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
@@ -134,7 +134,6 @@
             placeholder="Deposit address"
             label="Receiving Address"
             color="dark"
-            disabled
           >
             <StTooltip
               v-if="depositAddress"
@@ -207,7 +206,7 @@
         <StButton color="white" @click="changeStep(4)">Confirm</StButton>
       </template>
       <template v-if="currentStep === 4">
-        <StButton color="white" disabled>Confirm payment</StButton>
+        <StButton color="white" @click="send">Confirm payment</StButton>
       </template>
     </template>
   </StModal>
@@ -217,6 +216,8 @@
 import { useMainStore } from '@/store';
 import { computed, ref, watch } from 'vue';
 import CryptoService from '@/services/crypto';
+import useCoinControl from '@/composables/useCoinControl';
+import useTransactionBuilder from '@/composables/useTransactionBuilder';
 
 export default {
   name: 'StSendModal',
@@ -266,23 +267,59 @@ export default {
     }
 
     scanWallet();
+    let unspentOutputs = [];
 
     const depositAddress = ref('');
-    async function changeAccount(acc) {
-      const { account, change } = CryptoService.breakAccountPath(acc.path);
-      const discoveredAddresses = await CryptoService.accountDiscovery(account);
-      let nextFreeAddress = CryptoService.nextToUse(
-        discoveredAddresses.freeAddresses
-      );
-      const next = CryptoService.breakAccountPath(nextFreeAddress);
 
-      const child = CryptoService.getChildFromRoot(
-        account,
-        change,
-        next.address
-      );
-      depositAddress.value = child.address;
+        async function getUnspentOutputs() {
+      const outputs = await mainStore.rpc('getaddressoutputs', [
+        account.value.address,
+        1,
+        100,
+      ]);
+
+      unspentOutputs = outputs.filter((el) => el.isspent === 'false');
+      console.log('candidates for inputs: ', unspentOutputs);
     }
+
+    function coinSelection() {
+      const { best } = useCoinControl(unspentOutputs, amount.value);
+      return best;
+    }
+
+    async function send() {
+      const utxo = coinSelection();
+      console.log('inputs:', utxo);
+
+      if (utxo.length === 0) {
+        console.log('ne mogu sastaviti transakciju');
+        return;
+      }
+
+
+
+      let { txid } = await useTransactionBuilder(utxo, {
+        address: depositAddress.value,
+        amount: amount.value,
+        account: account.value
+      });
+      CryptoService.storeTxAndLabel(txid, label.value);
+    }
+    // async function changeAccount(acc) {
+    //   const { account, change } = CryptoService.breakAccountPath(acc.path);
+    //   const discoveredAddresses = await CryptoService.accountDiscovery(account);
+    //   let nextFreeAddress = CryptoService.nextToUse(
+    //     discoveredAddresses.freeAddresses
+    //   );
+    //   const next = CryptoService.breakAccountPath(nextFreeAddress);
+
+    //   const child = CryptoService.getChildFromRoot(
+    //     account,
+    //     change,
+    //     next.address
+    //   );
+    //   depositAddress.value = child.address;
+    // }
 
     let copyPending = ref(false);
     function handleCopy() {
@@ -315,7 +352,7 @@ export default {
       amount,
       depositAddress,
       label,
-      changeAccount,
+      // changeAccount,
 
       currentStep,
       changeStep,
@@ -323,6 +360,10 @@ export default {
 
       handleCopy,
       copyPending,
+
+      send,
+      getUnspentOutputs
+
     };
   },
 };
