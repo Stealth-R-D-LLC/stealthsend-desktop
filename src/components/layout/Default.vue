@@ -2,9 +2,9 @@
   <div class="layout">
     <MenuBar></MenuBar>
     <main class="layout__main">
-      <Side></Side>
+      <Side v-if="$route.path === '/dashboard'"></Side>
       <router-view v-slot="{ Component }">
-        <div>
+        <div class="full-widht">
           <TopBar></TopBar>
           <transition name="fade">
             <component :is="Component" />
@@ -44,5 +44,8 @@ export default {
 <style scoped>
 .layout {
   position: relative;
+}
+.full-widht {
+  width: 100%;
 }
 </style>

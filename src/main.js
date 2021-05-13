@@ -7,7 +7,8 @@ import {
   StCheckbox,
   StClipboard,
   StDropdown,
-  StIcon, StInput,
+  StIcon,
+  StInput,
   StLink,
   StLoading,
   StModal,
@@ -17,7 +18,7 @@ import {
   StSwitch,
   StTable,
   StTag,
-  StTooltip
+  StTooltip,
 } from 'stealth-kit';
 import { createApp } from 'vue';
 import App from './App.vue';
