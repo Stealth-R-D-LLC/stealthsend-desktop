@@ -5,7 +5,6 @@ import AddressBook from '@/views/address-book.vue';
 import Dashboard from '@/views/dashboard/dashboard.vue';
 import Lock from '@/views/lock.vue';
 import Receive from '@/views/receive.vue';
-import Send from '@/views/send.vue';
 import Settings from '@/views/settings.vue';
 import TransactionDetails from '@/views/transaction-details.vue';
 import Transactions from '@/views/transactions.vue';
@@ -73,11 +72,6 @@ const routes = [
     path: '/receive',
     name: 'Receive',
     component: Receive,
-  },
-  {
-    path: '/send',
-    name: 'Send',
-    component: Send,
   },
   {
     path: '/transactions',
