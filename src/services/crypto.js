@@ -413,11 +413,15 @@ const CryptoService = {
     return encData;
   },
   AESDecrypt(payload, key = '123456789') {
-    let decData = cryptoJs.enc.Base64.parse(payload).toString(
+    console.log('&&&&payload&&&&', payload);
+    let encrypted = cryptoJs.enc.Base64.parse(payload).toString(
       cryptoJs.enc.Utf8
     );
-    let bytes = cryptoJs.AES.decrypt(decData, key).toString(cryptoJs.enc.Utf8);
-    return JSON.parse(bytes);
+    // Message was encrypted as utf-8 data, so it has to be decrypted as utf-8
+    let decrypted = cryptoJs.AES.decrypt(encrypted, key).toString(
+      cryptoJs.enc.Utf8
+    );
+    return decrypted;
   },
   async scanWallet() {
     const mainStore = useMainStore();
@@ -464,7 +468,7 @@ const CryptoService = {
     for (let i = 0; i < freeAddresses.length; i++) {
       if (
         parseInt(freeAddresses[i + 1].split('/')[2]) -
-          parseInt(freeAddresses[i].split('/')[2]) ===
+        parseInt(freeAddresses[i].split('/')[2]) ===
         1
       ) {
         if (i === 0) {
