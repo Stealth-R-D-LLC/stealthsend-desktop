@@ -23,7 +23,7 @@
             :object="true"
             :can-deselect="false"
             placeholder="Select account"
-                  @select="getUnspentOutputs"
+            @select="getUnspentOutputs"
           >
             <template #singlelabel="{ value }">
               <div class="multiselect-single-label">
@@ -271,7 +271,7 @@ export default {
 
     const depositAddress = ref('');
 
-        async function getUnspentOutputs() {
+    async function getUnspentOutputs() {
       const outputs = await mainStore.rpc('getaddressoutputs', [
         account.value.address,
         1,
@@ -296,12 +296,10 @@ export default {
         return;
       }
 
-
-
       let { txid } = await useTransactionBuilder(utxo, {
         address: depositAddress.value,
         amount: amount.value,
-        account: account.value
+        account: account.value,
       });
       CryptoService.storeTxAndLabel(txid, label.value);
     }
@@ -362,8 +360,7 @@ export default {
       copyPending,
 
       send,
-      getUnspentOutputs
-
+      getUnspentOutputs,
     };
   },
 };

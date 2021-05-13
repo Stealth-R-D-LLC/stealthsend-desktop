@@ -35,15 +35,15 @@ export default {
               enabled: true,
               easing: 'linear',
               speed: 800,
-                      animateGradually: {
-            enabled: false,
-            delay: 150
-        },
-        dynamicAnimation: {
-            enabled: true,
-            speed: 350
-        }
-            }
+              animateGradually: {
+                enabled: false,
+                delay: 150,
+              },
+              dynamicAnimation: {
+                enabled: true,
+                speed: 350,
+              },
+            },
           },
           dataLabels: {
             enabled: false,
@@ -113,8 +113,8 @@ export default {
           },
           noData: {
             text: 'Loading...',
-              align: 'center',
-  verticalAlign: 'middle',
+            align: 'center',
+            verticalAlign: 'middle',
           },
           series: [],
         };
@@ -133,7 +133,7 @@ export default {
 </script>
 
 <style scoped>
-.st-dashboard-chart{
+.st-dashboard-chart {
   height: 400px;
 }
 </style>
