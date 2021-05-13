@@ -23,6 +23,7 @@ export default {
               show: false,
             },
             width: '100%',
+            height: '400px',
             offsetX: -5,
             zoom: {
               enabled: false,
@@ -30,6 +31,19 @@ export default {
             selection: {
               enabled: false,
             },
+            animations: {
+              enabled: true,
+              easing: 'linear',
+              speed: 800,
+                      animateGradually: {
+            enabled: false,
+            delay: 150
+        },
+        dynamicAnimation: {
+            enabled: true,
+            speed: 350
+        }
+            }
           },
           dataLabels: {
             enabled: false,
@@ -99,6 +113,8 @@ export default {
           },
           noData: {
             text: 'Loading...',
+              align: 'center',
+  verticalAlign: 'middle',
           },
           series: [],
         };
@@ -116,4 +132,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+.st-dashboard-chart{
+  height: 400px;
+}
+</style>
