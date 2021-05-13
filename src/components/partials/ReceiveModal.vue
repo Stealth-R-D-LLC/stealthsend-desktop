@@ -308,7 +308,7 @@ export default {
       currentStep.value = step;
     }
     function goBack(step) {
-      currentStep.value = step
+      currentStep.value = step;
     }
 
     //     onMounted(() => {
@@ -353,10 +353,10 @@ export default {
   position: absolute;
   top: -46px;
 }
-::v-deep .address-input > .st-input__inner {
+:deep .address-input > .st-input__inner {
   text-align: center;
 }
-::v-deep .address-input > label {
+:deep .address-input > label {
   left: 0;
   right: 0;
   text-align: center;
@@ -377,7 +377,7 @@ export default {
   margin-top: 10px;
   color: var(--grey400);
 }
-::v-deep .st-amount > .st-icon {
+:deep .st-amount > .st-icon {
   cursor: pointer;
 }
 .multiselect-single-label {
