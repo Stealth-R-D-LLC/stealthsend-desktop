@@ -17,7 +17,7 @@ module.exports = {
     electronBuilder: {
       builderOptions: {
         "appId": "org.stealthsend.desktop",
-        "productName": "StealthSend Desktop",
+        "productName": "StealthSend-Desktop",
         "copyright": "Copyright © 2021 ${author}",
         "linux": {
           "target": ["deb", "AppImage"],
