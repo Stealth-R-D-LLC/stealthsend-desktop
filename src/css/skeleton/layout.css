@@ -30,8 +30,7 @@
   /* padding: 0 12px; */
   position: relative;
   margin-left: 75px; /*for fixed sidebar */
-  display: grid;
-  grid-template-columns: 392px 11fr;
+  display: flex;
 }
 
 .layout__single {

@@ -130,13 +130,13 @@
       <template v-if="currentStep === 2">
         <div class="form-item">
           <StInput
-          v-model="depositAddress"
-          placeholder="Deposit address"
-          label="Receiving Address"
-          color="dark"
-          disabled
-        >
-        <StTooltip
+            v-model="depositAddress"
+            placeholder="Deposit address"
+            label="Receiving Address"
+            color="dark"
+            disabled
+          >
+            <StTooltip
               v-if="depositAddress"
               :tooltip-text="
                 copyPending ? 'Copied to clipboard!' : 'Click to copy'
@@ -164,27 +164,32 @@
                 </svg>
               </StClipboard>
             </StTooltip>
-        </StInput>
+          </StInput>
         </div>
         <div class="form-item">
-          <StInput v-model="label" label="Label" color="dark" placeholder="Add a label to your transaction" />
+          <StInput
+            v-model="label"
+            label="Label"
+            color="dark"
+            placeholder="Add a label to your transaction"
+          />
         </div>
       </template>
       <template v-if="currentStep === 3">
         <div class="payment">
           <h5>Payment Details</h5>
-        <div class="payment-grid">
-          <p class="bold">Account:</p>
-          <p>{{ account.label }}</p>
-          <p class="bold">Amount:</p>
-          <p>{{ amount }}</p>
-          <p class="bold">Address</p>
-          <p>{{ depositAddress }}</p>
-          <p class="bold">Label:</p>
-          <p>{{ label }}</p>
-          <p class="bold">Fee:</p>
-          <p>0.0 XST</p>
-        </div>
+          <div class="payment-grid">
+            <p class="bold">Account:</p>
+            <p>{{ account.label }}</p>
+            <p class="bold">Amount:</p>
+            <p>{{ amount }}</p>
+            <p class="bold">Address</p>
+            <p>{{ depositAddress }}</p>
+            <p class="bold">Label:</p>
+            <p>{{ label }}</p>
+            <p class="bold">Fee:</p>
+            <p>0.0 XST</p>
+          </div>
         </div>
       </template>
       <template v-if="currentStep === 4">
@@ -193,14 +198,10 @@
     </template>
     <template #footer class="flex-center-all">
       <template v-if="currentStep === 1">
-        <StButton color="white" @click="changeStep(2)"
-          >Proceed</StButton
-        >
+        <StButton color="white" @click="changeStep(2)">Proceed</StButton>
       </template>
       <template v-if="currentStep === 2">
-        <StButton color="white" @click="changeStep(3)"
-          >Proceed</StButton
-        >
+        <StButton color="white" @click="changeStep(3)">Proceed</StButton>
       </template>
       <template v-if="currentStep === 3">
         <StButton color="white" @click="changeStep(4)">Confirm</StButton>
@@ -244,13 +245,13 @@ export default {
       amount.value = null;
       currentStep.value = 1;
       depositAddress.value = '';
-      label.value = ''
+      label.value = '';
     }
 
     const accounts = ref([]);
     const account = ref(null);
     const amount = ref(null);
-    const label = ref('')
+    const label = ref('');
 
     async function scanWallet() {
       console.log('majku bozju');
@@ -296,7 +297,7 @@ export default {
       currentStep.value = step;
     }
     function goBack(step) {
-      currentStep.value = step
+      currentStep.value = step;
     }
 
     //     onMounted(() => {
@@ -347,7 +348,7 @@ export default {
   width: 100%;
   text-align: center;
 }
-::v-deep .st-amount > .st-icon {
+:deep .st-amount > .st-icon {
   cursor: pointer;
 }
 .switch > p {
@@ -364,7 +365,7 @@ export default {
   grid-template-columns: auto 11fr;
   grid-gap: 16px 24px;
 }
-::v-deep .payment-input > label {
+:deep .payment-input > label {
   left: 0;
   right: 0;
   text-align: center;

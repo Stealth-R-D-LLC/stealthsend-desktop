@@ -1,36 +1,30 @@
 <template>
-  <div class="archived-accounts-container">
+  <div class="accounts-container">
     <transition-group v-if="accounts.length !== 0" name="list" tag="div">
-      <StCard
-        v-for="account in accounts"
-        :key="account"
-        class="list-item"
-        :account="account"
-        @unarchived="unarchieve"
-      >
-      </StCard>
+      <accounts :accounts="accounts"></accounts>
     </transition-group>
   </div>
 </template>
 
 <script>
-import { useMainStore } from '@/store';
-
 // import StCard from '@/components/elements/Card'
-import { computed } from 'vue';
+import { ref } from 'vue';
 import CryptoService from '@/services/crypto';
+import accounts from '@/components/partials/accounts.vue';
 
 export default {
   name: 'StArchivedAccounts',
-  // components: {
-  //     Card
-  // },
+  components: {
+    accounts,
+  },
   setup() {
-    const mainStore = useMainStore();
+    const accounts = ref([]);
 
-    const accounts = computed(() => {
-      return mainStore.state.accounts.filter((el) => el.isArchived);
-    });
+    async function scanWallet() {
+      const hdWallet = await CryptoService.scanWallet();
+      accounts.value = hdWallet.accounts;
+    }
+    scanWallet();
     function unarchieve(account) {
       CryptoService.unarchiveAccount(account);
     }
@@ -41,3 +35,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.accounts-container {
+  padding: 24px 28px;
+}
+</style>
