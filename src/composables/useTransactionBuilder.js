@@ -6,7 +6,7 @@ import { Buffer } from 'buffer';
 import { add, format, subtract } from 'mathjs';
 
 export default async function useTransactionBuilder(utxo, sendForm) {
-  console.log('start tx builder');
+  console.log('start tx builder', sendForm);
   const mainStore = useMainStore();
 
   const { fee } = useFeeEstimator(utxo.length);

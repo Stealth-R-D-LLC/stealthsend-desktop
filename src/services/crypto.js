@@ -209,7 +209,7 @@ const CryptoService = {
         },
       });
     }
-    this.getTx();
+    this.getTxWithLabels();
     return {
       txid,
       label,
