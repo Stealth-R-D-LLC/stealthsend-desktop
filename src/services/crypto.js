@@ -34,7 +34,7 @@ const CryptoService = {
   constraints: {
     XST_USD: 0.199,
     XST_BTC: 0.00000364,
-    changePercentage24Hr: 0,
+    changePercent24Hr: 0,
     MINIMAL_CHANGE: 0,
   },
   isFirstArrival: true,

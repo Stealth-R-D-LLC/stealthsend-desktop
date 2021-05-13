@@ -4,8 +4,16 @@
     :class="{ 'layout__header--is-grey': headerStyle === 'grey' }"
   >
     <div class="header-left">
-      <StIcon name="chart"></StIcon>
-      <StIcon name="tx-list"></StIcon>
+      <template v-if="checkVisibilityForRoute(['Dashboard'])">
+        <StIcon
+          name="chart"
+          @click="toggleComponentVisibility('chart')"
+        ></StIcon>
+        <StIcon
+          name="tx-list"
+          @click="toggleComponentVisibility('txDashboard')"
+        ></StIcon>
+      </template>
     </div>
     <div class="header-right">
       <StIcon name="sync-status"></StIcon>
@@ -21,13 +29,40 @@
 import pkgjson from '../../../package.json';
 import { useMainStore } from '@/store';
 import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+
 export default {
   setup() {
     const mainStore = useMainStore();
     let version = pkgjson.version;
+    const route = useRoute();
+
+    const currentRoute = computed(() => {
+      return route.name;
+    });
+
+    const componentVisibility = computed(() => {
+      return mainStore.componentVisibility;
+    });
+
+    function checkVisibilityForRoute(routes = []) {
+      if (!currentRoute.value) return false;
+      return routes.includes(currentRoute.value);
+    }
+
+    function toggleComponentVisibility(component) {
+      mainStore.SET_COMPONENT_VISIBILITY(
+        component,
+        !componentVisibility.value[component]
+      );
+    }
 
     return {
       version,
+      currentRoute,
+      componentVisibility,
+      checkVisibilityForRoute,
+      toggleComponentVisibility,
       headerStyle: computed(() => mainStore.headerStyle),
     };
   },
