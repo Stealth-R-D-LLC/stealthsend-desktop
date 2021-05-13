@@ -10,7 +10,7 @@
 // import StCard from '@/components/elements/Card'
 import { ref } from 'vue';
 import CryptoService from '@/services/crypto';
-import accounts from '@/components/partials/accounts.vue'
+import accounts from '@/components/partials/accounts.vue';
 
 export default {
   name: 'StArchivedAccounts',
@@ -18,7 +18,7 @@ export default {
     accounts,
   },
   setup() {
-    const accounts = ref([])
+    const accounts = ref([]);
 
     async function scanWallet() {
       const hdWallet = await CryptoService.scanWallet();
