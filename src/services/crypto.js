@@ -220,7 +220,7 @@ const CryptoService = {
     // because we dont have any other way to remember labels for particular transactions
     // so we have to fetch them from the db
     let data = await db.find({ name: 'tx' });
-    this.txWithLabels = { ...data[0].txs };
+    this.txWithLabels = { ...data[0]?.txs };
   },
   async storeAccountInDb(account) {
     let acc = await db.insert({
@@ -435,22 +435,29 @@ const CryptoService = {
       let newAccounts = [];
       for (let account of accounts) {
         let accUtxo = 0;
-        const hdAccount = await mainStore.rpc('gethdaccount', [account.pk]);
-        for (let tx of hdAccount) {
-          accUtxo = add(accUtxo, tx.account_balance_change);
-          accUtxo = format(accUtxo, { precision: 14 });
-          txs.push({
-            amount: tx.account_balance_change,
-            txid: tx.txid,
-            blocktime: tx.txinfo.blocktime,
-            account: account.label,
-            pk: account.pk,
+        if (account.pk.length > 0) {
+          const hdAccount = await mainStore.rpc('gethdaccount', [account.pk]);
+          for (let tx of hdAccount) {
+            accUtxo = add(accUtxo, tx.account_balance_change);
+            accUtxo = format(accUtxo, { precision: 14 });
+            txs.push({
+              amount: tx.account_balance_change,
+              txid: tx.txid,
+              blocktime: tx.txinfo.blocktime,
+              account: account.label,
+              pk: account.pk,
+            });
+          }
+          newAccounts.push({
+            ...account,
+            utxo: Number(accUtxo),
+          });
+        } else {
+          newAccounts.push({
+            ...account,
+            utxo: Number(account.utxo),
           });
         }
-        newAccounts.push({
-          ...account,
-          utxo: Number(accUtxo),
-        });
         // When a user looks at their wallet, the software aggregates the sum of value of all their
         // UTXOs and presents it to them as their "balance".
         // Bitcoin doesn’t know balances associated with an account or username as they appear in banking.
@@ -468,7 +475,7 @@ const CryptoService = {
     for (let i = 0; i < freeAddresses.length; i++) {
       if (
         parseInt(freeAddresses[i + 1].split('/')[2]) -
-          parseInt(freeAddresses[i].split('/')[2]) ===
+        parseInt(freeAddresses[i].split('/')[2]) ===
         1
       ) {
         if (i === 0) {
