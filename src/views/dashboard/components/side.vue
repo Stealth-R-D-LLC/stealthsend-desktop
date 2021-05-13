@@ -80,6 +80,8 @@ export default {
 
 <style scoped>
 .side {
+  min-width: 346px;
+  width: 346px;
   padding: 32px 24px;
   background: var(--background100);
 }
