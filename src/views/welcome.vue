@@ -169,7 +169,10 @@ export default {
       await CryptoService.storeWalletInDb(hardcodedPassword);
 
       // TODO: Get HD account
-      const accountExtendedPk = master.derivePath("m/44'/1'/0'").neutered().toBase58();
+      const accountExtendedPk = master
+        .derivePath("m/44'/1'/0'")
+        .neutered()
+        .toBase58();
       const hdAccount = await CryptoService.getHdAccount(accountExtendedPk);
       console.log('hdAccount', hdAccount);
 
