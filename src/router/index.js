@@ -15,7 +15,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import db from '../db';
 
 // dump whole db
-// db.remove({}, { multi: true });
+db.remove({}, { multi: true });
 // db.remove ({name:'tx'}, {});
 
 (async function bla() {

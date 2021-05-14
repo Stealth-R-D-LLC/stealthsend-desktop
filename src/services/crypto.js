@@ -68,6 +68,7 @@ const CryptoService = {
     }
   },
   async unlock(password) {
+    console.log('Unlocking password!', password)
     // no need to validate password because it is validated before calling this method
     // const isPasswordValid = await this.validatePassword(password) // compare user prompted password with stored
     // get password hash so that we can decrypt everything
@@ -298,6 +299,7 @@ const CryptoService = {
     };
   },
   async storeWalletInDb(password) {
+    console.log('storeWalletInDb - password', password);
     let { hash, salt } = await this.hashPassword(password);
     return new Promise((resolve) => {
       // user security is ultimately dependent on a password,
@@ -475,7 +477,7 @@ const CryptoService = {
     for (let i = 0; i < freeAddresses.length; i++) {
       if (
         parseInt(freeAddresses[i + 1].split('/')[2]) -
-          parseInt(freeAddresses[i].split('/')[2]) ===
+        parseInt(freeAddresses[i].split('/')[2]) ===
         1
       ) {
         if (i === 0) {

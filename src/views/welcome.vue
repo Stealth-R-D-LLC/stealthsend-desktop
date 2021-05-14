@@ -93,17 +93,22 @@ export default {
       // password is asked because we have to lock the seed in the database
       // user is createing a new password in this step
       mainStore.START_GLOBAL_LOADING();
+      console.log('mnemonic:::', mnemonic);
       let bytes = await bip39.mnemonicToSeedSync(mnemonic.value);
       const master = await bip32.fromSeed(bytes); // root
       recovered.value = {
         seed: bytes.toString('hex'),
         master: master,
       };
+      
+      const hardcodedPassword = '123456'; // hardcoded for now, missing wallet account step prior to importing the mnemonic
 
       CryptoService.seed = bytes.toString('hex');
       CryptoService.master = master;
+      console.log('password.value', hardcodedPassword);
 
-      CryptoService.storeWalletInDb(password.value);
+      // await CryptoService.storeWalletInDb(password.value);
+      await CryptoService.storeWalletInDb(hardcodedPassword);
       setTimeout(() => {
         goToDashboard();
         mainStore.STOP_GLOBAL_LOADING();
