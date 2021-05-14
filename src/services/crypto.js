@@ -474,7 +474,7 @@ const CryptoService = {
     for (let i = 0; i < freeAddresses.length; i++) {
       if (
         parseInt(freeAddresses[i + 1].split('/')[2]) -
-          parseInt(freeAddresses[i].split('/')[2]) ===
+        parseInt(freeAddresses[i].split('/')[2]) ===
         1
       ) {
         if (i === 0) {
@@ -485,6 +485,10 @@ const CryptoService = {
       }
     }
   },
+  getHdAccount(accountExtendedPk) {
+    const mainStore = useMainStore();
+    return mainStore.rpc('gethdaccount', [accountExtendedPk]);
+  }
 };
 
 export default CryptoService;
