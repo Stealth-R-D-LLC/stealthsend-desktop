@@ -210,7 +210,7 @@ const CryptoService = {
         },
       });
     }
-    this.getTx();
+    this.getTxWithLabels();
     return {
       txid,
       label,
@@ -416,14 +416,11 @@ const CryptoService = {
   },
   AESDecrypt(payload, key = '123456789') {
     console.log('&&&&payload&&&&', payload);
-    let encrypted = cryptoJs.enc.Base64.parse(payload).toString(
+    let decData = cryptoJs.enc.Base64.parse(payload).toString(
       cryptoJs.enc.Utf8
     );
-    // Message was encrypted as utf-8 data, so it has to be decrypted as utf-8
-    let decrypted = cryptoJs.AES.decrypt(encrypted, key).toString(
-      cryptoJs.enc.Utf8
-    );
-    return decrypted;
+    let bytes = cryptoJs.AES.decrypt(decData, key).toString(cryptoJs.enc.Utf8);
+    return JSON.parse(bytes);
   },
   async scanWallet() {
     const mainStore = useMainStore();
@@ -477,7 +474,7 @@ const CryptoService = {
     for (let i = 0; i < freeAddresses.length; i++) {
       if (
         parseInt(freeAddresses[i + 1].split('/')[2]) -
-          parseInt(freeAddresses[i].split('/')[2]) ===
+        parseInt(freeAddresses[i].split('/')[2]) ===
         1
       ) {
         if (i === 0) {
