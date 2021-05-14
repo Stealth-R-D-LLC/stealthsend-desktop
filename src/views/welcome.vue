@@ -77,7 +77,6 @@ import router from '../router';
 import CryptoService from '../services/crypto';
 import * as bitcoin from 'bitcoinjs-lib';
 
-
 export default {
   name: 'StWelcome',
   setup() {
@@ -105,7 +104,7 @@ export default {
 
       // Get the BIP32 root key in order to derive all addresses or make a lookup on the network
       console.log('-----------------------------------------------------');
-      console.log('1) BIP32 Root Key', master.toBase58()); 
+      console.log('1) BIP32 Root Key', master.toBase58());
       console.log('-----------------------------------------------------');
       console.log(
         '2) Wallet Account Extended Private Key',
@@ -137,16 +136,28 @@ export default {
       console.log('accountWif', accountWif);
       console.log('Object.keys(bitcoin)', Object.keys(bitcoin));
       console.log('Object.keys(bitcoin.address)', Object.keys(bitcoin.address));
-      console.log('Object.keys(bitcoin.payments)', Object.keys(bitcoin.payments));
+      console.log(
+        'Object.keys(bitcoin.payments)',
+        Object.keys(bitcoin.payments)
+      );
       console.log('Object.keys(bitcoin.ECPair)', Object.keys(bitcoin.ECPair));
-      
-      const accountFromWif = bitcoin.ECPair.fromWIF(accountWif, CryptoService.network);
+
+      const accountFromWif = bitcoin.ECPair.fromWIF(
+        accountWif,
+        CryptoService.network
+      );
       console.log('accountFromWif', accountFromWif);
       const accountFromWifPrivateKey = accountFromWif.privateKey;
       const accountFromWifPublicKey = accountFromWif.publicKey;
-      
-      console.log('accountFromWifPrivateKey', accountFromWifPrivateKey.toString('hex'));
-      console.log('accountFromWifPublicKey', accountFromWifPublicKey.toString('hex'));
+
+      console.log(
+        'accountFromWifPrivateKey',
+        accountFromWifPrivateKey.toString('hex')
+      );
+      console.log(
+        'accountFromWifPublicKey',
+        accountFromWifPublicKey.toString('hex')
+      );
 
       const hardcodedPassword = '123456'; // hardcoded for now, missing wallet account step prior to importing the mnemonic
 
