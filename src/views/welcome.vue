@@ -100,7 +100,7 @@ export default {
         seed: bytes.toString('hex'),
         master: master,
       };
-      
+
       const hardcodedPassword = '123456'; // hardcoded for now, missing wallet account step prior to importing the mnemonic
 
       CryptoService.seed = bytes.toString('hex');
