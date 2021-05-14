@@ -100,21 +100,36 @@ export default {
         seed: bytes.toString('hex'),
         master: master,
       };
-      
+
       // Get the BIP32 root key in order to derive all addresses or make a lookup on the network
-      console.log("-----------------------------------------------------");
-      console.log("bip32 root key 1)", master.toBase58()) // BIP32 Root Key (private key, check wallet generator)
-      console.log("-----------------------------------------------------");
-      console.log("bip32 root key 2)", master.derivePath("m/44'/1'/0'").toBase58()); // Account Extended Private Key (check wallet generator)
-      console.log("bip32 root key 3)", master.derivePath("m/44'/1'/0'").neutered().toBase58()); // Account Extended Public Key (check wallet generator)
-      console.log("bip32 root key 4)", master.derivePath("m/44'/1'/0'/0").neutered().toBase58()); // First address BIP32 Extended Public Key (check wallet generator)
-      console.log("-----------------------------------------------------");
-      console.log("bip 32 root key 5)", master.derivePath("m/44'/1'/0'/0").toBase58()); // BIP32 Extended Private Key (check wallet generator)
-      console.log("bip 32 root key 6)", master.derivePath("m/44'/1'/0'/0").neutered().toBase58()); // BIP32 Extended Public Key (check wallet generator)
+      console.log('-----------------------------------------------------');
+      console.log('bip32 root key 1)', master.toBase58()); // BIP32 Root Key (private key, check wallet generator)
+      console.log('-----------------------------------------------------');
+      console.log(
+        'bip32 root key 2)',
+        master.derivePath("m/44'/1'/0'").toBase58()
+      ); // Account Extended Private Key (check wallet generator)
+      console.log(
+        'bip32 root key 3)',
+        master.derivePath("m/44'/1'/0'").neutered().toBase58()
+      ); // Account Extended Public Key (check wallet generator)
+      console.log(
+        'bip32 root key 4)',
+        master.derivePath("m/44'/1'/0'/0").neutered().toBase58()
+      ); // First address BIP32 Extended Public Key (check wallet generator)
+      console.log('-----------------------------------------------------');
+      console.log(
+        'bip 32 root key 5)',
+        master.derivePath("m/44'/1'/0'/0").toBase58()
+      ); // BIP32 Extended Private Key (check wallet generator)
+      console.log(
+        'bip 32 root key 6)',
+        master.derivePath("m/44'/1'/0'/0").neutered().toBase58()
+      ); // BIP32 Extended Public Key (check wallet generator)
       // const bitcoin = require('bitcoinjs-lib')
       // console.log("Object.keys(bitcoin)", Object.keys(bitcoin));
       // console.log(bitcoin.bip32.fromSeed());
-      
+
       const hardcodedPassword = '123456'; // hardcoded for now, missing wallet account step prior to importing the mnemonic
 
       CryptoService.seed = bytes.toString('hex');
@@ -123,9 +138,9 @@ export default {
 
       // await CryptoService.storeWalletInDb(password.value);
       await CryptoService.storeWalletInDb(hardcodedPassword);
-      
+
       // TODO: Derive all accounts and addresses
-      
+
       setTimeout(() => {
         goToDashboard();
         mainStore.STOP_GLOBAL_LOADING();
