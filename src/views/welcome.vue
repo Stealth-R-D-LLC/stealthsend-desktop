@@ -123,17 +123,17 @@ export default {
         master.derivePath("m/44'/1'/0'/0").neutered().toBase58()
       );
       console.log('-----------------------------------------------------');
-      // WIF hoces?
+      // WIF you say?
       console.log(
         '6) First account WIF',
-        master.derivePath("m/44'/1'/0'/0").toWIF() // Do we need this for import or that under 7) ???
+        master.derivePath("m/44'/1'/0'/0").toWIF() // Do we need this for import or that under 7) ??? Done some test and my conclusion is NO, we need account address WIF
       );
       console.log(
         '7) First account address WIF',
-        master.derivePath("m/44'/1'/0'/0/0").toWIF()
+        master.derivePath("m/44'/1'/0'/0/0").toWIF() // One of theese we need....
       );
-      const accountWif = master.derivePath("m/44'/1'/0'/0").toWIF();
-      console.log('accountWif', accountWif);
+      const addressWif = master.derivePath("m/44'/1'/0'/0/0").toWIF();
+      console.log('addressWif', addressWif);
       console.log('Object.keys(bitcoin)', Object.keys(bitcoin));
       console.log('Object.keys(bitcoin.address)', Object.keys(bitcoin.address));
       console.log(
@@ -142,21 +142,21 @@ export default {
       );
       console.log('Object.keys(bitcoin.ECPair)', Object.keys(bitcoin.ECPair));
 
-      const accountFromWif = bitcoin.ECPair.fromWIF(
-        accountWif,
+      const addressFromWif = bitcoin.ECPair.fromWIF(
+        addressWif,
         CryptoService.network
       );
-      console.log('accountFromWif', accountFromWif);
-      const accountFromWifPrivateKey = accountFromWif.privateKey;
-      const accountFromWifPublicKey = accountFromWif.publicKey;
+      console.log('addressFromWif', addressFromWif);
+      const addressFromWifPrivateKey = addressFromWif.privateKey;
+      const addressFromWifPublicKey = addressFromWif.publicKey;
 
       console.log(
-        'accountFromWifPrivateKey',
-        accountFromWifPrivateKey.toString('hex')
+        'addressFromWifPrivateKey',
+        addressFromWifPrivateKey.toString('hex')
       );
       console.log(
-        'accountFromWifPublicKey',
-        accountFromWifPublicKey.toString('hex')
+        'addressFromWifPublicKey',
+        addressFromWifPublicKey.toString('hex')
       );
 
       const hardcodedPassword = '123456'; // hardcoded for now, missing wallet account step prior to importing the mnemonic
@@ -168,7 +168,10 @@ export default {
       // await CryptoService.storeWalletInDb(password.value);
       await CryptoService.storeWalletInDb(hardcodedPassword);
 
-      // TODO: Derive all accounts and addresses
+      // TODO: Get HD account
+      const accountExtendedPk = master.derivePath("m/44'/1'/0'").neutered().toBase58();
+      const hdAccount = await CryptoService.getHdAccount(accountExtendedPk);
+      console.log('hdAccount', hdAccount);
 
       setTimeout(() => {
         goToDashboard();
