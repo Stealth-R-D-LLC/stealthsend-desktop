@@ -46,7 +46,6 @@ export default function useCoinControl(outputs, target) {
     return filteredUtxo[0];
   }
   function exactMatch(utxo, adjustedTarget) {
-    console.log('Start exact match');
     // pass through the UTXO pool and check if there is one that
     // has the exact same value as the adjusted target
     // If a UTXO exists that matches to the satoshi,
@@ -60,12 +59,10 @@ export default function useCoinControl(outputs, target) {
       }
     }
 
-    console.log('Exact match return: ', best);
     return best;
   }
 
   function sumOfSmaller(utxo, adjustedTarget) {
-    console.log('Start sum of smaller');
     let sortedUtxo = orderBy(utxo, ['amount'], ['desc']);
 
     // The UTXO pool is reduced to only the UTXOs that are smaller than (adjustedTarget + minimalChange).
@@ -103,12 +100,10 @@ export default function useCoinControl(outputs, target) {
       bestSet = [...smallerCoins];
     }
 
-    console.log('Sum of smaller: ', bestSet);
     return bestSet;
   }
 
   function subsetSum(utxo, adjustedTarget) {
-    console.log('subsum', utxo, adjustedTarget);
     let sortedUtxo = orderBy(utxo, ['amount'], ['desc']);
     var result = [];
     const findSubset = (sortedUtxo, target, partial = [], sum = 0) => {
@@ -139,8 +134,6 @@ export default function useCoinControl(outputs, target) {
     // candidate input set. No other selection steps will be performed unless a new
     // cycle is started. Otherwise, no exact match was found and the algorithm will
     // fallback to creating a transaction with a change output.
-    console.log('Start knapsack');
-
     // The UTXO pool is reduced to only the UTXOs that are smaller than (adjustedTarget + minimalChange).
     let targetAndChange = sumOf(
       adjustedTarget,
@@ -158,8 +151,6 @@ export default function useCoinControl(outputs, target) {
     let selectedUtxos = [];
 
     const LIMIT = 1000;
-
-    console.log('Start knapsack input', smallerCoins);
 
     for (let i = 1; i <= LIMIT; i++) {
       if (!targetReached) {
@@ -198,7 +189,6 @@ export default function useCoinControl(outputs, target) {
         }
       }
     }
-    console.log('End knapsack', bestSet);
     return bestSet;
   }
 
@@ -217,10 +207,6 @@ export default function useCoinControl(outputs, target) {
     // larger UTXO.
 
     let adjustedTarget = sumOf(target, 0); // CryptoService.constraints.FEE
-
-    console.log('Coin selection start');
-    console.log('ADJUSTED TARGET (target + 0.01 fee): ', adjustedTarget);
-
     // const sortedUtxo = orderBy(outputs, ['amount'], ['desc'])
     // const sumOfAll = sortedUtxo.map(el => el.amount).reduce((a, b) => sumOf(a, b), 0)
     // if (sumOfAll < adjustedTarget) {
@@ -238,21 +224,18 @@ export default function useCoinControl(outputs, target) {
     result = exactMatch(outputs, adjustedTarget);
     if (result.length > 0) {
       bestSet = [...result];
-      console.log('Coin selection end', bestSet);
       return bestSet;
     }
 
     result = sumOfSmaller(outputs, adjustedTarget);
     if (result.length > 0) {
       bestSet = [...result];
-      console.log('Coin selection end', bestSet);
       return bestSet;
     }
 
     result = subsetSum(outputs, adjustedTarget);
     if (result.length > 0) {
       bestSet = [...result];
-      console.log('Coin selection end', bestSet);
       return bestSet;
     }
 
@@ -268,7 +251,6 @@ export default function useCoinControl(outputs, target) {
           sumOf(target, CryptoService.constraints.MINIMAL_CHANGE)
         ); // treba svim fjama rijesiti parametre a ne da gledaju u globalno
       }
-      console.log('Coin selection end', bestSet);
       return bestSet;
     }
 
@@ -280,7 +262,6 @@ export default function useCoinControl(outputs, target) {
     ) {
       bestSet = [minSingleUtxo];
     }
-    console.log('Coin selection end', bestSet);
     return bestSet;
   }
 

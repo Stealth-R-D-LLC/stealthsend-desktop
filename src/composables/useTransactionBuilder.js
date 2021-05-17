@@ -6,7 +6,6 @@ import { Buffer } from 'buffer';
 import { add, format, subtract } from 'mathjs';
 
 export default async function useTransactionBuilder(utxo, sendForm) {
-  console.log('start tx builder', sendForm);
   const mainStore = useMainStore();
 
   const { fee } = useFeeEstimator(utxo.length);
@@ -63,8 +62,6 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         amount: calculateChange(sumUtxo, Number(sendForm.amount)) * 1e6, // account amount - (send amount + fee)
       };
 
-      console.log('change: ', change, recipient);
-
       // add the output for recipient
       rawTransaction.addOutput(recipient.address, recipient.amount);
 
@@ -94,7 +91,6 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       console.dir(rawTransaction);
 
       const rawTransactionToHex = rawTransaction.build().toHex();
-      console.log(rawTransactionToHex);
 
       const res = await mainStore.rpc('sendrawtransaction', [
         rawTransactionToHex,
