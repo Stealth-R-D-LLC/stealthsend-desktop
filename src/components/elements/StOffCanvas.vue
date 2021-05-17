@@ -7,7 +7,7 @@
       @click="closeCanvas"
     >
       <div class="off-canvas-menu" :class="{ open: isOpen }" @click.stop>
-        <div class="top">
+        <!-- <div class="top">
           <span>{{ title }}</span>
           <span class="close-button">
             <svg
@@ -26,12 +26,11 @@
             </svg>
           </span>
         </div>
-        <div class="body"></div>
+        <div class="body"></div> -->
       </div>
     </div>
   </div>
 </template>
-
 <script>
 import { computed } from 'vue';
 import { useMainStore } from '@/store';
