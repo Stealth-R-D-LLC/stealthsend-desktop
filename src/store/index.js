@@ -23,6 +23,8 @@ export const useMainStore = defineStore({
       chart: true, // chart on dashboard,
       txDashboard: true, // tx list on dashboard
     },
+
+    currentOffCanvas: 'transaction-details', // transaction-details, recent-notifications, favourite-list, edit-contact, add-contact
   }),
   getters: {},
   actions: {
