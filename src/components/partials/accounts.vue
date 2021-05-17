@@ -246,7 +246,6 @@ export default {
           _id: 'UmhkKjhlhoIH',
         }
       );
-      console.log(props.accounts);
     });
     function toggleAccountOptions(name) {
       accountOptions.value = name;

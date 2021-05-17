@@ -1,6 +1,16 @@
 <template>
   <div class="uikit-container">
     <h1>UI Kit</h1>
+    <h2>FORM VALIDATION</h2>
+<!-- value, errorMessage -->
+    <Form @submit="handleSubmit" v-slot="{}">
+      <StFormItem :notice="'neki k'"  :name="'testko'" :rules="'minosam'" v-slot="{field, name}"> 
+        <!-- <StInput v-bind="field" v-model="jbt" :name="'testko'" placeholder="aaaa"></StInput> -->
+          <input v-bind="field" :name="name"/>
+      </StFormItem>
+    </Form>
+    <hr/>
+    <h2>Switcher</h2>
     <StSwitcher :amount="1.23"></StSwitcher>
     <h2>Buttons</h2>
     <StButton color="secondary" @click="clickHandler('aaaaa')">Dash</StButton>
@@ -150,13 +160,16 @@
 // import StCopyToClipboard from '@/components/kit/StClipboard.vue'
 // import StTooltip from '@/components/kit/StTooltip.vue'
 // import StLoading from '@/components/kit/StLoading.vue'
+import StFormItem from '@/components/elements/StFormItem.vue'
 import StSwitcher from '@/components/elements/StSwitcher.vue';
-
+import { Form } from 'vee-validate'
 import { ref } from 'vue';
 
 export default {
   components: {
     StSwitcher,
+    StFormItem,
+    Form
     //   StModal,
     //   StTable,
     //   StStatus,
@@ -167,6 +180,9 @@ export default {
     //   StLoading,
   },
   setup() {
+    function handleSubmit(value) {
+      console.log('value ', value);
+    }
     const tableData = ref([
       {
         address: 'RxLvZSm4gMmzoS5VyJxm24FaGDRJjVPv9z',
@@ -264,6 +280,22 @@ export default {
     //     'st-status__dot--empty': props.type === 'empty'
     //   }
     // })
+    
+        function validateField(value) {
+      if (!value) {
+        return "this field is required";
+      }
+
+      if (value.length < 8) {
+        return "this field must contain at least 8 characters";
+      }
+
+      console.log('validator: ', value);
+
+      return true;
+    }
+
+    const jbt = ref('boska')
 
     return {
       clickHandler,
@@ -279,6 +311,9 @@ export default {
       multiselectOptions,
       isLoading,
       toggleLoading,
+      validateField,
+      jbt,
+      handleSubmit
       // customClass
     };
   },
