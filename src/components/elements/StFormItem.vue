@@ -1,71 +1,74 @@
 <template>
-        <Field :name="name" :rules="rules" v-slot="{ field, errorMessage, errors }">
-    <div class="st-form-item" :class="{'st-form-item--has-error': !!errorMessage, 'st-form-item--is-success': notice}">
-        <label for="">lablecina</label>
-            <slot v-bind="{field, name}"></slot>
-        <p class="st-form-item__message" v-show="errorMessage || notice">
-            {{errors}}
-      {{ errorMessage || notice }}
-    </p>
+  <Field :name="name" :rules="rules" v-slot="{ field, errorMessage, errors }">
+    <div
+      class="st-form-item"
+      :class="{
+        'st-form-item--has-error': !!errorMessage,
+        'st-form-item--is-success': notice,
+      }"
+    >
+      <label for="">lablecina</label>
+      <slot v-bind="{ field, name }"></slot>
+      <p class="st-form-item__message" v-show="errorMessage || notice">
+        {{ errors }}
+        {{ errorMessage || notice }}
+      </p>
     </div>
-        </Field>
+  </Field>
 </template>
 
 <script>
-
-import { Field,  defineRule } from "vee-validate";
-defineRule('required', value => {
+import { Field, defineRule } from 'vee-validate';
+defineRule('required', (value) => {
   if (!value || !value.length) {
     return 'This field is required';
   }
 
-  return true; 
+  return true;
 });
-defineRule('minosam', value => {
+defineRule('minosam', (value) => {
   if (!value || value.length < 8) {
     return 'osam brate';
   }
 
-  return true; 
+  return true;
 });
 export default {
-    name: 'StFormItem',
-    components: {
-        Field
+  name: 'StFormItem',
+  components: {
+    Field,
+  },
+  props: {
+    name: {
+      type: String,
+      required: true,
+      default: 'noname',
     },
-    props: {
-        name: {
-            type: String,
-            required: true,
-            default: 'noname'
-        },
-        notice: {
-            type: String,
-            required: false,
-            default: ''
-        },
-        rules: {
-            type: String,
-            required: false,
-            default: ''
-        }
+    notice: {
+      type: String,
+      required: false,
+      default: '',
     },
-    setup () {
-        // const {errorMessage, value } = useField(props.name, props.rules);
+    rules: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+  setup() {
+    // const {errorMessage, value } = useField(props.name, props.rules);
 
-        // console.log('valuze', value);
+    // console.log('valuze', value);
 
-
-
-        return {
-            // errorMessage
-        }
-    }
-}
+    return {
+      // errorMessage
+    };
+  },
+};
 </script>
 
 <style scoped>
 .st-form-item {
-    border: 1px dashed red;
+  border: 1px dashed red;
 }
 </style>
