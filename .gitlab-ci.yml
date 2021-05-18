@@ -1,8 +1,7 @@
 Build Linux:
   image: nexus.barrage.net:13455/barrage-internal/electronjs-builder
   script:
-    - apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys DFA175A75104960E
-    - apt update ; apt --yes install rsync
+    - apt-get update ; apt-get --yes install rsync
     - cp -R ./ /project
     - cd /project
     - npm install --only=prod --no-package-lock
@@ -26,6 +25,7 @@ Build MacOS:
     - npm run electron:build --mac
     - cd $CI_PROJECT_DIR
     - rsync -r $WORKDIR/dist_electron ./
+    - rm -rf "$WORKDIR"
   tags:
     - macos-electronjs
   artifacts:

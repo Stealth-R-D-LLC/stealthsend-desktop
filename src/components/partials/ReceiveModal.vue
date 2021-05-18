@@ -256,7 +256,6 @@ export default {
     const amount = ref(null);
 
     async function scanWallet() {
-      console.log('majku bozju');
       const hdWallet = await CryptoService.scanWallet();
       accounts.value = hdWallet.accounts;
 
@@ -264,7 +263,6 @@ export default {
       // account.value = hdWallet.accounts[0]
       // // manually start finding address for preselected account
       // changeAccount(account.value)
-      // console.log('scan?');
     }
 
     scanWallet();
@@ -304,17 +302,11 @@ export default {
     }
 
     function changeStep(step) {
-      console.log('change step: ', step);
       currentStep.value = step;
     }
     function goBack(step) {
       currentStep.value = step;
     }
-
-    //     onMounted(() => {
-    //       console.log('mounted=======');
-    //   scanWallet();
-    // })
 
     return {
       isVisible,
