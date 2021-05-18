@@ -93,8 +93,8 @@ import isYesterday from 'date-fns/isYesterday';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
 import { ref, computed, watch, onMounted } from 'vue';
-import router from '@/router';
 import CryptoService from '@/services/crypto';
+import { useMainStore } from '@/store';
 
 export default {
   name: 'StTransactionList',
@@ -118,6 +118,8 @@ export default {
     },
   },
   setup(props) {
+    const mainStore = useMainStore();
+
     CryptoService.getTxWithLabels();
     const { formatBlocktime, groupBy, formatAmount } = useHelpers();
     const txs = ref([]);
@@ -166,7 +168,8 @@ export default {
     });
 
     function openTransaction(trx) {
-      router.push(`/transaction/${trx.txid}`);
+      mainStore.SET_OFF_CANVAS_DATA(trx);
+      mainStore.TOGGLE_DRAWER(true);
     }
 
     function findLabelForTx(tx) {
