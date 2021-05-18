@@ -255,7 +255,6 @@ export default {
     const label = ref('');
 
     async function scanWallet() {
-      console.log('majku bozju');
       const hdWallet = await CryptoService.scanWallet();
       accounts.value = hdWallet.accounts;
 
@@ -263,7 +262,6 @@ export default {
       // account.value = hdWallet.accounts[0]
       // // manually start finding address for preselected account
       // changeAccount(account.value)
-      // console.log('scan?');
     }
 
     scanWallet();
@@ -279,7 +277,6 @@ export default {
       ]);
 
       unspentOutputs = outputs.filter((el) => el.isspent === 'false');
-      console.log('candidates for inputs: ', unspentOutputs);
     }
 
     function coinSelection() {
@@ -289,10 +286,8 @@ export default {
 
     async function send() {
       const utxo = coinSelection();
-      console.log('inputs:', utxo);
 
       if (utxo.length === 0) {
-        console.log('ne mogu sastaviti transakciju');
         return;
       }
 
@@ -328,17 +323,11 @@ export default {
     }
 
     function changeStep(step) {
-      console.log('change step: ', step);
       currentStep.value = step;
     }
     function goBack(step) {
       currentStep.value = step;
     }
-
-    //     onMounted(() => {
-    //       console.log('mounted=======');
-    //   scanWallet();
-    // })
 
     return {
       isVisible,
