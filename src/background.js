@@ -33,6 +33,17 @@ async function createWindow() {
     // Load the index.html when not in development
     win.loadURL('app://./index.html');
   }
+
+  // var handleRedirect = (e, url) => {
+  //   if(url != win.webContents.getURL()) {
+  //     e.preventDefault()
+  //     console.log('wut');
+  //     require('electron').shell.openExternal(url)
+  //   }
+  // }
+
+  // win.webContents.on('will-navigate', handleRedirect)
+  // win.webContents.on('new-window', handleRedirect)
 }
 
 // Quit when all windows are closed.
