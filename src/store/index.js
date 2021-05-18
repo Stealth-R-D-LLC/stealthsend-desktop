@@ -12,7 +12,6 @@ export const useMainStore = defineStore({
     wallet: null,
     accountDetails: null,
     isAmountsHidden: false, // all amounts are visible or hidden as ***
-    isDrawerOpened: false, // drawer on the right side
 
     // modals visibility
     modals: {
@@ -24,12 +23,17 @@ export const useMainStore = defineStore({
       txDashboard: true, // tx list on dashboard
     },
 
+    isDrawerOpened: false, // drawer (off canvas) on the right side
     currentOffCanvas: 'transaction-details', // transaction-details, recent-notifications, favourite-list, edit-contact, add-contact
+    offCanvasData: null,
   }),
   getters: {},
   actions: {
     SET_COMPONENT_VISIBILITY(component, visibility = false) {
       this.componentVisibility[component] = visibility;
+    },
+    SET_OFF_CANVAS_DATA(payload) {
+      this.offCanvasData = payload;
     },
     SET_MODAL_VISIBILITY(modal, visibility) {
       this.modals[modal] = visibility;
