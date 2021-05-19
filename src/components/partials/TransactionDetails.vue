@@ -155,7 +155,6 @@ export default {
     );
 
     function openBlockExplorer(txid) {
-      console.log('sta');
       window
         .open(
           'https://stealthmonitor.org/transactions/' + txid + '?chain=test',
@@ -240,7 +239,7 @@ export default {
 }
 
 .top .icons svg {
-  margin-left: 25px;
+  margin-left: 24px;
   cursor: pointer;
 }
 </style>
