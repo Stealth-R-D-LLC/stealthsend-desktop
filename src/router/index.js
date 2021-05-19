@@ -6,7 +6,6 @@ import Dashboard from '@/views/dashboard/dashboard.vue';
 import Lock from '@/views/lock.vue';
 import Receive from '@/views/receive.vue';
 import Settings from '@/views/settings.vue';
-import TransactionDetails from '@/views/transaction-details.vue';
 import Transactions from '@/views/transactions.vue';
 import UIKit from '@/views/uikit.vue';
 import Welcome from '@/views/welcome.vue';
@@ -95,11 +94,6 @@ const routes = [
     meta: {
       layout: 'single',
     },
-  },
-  {
-    path: '/transaction/:id',
-    name: 'TransactionDetails',
-    component: TransactionDetails,
   },
   {
     path: '/account/archived',

@@ -16,7 +16,7 @@
       </template>
     </div>
     <div class="header-right">
-      <StIcon name="sync-status"></StIcon>
+      <StIcon name="sync-status" @click="toggleDrawer"></StIcon>
       <StIcon name="support"></StIcon>
       <StIcon name="notifications"></StIcon>
       <StIcon name="qr"></StIcon>
@@ -45,6 +45,10 @@ export default {
       return mainStore.componentVisibility;
     });
 
+    function toggleDrawer() {
+      mainStore.TOGGLE_DRAWER(true);
+    }
+
     function checkVisibilityForRoute(routes = []) {
       if (!currentRoute.value) return false;
       return routes.includes(currentRoute.value);
@@ -59,6 +63,7 @@ export default {
 
     return {
       version,
+      toggleDrawer,
       currentRoute,
       componentVisibility,
       checkVisibilityForRoute,
