@@ -1,10 +1,16 @@
 <template>
   <div class="transactions-container">
     <div class="controls">
-    <StInput label="Search" placeholder="You may enter an Account, Address, Amount or Label"></StInput>
+      <StInput
+        label="Search"
+        placeholder="You may enter an Account, Address, Amount or Label"
+      ></StInput>
       <date-picker v-model="date" value-type="format"></date-picker>
     </div>
-    <TransactionList :transactions="computedTransactions" has-table-header></TransactionList>
+    <TransactionList
+      :transactions="computedTransactions"
+      has-table-header
+    ></TransactionList>
   </div>
 </template>
 
@@ -31,24 +37,24 @@ export default {
     }
 
     const computedTransactions = computed(() => {
-      console.log('aaa', );
-      compareAsc(new Date, new Date(transactions.value[0].txinfo.blocktime*1000))
-      let tx = [...transactions.value]
+      console.log('aaa');
+      compareAsc(
+        new Date(),
+        new Date(transactions.value[0].txinfo.blocktime * 1000)
+      );
+      let tx = [...transactions.value];
 
-
-
-      return tx
-    })
+      return tx;
+    });
 
     scanWallet();
     return {
       transactions,
       date,
-      computedTransactions
+      computedTransactions,
     };
   },
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
