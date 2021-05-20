@@ -7,36 +7,22 @@
       @click="closeCanvas"
     >
       <div class="off-canvas-menu" :class="{ open: isOpen }" @click.stop>
-        <div class="top">
-          <span>{{ title }}</span>
-          <span class="close-button">
-            <svg
-              width="18"
-              height="14"
-              viewBox="0 0 18 14"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M3 1l12 12M3 13L15 1"
-                stroke="#FAF9FC"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </span>
-        </div>
-        <div class="body"></div>
+        <TransactionDetails
+          v-if="currentOffCanvas === 'transaction-details'"
+        ></TransactionDetails>
       </div>
     </div>
   </div>
 </template>
-
 <script>
-import { computed } from 'vue';
+import { computed, watch, ref } from 'vue';
 import { useMainStore } from '@/store';
+import TransactionDetails from '@/components/partials/TransactionDetails';
 
 export default {
+  components: {
+    TransactionDetails,
+  },
   setup() {
     const mainStore = useMainStore();
 
@@ -44,13 +30,29 @@ export default {
       return mainStore.isDrawerOpened;
     });
 
+    watch(
+      () => mainStore.isDrawerOpened,
+      () => {
+        getCurrentOffCanvas();
+      }
+    );
+
+    const currentOffCanvas = ref('transaction-details');
+    function getCurrentOffCanvas() {
+      currentOffCanvas.value = mainStore.currentOffCanvas;
+    }
+
     function closeCanvas() {
       mainStore.TOGGLE_DRAWER(false);
+      setTimeout(() => {
+        mainStore.SET_OFF_CANVAS_DATA(null);
+      }, 300);
     }
 
     return {
       isOpen,
       closeCanvas,
+      currentOffCanvas,
     };
   },
 };
@@ -62,7 +64,7 @@ export default {
   right: -500px;
   top: 0;
   transition: right 0.2s ease;
-  background: pink;
+  background: var(--background50);
   width: 400px;
   height: 100%;
 }

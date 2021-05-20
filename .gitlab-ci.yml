@@ -1,10 +1,13 @@
 Build Linux:
   image: nexus.barrage.net:13455/barrage-internal/electronjs-builder
   script:
+    - apt-get update ; apt-get --yes install rsync
     - cp -R ./ /project
     - cd /project
     - npm install --only=prod --no-package-lock
     - npm run electron:build --linux
+    - cd $CI_PROJECT_DIR
+    - rsync -r /project/dist_electron ./
   tags:
     - docker-executor
   artifacts:
@@ -15,10 +18,14 @@ Build Linux:
 Build MacOS:
   script:
     - source ~/.zshrc
-    - cp -R ./ /Users/barrage/projects/vue-electronjs
-    - cd /Users/barrage/projects/vue-electronjs
-    - npm install --only=prod --no-package-lock
+    - WORKDIR=$(mktemp -d)
+    - rsync -r --exclude=.git ./ "$WORKDIR"
+    - cd "$WORKDIR"
+    - npm install
     - npm run electron:build --mac
+    - cd $CI_PROJECT_DIR
+    - rsync -r $WORKDIR/dist_electron ./
+    - rm -rf "$WORKDIR"
   tags:
     - macos-electronjs
   artifacts:
