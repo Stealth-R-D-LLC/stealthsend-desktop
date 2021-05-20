@@ -10,6 +10,7 @@
         <TransactionDetails
           v-if="currentOffCanvas === 'transaction-details'"
         ></TransactionDetails>
+        <FavouriteList v-if="currentOffCanvas === 'favourite-list'" />
       </div>
     </div>
   </div>
@@ -18,10 +19,12 @@
 import { computed, watch, ref } from 'vue';
 import { useMainStore } from '@/store';
 import TransactionDetails from '@/components/partials/TransactionDetails';
+import FavouriteList from '@/components/partials/FavouriteList';
 
 export default {
   components: {
     TransactionDetails,
+    FavouriteList,
   },
   setup() {
     const mainStore = useMainStore();
@@ -46,6 +49,7 @@ export default {
       mainStore.TOGGLE_DRAWER(false);
       setTimeout(() => {
         mainStore.SET_OFF_CANVAS_DATA(null);
+        mainStore.SET_CURRENT_CANVAS('transaction-details');
       }, 300);
     }
 
@@ -65,7 +69,7 @@ export default {
   top: 0;
   transition: right 0.2s ease;
   background: var(--background50);
-  width: 400px;
+  width: 336px;
   height: 100%;
 }
 .off-canvas-menu.open {
