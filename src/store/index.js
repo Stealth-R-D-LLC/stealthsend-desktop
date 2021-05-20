@@ -11,17 +11,30 @@ export const useMainStore = defineStore({
     headerStyle: 'default', // has grey style on some screens and default white on most of them
     wallet: null,
     accountDetails: null,
-    isAmountsHidden: false,
+    isAmountsHidden: false, // all amounts are visible or hidden as ***
 
     // modals visibility
     modals: {
       receive: false,
       send: false,
     },
-    isDrawerOpened: false,
+    componentVisibility: {
+      chart: true, // chart on dashboard,
+      txDashboard: true, // tx list on dashboard
+    },
+
+    isDrawerOpened: false, // drawer (off canvas) on the right side
+    currentOffCanvas: 'transaction-details', // transaction-details, recent-notifications, favourite-list, edit-contact, add-contact
+    offCanvasData: null,
   }),
   getters: {},
   actions: {
+    SET_COMPONENT_VISIBILITY(component, visibility = false) {
+      this.componentVisibility[component] = visibility;
+    },
+    SET_OFF_CANVAS_DATA(payload) {
+      this.offCanvasData = payload;
+    },
     SET_MODAL_VISIBILITY(modal, visibility) {
       this.modals[modal] = visibility;
     },
@@ -70,8 +83,8 @@ export const useMainStore = defineStore({
           .then((res) => {
             CryptoService.constraints.XST_USD = res.data.priceUsd;
             CryptoService.constraints.XST_BTC = res.data.priceBTC;
-            CryptoService.constraints.changePercentage24Hr =
-              res.data.changePercentage24Hr;
+            CryptoService.constraints.changePercent24Hr =
+              res.data.changePercent24Hr;
             resolve(res.data);
           })
           .catch((err) => {
