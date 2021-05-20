@@ -1,6 +1,6 @@
 import { API } from '@/api/axios';
-import { defineStore } from 'pinia';
 import CryptoService from '@/services/crypto';
+import { defineStore } from 'pinia';
 
 export const useMainStore = defineStore({
   // name of the store
@@ -94,7 +94,7 @@ export const useMainStore = defineStore({
     },
     getChartData() {
       return new Promise((resolve, reject) => {
-        API.get('https://api.stealth.org/api/charts/homepage?period=1d')
+        API.get('https://api.stealth.org/api/charts/homepage?period=1w')
           .then((res) => {
             resolve(res.data);
           })
