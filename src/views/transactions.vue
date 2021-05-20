@@ -3,6 +3,7 @@
     <div class="controls">
       <StInput
         label="Search"
+        v-model="query"
         placeholder="You may enter an Account, Address, Amount or Label"
       ></StInput>
       <date-picker v-model="date" value-type="format" range></date-picker>
@@ -31,7 +32,13 @@ export default {
   },
   setup() {
     const transactions = ref([]);
+    const query = ref('');
     const date = ref([]);
+
+    function findLabelForTx(tx) {
+      return CryptoService.txWithLabels[tx];
+    }
+
     async function scanWallet() {
       const hdWallet = await CryptoService.scanWallet();
       transactions.value = hdWallet.txs;
@@ -42,6 +49,17 @@ export default {
     const computedTransactions = computed(() => {
       let filtered = [...transactions.value];
       if (filtered.length === 0) return [];
+
+      if (query.value.length > 0) {
+        filtered = filtered.filter((el) => {
+          return (
+            el.account === query.value ||
+            String(el.amount) === query.value ||
+            el.txid === query.value ||
+            findLabelForTx(el.txid) === query.value
+          );
+        });
+      }
 
       if (date.value[0] && date.value[1]) {
         if (date.value[0] === date.value[1]) {
@@ -66,6 +84,7 @@ export default {
 
     return {
       transactions,
+      query,
       date,
       computedTransactions,
     };
