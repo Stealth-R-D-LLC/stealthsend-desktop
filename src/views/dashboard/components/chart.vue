@@ -68,10 +68,10 @@ export default {
           xaxis: {
             forceNiceScale: true,
             categories: [],
-            type: "datetime",
+            type: 'datetime',
             labels: {
               format: 'dd MMM',
-              showDuplicates: false
+              showDuplicates: false,
             },
             axisBorder: {
               show: false,
@@ -88,8 +88,8 @@ export default {
                 return formatAmount(value, false, 4);
               }, */
               formatter: function (value) {
-                return value.toFixed(2)
-              }
+                return value.toFixed(2);
+              },
             },
           },
           legend: {
