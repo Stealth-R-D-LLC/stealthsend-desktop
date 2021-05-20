@@ -5,13 +5,13 @@
 <script>
 import ApexCharts from 'apexcharts';
 import { onMounted } from '@vue/runtime-core';
-import useHelpers from '@/composables/useHelpers';
+/* import useHelpers from '@/composables/useHelpers'; */
 import { useMainStore } from '@/store';
 
 export default {
   name: 'StDashboardChart',
   setup() {
-    const { formatAmount } = useHelpers();
+    /* const { formatAmount } = useHelpers(); */
     const mainStore = useMainStore();
 
     onMounted(() => {
@@ -45,6 +45,7 @@ export default {
               },
             },
           },
+          colors: ['#4E00F6'],
           dataLabels: {
             enabled: false,
             enabledOnSeries: false,
@@ -67,13 +68,10 @@ export default {
           xaxis: {
             forceNiceScale: true,
             categories: [],
+            type: "datetime",
             labels: {
-              showDuplicates: false,
-              show: false,
-              formatter: function (value) {
-                let itemDate = new Date(value);
-                return itemDate.toLocaleDateString();
-              },
+              format: 'dd MMM',
+              showDuplicates: false
             },
             axisBorder: {
               show: false,
@@ -83,12 +81,15 @@ export default {
             },
           },
           yaxis: {
-            forceNiceScale: true,
+            /* forceNiceScale: true, */
             labels: {
-              show: false,
-              formatter: function (value) {
+              show: true,
+              /* formatter: function (value) {
                 return formatAmount(value, false, 4);
-              },
+              }, */
+              formatter: function (value) {
+                return value.toFixed(2)
+              }
             },
           },
           legend: {
@@ -99,6 +100,7 @@ export default {
           },
           tooltip: {
             enabled: true,
+            fillSeriesColor: false,
             marker: {
               show: true,
             },
@@ -107,7 +109,7 @@ export default {
             },
             y: {
               formatter: function (value) {
-                return parseFloat(value.toFixed(17));
+                return parseFloat(value.toFixed(8));
               },
             },
           },
