@@ -4,6 +4,7 @@
     <Chart v-if="componentVisibility.chart"></Chart>
     <TransactionList
       v-if="componentVisibility.txDashboard"
+      has-table-header
       :transactions="transactions"
     ></TransactionList>
   </div>
