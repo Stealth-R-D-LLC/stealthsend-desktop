@@ -11,6 +11,9 @@
           v-if="currentOffCanvas === 'transaction-details'"
         ></TransactionDetails>
         <FavouriteList v-if="currentOffCanvas === 'favourite-list'" />
+        <RecentNotifications
+          v-if="currentOffCanvas === 'recent-notifications'"
+        />
       </div>
     </div>
   </div>
@@ -20,11 +23,13 @@ import { computed, watch, ref } from 'vue';
 import { useMainStore } from '@/store';
 import TransactionDetails from '@/components/partials/TransactionDetails';
 import FavouriteList from '@/components/partials/FavouriteList';
+import RecentNotifications from '@/components/partials/RecentNotifications';
 
 export default {
   components: {
     TransactionDetails,
     FavouriteList,
+    RecentNotifications,
   },
   setup() {
     const mainStore = useMainStore();

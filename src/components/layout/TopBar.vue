@@ -72,7 +72,10 @@
     <div class="header-right">
       <StIcon name="sync-status"></StIcon>
       <StIcon name="support"></StIcon>
-      <StIcon name="notifications"></StIcon>
+      <StIcon
+        name="notifications"
+        @click="toggleDrawer('recent-notifications')"
+      ></StIcon>
       <StIcon name="qr"></StIcon>
       <StIcon name="settings"></StIcon>
     </div>
