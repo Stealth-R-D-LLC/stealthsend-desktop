@@ -22,8 +22,8 @@
           { key: 'label', title: 'Label' },
           { key: 'amountFiat', title: 'Amount (USD)' },
           { key: 'amount', title: 'Amount' },
+          { key: 'actions', title: '', customCellClass: 'items-center' },
         ]"
-        @rowClick="openTransaction"
       >
         <template #amount="{ item }">
           {{ item.amount > 0 ? '+' : '-' }}
@@ -79,6 +79,41 @@
             </span>
           </div>
         </template>
+        <template #actions="{ item }">
+          <div class="icon-container">
+            <svg class="icon" width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 5L6 0L0 7H3L2 12L8 5H5Z" fill="#4E00F6"/>
+            </svg>
+          <svg v-if="isExpanded !== item.txid" class="icon" @click="expandIcons(item.txid)" width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 1H8" stroke="#A2A1A4" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M0 5H12" stroke="#A2A1A4" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M0 9H12" stroke="#A2A1A4" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+          <svg @click="expandIcons(item.txid)" v-else class="icon" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 3L15 15" stroke="#6B2AF7" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M3 15L15 3" stroke="#6B2AF7" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+          </div>
+          <div class="expanded" :class="{'expanded__active': isExpanded === item.txid}">
+            <svg class="icon" width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 5L6 0L0 7H3L2 12L8 5H5Z" fill="#4E00F6"/>
+            </svg>
+            <svg @click="openTransaction(item)" class="icon" width="19" height="20" viewBox="0 0 19 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M13 14L18 19" stroke="#6B2AF7" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M0 5H6" stroke="#6B2AF7" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M0 9H9" stroke="#6B2AF7" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M0 13H9" stroke="#6B2AF7" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M5 16.4185C5.92643 16.7935 6.9391 17 8 17C12.4183 17 16 13.4183 16 9C16 4.58172 12.4183 1 8 1C6.9391 1 5.92643 1.20651 5 1.58152" stroke="#6B2AF7" stroke-width="2"/>
+            </svg>
+            <svg class="icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0 6.5H6" stroke="#6B2AF7" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M0 2.5H9" stroke="#6B2AF7" stroke-width="2" stroke-linejoin="round"/>
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M18 4.5L7 16.5L3 18.5L2 17.5L4 13.5L15 1.5L18 4.5Z" stroke="#6B2AF7" stroke-width="2"/>
+              <path d="M5 12.5L8 15.5" stroke="#6B2AF7" stroke-width="2"/>
+              <path d="M13 4.5L15 6.5" stroke="#6B2AF7" stroke-width="2"/>
+            </svg>
+          </div>
+        </template>
       </StTable>
     </template>
   </div>
@@ -119,10 +154,19 @@ export default {
   },
   setup(props) {
     const mainStore = useMainStore();
+    const isExpanded = ref('')
 
     CryptoService.getTxWithLabels();
     const { formatBlocktime, groupBy, formatAmount } = useHelpers();
     const txs = ref([]);
+
+    function expandIcons(txid) {
+      if(isExpanded.value === txid) {
+        isExpanded.value = ''
+      } else {
+        isExpanded.value = txid
+      }
+    }
 
     function orderTransactions(filter) {
       // sort transactions by blocktime
@@ -188,6 +232,8 @@ export default {
     );
 
     return {
+      isExpanded,
+      expandIcons,
       openTransaction,
       formatBlocktime,
       groupBy,
@@ -219,12 +265,50 @@ export default {
   font-weight: 700;
 }
 
+.blocktime {
+  width: 160px;
+}
+
 .blocktime span {
   margin-left: 16px;
 }
-</style>
-<style scoped>
-.blocktime {
-  width: 160px;
+
+:deep .table .table__row:hover {
+  background-color: #ffffff !important;
+}
+
+:deep .items-center {
+  position: relative;
+  text-align: center;
+  width: 100px;
+}
+
+.icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  cursor: pointer;
+  margin-right: 24px;
+}
+.icon:last-child {
+  margin-right: 0;
+}
+.expanded {
+  overflow: hidden;
+  width: 0;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  top: calc(50% - 15px);
+  right: 50px;
+  background-color: #ffffff;
+  padding: 5px;
+  transition: 0.3s;
+}
+.expanded__active {
+  width: 105px;
 }
 </style>
