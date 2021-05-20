@@ -21,7 +21,7 @@ import { ref, computed } from 'vue';
 import DatePicker from 'vue2-datepicker';
 import 'vue2-datepicker/index.css';
 import isWithinInterval from 'date-fns/isWithinInterval';
-import isSameDay from 'date-fns/isSameDay'
+import isSameDay from 'date-fns/isSameDay';
 
 export default {
   name: 'Transactions',
@@ -44,22 +44,22 @@ export default {
       if (filtered.length === 0) return [];
 
       if (date.value[0] && date.value[1]) {
-          if (date.value[0] === date.value[1]) {
-            // both dates in range are the same
-            filtered = filtered.filter((el) => {
-              let target = new Date(el.blocktime*1000)
-              return isSameDay(target, new Date(date.value[0]))
+        if (date.value[0] === date.value[1]) {
+          // both dates in range are the same
+          filtered = filtered.filter((el) => {
+            let target = new Date(el.blocktime * 1000);
+            return isSameDay(target, new Date(date.value[0]));
+          });
+        } else {
+          // isWithinInterval doesnt work if the range is on the same date
+          filtered = filtered.filter((el) => {
+            let target = new Date(el.blocktime * 1000);
+            return isWithinInterval(new Date(target), {
+              start: new Date(date.value[0]),
+              end: new Date(date.value[1]),
             });
-          } else {
-            // isWithinInterval doesnt work if the range is on the same date
-            filtered = filtered.filter((el) => {
-              let target = new Date(el.blocktime*1000)
-              return isWithinInterval(new Date(target), {
-                start: new Date(date.value[0]),
-                end: new Date(date.value[1]),
-              })
-            });
-          }
+          });
+        }
       }
       return filtered;
     });
