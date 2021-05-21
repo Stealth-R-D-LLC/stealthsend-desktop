@@ -35,6 +35,7 @@ export default {
     const mainStore = useMainStore();
 
     const accounts = ref([]);
+
     const utxo = ref(0);
     const txs = ref([]);
 
@@ -82,11 +83,21 @@ export default {
 .side {
   min-width: 346px;
   width: 346px;
-  padding: 32px 24px;
+  padding: 32px 24px 0;
   background: var(--background100);
 }
 
 .side__accounts {
-  margin: 8px 0;
+  overflow: auto;
+  height: calc(100vh - 210px);
+  margin: 8px 0 0;
+  width: calc(100% + 5px);
+  padding-right: 10px;
+}
+.side__accounts::-webkit-scrollbar {
+  width: 4px;
+}
+.side__accounts::-webkit-scrollbar-thumb {
+  background: var(--grey100);
 }
 </style>
