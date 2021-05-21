@@ -70,7 +70,7 @@
             <p v-if="index === 0" class="bold favorite">Favorites</p>
             <div
               class="address-list__inner--redirect"
-              @click="changeTab('contact-details')"
+              @click="prePopulateForm(item)"
             >
               <p>
                 <span class="bold medium">{{ item.name }}</span
@@ -89,7 +89,7 @@
             <p v-if="index === 0" class="bold letter">{{ id }}</p>
             <div
               class="address-list__inner--redirect"
-              @click="changeTab('contact-details')"
+              @click="prePopulateForm(item)"
             >
               <p>
                 <span class="bold medium">{{ item.name }}</span
@@ -120,11 +120,12 @@
         }}</a>
       </div>
     </div>
+    <!-- CONTACT DETAILS -->
     <div class="contact-details" v-if="activeTab === 'contact-details'">
       <div>
         <div class="input-container">
           <StInput
-            disabled
+            readonly
             v-model="addContactForm.name"
             label="Name"
             placeholder="Please enter a contact name"
@@ -132,6 +133,7 @@
         </div>
         <div class="input-container">
           <StInput
+            readonly
             v-model="addContactForm.description"
             label="Description"
             placeholder="Please enter a description"
@@ -139,11 +141,13 @@
         </div>
         <div class="input-container">
           <StInput
+            readonly
             v-model="addContactForm.address"
             label="Address"
             placeholder="Please enter a valid XST address"
           />
         </div>
+        <StCheckbox v-model="addContactForm.favorite">Favorite list</StCheckbox>
       </div>
       <div class="add-contact__bottom">
         <p @click="changeTab('address-book')">
@@ -430,18 +434,28 @@ export default {
       mainStore.TOGGLE_DRAWER(false);
       setTimeout(() => {
         mainStore.SET_ADDRESS_ACTIVE_TAB('address-book');
+        resetForm();
         mainStore.SET_CURRENT_CANVAS('transaction-details');
       }, 300);
     }
     function changeTab(tab) {
       mainStore.SET_ADDRESS_ACTIVE_TAB(tab);
-      resetAddContact();
+      resetForm();
     }
     function addContact() {
       addressList.value.push(addContactForm.value);
       changeTab('address-book');
     }
-    function resetAddContact() {
+    function prePopulateForm(item) {
+      changeTab('contact-details');
+      addContactForm.value = {
+        name: item.name,
+        description: item.description,
+        address: item.description,
+        favorite: item.favorite,
+      };
+    }
+    function resetForm() {
       addContactForm.value = {
         name: '',
         description: '',
@@ -467,6 +481,7 @@ export default {
       closeCanvas,
       changeTab,
       addContact,
+      prePopulateForm,
       /* toggleFavorite */
     };
   },
@@ -576,7 +591,7 @@ svg:hover circle {
 .add-contact__bottom p:hover svg path {
   stroke: var(--marine200);
 }
-.input-container {
+.input-container + .input-container {
   margin-top: 48px;
 }
 </style>
