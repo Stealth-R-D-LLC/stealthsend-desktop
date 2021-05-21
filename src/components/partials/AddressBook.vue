@@ -42,6 +42,18 @@
           <path d="M8 13L2 7L8 1" stroke="#4E00F6" stroke-width="2" />
         </svg>
         <svg
+          v-if="activeTab === 'edit-contact'"
+          width="19"
+          height="14"
+          viewBox="0 0 19 14"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          @click="changeTab('contact-details')"
+        >
+          <path d="M2 7H19" stroke="#4E00F6" stroke-width="2" />
+          <path d="M8 13L2 7L8 1" stroke="#4E00F6" stroke-width="2" />
+        </svg>
+        <svg
           width="18"
           height="18"
           viewBox="0 0 18 18"
@@ -147,10 +159,125 @@
             placeholder="Please enter a valid XST address"
           />
         </div>
-        <StCheckbox v-model="addContactForm.favorite">Favorite list</StCheckbox>
+        <StCheckbox
+          class="custom-checkbox disabled-checkbox"
+          v-model="addContactForm.favorite"
+          >Favorite list</StCheckbox
+        >
+        <p class="transactions">
+          <svg
+            width="18"
+            height="12"
+            viewBox="0 0 18 12"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M4 1H18"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M0 1H2"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M4 6H18"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M0 6H2"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M4 11H18"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M0 11H2"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+          </svg>
+          View transactions
+        </p>
       </div>
       <div class="add-contact__bottom">
-        <p @click="changeTab('address-book')">
+        <p @click="editContact">
+          <svg
+            width="20"
+            height="21"
+            viewBox="0 0 20 21"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M0 7H6"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M0 3H9"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M18 5L7 17L3 19L2 18L4 14L15 2L18 5Z"
+              stroke="#4E00F6"
+              stroke-width="2"
+            />
+            <path d="M5 13L8 16" stroke="#4E00F6" stroke-width="2" />
+            <path d="M13 5L15 7" stroke="#4E00F6" stroke-width="2" />
+          </svg>
+
+          Edit contact
+        </p>
+        <StButton>Send</StButton>
+      </div>
+    </div>
+    <div class="edit-contact" v-if="activeTab === 'edit-contact'">
+      <div>
+        <div class="input-container">
+          <StInput
+            v-model="editContactForm.name"
+            label="Name"
+            placeholder="Please enter a contact name"
+          />
+        </div>
+        <div class="input-container">
+          <StInput
+            v-model="editContactForm.description"
+            label="Description"
+            placeholder="Please enter a description"
+          />
+        </div>
+        <div class="input-container">
+          <StInput
+            v-model="editContactForm.address"
+            label="Address"
+            placeholder="Please enter a valid XST address"
+          />
+        </div>
+        <StCheckbox class="custom-checkbox" v-model="editContactForm.favorite"
+          >Favorite list</StCheckbox
+        >
+      </div>
+      <div class="add-contact__bottom">
+        <p>
           <svg
             width="18"
             height="18"
@@ -171,9 +298,9 @@
               stroke-linejoin="round"
             />
           </svg>
-          Cancel
+          Delete conact
         </p>
-        <StButton @click="addContact">Save</StButton>
+        <StButton @click="confirmEdit">Save</StButton>
       </div>
     </div>
     <!-- ADD CONTACT -->
@@ -412,9 +539,14 @@ export default {
       address: '',
       favorite: false,
     });
+    const editContactForm = ref({
+      name: '',
+      description: '',
+      address: '',
+      favorite: false,
+    });
 
     const activeTab = computed(() => {
-      console.log(mainStore);
       return mainStore.addressActiveTab;
     });
 
@@ -440,7 +572,12 @@ export default {
     }
     function changeTab(tab) {
       mainStore.SET_ADDRESS_ACTIVE_TAB(tab);
-      resetForm();
+      if (
+        activeTab.value !== 'edit-contact' &&
+        activeTab.value !== 'contact-details'
+      ) {
+        resetForm();
+      }
     }
     function addContact() {
       addressList.value.push(addContactForm.value);
@@ -451,9 +588,10 @@ export default {
       addContactForm.value = {
         name: item.name,
         description: item.description,
-        address: item.description,
+        address: item.address,
         favorite: item.favorite,
       };
+      editContactForm.value = item;
     }
     function resetForm() {
       addContactForm.value = {
@@ -463,15 +601,19 @@ export default {
         favorite: false,
       };
     }
-    /* function toggleFavorite(item) {
-            item.favorite = !item.favorite
-        } */
+    function editContact() {
+      changeTab('edit-contact');
+    }
+    function confirmEdit() {
+      changeTab('address-book');
+    }
 
     return {
       // Variables
       alphabet,
       activeTab,
       addContactForm,
+      editContactForm,
 
       // Computed
       orderByName,
@@ -482,6 +624,8 @@ export default {
       changeTab,
       addContact,
       prePopulateForm,
+      editContact,
+      confirmEdit,
       /* toggleFavorite */
     };
   },
@@ -563,10 +707,45 @@ svg:hover circle {
   color: var(--marine500);
 }
 /* CONTACT DETAILS */
+.custom-checkbox.disabled-checkbox {
+  pointer-events: none;
+}
+:deep .custom-checkbox.st-checkbox {
+  margin-top: 24px;
+  padding-left: 36px;
+  font-size: 12px;
+  line-height: 20px;
+}
+:deep .custom-checkbox .st-checkbox__checkmark {
+  border-radius: 4px;
+  width: 16px;
+  height: 16px;
+}
+:deep .custom-checkbox .st-checkbox__checkmark .check {
+  top: 2px;
+  left: 6px;
+  width: 3px;
+  height: 7px;
+}
+.transactions {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+.transactions svg path {
+  transition: 0.3s;
+}
+.transactions:hover svg path {
+  stroke: var(--marine200);
+}
+.transactions svg {
+  margin-right: 15px;
+}
 
 /* ADD CONTACT */
 .add-contact,
-.contact-details {
+.contact-details,
+.edit-contact {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
