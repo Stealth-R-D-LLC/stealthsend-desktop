@@ -72,7 +72,7 @@
     </div>
     <!-- ADDRESS BOOK -->
     <div v-if="activeTab === 'address-book'" class="address-list">
-      <div class="overflow-address">
+      <div class="overflow-address" id="addressBook">
         <div class="favorite-list">
           <div
             class="address-list__inner"
@@ -92,7 +92,7 @@
             </div>
           </div>
         </div>
-        <div v-for="(addressList, id) in orderByName" :key="id">
+        <div :id="id" v-for="(addressList, id) in orderByName" :key="id">
           <div
             class="address-list__inner"
             v-for="(item, index) in addressList"
@@ -127,9 +127,14 @@
             stroke-linejoin="round"
           />
         </svg>
-        <a class="letter" v-for="item in alphabet" :key="item.id">{{
-          item.letter
-        }}</a>
+        <a
+          class="letter"
+          :class="{ 'letter-active': isActive === item.id }"
+          v-for="item in alphabet"
+          :key="item.id"
+          @click="scrollToElement(item.id)"
+          >{{ item.letter }}</a
+        >
       </div>
     </div>
     <!-- CONTACT DETAILS -->
@@ -369,107 +374,107 @@ export default {
     const { groupBy } = useHelpers();
     const alphabet = ref([
       {
-        id: 'a',
+        id: 'A',
         letter: 'A',
       },
       {
-        id: 'b',
+        id: 'B',
         letter: 'B',
       },
       {
-        id: 'c',
+        id: 'C',
         letter: 'C',
       },
       {
-        id: 'd',
+        id: 'D',
         letter: 'D',
       },
       {
-        id: 'e',
+        id: 'E',
         letter: 'E',
       },
       {
-        id: 'f',
+        id: 'F',
         letter: 'F',
       },
       {
-        id: 'g',
+        id: 'G',
         letter: 'G',
       },
       {
-        id: 'h',
+        id: 'H',
         letter: 'H',
       },
       {
-        id: 'i',
+        id: 'I',
         letter: 'I',
       },
       {
-        id: 'j',
+        id: 'J',
         letter: 'J',
       },
       {
-        id: 'k',
+        id: 'K',
         letter: 'K',
       },
       {
-        id: 'l',
+        id: 'L',
         letter: 'L',
       },
       {
-        id: 'm',
+        id: 'M',
         letter: 'M',
       },
       {
-        id: 'n',
+        id: 'N',
         letter: 'N',
       },
       {
-        id: 'o',
+        id: 'O',
         letter: 'O',
       },
       {
-        id: 'p',
+        id: 'P',
         letter: 'P',
       },
       {
-        id: 'q',
+        id: 'Q',
         letter: 'Q',
       },
       {
-        id: 'r',
+        id: 'R',
         letter: 'R',
       },
       {
-        id: 's',
+        id: 'S',
         letter: 'S',
       },
       {
-        id: 't',
+        id: 'T',
         letter: 'T',
       },
       {
-        id: 'u',
+        id: 'U',
         letter: 'U',
       },
       {
-        id: 'v',
+        id: 'V',
         letter: 'V',
       },
       {
-        id: 'w',
+        id: 'W',
         letter: 'W',
       },
       {
-        id: 'x',
+        id: 'X',
         letter: 'X',
       },
       {
-        id: 'y',
+        id: 'Y',
         letter: 'Y',
       },
       {
-        id: 'z',
+        id: 'Z',
         letter: 'Z',
       },
       {
@@ -533,6 +538,7 @@ export default {
         favorite: false,
       },
     ]);
+    const isActive = ref('');
     const addContactForm = ref({
       name: '',
       description: '',
@@ -562,6 +568,7 @@ export default {
         }
       );
     });
+
     function closeCanvas() {
       mainStore.TOGGLE_DRAWER(false);
       setTimeout(() => {
@@ -570,6 +577,7 @@ export default {
         mainStore.SET_CURRENT_CANVAS('transaction-details');
       }, 300);
     }
+
     function changeTab(tab) {
       mainStore.SET_ADDRESS_ACTIVE_TAB(tab);
       if (
@@ -579,10 +587,12 @@ export default {
         resetForm();
       }
     }
+
     function addContact() {
       addressList.value.push(addContactForm.value);
       changeTab('address-book');
     }
+
     function prePopulateForm(item) {
       changeTab('contact-details');
       addContactForm.value = {
@@ -593,6 +603,21 @@ export default {
       };
       editContactForm.value = item;
     }
+
+    function scrollToElement(id) {
+      var element = document.getElementById(id);
+      if (element) {
+        isActive.value = id;
+        element.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+          inline: 'nearest',
+        });
+      } else {
+        isActive.value = '';
+      }
+    }
+
     function resetForm() {
       addContactForm.value = {
         name: '',
@@ -601,9 +626,11 @@ export default {
         favorite: false,
       };
     }
+
     function editContact() {
       changeTab('edit-contact');
     }
+
     function confirmEdit() {
       changeTab('address-book');
     }
@@ -614,6 +641,7 @@ export default {
       activeTab,
       addContactForm,
       editContactForm,
+      isActive,
 
       // Computed
       orderByName,
@@ -626,6 +654,7 @@ export default {
       prePopulateForm,
       editContact,
       confirmEdit,
+      scrollToElement,
       /* toggleFavorite */
     };
   },
@@ -705,6 +734,9 @@ svg:hover circle {
 }
 .alphabet .letter:hover {
   color: var(--marine500);
+}
+.letter-active {
+  color: var(--marine500) !important;
 }
 /* CONTACT DETAILS */
 .custom-checkbox.disabled-checkbox {
