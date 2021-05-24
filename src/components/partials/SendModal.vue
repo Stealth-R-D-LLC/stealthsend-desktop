@@ -130,9 +130,7 @@
       </template>
       <template v-if="currentStep === 2">
         <div class="form-item">
-          <StFormItem
-            label="Receiving Address"
-          >
+          <StFormItem label="Receiving Address">
             <!-- :error-message="form.depositAddress.$errors" -->
             <StInput
               v-model="depositAddress"
@@ -378,9 +376,11 @@ export default {
         add([], {
           depositAddress: {
             $value: depositAddress,
-            $rules: [(depositAddress) => !depositAddress && 'Address is required'],
-          }
-        })
+            $rules: [
+              (depositAddress) => !depositAddress && 'Address is required',
+            ],
+          },
+        });
         changeStep(2);
       } catch (e) {
         if (e instanceof ValidationError) {
