@@ -14,6 +14,7 @@
         <RecentNotifications
           v-if="currentOffCanvas === 'recent-notifications'"
         />
+        <AddressBook v-if="currentOffCanvas === 'address-book'" />
       </div>
     </div>
   </div>
@@ -24,12 +25,14 @@ import { useMainStore } from '@/store';
 import TransactionDetails from '@/components/partials/TransactionDetails';
 import FavouriteList from '@/components/partials/FavouriteList';
 import RecentNotifications from '@/components/partials/RecentNotifications';
+import AddressBook from '@/components/partials/AddressBook';
 
 export default {
   components: {
     TransactionDetails,
     FavouriteList,
     RecentNotifications,
+    AddressBook,
   },
   setup() {
     const mainStore = useMainStore();
@@ -53,6 +56,7 @@ export default {
     function closeCanvas() {
       mainStore.TOGGLE_DRAWER(false);
       setTimeout(() => {
+        mainStore.SET_ADDRESS_ACTIVE_TAB('address-book');
         mainStore.SET_OFF_CANVAS_DATA(null);
         mainStore.SET_CURRENT_CANVAS('transaction-details');
       }, 300);
@@ -75,11 +79,11 @@ export default {
   transition: right 0.2s ease;
   background: var(--background50);
   width: 336px;
-  height: 100%;
+  height: calc(100% - 80px);
+  padding: 40px 32px;
 }
 .off-canvas-menu.open {
   right: 0;
-  padding: 40px 32px;
 }
 
 .off-canvas-wrapper {
@@ -92,9 +96,11 @@ export default {
   bottom: 0;
   background-color: rgba(0, 0, 0, 0);
   transition: background-color ease 0.2s;
-  z-index: -1;
+  z-index: 999;
+  pointer-events: none;
 }
 .off-canvas-wrapper.open {
+  pointer-events: initial;
   width: 100%;
   height: 100%;
   position: fixed;
@@ -103,7 +109,6 @@ export default {
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.4);
-  z-index: 999;
 }
 
 .off-canvas__open-toggle {
