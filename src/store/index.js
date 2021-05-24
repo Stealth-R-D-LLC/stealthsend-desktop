@@ -24,11 +24,15 @@ export const useMainStore = defineStore({
     },
 
     isDrawerOpened: false, // drawer (off canvas) on the right side
-    currentOffCanvas: 'transaction-details', // transaction-details, recent-notifications, favourite-list, edit-contact, add-contact
+    currentOffCanvas: 'transaction-details', // transaction-details, recent-notifications, favourite-list, address-book, edit-contact, add-contact
     offCanvasData: null,
+    addressActiveTab: 'address-book', // address-book, add-contact, edit-contact, contact-details
   }),
   getters: {},
   actions: {
+    SET_ADDRESS_ACTIVE_TAB(payload) {
+      this.addressActiveTab = payload;
+    },
     SET_COMPONENT_VISIBILITY(component, visibility = false) {
       this.componentVisibility[component] = visibility;
     },
