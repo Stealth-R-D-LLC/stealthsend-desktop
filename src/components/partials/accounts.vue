@@ -95,14 +95,40 @@
                 <a>Add to Favourites</a>
               </li>
               <li>
-                <a>Archive Account</a>
+                <a @click="archiveAccount(account)">Archive Account</a>
               </li>
               <li>
                 <a @click="openAccountDetails(account)">View Account</a>
               </li>
               <li>
-                <a>Edit Account Name</a>
+                <a @click="openEditAccountNameModal(account)"
+                  >Edit Account Name</a
+                >
               </li>
+              <StModal
+                light
+                :visible="editAccountNameModal"
+                @close="editAccountNameModal = false"
+              >
+                <template #header> Account Wizard </template>
+                <template #body>
+                  <StInput
+                    v-model="accountName"
+                    label="Account name"
+                    placeholder="Account name"
+                  ></StInput>
+                </template>
+                <template #footer>
+                  <StButton
+                    color="secondary"
+                    @click="editAccountNameModal = false"
+                    >Cancel</StButton
+                  >
+                  <StButton @click="changeAccountName(account)"
+                    >Submit</StButton
+                  >
+                </template>
+              </StModal>
             </ul>
           </div>
         </transition>
@@ -182,7 +208,7 @@
               </svg>
               <ul>
                 <li>
-                  <a>Activate Acoount</a>
+                  <a @click="activateAccount(account)">Activate Account</a>
                 </li>
                 <li>
                   <a>Edit Account Name</a>
@@ -197,10 +223,12 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useMainStore } from '@/store';
 
 import router from '@/router';
+import CryptoService from '../../services/crypto';
+
 export default {
   name: 'StAccounts',
   props: {
@@ -214,42 +242,35 @@ export default {
   setup(props) {
     const mainStore = useMainStore();
     const accountOptions = ref('');
+    const accountName = ref('');
+    let editAccountNameModal = ref(false);
+    let accounts = ref(props.accounts);
     const activeAccounts = computed(() => {
-      return props.accounts.filter((obj) => obj.isArchived === false);
+      return accounts.value.filter((obj) => obj.isArchived === false);
     });
     const archivedAccounts = computed(() => {
-      return props.accounts.filter((obj) => obj.isArchived === true);
-    });
-    onMounted(() => {
-      let array = props.accounts;
-      array.push(
-        {
-          name: 'account',
-          address: 'asdADasdasfaHDSdsFGREgd242323Jdsa',
-          label: 'Second acc',
-          isArchived: false,
-          utxo: 1000,
-          path: '1/0/1',
-          pk: 'AdasdasfaGHSgkdsjoigjfgpmdfpogoirngfiourehgiubfusidbgbdsiu3253262opihoiu42b',
-          assets: 'XST',
-          _id: 'UmhkKjhlhoIH',
-        },
-        {
-          name: 'account',
-          address: 'asdADasdasfaHDSdsFGREgd242323Jdsa',
-          label: 'Archived acc',
-          isArchived: true,
-          utxo: 1000,
-          path: '1/0/1',
-          pk: 'AdasdasfaGHSgkdsjoigjfgpmdfpogoirngfiourehgiubfusidbgbdsiu3253262opihoiu42b',
-          assets: 'XST',
-          _id: 'UmhkKjhlhoIH',
-        }
-      );
+      return accounts.value.filter((obj) => obj.isArchived === true);
     });
     function toggleAccountOptions(name) {
       accountOptions.value = name;
     }
+    const archiveAccount = async (account) => {
+      accounts.value = await CryptoService.archiveAccount(account);
+    };
+    const activateAccount = async (account) => {
+      accounts.value = await CryptoService.activateAccount(account);
+    };
+    const changeAccountName = async (account) => {
+      accounts.value = await CryptoService.changeAccountName(
+        account,
+        accountName.value
+      );
+      editAccountNameModal.value = false;
+    };
+    const openEditAccountNameModal = (account) => {
+      accountName.value = account.label;
+      editAccountNameModal.value = true;
+    };
     const openAccountDetails = (account) => {
       mainStore.SET_ACCOUNT_DETAILS(account);
       router.push('/account/details');
@@ -259,10 +280,16 @@ export default {
       activeAccounts,
       archivedAccounts,
       accountOptions,
+      accountName,
+      editAccountNameModal,
 
       // methods
       toggleAccountOptions,
       openAccountDetails,
+      archiveAccount,
+      activateAccount,
+      changeAccountName,
+      openEditAccountNameModal,
     };
   },
 };

@@ -10,21 +10,6 @@ import Transactions from '@/views/transactions.vue';
 import UIKit from '@/views/uikit.vue';
 import Welcome from '@/views/welcome.vue';
 import { createRouter, createWebHistory } from 'vue-router';
-import db from '../db';
-
-// dump whole db
-// db.remove({}, { multi: true });
-// db.remove ({name:'tx'}, {});
-
-(async function bla() {
-  let a = await db.find({}, { multi: true });
-  console.log('Database: ', a);
-})();
-
-// (async function bla2() {
-//   console.log('uso');
-//   await db.remove({address: 'msETpzsL7jwgEAqPEQ8W1o7NCM2v6qPzNL'}, { multi: true });
-// })();
 
 const routes = [
   {
