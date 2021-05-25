@@ -171,7 +171,7 @@
             <span class="item__span"> Transactions </span>
           </router-link>
         </li>
-                <li>
+        <li>
           <router-link tag="a" class="item" to="/account/add">
             <div class="icon">
               <svg
