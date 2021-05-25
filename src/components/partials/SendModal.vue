@@ -130,8 +130,10 @@
       </template>
       <template v-if="currentStep === 2">
         <div class="form-item">
-          <StFormItem label="Receiving Address">
-            <!-- :error-message="form.depositAddress.$errors" -->
+          <StFormItem
+            label="Receiving Address"
+            :error-message="form.depositAddress.$errors"
+          >
             <StInput
               v-model="depositAddress"
               placeholder="Deposit address"
@@ -195,7 +197,12 @@
         </div>
       </template>
       <template v-if="currentStep === 4">
-        <StInput color="dark" class="payment-input" label="Payment Code" />
+        <StFormItem
+          :error-message="form.paymentCode.$errors"
+          label="Payment Code"
+        >
+          <StInput v-model="paymentCode" color="dark" class="payment-input" />
+        </StFormItem>
       </template>
     </template>
     <template #footer class="flex-center-all">
@@ -203,7 +210,7 @@
         <StButton color="white" @click="validateFirstStep">Proceed</StButton>
       </template>
       <template v-if="currentStep === 2">
-        <StButton color="white">Proceed</StButton>
+        <StButton @click="validateSecondStep" color="white">Proceed</StButton>
       </template>
       <template v-if="currentStep === 3">
         <StButton color="white" @click="changeStep(4)">Confirm</StButton>
@@ -240,6 +247,7 @@ export default {
     const account = ref(null);
     const amount = ref(null);
     const depositAddress = ref('');
+    const paymentCode = ref('');
 
     const {
       form,
@@ -247,7 +255,7 @@ export default {
       add,
       // submitting,
       validateFields,
-      // resetFields
+      resetFields,
     } = useValidation({
       // depositAddress: {
       //   $value: depositAddress,
@@ -283,12 +291,20 @@ export default {
     function closeModal() {
       mainStore.SET_MODAL_VISIBILITY('send', false);
       // reset all variables
-      account.value = null;
-      accounts.value = [];
-      amount.value = null;
-      currentStep.value = 1;
-      depositAddress.value = '';
-      label.value = '';
+      // account.value = null;
+      // accounts.value = [];
+      // amount.value = null;
+      // currentStep.value = 1;
+      // depositAddress.value = '';
+      // label.value = '';
+      resetFields({
+        account: null,
+        accounts: [],
+        amount: null,
+        currentStep: 1,
+        depositAddress: '',
+        label: '',
+      });
     }
 
     const accounts = ref([]);
@@ -323,18 +339,25 @@ export default {
     }
 
     async function send() {
-      const utxo = coinSelection();
+      try {
+        await validateFields();
+        const utxo = coinSelection();
 
-      if (utxo.length === 0) {
-        return;
+        if (utxo.length === 0) {
+          return;
+        }
+
+        let { txid } = await useTransactionBuilder(utxo, {
+          address: depositAddress.value,
+          amount: amount.value,
+          account: account.value,
+        });
+        CryptoService.storeTxAndLabel(txid, label.value);
+      } catch (e) {
+        if (e instanceof ValidationError) {
+          console.log(e);
+        }
       }
-
-      let { txid } = await useTransactionBuilder(utxo, {
-        address: depositAddress.value,
-        amount: amount.value,
-        account: account.value,
-      });
-      CryptoService.storeTxAndLabel(txid, label.value);
     }
     // async function changeAccount(acc) {
     //   const { account, change } = CryptoService.breakAccountPath(acc.path);
@@ -359,27 +382,28 @@ export default {
         copyPending.value = false;
       }, 2000);
     }
-
-    // async function validateSecondStep() {
-    //   try {
-    //     await validateFields();
-    //     changeStep(3);
-    //   } catch (e) {
-    //     if (e instanceof ValidationError) {
-    //       console.log(e);
-    //     }
-    //   }
-    // }
+    async function validateSecondStep() {
+      try {
+        await validateFields();
+        add(['paymentCode'], {
+          $value: paymentCode,
+          $rules: [(paymentCode) => !paymentCode && 'Payment code is required'],
+        });
+        changeStep(3);
+      } catch (e) {
+        if (e instanceof ValidationError) {
+          console.log(e);
+        }
+      }
+    }
     async function validateFirstStep() {
       try {
         await validateFields();
-        add([], {
-          depositAddress: {
-            $value: depositAddress,
-            $rules: [
-              (depositAddress) => !depositAddress && 'Address is required',
-            ],
-          },
+        add(['depositAddress'], {
+          $value: depositAddress,
+          $rules: [
+            (depositAddress) => !depositAddress && 'Address is required',
+          ],
         });
         changeStep(2);
       } catch (e) {
@@ -398,7 +422,7 @@ export default {
 
     return {
       validateFirstStep,
-      // validateSecondStep,
+      validateSecondStep,
 
       isVisible,
       closeModal,
@@ -408,6 +432,7 @@ export default {
       account,
       amount,
       depositAddress,
+      paymentCode,
       label,
       // changeAccount,
 
