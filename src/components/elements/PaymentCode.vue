@@ -44,9 +44,9 @@
 
 <script>
 export default {
-    name: 'StPaymentCode',
+  name: 'StPaymentCode',
   setup() {
-      /*
+    /*
       $('.payment-code').find('input').each(function() {
 	$(this).attr('maxlength', 1);
 	$(this).on('keyup', function(e) {
@@ -78,13 +78,13 @@ export default {
 
 <style scoped>
 .payment-code input {
-    width: 30px;
-    height: 50px;
-    border: none;
-    line-height: 50px;
-    text-align: center;
-    font-size: 24px;
-    font-weight: 200;
-    margin: 0 2px;
+  width: 30px;
+  height: 50px;
+  border: none;
+  line-height: 50px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 200;
+  margin: 0 2px;
 }
 </style>
