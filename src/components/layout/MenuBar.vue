@@ -38,10 +38,10 @@
               </svg>
             </div>
 
-            <span class="item__span"> Account Balances </span>
+            <span class="item__span"> Dashboard </span>
           </router-link>
         </li>
-        <li>
+        <!-- <li>
           <router-link tag="a" class="item" to="/uikit">
             <div class="icon">
               <svg
@@ -61,36 +61,7 @@
             </div>
             <span class="item__span"> UI Kit </span>
           </router-link>
-        </li>
-        <li>
-          <router-link tag="a" class="item" to="/account/add">
-            <div class="icon">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M12 17.5H22" stroke="#FAF9FC" stroke-width="2" />
-                <path d="M17 12.5V22.5" stroke="#FAF9FC" stroke-width="2" />
-                <path d="M0 9.5H10" stroke="#FAF9FC" stroke-width="2" />
-                <path d="M0 5.5H10" stroke="#FAF9FC" stroke-width="2" />
-                <path
-                  d="M9 13.5H1V21.5H9V13.5Z"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                />
-                <path
-                  d="M21 1.5H13V9.5H21V1.5Z"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                />
-              </svg>
-            </div>
-            <span class="item__span"> Add Account </span>
-          </router-link>
-        </li>
+        </li> -->
         <li @click="openModal('send')">
           <span class="item">
             <div class="icon">
@@ -198,6 +169,35 @@
               </svg>
             </div>
             <span class="item__span"> Transactions </span>
+          </router-link>
+        </li>
+                <li>
+          <router-link tag="a" class="item" to="/account/add">
+            <div class="icon">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M12 17.5H22" stroke="#FAF9FC" stroke-width="2" />
+                <path d="M17 12.5V22.5" stroke="#FAF9FC" stroke-width="2" />
+                <path d="M0 9.5H10" stroke="#FAF9FC" stroke-width="2" />
+                <path d="M0 5.5H10" stroke="#FAF9FC" stroke-width="2" />
+                <path
+                  d="M9 13.5H1V21.5H9V13.5Z"
+                  stroke="#FAF9FC"
+                  stroke-width="2"
+                />
+                <path
+                  d="M21 1.5H13V9.5H21V1.5Z"
+                  stroke="#FAF9FC"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
+            <span class="item__span"> Add Account </span>
           </router-link>
         </li>
         <li>

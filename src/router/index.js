@@ -7,7 +7,7 @@ import Lock from '@/views/lock.vue';
 import Receive from '@/views/receive.vue';
 import Settings from '@/views/settings.vue';
 import Transactions from '@/views/transactions.vue';
-import UIKit from '@/views/uikit.vue';
+// import UIKit from '@/views/uikit.vue';
 import Welcome from '@/views/welcome.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import db from '../db';
@@ -62,11 +62,11 @@ const routes = [
       layout: 'default',
     },
   },
-  {
-    path: '/uikit',
-    name: 'UIKit',
-    component: UIKit,
-  },
+  // {
+  //   path: '/uikit',
+  //   name: 'UIKit',
+  //   component: UIKit,
+  // },
   {
     path: '/receive',
     name: 'Receive',
