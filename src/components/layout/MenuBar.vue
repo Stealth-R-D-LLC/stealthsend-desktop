@@ -221,8 +221,8 @@
             <span class="item__span"> Archive </span>
           </router-link>
         </li>
-        <li>
-          <router-link tag="a" class="item" to="/address-book">
+        <li @click="toggleDrawer('address-book')">
+          <span class="item">
             <div class="icon">
               <svg
                 width="24"
@@ -257,7 +257,7 @@
             </div>
 
             <span class="item__span"> Address Book </span>
-          </router-link>
+          </span>
         </li>
       </ul>
     </nav>
@@ -314,11 +314,16 @@ export default defineComponent({
     function openModal(modal) {
       mainStore.SET_MODAL_VISIBILITY(modal, true);
     }
+    function toggleDrawer(canvas) {
+      mainStore.SET_CURRENT_CANVAS(canvas);
+      mainStore.TOGGLE_DRAWER(true);
+    }
 
     return {
       isCollapsed,
       toggleMenu,
       openModal,
+      toggleDrawer,
     };
   },
 });
