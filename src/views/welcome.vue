@@ -31,6 +31,11 @@
         label="Mnemonic"
         placeholder="Enter your mnemonic"
       ></StInput>
+      <StInput
+        v-model="password"
+        label="Password"
+        placeholder="Enter new password"
+      ></StInput>
       <StButton @click="recover">Start Recover</StButton>
       <pre v-if="recovered"> recovered seed: {{ recovered }}</pre>
     </div>
@@ -57,7 +62,7 @@
         >Create wallet</StButton
       >
       <pre v-if="created">
-        Your stealth wallet has been created. Make sure to write down your mnemonic and keep it in a safe spot. 
+        Your stealth wallet has been created. Make sure to write down your mnemonic and keep it in a safe spot.
         The manemonic stores all the information needed to recover your funds on-chain.
         Mnemonic: {{ created.mnemonic }}
       <StButton @click="goToDashboard"
@@ -75,7 +80,7 @@ import * as bip32 from 'bip32';
 import { useMainStore } from '@/store';
 import router from '../router';
 import CryptoService from '../services/crypto';
-import * as bitcoin from 'bitcoinjs-lib';
+import { add, format } from 'mathjs';
 
 export default {
   name: 'StWelcome',
@@ -84,7 +89,7 @@ export default {
 
     const recoverWallet = ref(false);
     const mnemonic = ref(
-      'core ritual tornado cart chaos rice brave mirror float utility suffer atom'
+      'caution quantum bright middle grocery cross blouse walk piece copper already inhale'
     );
     const recovered = ref({});
     const password = ref('');
@@ -102,84 +107,58 @@ export default {
         master: master,
       };
 
-      // Get the BIP32 root key in order to derive all addresses or make a lookup on the network
-      console.log('-----------------------------------------------------');
-      console.log('1) BIP32 Root Key', master.toBase58());
-      console.log('-----------------------------------------------------');
-      console.log(
-        '2) Wallet Account Extended Private Key',
-        master.derivePath("m/44'/1'/0'").toBase58()
-      );
-      console.log(
-        '3) Wallet Account Extended Public Key',
-        master.derivePath("m/44'/1'/0'").neutered().toBase58()
-      );
-      console.log(
-        '4) BIP32 Extended Private Key',
-        master.derivePath("m/44'/1'/0'/0").toBase58()
-      );
-      console.log(
-        '5) First account BIP32 Extended Public Key',
-        master.derivePath("m/44'/1'/0'/0").neutered().toBase58()
-      );
-      console.log('-----------------------------------------------------');
-      // WIF you say?
-      console.log(
-        '6) First account WIF',
-        master.derivePath("m/44'/1'/0'/0").toWIF() // Do we need this for import or that under 7) ??? Done some test and my conclusion is NO, we need account address WIF
-      );
-      console.log(
-        '7) First account address WIF',
-        master.derivePath("m/44'/1'/0'/0/0").toWIF() // One of theese we need....
-      );
-      const addressWif = master.derivePath("m/44'/1'/0'/0/0").toWIF();
-      console.log('addressWif', addressWif);
-      console.log('Object.keys(bitcoin)', Object.keys(bitcoin));
-      console.log('Object.keys(bitcoin.address)', Object.keys(bitcoin.address));
-      console.log(
-        'Object.keys(bitcoin.payments)',
-        Object.keys(bitcoin.payments)
-      );
-      console.log('Object.keys(bitcoin.ECPair)', Object.keys(bitcoin.ECPair));
-
-      const addressFromWif = bitcoin.ECPair.fromWIF(
-        addressWif,
-        CryptoService.network
-      );
-      console.log('addressFromWif', addressFromWif);
-      const addressFromWifPrivateKey = addressFromWif.privateKey;
-      const addressFromWifPublicKey = addressFromWif.publicKey;
-
-      console.log(
-        'addressFromWifPrivateKey',
-        addressFromWifPrivateKey.toString('hex')
-      );
-      console.log(
-        'addressFromWifPublicKey',
-        addressFromWifPublicKey.toString('hex')
-      );
-
-      const hardcodedPassword = '123456'; // hardcoded for now, missing wallet account step prior to importing the mnemonic
-
       CryptoService.seed = bytes.toString('hex');
       CryptoService.master = master;
-      console.log('password.value', hardcodedPassword);
+      await CryptoService.storeWalletInDb(password.value);
 
-      // await CryptoService.storeWalletInDb(password.value);
-      await CryptoService.storeWalletInDb(hardcodedPassword);
-
-      // TODO: Get HD account
-      const accountExtendedPk = master
-        .derivePath("m/44'/1'/0'")
-        .neutered()
-        .toBase58();
-      const hdAccount = await CryptoService.getHdAccount(accountExtendedPk);
-      console.log('hdAccount', hdAccount);
+      await restoreAccounts();
 
       setTimeout(() => {
         goToDashboard();
         mainStore.STOP_GLOBAL_LOADING();
       }, 3000);
+    }
+
+    async function restoreAccounts() {
+      mainStore.START_GLOBAL_LOADING();
+
+      let next = await CryptoService.getNextAccountPath();
+      const { address, path, pk, wif } = CryptoService.getChildFromRoot(
+        next,
+        0,
+        0
+      );
+
+      const hdAccount = await mainStore.rpc('gethdaccount', [pk]);
+
+      // break out of recursion if last account doesn't have transactions
+      if (hdAccount.length === 0) {
+        return;
+      }
+
+      let accUtxo = 0;
+
+      for (let tx of hdAccount) {
+        accUtxo = add(accUtxo, tx.account_balance_change);
+        accUtxo = format(accUtxo, { precision: 14 });
+      }
+
+      let account = {
+        pk: pk,
+        address: address,
+        label: `Account ${next}`,
+        utxo: accUtxo,
+        isArchived: false,
+        asset: 'XST',
+        wif: wif,
+        path: path,
+      };
+
+      await CryptoService.storeAccountInDb(account);
+
+      await restoreAccounts();
+
+      mainStore.STOP_GLOBAL_LOADING();
     }
 
     const importWallet = ref(false);
@@ -191,25 +170,6 @@ export default {
       // user should be also prompted here to create a new password
       imported.value = CryptoService.WIFtoPK(wif.value);
     }
-
-    // async function generateAccount() {
-    //   console.log('AHA!');
-    //   const { address, path, pk, wif } = CryptoService.getChildFromRoot(
-    //     1,
-    //     0,
-    //     0
-    //   );
-    //   await CryptoService.storeAccountInDb({
-    //     pk: pk,
-    //     address: address,
-    //     label: account.value,
-    //     utxo: 0,
-    //     isArchived: false,
-    //     asset: 'XST',
-    //     wif: wif,
-    //     path: path,
-    //   });
-    // }
 
     const createWallet = ref(false);
     const created = ref(false);

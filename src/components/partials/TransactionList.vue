@@ -5,11 +5,13 @@
       <p class="tx-date">
         <span
           v-if="
-            ['TODAY', 'YESTERDAY'].includes(todayOrYesteday(date).toUpperCase())
+            ['TODAY', 'YESTERDAY'].includes(
+              todayOrYesterday(date).toUpperCase()
+            )
           "
           class="relative"
         >
-          {{ todayOrYesteday(date) }},
+          {{ todayOrYesterday(date) }},
         </span>
         {{ date }}
       </p>
@@ -271,7 +273,6 @@ export default {
     const mainStore = useMainStore();
     const isExpanded = ref('');
 
-    CryptoService.getTxWithLabels();
     const { formatBlocktime, groupBy, formatAmount } = useHelpers();
     const txs = ref([]);
 
@@ -310,7 +311,7 @@ export default {
       );
     }
 
-    function todayOrYesteday(date) {
+    function todayOrYesterday(date) {
       let relative = '';
       if (isToday(new Date(date))) relative = 'Today';
       if (isYesterday(new Date(date))) relative = 'Yesterday';
@@ -335,8 +336,9 @@ export default {
       return CryptoService.txWithLabels[tx];
     }
 
-    onMounted(() => {
+    onMounted(async () => {
       orderTransactions({ label: 'All', value: Infinity });
+      await CryptoService.getTxWithLabels();
     });
 
     watch(
@@ -354,7 +356,7 @@ export default {
       groupBy,
       formatAmount,
       filterTransactions,
-      todayOrYesteday,
+      todayOrYesterday,
       XST_USD_RATE,
       txDates,
       orderTransactions,
