@@ -77,7 +77,7 @@
         @click="toggleDrawer('recent-notifications')"
       ></StIcon>
       <StIcon name="qr"></StIcon>
-      <StIcon name="settings"></StIcon>
+      <StIcon @click="goto('/settings')" name="settings"></StIcon>
     </div>
   </header>
 </template>
@@ -87,6 +87,7 @@ import pkgjson from '../../../package.json';
 import { useMainStore } from '@/store';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
+import router from '@/router';
 
 export default {
   setup() {
@@ -119,6 +120,10 @@ export default {
       );
     }
 
+    function goto(path) {
+      router.push(path)
+    }
+
     return {
       version,
       toggleDrawer,
@@ -126,6 +131,7 @@ export default {
       componentVisibility,
       checkVisibilityForRoute,
       toggleComponentVisibility,
+      goto,
       headerStyle: computed(() => mainStore.headerStyle),
     };
   },
