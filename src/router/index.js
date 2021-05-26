@@ -5,7 +5,7 @@ import AddressBook from '@/views/address-book.vue';
 import Dashboard from '@/views/dashboard/dashboard.vue';
 import Lock from '@/views/lock.vue';
 import Receive from '@/views/receive.vue';
-import Settings from '@/views/settings.vue';
+import Settings from '@/views/settings/settings.vue';
 import Transactions from '@/views/transactions.vue';
 // import UIKit from '@/views/uikit.vue';
 import Welcome from '@/views/welcome.vue';
@@ -66,6 +66,9 @@ const routes = [
     path: '/settings',
     name: 'Settings',
     component: Settings,
+    meta: {
+      layout: 'default',
+    },
   },
   {
     path: '/account/add',
