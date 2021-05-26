@@ -80,6 +80,7 @@ export default {
 
 <style scoped>
 .payment-code input {
+    background-color: pink;
   width: 30px;
   height: 50px;
   border: none;
