@@ -38,11 +38,8 @@ export default {
           prev.focus();
         }
 
-      // 48-57 are 0-9, 96-105 0-9 on numpad, 39 is right arrow
-      } else if (
-        (e.keyCode >= 48 && e.keyCode <= 57) ||
-        e.keyCode === 39
-      ) {
+        // 48-57 are 0-9, 96-105 0-9 on numpad, 39 is right arrow
+      } else if ((e.keyCode >= 48 && e.keyCode <= 57) || e.keyCode === 39) {
         var next = parent.querySelectorAll(
           'input.' + e.srcElement.getAttribute('data-next')
         )[0];
@@ -52,10 +49,10 @@ export default {
         }
         e.target.value = e.key;
       } else {
-          e.preventDefault();
-          e.target.value = '';
-          e.target.focus()
-          return false;
+        e.preventDefault();
+        e.target.value = '';
+        e.target.focus();
+        return false;
       }
     }
 
@@ -77,5 +74,4 @@ export default {
   font-weight: 200;
   margin: 0 2px;
 }
-
 </style>
