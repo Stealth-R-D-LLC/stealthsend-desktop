@@ -31,6 +31,11 @@
         label="Mnemonic"
         placeholder="Enter your mnemonic"
       ></StInput>
+      <StInput
+        v-model="password"
+        label="Password"
+        placeholder="Enter new password"
+      ></StInput>
       <StButton @click="recover">Start Recover</StButton>
       <pre v-if="recovered"> recovered seed: {{ recovered }}</pre>
     </div>
@@ -58,7 +63,7 @@
         >Create wallet</StButton
       >
       <pre v-if="created">
-        Your stealth wallet has been created. Make sure to write down your mnemonic and keep it in a safe spot. 
+        Your stealth wallet has been created. Make sure to write down your mnemonic and keep it in a safe spot.
         The manemonic stores all the information needed to recover your funds on-chain.
         Mnemonic: {{ created.mnemonic }}
       <StButton @click="goToDashboard"
@@ -77,6 +82,7 @@ import { useMainStore } from '@/store';
 import router from '../router';
 import CryptoService from '../services/crypto';
 import PaymentCode from '@/components/elements/PaymentCode';
+import { add, format } from 'mathjs';
 
 export default {
   name: 'StWelcome',
@@ -88,7 +94,7 @@ export default {
 
     const recoverWallet = ref(false);
     const mnemonic = ref(
-      'core ritual tornado cart chaos rice brave mirror float utility suffer atom'
+      'caution quantum bright middle grocery cross blouse walk piece copper already inhale'
     );
     const recovered = ref({});
     const password = ref('');
@@ -99,8 +105,9 @@ export default {
       // password is asked because we have to lock the seed in the database
       // user is createing a new password in this step
       mainStore.START_GLOBAL_LOADING();
+      console.log('mnemonic:::', mnemonic);
       let bytes = await bip39.mnemonicToSeedSync(mnemonic.value);
-      const master = await bip32.fromSeed(bytes); // root
+      const master = await bip32.fromSeed(bytes, CryptoService.network); // root
       recovered.value = {
         seed: bytes.toString('hex'),
         master: master,
@@ -108,12 +115,56 @@ export default {
 
       CryptoService.seed = bytes.toString('hex');
       CryptoService.master = master;
+      await CryptoService.storeWalletInDb(password.value);
 
-      CryptoService.storeWalletInDb(password.value);
+      await restoreAccounts();
+
       setTimeout(() => {
         goToDashboard();
         mainStore.STOP_GLOBAL_LOADING();
       }, 3000);
+    }
+
+    async function restoreAccounts() {
+      mainStore.START_GLOBAL_LOADING();
+
+      let next = await CryptoService.getNextAccountPath();
+      const { address, path, pk, wif } = CryptoService.getChildFromRoot(
+        next,
+        0,
+        0
+      );
+
+      const hdAccount = await mainStore.rpc('gethdaccount', [pk]);
+
+      // break out of recursion if last account doesn't have transactions
+      if (hdAccount.length === 0) {
+        return;
+      }
+
+      let accUtxo = 0;
+
+      for (let tx of hdAccount) {
+        accUtxo = add(accUtxo, tx.account_balance_change);
+        accUtxo = format(accUtxo, { precision: 14 });
+      }
+
+      let account = {
+        pk: pk,
+        address: address,
+        label: `Account ${next}`,
+        utxo: accUtxo,
+        isArchived: false,
+        asset: 'XST',
+        wif: wif,
+        path: path,
+      };
+
+      await CryptoService.storeAccountInDb(account);
+
+      await restoreAccounts();
+
+      mainStore.STOP_GLOBAL_LOADING();
     }
 
     const importWallet = ref(false);
@@ -125,25 +176,6 @@ export default {
       // user should be also prompted here to create a new password
       imported.value = CryptoService.WIFtoPK(wif.value);
     }
-
-    // async function generateAccount() {
-    //   console.log('AHA!');
-    //   const { address, path, pk, wif } = CryptoService.getChildFromRoot(
-    //     1,
-    //     0,
-    //     0
-    //   );
-    //   await CryptoService.storeAccountInDb({
-    //     pk: pk,
-    //     address: address,
-    //     label: account.value,
-    //     utxo: 0,
-    //     isArchived: false,
-    //     asset: 'XST',
-    //     wif: wif,
-    //     path: path,
-    //   });
-    // }
 
     const createWallet = ref(false);
     const created = ref(false);
