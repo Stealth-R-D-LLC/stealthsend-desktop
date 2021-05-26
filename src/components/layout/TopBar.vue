@@ -121,7 +121,7 @@ export default {
     }
 
     function goto(path) {
-      router.push(path)
+      router.push(path);
     }
 
     return {
