@@ -23,7 +23,6 @@ import Card from '@/components/elements/Card';
 import CryptoService from '@/services/crypto';
 import { ref, computed } from 'vue';
 import { useMainStore } from '@/store';
-
 import router from '@/router';
 
 export default {
