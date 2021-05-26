@@ -24,9 +24,21 @@ export default {
       default: 5,
     },
   },
-  setup() {
+  emits: ['update:modelValue'],
+  setup(_, ctx) {
+    function getAllDigits() {
+      // retrieve all digits entered in "boxes" for emitting purposes
+      let code = '';
+      document.querySelectorAll('.payment-code > input').forEach((input) => {
+        if (input.value) {
+          code = code + input.value;
+        }
+      });
+
+      return code;
+    }
     function handleKeyup(e) {
-      var parent = e.srcElement.parentNode;
+      let parent = e.srcElement.parentNode;
 
       // backspace or left arrow
       if (e.keyCode === 8 || e.keyCode === 37) {
@@ -40,7 +52,7 @@ export default {
 
         // 48-57 are 0-9, 96-105 0-9 on numpad, 39 is right arrow
       } else if ((e.keyCode >= 48 && e.keyCode <= 57) || e.keyCode === 39) {
-        var next = parent.querySelectorAll(
+        let next = parent.querySelectorAll(
           'input.' + e.srcElement.getAttribute('data-next')
         )[0];
 
@@ -54,6 +66,9 @@ export default {
         e.target.focus();
         return false;
       }
+
+      const code = getAllDigits();
+      ctx.emit('update:modelValue', code);
     }
 
     return {
