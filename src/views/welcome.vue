@@ -81,7 +81,7 @@ import PaymentCode from '@/components/elements/PaymentCode';
 export default {
   name: 'StWelcome',
   components: {
-    PaymentCode
+    PaymentCode,
   },
   setup() {
     const mainStore = useMainStore();
