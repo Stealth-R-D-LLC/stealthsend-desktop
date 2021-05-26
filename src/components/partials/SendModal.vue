@@ -12,158 +12,163 @@
     <template #body>
       <template v-if="currentStep === 1">
         <div class="form-item account">
-          <label for="multiselect">Account</label>
-          <StMultiselect
-            v-model="account"
-            :class="{ 'multiselect-filled': account }"
-            :options="accounts"
-            track-by="_id"
-            value-prop="address"
-            label="label"
-            :object="true"
-            :can-deselect="false"
-            placeholder="Select account"
-            @select="getUnspentOutputs"
-          >
-            <template #singlelabel="{ value }">
-              <div class="multiselect-single-label">
-                <p class="account-label">
-                  {{ value.label }}
-                </p>
-                <p class="account-utxo">
-                  {{ value.utxo }}
-                </p>
-              </div>
-            </template>
+          <StFormItem :error-message="form.account.$errors" label="Account">
+            <StMultiselect
+              v-model="form.account.$value"
+              :class="{ 'multiselect-filled': account }"
+              :options="accounts"
+              track-by="_id"
+              value-prop="address"
+              label="label"
+              :object="true"
+              :can-deselect="false"
+              placeholder="Select account"
+              @select="getUnspentOutputs"
+            >
+              <template #singlelabel="{ value }">
+                <div class="multiselect-single-label">
+                  <p class="account-label">
+                    {{ value.label }}
+                  </p>
+                  <p class="account-utxo">
+                    {{ value.utxo }}
+                  </p>
+                </div>
+              </template>
 
-            <template #option="{ option }">
-              {{ option.label }} ({{ option.utxo }})
-            </template>
-          </StMultiselect>
+              <template #option="{ option }">
+                {{ option.label }} ({{ option.utxo }})
+              </template>
+            </StMultiselect>
+          </StFormItem>
         </div>
         <div class="form-item">
-          <StAmount
-            v-if="inputAmountState === 'XST'"
-            v-model="amount"
-            label="Amount"
-            color="dark"
-            placeholder="Amount"
-            :options="{
-              locale: 'en',
-              currency: 'XST',
-              distractionFree: false,
-              valueAsInteger: false,
-              useGrouping: true,
-              precision: 2,
-              allowNegative: false,
-            }"
-          >
-            <svg
-              width="19"
-              height="16"
-              viewBox="0 0 19 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              @click="inputAmountState = 'USD'"
+          <StFormItem :error-message="form.amount.$errors" label="Amount">
+            <StAmount
+              v-if="inputAmountState === 'XST'"
+              v-model="form.amount.$value"
+              color="dark"
+              placeholder="Amount"
+              :options="{
+                locale: 'en',
+                currency: 'XST',
+                distractionFree: false,
+                valueAsInteger: false,
+                useGrouping: true,
+                precision: 2,
+                allowNegative: false,
+              }"
             >
-              <path
-                d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M14.2222 14.2222L14.2222 1.77773"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M4.77777 1.77783V14.2223"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-            </svg>
-          </StAmount>
-          <StAmount
-            v-else-if="inputAmountState === 'USD'"
-            v-model="amount"
-            label="Amount"
-            color="dark"
-            placeholder="Amount"
-          >
-            <svg
-              width="19"
-              height="16"
-              viewBox="0 0 19 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              @click="inputAmountState = 'XST'"
+              <svg
+                width="19"
+                height="16"
+                viewBox="0 0 19 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                @click="inputAmountState = 'USD'"
+              >
+                <path
+                  d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M14.2222 14.2222L14.2222 1.77773"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M4.77777 1.77783V14.2223"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+              </svg>
+            </StAmount>
+            <StAmount
+              v-else-if="inputAmountState === 'USD'"
+              v-model="form.amount.$value"
+              color="dark"
+              placeholder="Amount"
             >
-              <path
-                d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M14.2222 14.2222L14.2222 1.77773"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M4.77777 1.77783V14.2223"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-            </svg>
-          </StAmount>
+              <svg
+                width="19"
+                height="16"
+                viewBox="0 0 19 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                @click="inputAmountState = 'XST'"
+              >
+                <path
+                  d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M14.2222 14.2222L14.2222 1.77773"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M4.77777 1.77783V14.2223"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+              </svg>
+            </StAmount>
+          </StFormItem>
         </div>
       </template>
       <template v-if="currentStep === 2">
         <div class="form-item">
-          <StInput
-            v-model="depositAddress"
-            placeholder="Deposit address"
+          <StFormItem
             label="Receiving Address"
-            color="dark"
+            :error-message="form.depositAddress.$errors"
           >
-            <StTooltip
-              v-if="depositAddress"
-              :tooltip-text="
-                copyPending ? 'Copied to clipboard!' : 'Click to copy'
-              "
+            <StInput
+              v-model="depositAddress"
+              placeholder="Deposit address"
+              color="dark"
             >
-              <StClipboard :content="depositAddress" @click="handleCopy">
-                <svg
-                  width="15"
-                  height="19"
-                  viewBox="0 0 15 19"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M10 5.5H1V17.5H10V5.5Z"
-                    stroke="#E5E4E8"
-                    stroke-width="2"
-                  />
-                  <path
-                    d="M14 14.5L14 0.500013"
-                    stroke="#E5E4E8"
-                    stroke-width="2"
-                  />
-                  <path d="M2 1.5L14 1.5" stroke="#E5E4E8" stroke-width="2" />
-                </svg>
-              </StClipboard>
-            </StTooltip>
-          </StInput>
+              <StTooltip
+                v-if="depositAddress"
+                :tooltip-text="
+                  copyPending ? 'Copied to clipboard!' : 'Click to copy'
+                "
+              >
+                <StClipboard :content="depositAddress" @click="handleCopy">
+                  <svg
+                    width="15"
+                    height="19"
+                    viewBox="0 0 15 19"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M10 5.5H1V17.5H10V5.5Z"
+                      stroke="#E5E4E8"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M14 14.5L14 0.500013"
+                      stroke="#E5E4E8"
+                      stroke-width="2"
+                    />
+                    <path d="M2 1.5L14 1.5" stroke="#E5E4E8" stroke-width="2" />
+                  </svg>
+                </StClipboard>
+              </StTooltip>
+            </StInput>
+          </StFormItem>
         </div>
         <div class="form-item">
           <StInput
@@ -192,15 +197,20 @@
         </div>
       </template>
       <template v-if="currentStep === 4">
-        <StInput color="dark" class="payment-input" label="Payment Code" />
+        <StFormItem
+          :error-message="form.paymentCode.$errors"
+          label="Payment Code"
+        >
+          <StInput v-model="paymentCode" color="dark" class="payment-input" />
+        </StFormItem>
       </template>
     </template>
     <template #footer class="flex-center-all">
       <template v-if="currentStep === 1">
-        <StButton color="white" @click="changeStep(2)">Proceed</StButton>
+        <StButton color="white" @click="validateFirstStep">Proceed</StButton>
       </template>
       <template v-if="currentStep === 2">
-        <StButton color="white" @click="changeStep(3)">Proceed</StButton>
+        <StButton @click="validateSecondStep" color="white">Proceed</StButton>
       </template>
       <template v-if="currentStep === 3">
         <StButton color="white" @click="changeStep(4)">Confirm</StButton>
@@ -218,9 +228,15 @@ import { computed, ref, watch } from 'vue';
 import CryptoService from '@/services/crypto';
 import useCoinControl from '@/composables/useCoinControl';
 import useTransactionBuilder from '@/composables/useTransactionBuilder';
+import StFormItem from '@/components/elements/StFormItem';
+
+import { useValidation, ValidationError } from 'vue3-form-validation';
 
 export default {
   name: 'StSendModal',
+  components: {
+    StFormItem,
+  },
   setup() {
     const mainStore = useMainStore();
 
@@ -228,6 +244,40 @@ export default {
       return mainStore.modals.send;
     });
     const inputAmountState = ref('XST');
+    const account = ref(null);
+    const amount = ref(null);
+    const depositAddress = ref('');
+    const paymentCode = ref('');
+
+    const {
+      form,
+      errors,
+      add,
+      // submitting,
+      validateFields,
+      resetFields,
+    } = useValidation({
+      // depositAddress: {
+      //   $value: depositAddress,
+      //   $rules: [(depositAddress) => !depositAddress && 'Address is required'],
+      // },
+      account: {
+        $value: account,
+        $rules: [(account) => !account && 'account is required'],
+      },
+      amount: {
+        $value: amount,
+        $rules: [
+          (amount) => {
+            if (!amount || Number(amount) <= 0) {
+              return 'Amount has to be positive';
+            } else if (account.value && account.value.utxo < Number(amount)) {
+              return 'Insufficient funds on this account';
+            }
+          },
+        ],
+      },
+    });
 
     watch(
       () => isVisible.value,
@@ -241,17 +291,23 @@ export default {
     function closeModal() {
       mainStore.SET_MODAL_VISIBILITY('send', false);
       // reset all variables
-      account.value = null;
-      accounts.value = [];
-      amount.value = null;
-      currentStep.value = 1;
-      depositAddress.value = '';
-      label.value = '';
+      // account.value = null;
+      // accounts.value = [];
+      // amount.value = null;
+      // currentStep.value = 1;
+      // depositAddress.value = '';
+      // label.value = '';
+      resetFields({
+        account: null,
+        accounts: [],
+        amount: null,
+        currentStep: 1,
+        depositAddress: '',
+        label: '',
+      });
     }
 
     const accounts = ref([]);
-    const account = ref(null);
-    const amount = ref(null);
     const label = ref('');
 
     async function scanWallet() {
@@ -266,8 +322,6 @@ export default {
 
     scanWallet();
     let unspentOutputs = [];
-
-    const depositAddress = ref('');
 
     async function getUnspentOutputs() {
       const outputs = await mainStore.rpc('getaddressoutputs', [
@@ -285,18 +339,25 @@ export default {
     }
 
     async function send() {
-      const utxo = coinSelection();
+      try {
+        await validateFields();
+        const utxo = coinSelection();
 
-      if (utxo.length === 0) {
-        return;
+        if (utxo.length === 0) {
+          return;
+        }
+
+        let { txid } = await useTransactionBuilder(utxo, {
+          address: depositAddress.value,
+          amount: amount.value,
+          account: account.value,
+        });
+        CryptoService.storeTxAndLabel(txid, label.value);
+      } catch (e) {
+        if (e instanceof ValidationError) {
+          console.log(e);
+        }
       }
-
-      let { txid } = await useTransactionBuilder(utxo, {
-        address: depositAddress.value,
-        amount: amount.value,
-        account: account.value,
-      });
-      CryptoService.storeTxAndLabel(txid, label.value);
     }
     // async function changeAccount(acc) {
     //   const { account, change } = CryptoService.breakAccountPath(acc.path);
@@ -321,6 +382,36 @@ export default {
         copyPending.value = false;
       }, 2000);
     }
+    async function validateSecondStep() {
+      try {
+        await validateFields();
+        add(['paymentCode'], {
+          $value: paymentCode,
+          $rules: [(paymentCode) => !paymentCode && 'Payment code is required'],
+        });
+        changeStep(3);
+      } catch (e) {
+        if (e instanceof ValidationError) {
+          console.log(e);
+        }
+      }
+    }
+    async function validateFirstStep() {
+      try {
+        await validateFields();
+        add(['depositAddress'], {
+          $value: depositAddress,
+          $rules: [
+            (depositAddress) => !depositAddress && 'Address is required',
+          ],
+        });
+        changeStep(2);
+      } catch (e) {
+        if (e instanceof ValidationError) {
+          console.log(e);
+        }
+      }
+    }
 
     function changeStep(step) {
       currentStep.value = step;
@@ -330,6 +421,9 @@ export default {
     }
 
     return {
+      validateFirstStep,
+      validateSecondStep,
+
       isVisible,
       closeModal,
       inputAmountState,
@@ -338,6 +432,7 @@ export default {
       account,
       amount,
       depositAddress,
+      paymentCode,
       label,
       // changeAccount,
 
@@ -350,6 +445,9 @@ export default {
 
       send,
       getUnspentOutputs,
+
+      form,
+      errors,
     };
   },
 };

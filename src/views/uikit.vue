@@ -3,17 +3,6 @@
     <h1>UI Kit</h1>
     <h2>FORM VALIDATION</h2>
     <!-- value, errorMessage -->
-    <Form @submit="handleSubmit" v-slot="{}">
-      <StFormItem
-        :notice="'neki k'"
-        :name="'testko'"
-        :rules="'minosam'"
-        v-slot="{ field, name }"
-      >
-        <!-- <StInput v-bind="field" v-model="jbt" :name="'testko'" placeholder="aaaa"></StInput> -->
-        <input v-bind="field" :name="name" />
-      </StFormItem>
-    </Form>
     <hr />
     <h2>Switcher</h2>
     <StSwitcher :amount="1.23"></StSwitcher>
@@ -165,16 +154,12 @@
 // import StCopyToClipboard from '@/components/kit/StClipboard.vue'
 // import StTooltip from '@/components/kit/StTooltip.vue'
 // import StLoading from '@/components/kit/StLoading.vue'
-import StFormItem from '@/components/elements/StFormItem.vue';
 import StSwitcher from '@/components/elements/StSwitcher.vue';
-import { Form } from 'vee-validate';
 import { ref } from 'vue';
 
 export default {
   components: {
     StSwitcher,
-    StFormItem,
-    Form,
     //   StModal,
     //   StTable,
     //   StStatus,

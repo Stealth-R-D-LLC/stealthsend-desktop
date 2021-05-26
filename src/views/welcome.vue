@@ -58,6 +58,7 @@
         type="password"
         placeholder="Create your password"
       ></StInput>
+      <PaymentCode v-model="paymentCode"></PaymentCode>
       <StButton :disabled="!password" @click="createNewWallet"
         >Create wallet</StButton
       >
@@ -80,10 +81,14 @@ import * as bip32 from 'bip32';
 import { useMainStore } from '@/store';
 import router from '../router';
 import CryptoService from '../services/crypto';
+import PaymentCode from '@/components/elements/PaymentCode';
 import { add, format } from 'mathjs';
 
 export default {
   name: 'StWelcome',
+  components: {
+    PaymentCode,
+  },
   setup() {
     const mainStore = useMainStore();
 
@@ -93,6 +98,7 @@ export default {
     );
     const recovered = ref({});
     const password = ref('');
+    const paymentCode = ref('');
 
     async function recover() {
       // recover an existing wallet via mnemonic
@@ -192,6 +198,7 @@ export default {
       mnemonic,
       recover,
       recovered,
+      paymentCode,
 
       importWalletFromWif,
       importWallet,
