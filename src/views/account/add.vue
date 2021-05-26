@@ -60,22 +60,32 @@ export default {
 
     const accountName = ref('');
 
-    async function getNextAccountPath() {
-      let accounts = await CryptoService.getAccounts();
-      let largest = 0;
-      for (let acc of accounts) {
-        if (parseInt(acc.path) > largest) {
-          largest = parseInt(acc.path);
-        }
-      }
-      return largest + 1;
-    }
-
     async function generateAccount() {
       isAccountModalVisible.value = false;
       mainStore.START_GLOBAL_LOADING();
 
-      let next = await getNextAccountPath();
+      let next = await CryptoService.getNextAccountPath();
+
+      // get current last existing account
+      const { pk: lastAccountPk } = CryptoService.getChildFromRoot(
+        next - 1 >= 0 ? next - 1 : 0,
+        0,
+        0
+      );
+
+      // check if last existing account has transactions
+      const lastHdAccount = await mainStore.rpc('gethdaccount', [
+        lastAccountPk,
+      ]);
+      // if does have transactions, don't create new account
+      if (lastHdAccount.length === 0) {
+        console.error(
+          "CANNOT CREATE ACCOUNT - last account doesn't have transaction(s)"
+        );
+        mainStore.STOP_GLOBAL_LOADING();
+        return;
+      }
+
       const { address, path, pk, wif } = CryptoService.getChildFromRoot(
         next,
         0,
@@ -92,7 +102,7 @@ export default {
         path: path,
       };
 
-      CryptoService.storeAccountInDb(account);
+      await CryptoService.storeAccountInDb(account);
       mainStore.STOP_GLOBAL_LOADING();
     }
 
