@@ -711,8 +711,8 @@
                   </svg>
                 </StInput>
               </StFormItem>
-              <StFormItem>
-                <StInput label="Confirm password" v-model="confirmPassword">
+              <StFormItem label="Confirm password">
+                <StInput v-model="confirmPassword">
                   <svg
                     width="22"
                     height="12"
@@ -790,6 +790,7 @@ import * as bip32 from 'bip32';
 import { useMainStore } from '@/store';
 import router from '../router';
 import CryptoService from '../services/crypto';
+/* import PaymentCode from '@/components/elements/PaymentCode'; */
 import { add, format } from 'mathjs';
 import StFormItem from '@/components/elements/StFormItem.vue';
 
@@ -797,6 +798,7 @@ export default {
   name: 'StWelcome',
   components: {
     StFormItem,
+    /* PaymentCode, */
   },
   setup() {
     const mainStore = useMainStore();
@@ -838,6 +840,7 @@ export default {
         currentStep.value += 1;
       }
     }
+    const paymentCode = ref('');
 
     async function recover() {
       // recover an existing wallet via mnemonic
@@ -942,6 +945,7 @@ export default {
       mnemonic,
       recover,
       recovered,
+      paymentCode,
 
       importWalletFromWif,
       importWallet,

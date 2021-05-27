@@ -1,44 +1,39 @@
 <template>
-  <Field :name="name" :rules="rules" v-slot="{ field, errorMessage, errors }">
-    <div
-      class="st-form-item"
-      :class="{
-        'st-form-item--has-error': !!errorMessage,
-        'st-form-item--is-success': notice,
-      }"
-    >
-      <label for="">lablecina</label>
-      <slot v-bind="{ field, name }"></slot>
-      <p class="st-form-item__message" v-show="errorMessage || notice">
-        {{ errors }}
-        {{ errorMessage || notice }}
-      </p>
-    </div>
-  </Field>
+  <div
+    class="st-form-item"
+    :class="{
+      'st-form-item--has-error': !!errorMessage,
+      'st-form-item--is-dark': color === 'dark',
+      'st-form-item--is-success': notice,
+    }"
+  >
+    <label for="">{{ label }}</label>
+    <slot v-bind="{ field, name }"></slot>
+    <p class="st-form-item__message" v-show="errorMessage || notice">
+      {{ errorMessage[0] || notice }}
+    </p>
+  </div>
 </template>
 
 <script>
-import { Field, defineRule } from 'vee-validate';
-defineRule('required', (value) => {
-  if (!value || !value.length) {
-    return 'This field is required';
-  }
-
-  return true;
-});
-defineRule('minosam', (value) => {
-  if (!value || value.length < 8) {
-    return 'osam brate';
-  }
-
-  return true;
-});
 export default {
   name: 'StFormItem',
-  components: {
-    Field,
-  },
   props: {
+    color: {
+      type: String,
+      required: false,
+      default: () => {
+        return 'default'
+      },
+      validator: (value) => {
+        return ['default', 'dark'].includes(value)
+      }
+    },
+    label: {
+      type: String,
+      required: false,
+      default: 'Missing label',
+    },
     name: {
       type: String,
       required: true,
@@ -49,17 +44,13 @@ export default {
       required: false,
       default: '',
     },
-    rules: {
+    errorMessage: {
       type: String,
       required: false,
       default: '',
     },
   },
   setup() {
-    // const {errorMessage, value } = useField(props.name, props.rules);
-
-    // console.log('valuze', value);
-
     return {
       // errorMessage
     };
@@ -69,6 +60,29 @@ export default {
 
 <style scoped>
 .st-form-item {
-  border: 1px dashed red;
+  position: relative;
+}
+.st-form-item label {
+  position: absolute;
+  top: -20px;
+  left: 0;
+  pointer-events: none;
+  font-size: 12px;
+  color: var(--marine500);
+  font-weight: 600;
+  letter-spacing: 0.16px;
+  line-height: 20px;
+}
+.st-form-item--is-dark > :deep .st-icon path {
+    stroke: var(--grey100);
+}
+.st-form-item--is-dark label {
+    color: var(--grey50) !important;
+}
+.st-form-item--is-dark > :deep input::placeholder {
+    color: var(--grey100);
+}
+.st-form-item--is-dark :deep input {
+color: var(--grey100);
 }
 </style>
