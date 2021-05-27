@@ -158,12 +158,11 @@
 export default {
   name: 'StSettingsNav',
   setup() {
-
     function goTo(path) {
       console.log('path: ', path);
     }
     return {
-      goTo
+      goTo,
     };
   },
 };
@@ -187,7 +186,7 @@ export default {
   border-bottom: 1px solid var(--grey100);
 }
 .st-settings-nav__body {
-    overflow: auto;
+  overflow: auto;
   height: calc(100vh - 210px);
   width: 100%;
   padding-right: 10px;
