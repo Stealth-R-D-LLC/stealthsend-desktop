@@ -263,7 +263,7 @@
               </svg>
             </div>
             <div v-if="currentStep === 1">
-              <h4>Recovery Phrase</h4>
+              <h5>Recovery Phrase</h5>
               <p class="desc">
                 The Recovery Phrase is a set of 12-24 randomly selected words
                 that will enable you to regain access to your wallet should you
@@ -362,7 +362,7 @@
               </svg>
             </div>
             <div v-if="currentStep === 2">
-              <h4>Save the Phrase!</h4>
+              <h5>Save the Phrase!</h5>
               <p class="desc">
                 Please keep a secure and confidential copy of your Recovery
                 Phrase offline to protect your funds from hackers and thieves.
@@ -470,7 +470,7 @@
               </svg>
             </div>
             <div v-if="currentStep === 3">
-              <h4>About Your Password</h4>
+              <h5>About Your Password</h5>
               <p class="desc">
                 I understand that if I lose my Password I will no longer be able
                 to access the StealthSend app and will need to use my Recovery
@@ -546,7 +546,7 @@
               </svg>
             </div>
             <div v-if="currentStep === 4">
-              <h4>About Your Payment Code</h4>
+              <h5>About Your Payment Code</h5>
               <p class="desc">
                 I understand that if I lose my Payment Code I will no longer be
                 able to access the StealthSend app and will need to use my
@@ -622,8 +622,8 @@
               </svg>
             </div>
             <div v-if="currentStep === 5">
-              <h4>Terms of Use</h4>
-              <h5>This Terms of Use (“ToU” and/or “Terms”)</h5>
+              <h5>Terms of Use</h5>
+              <h6>This Terms of Use (“ToU” and/or “Terms”)</h6>
               <div class="terms-of-service">
                 <p class="tos-desc">
                   1. A. These Terms shall be considered to be a framework
@@ -685,54 +685,202 @@
                 </div>
               </div>
             </div>
-            <div v-if="currentStep === 6">
-              <h4>Set Your Password</h4>
-              <p class="desc">
-                Your Password will be used to unlock your StealthSend app.
-              </p>
-              <StFormItem label="Password">
-                <StInput v-model="password">
-                  <svg
-                    width="22"
-                    height="12"
-                    viewBox="0 0 22 12"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+            <div class="step" v-if="currentStep === 6">
+              <div>
+                <h5>Set Your Password</h5>
+                <p class="desc">
+                  Your Password will be used to unlock your StealthSend app.
+                </p>
+                <StFormItem
+                  label="Password"
+                  :error-message="form.password.$errors"
+                >
+                  <StInput
+                    :type="[showPassword ? 'text' : 'password']"
+                    v-model="form.password.$value"
                   >
-                    <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
-                      stroke="#4E00F6"
-                      stroke-width="2"
-                    />
-                    <path d="M9 6L13 6" stroke="#4E00F6" stroke-width="2" />
-                    <path d="M11 4V8" stroke="#4E00F6" stroke-width="2" />
-                  </svg>
-                </StInput>
-              </StFormItem>
-              <StFormItem label="Confirm password">
-                <StInput v-model="confirmPassword">
-                  <svg
-                    width="22"
-                    height="12"
-                    viewBox="0 0 22 12"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+                    <svg
+                      @click="showPassword = !showPassword"
+                      width="22"
+                      height="12"
+                      viewBox="0 0 22 12"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
+                        :stroke="[showPassword ? '#C3A9FB' : '#4E00F6']"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M9 6L13 6"
+                        :stroke="[showPassword ? '#C3A9FB' : '#4E00F6']"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M11 4V8"
+                        :stroke="[showPassword ? '#C3A9FB' : '#4E00F6']"
+                        stroke-width="2"
+                      />
+                    </svg>
+                  </StInput>
+                </StFormItem>
+                <StFormItem
+                  label="Confirm password"
+                  :error-message="form.confirmPassword.$errors"
+                >
+                  <StInput
+                    :type="[showConfirmPassword ? 'text' : 'password']"
+                    v-model="form.confirmPassword.$value"
                   >
-                    <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
-                      stroke="#4E00F6"
-                      stroke-width="2"
-                    />
-                    <path d="M9 6L13 6" stroke="#4E00F6" stroke-width="2" />
-                    <path d="M11 4V8" stroke="#4E00F6" stroke-width="2" />
-                  </svg>
-                </StInput>
-              </StFormItem>
+                    <svg
+                      @click="showConfirmPassword = !showConfirmPassword"
+                      width="22"
+                      height="12"
+                      viewBox="0 0 22 12"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
+                        :stroke="[showConfirmPassword ? '#C3A9FB' : '#4E00F6']"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M9 6L13 6"
+                        :stroke="[showConfirmPassword ? '#C3A9FB' : '#4E00F6']"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M11 4V8"
+                        :stroke="[showConfirmPassword ? '#C3A9FB' : '#4E00F6']"
+                        stroke-width="2"
+                      />
+                    </svg>
+                  </StInput>
+                </StFormItem>
+              </div>
+              <StButton @click="handleSubmit">Proceed</StButton>
             </div>
+            <div class="step" v-if="currentStep === 7">
+              <div>
+                <h5>Set Your Payment Code</h5>
+                <p class="desc">
+                  Your Payment code will be used to send funds.
+                </p>
+                <StFormItem
+                  label="Payment Code"
+                  :error-message="form.paymentCode.$errors"
+                >
+                  <PaymentCode
+                    key="paymentCode"
+                    position="left"
+                    v-model="form.paymentCode.$value"
+                  />
+                </StFormItem>
+                <!-- <StFormItem label="Confirm Payment Code" :error-message="form.confirmPaymentCode.$errors">
+                <PaymentCode key="confirmPaymentCode" position="left" v-model="form.confirmPaymentCode.$value" />
+              </StFormItem> -->
+              </div>
+              <StButton @click="handleSubmit">Proceed</StButton>
+            </div>
+            <div class="step" v-if="currentStep === 8">
+              <div>
+                <h5>Create a New Account</h5>
+                <div class="notice">
+                  <h6 class="bold">Notice</h6>
+                  <p>
+                    Once you have selected your new account name, you will need
+                    to create a Recovery Phrase to backup the account and
+                    complete the setup.
+                  </p>
+                </div>
+              </div>
+              <StButton @click="handleSubmit">Proceed</StButton>
+            </div>
+            <div class="step" v-if="currentStep === 9">
+              <div>
+                <h5>New Account</h5>
+                <p class="desc">Enter Account Name</p>
+                <StFormItem
+                  label="Account name"
+                  :error-message="form.account.$errors"
+                >
+                  <StInput
+                    v-model="form.account.$value"
+                    placeholder="Enter Account Name"
+                  />
+                </StFormItem>
+              </div>
+              <StButton @click="handleSubmit">Proceed</StButton>
+            </div>
+            <div class="step" v-if="currentStep === 10">
+              <div class="recovery">
+                <h5>Recovery Phrase</h5>
+                <p>Security is as important to us as it is to you!</p>
+                <p>
+                  To protect your account balances in the event you lose access
+                  to your StealthSend application, you will need to create a
+                  backup now.
+                </p>
+                <p>
+                  To do this, you will have to create a unique Recovery Phrase
+                  that will backup all of the accounts that you create using
+                  this application.
+                </p>
+                <p>
+                  Note that you can create an unlimited number of accounts, they
+                  are all derived from the same Recovery Phrase.
+                </p>
+                <p>
+                  Please store your Recovery Phrase offline in a secure place as
+                  it is the only backup of your private keys and the only way
+                  for you to recover your funds.
+                </p>
+              </div>
+              <StButton @click="handleSubmit">Proceed</StButton>
+            </div>
+            <div class="step" v-if="currentStep === 11">
+              <div class="recovery">
+                <h5>Recovery Phrase</h5>
+                <p>Let's get started creating your unique Recovery Phrase.</p>
+                <p>
+                  A list of randomly created words will be displayed, and the
+                  combination will be unique to your wallet.
+                </p>
+                <p>
+                  Ensure that you record them carefully for secure online and
+                  offline storage.
+                </p>
+                <p>Please select your choice of the following options:</p>
+                <div>
+                  <StRadio
+                    v-model="recoveryPhrase"
+                    name="recoveryPhrase"
+                    value="12"
+                    >12 Word Recovery Phrase</StRadio
+                  >
+                  <StRadio
+                    v-model="recoveryPhrase"
+                    name="recoveryPhrase"
+                    value="18"
+                    >18 Word Recovery Phrase</StRadio
+                  >
+                  <StRadio
+                    v-model="recoveryPhrase"
+                    name="recoveryPhrase"
+                    value="24"
+                    >24 Word Recovery Phrase</StRadio
+                  >
+                  {{ recoveryPhrase }}
+                </div>
+              </div>
+            </div>
+            <StButton @click="handleSubmit">Proceed</StButton>
           </transition-group>
         </div>
         <div v-if="currentStep < 5" class="right__inner-bottom">
@@ -790,15 +938,16 @@ import * as bip32 from 'bip32';
 import { useMainStore } from '@/store';
 import router from '../router';
 import CryptoService from '../services/crypto';
-/* import PaymentCode from '@/components/elements/PaymentCode'; */
 import { add, format } from 'mathjs';
 import StFormItem from '@/components/elements/StFormItem.vue';
+import { useValidation, ValidationError } from 'vue3-form-validation';
+import PaymentCode from '@/components/elements/PaymentCode.vue';
 
 export default {
   name: 'StWelcome',
   components: {
     StFormItem,
-    /* PaymentCode, */
+    PaymentCode,
   },
   setup() {
     const mainStore = useMainStore();
@@ -810,11 +959,102 @@ export default {
     const recovered = ref({});
     const password = ref('');
     const confirmPassword = ref('');
+    const paymentCode = ref('');
+    /* const confirmPaymentCode = ref(''); */
+    const account = ref('');
+    const recoveryPhrase = ref('12');
+
+    const showPassword = ref(false);
+    const showConfirmPassword = ref(false);
+
+    const { form, errors, submitting, validateFields, resetFields } =
+      useValidation({
+        password: {
+          $value: password,
+          $rules: [
+            {
+              rule: () => password.value.length > 0 || 'Password is required',
+            },
+            {
+              key: 'pw',
+              rule: () =>
+                password.value === confirmPassword.value ||
+                'Passwords do not match',
+            },
+          ],
+        },
+        confirmPassword: {
+          $value: confirmPassword,
+          $rules: [
+            {
+              rule: () =>
+                confirmPassword.value.length > 0 ||
+                'Confirm password is required',
+            },
+            {
+              key: 'pw',
+              rule: () =>
+                password.value === confirmPassword.value ||
+                'Passwords do not match',
+            },
+          ],
+        },
+        paymentCode: {
+          $value: paymentCode,
+          $rules: [
+            {
+              rule: () => {
+                if (currentStep.value === 7) {
+                  return (
+                    paymentCode.value.length >= 5 || 'Payment code is required'
+                  );
+                }
+              },
+            },
+            /* {
+            key: "pc",
+            rule: () =>
+              paymentCode.value === confirmPaymentCode.value ||
+              "Payment codes do not match"
+          } */
+          ],
+        },
+        /* confirmPaymentCode: {
+        $value: confirmPaymentCode,
+        $rules: [
+          {
+            rule: () => {
+              if(currentStep.value === 7) {
+                return confirmPaymentCode.value.length >= 5 || 'Confirm payment code is required'
+              }
+            }
+          },
+          {
+            key: "pc",
+            rule: () =>
+              paymentCode.value === confirmPaymentCode.value ||
+              "Payment codes do not match"
+          }
+        ]
+      } */
+        account: {
+          $value: account,
+          $rules: [
+            {
+              rule: () => {
+                if (currentStep.value === 9) {
+                  return !account.value && 'Account name is required';
+                }
+              },
+            },
+          ],
+        },
+      });
 
     const isWelcome = ref(false);
-    const isAccount = ref(false);
-    const currentStep = ref(6);
-    const paginationLength = ref(10);
+    const isAccount = ref(true);
+    const currentStep = ref(11);
+    const paginationLength = ref(21);
     const termsOfService = ref(false);
 
     onMounted(() => {
@@ -840,7 +1080,6 @@ export default {
         currentStep.value += 1;
       }
     }
-    const paymentCode = ref('');
 
     async function recover() {
       // recover an existing wallet via mnemonic
@@ -930,6 +1169,17 @@ export default {
       mainStore.STOP_GLOBAL_LOADING();
     }
 
+    async function handleSubmit() {
+      try {
+        await validateFields();
+        nextStep();
+      } catch (e) {
+        if (e instanceof ValidationError) {
+          console.log(e.message);
+        }
+      }
+    }
+
     function goToDashboard() {
       router.push('/dashboard');
     }
@@ -940,12 +1190,22 @@ export default {
       paginationLength,
       termsOfService,
       goToDashboard,
+      form,
+      errors,
+      submitting,
+      resetFields,
+      handleSubmit,
+      showPassword,
+      showConfirmPassword,
 
       recoverWallet,
       mnemonic,
       recover,
       recovered,
       paymentCode,
+      /* confirmPaymentCode, */
+      account,
+      recoveryPhrase,
 
       importWalletFromWif,
       importWallet,
@@ -958,7 +1218,6 @@ export default {
       toggleAccount,
       password,
       confirmPassword,
-      // account,
       createWallet,
       created,
       createNewWallet,
@@ -1093,12 +1352,13 @@ export default {
   justify-content: space-between;
 }
 .right__inner-top {
+  height: 100%;
   width: 430px;
   max-width: 100%;
   text-align: center;
 }
-.right__inner-top h4,
-.right__inner-top h5 {
+.right__inner-top h5,
+.right__inner-top h6 {
   margin-bottom: 36px;
 }
 .right__inner-top .desc {
@@ -1202,5 +1462,31 @@ export default {
   margin-top: 48px;
   display: flex;
   justify-content: center;
+}
+.step {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.step button {
+  width: 200px;
+  margin: 0 auto;
+}
+.notice {
+  padding: 24px;
+  background-color: var(--background50);
+}
+.notice h6 {
+  margin-bottom: 16px;
+}
+.notice p {
+  text-align: left;
+}
+.recovery p {
+  text-align: left;
+}
+.recovery p + p {
+  margin-top: 30px;
 }
 </style>
