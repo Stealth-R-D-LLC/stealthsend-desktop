@@ -23,11 +23,11 @@ export default {
       type: String,
       required: false,
       default: () => {
-        return 'default'
+        return 'default';
       },
       validator: (value) => {
-        return ['default', 'dark'].includes(value)
-      }
+        return ['default', 'dark'].includes(value);
+      },
     },
     label: {
       type: String,
@@ -74,15 +74,15 @@ export default {
   line-height: 20px;
 }
 .st-form-item--is-dark > :deep .st-icon path {
-    stroke: var(--grey100);
+  stroke: var(--grey100);
 }
 .st-form-item--is-dark label {
-    color: var(--grey50) !important;
+  color: var(--grey50) !important;
 }
 .st-form-item--is-dark > :deep input::placeholder {
-    color: var(--grey100);
+  color: var(--grey100);
 }
 .st-form-item--is-dark :deep input {
-color: var(--grey100);
+  color: var(--grey100);
 }
 </style>
