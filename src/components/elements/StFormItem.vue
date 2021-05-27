@@ -2,7 +2,7 @@
   <div
     class="st-form-item"
     :class="{
-      'st-form-item--has-error': !!errorMessage,
+      'st-form-item--has-error': errorMessage.length,
       'st-form-item--is-dark': color === 'dark',
       'st-form-item--is-success': notice,
     }"
@@ -61,6 +61,7 @@ export default {
 <style scoped>
 .st-form-item {
   position: relative;
+  margin: 54px 0;
 }
 .st-form-item label {
   position: absolute;
@@ -73,16 +74,33 @@ export default {
   letter-spacing: 0.16px;
   line-height: 20px;
 }
-.st-form-item--is-dark > :deep .st-icon path {
+.st-form-item__message {
+  position: absolute;
+  top: calc(100% + 10px);
+  color: var(--danger);
+  font-size: 12px;
+  line-height: 24px;
+  letter-spacing: 0.12px;
+}
+.st-form-item--is-dark :deep .st-icon path {
   stroke: var(--grey100);
 }
 .st-form-item--is-dark label {
   color: var(--grey50) !important;
 }
-.st-form-item--is-dark > :deep input::placeholder {
+.st-form-item--is-dark :deep input::placeholder {
   color: var(--grey100);
 }
 .st-form-item--is-dark :deep input {
   color: var(--grey100);
+}
+.st-form-item--has-error label {
+  color: var(--danger);
+}
+.st-form-item--has-error :deep .st-input::after {
+  background-color: var(--danger);
+}
+.st-form-item--has-error :deep .st-icon path {
+  stroke: var(--danger);
 }
 </style>
