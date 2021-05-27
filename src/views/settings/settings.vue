@@ -11,4 +11,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.settings-container {
+  padding: 42px 64px;
+}
+</style>
