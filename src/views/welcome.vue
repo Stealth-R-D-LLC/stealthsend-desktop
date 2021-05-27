@@ -28,7 +28,7 @@
             <div class="box__inner" :class="{ 'box__inner--right': isAccount }">
               <transition-group name="fade">
                 <h2 class="title" v-if="isAccount">
-                  The Fastest Private<br>Digital Currency
+                  The Fastest Private<br />Digital Currency
                 </h2>
                 <div v-else>
                   <h3 class="title">Welcome to StealthSend</h3>
@@ -101,211 +101,681 @@
         <div class="right__inner-top">
           <transition-group name="fade">
             <div v-if="currentStep === 0">
-            <h4>About Your Funds</h4>
-            <p class="desc">This wallet acts as a vault that contains your XST. It’s only accessible with your Recovery Phrase.</p>
-            <svg width="104" height="80" viewBox="0 0 104 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M40 13H64.0262V33.3125L83 56.3333V78H40L40 13Z" fill="url(#paint0_linear)"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M37.2342 13H61.8525V33.3125L81 56.3333V78H8L37.2342 13Z" fill="url(#paint1_linear)"/>
-<path d="M83 56.3333V78H2L2 13H63.4032" stroke="#4E00F6" stroke-width="3" stroke-linecap="square"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M102 13.8537V33.6098L82.5 56L63 33.6098L63 13.8537L82.4987 2L102 13.8537Z" stroke="#4E00F6" stroke-width="3"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M11 33H15V24H11V33Z" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M39 33H43V24H39V33Z" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M11 68H15V59H11V68Z" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M39 68H43V59H39V68Z" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M46 52H50V43H46V52Z" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M22 52H26V43H22V52Z" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M79 22H88V15H79V22Z" stroke="#4E00F6" stroke-width="2"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M77 34H91V24H77V34Z" stroke="#4E00F6" stroke-width="2"/>
-<path d="M10.5 43V52" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path d="M54.5 24V33" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path d="M54.5 59V68" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path d="M37.5 43V52" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path d="M28.5 24V33" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path d="M28.5 59V68" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<defs>
-<linearGradient id="paint0_linear" x1="40" y1="13" x2="40" y2="78" gradientUnits="userSpaceOnUse">
-<stop stop-color="#E0D3FC" stop-opacity="0.25"/>
-<stop offset="1" stop-color="#C3A9FB" stop-opacity="0.5"/>
-</linearGradient>
-<linearGradient id="paint1_linear" x1="8" y1="13" x2="8" y2="78" gradientUnits="userSpaceOnUse">
-<stop stop-color="#E0D3FC" stop-opacity="0.15"/>
-<stop offset="1" stop-color="#C3A9FB" stop-opacity="0.25"/>
-</linearGradient>
-</defs>
-</svg>
-
-          </div>
-          <div v-if="currentStep === 1">
-            <h4>Recovery Phrase</h4>
-            <p class="desc">The Recovery Phrase is a set of 12-24 randomly selected words that will enable you to regain access to your wallet should you lose or damage your device.</p>
-            <svg width="58" height="86" viewBox="0 0 58 86" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="29" y="10" width="27" height="74" fill="url(#paint0_linear)"/>
-<rect x="2" y="10" width="54" height="74" stroke="#4E00F6" stroke-width="3"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M49.2302 10H56V84H13L49.2302 10Z" fill="url(#paint1_linear)"/>
-<rect x="19" y="2" width="21" height="14" stroke="#4E00F6" stroke-width="3"/>
-<path d="M16.587 48.5H42.413" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path d="M16.587 40.5H42.413" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path d="M16.587 31.5H42.413" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path d="M16.587 65.5H42.413" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path d="M16.587 56.5H42.413" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<defs>
-<linearGradient id="paint0_linear" x1="29" y1="10" x2="29" y2="84" gradientUnits="userSpaceOnUse">
-<stop stop-color="#E0D3FC" stop-opacity="0.25"/>
-<stop offset="1" stop-color="#C3A9FB" stop-opacity="0.5"/>
-</linearGradient>
-<linearGradient id="paint1_linear" x1="13" y1="10" x2="13" y2="84" gradientUnits="userSpaceOnUse">
-<stop stop-color="#E0D3FC" stop-opacity="0.15"/>
-<stop offset="1" stop-color="#C3A9FB" stop-opacity="0.25"/>
-</linearGradient>
-</defs>
-</svg>
-
-          </div>
-          <div v-if="currentStep === 2">
-            <h4>Save the Phrase!</h4>
-            <p class="desc">Please keep a secure and confidential copy of your Recovery Phrase offline to protect your funds from hackers and thieves.</p>
-            <svg width="76" height="78" viewBox="0 0 76 78" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="30.5" y="2" width="27" height="74" fill="url(#paint0_linear)"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M50.4153 2H57.5V76H12.5L50.4153 2Z" fill="url(#paint1_linear)"/>
-<path d="M57.4988 2H1.5L1.5 76H57.5V50.9355L39.2391 30.6452V12.7419L57.5 2" stroke="#4E00F6" stroke-width="3"/>
-<path d="M13.0217 40.5H35.9783" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path d="M12.8261 31.5H27.1739" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path d="M12.8261 24.5H27.1739" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path d="M13.0217 56.5H35.9783" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path d="M13.0217 49.5H35.9783" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M74.5 12.7561V30.6829L56.5 51L38.5 30.6829L38.5 12.7561L56.4988 2L74.5 12.7561Z" stroke="#4E00F6" stroke-width="3"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M51.5 22H61.5V14H51.5V22Z" stroke="#4E00F6" stroke-width="2"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M49.5 31H63.5V20H49.5V31Z" stroke="#4E00F6" stroke-width="2"/>
-<defs>
-<linearGradient id="paint0_linear" x1="30.5" y1="2" x2="30.5" y2="76" gradientUnits="userSpaceOnUse">
-<stop stop-color="#E0D3FC" stop-opacity="0.25"/>
-<stop offset="1" stop-color="#C3A9FB" stop-opacity="0.5"/>
-</linearGradient>
-<linearGradient id="paint1_linear" x1="12.5" y1="2" x2="12.5" y2="76" gradientUnits="userSpaceOnUse">
-<stop stop-color="#E0D3FC" stop-opacity="0.15"/>
-<stop offset="1" stop-color="#C3A9FB" stop-opacity="0.25"/>
-</linearGradient>
-</defs>
-</svg>
-
-          </div>
-          <div v-if="currentStep === 3">
-            <h4>About Your Password</h4>
-            <p class="desc">I understand that if I lose my Password I will no longer be able to access the StealthSend app and will need to use my Recovery Phrase.</p>
-            <svg width="116" height="116" viewBox="0 0 116 116" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M59.2032 16.6129L93.2249 36.1046L93.2249 76.5985L57.9451 116L22.8844 76.5985L22.8844 36.1046L59.2032 16.6129Z" fill="#E0D3FC" fill-opacity="0.1"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M59.2032 16.613L93.225 36.1046L93.225 76.5986L57.9451 116L59.2032 16.613Z" fill="url(#paint0_linear)"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M93.2254 36.1046V76.5986L57.9455 116L40.3326 96.0648L75.2969 25.7533L93.2254 36.1046Z" fill="url(#paint1_linear)"/>
-<path d="M24.3844 37.0019L59.1794 18.3281L91.7249 36.9739L91.7249 76.0251L57.9486 113.747L24.3844 76.0278L24.3844 37.0019Z" stroke="#4E00F6" stroke-width="3"/>
-<path d="M75.2442 60.4973H74.2442V61.4973H75.2442V60.4973ZM75.2442 55.1033H76.2442V53.164L74.6644 54.2886L75.2442 55.1033ZM76.2442 60.4973V61.4973H77.2442V60.4973H76.2442ZM76.2442 55.1033L76.8241 54.2886L75.2442 53.1641V55.1033H76.2442ZM81.0952 58.556L80.5153 59.3707L81.3301 59.9506L81.9099 59.1359L81.0952 58.556ZM81.6751 57.7413L82.4898 58.3212L83.0697 57.5065L82.255 56.9266L81.6751 57.7413ZM76.6065 54.1337L76.0266 53.319L74.882 54.1337L76.0266 54.9484L76.6065 54.1337ZM81.1623 50.891L81.7422 51.7057L82.5569 51.1258L81.977 50.3111L81.1623 50.891ZM80.5824 50.0763L81.3971 49.4964L80.8172 48.6817L80.0025 49.2616L80.5824 50.0763ZM76.2442 53.164H75.2442V55.1033L76.8241 53.9788L76.2442 53.164ZM76.2442 47.77H77.2442V46.77H76.2442V47.77ZM75.2442 47.77V46.77H74.2442V47.77H75.2442ZM75.2442 53.1641L74.6644 53.9788L76.2442 55.1033V53.1641H75.2442ZM70.3933 49.7113L70.9731 48.8966L70.1584 48.3167L69.5786 49.1314L70.3933 49.7113ZM69.8134 50.526L68.9987 49.9461L68.4188 50.7608L69.2335 51.3407L69.8134 50.526ZM74.882 54.1337L75.4619 54.9484L76.6065 54.1337L75.4619 53.319L74.882 54.1337ZM70.3262 57.3763L69.7463 56.5616L68.9316 57.1415L69.5115 57.9562L70.3262 57.3763ZM70.9061 58.191L70.0914 58.7709L70.6712 59.5856L71.4859 59.0057L70.9061 58.191ZM76.2442 60.4973V55.1033H74.2442V60.4973H76.2442ZM76.2442 59.4973H75.2442V61.4973H76.2442V59.4973ZM75.2442 55.1033V60.4973H77.2442V55.1033H75.2442ZM75.6644 55.918L80.5153 59.3707L81.6751 57.7413L76.8241 54.2886L75.6644 55.918ZM81.9099 59.1359L82.4898 58.3212L80.8604 57.1615L80.2805 57.9762L81.9099 59.1359ZM82.255 56.9266L77.1864 53.319L76.0266 54.9484L81.0952 58.556L82.255 56.9266ZM77.1864 54.9484L81.7422 51.7057L80.5824 50.0763L76.0266 53.319L77.1864 54.9484ZM81.977 50.3111L81.3971 49.4964L79.7677 50.6562L80.3476 51.4709L81.977 50.3111ZM80.0025 49.2616L75.6644 52.3493L76.8241 53.9788L81.1623 50.891L80.0025 49.2616ZM75.2442 47.77V53.164H77.2442V47.77H75.2442ZM75.2442 48.77H76.2442V46.77H75.2442V48.77ZM76.2442 53.1641V47.77H74.2442V53.1641H76.2442ZM75.8241 52.3493L70.9731 48.8966L69.8134 50.526L74.6644 53.9788L75.8241 52.3493ZM69.5786 49.1314L68.9987 49.9461L70.6281 51.1059L71.208 50.2911L69.5786 49.1314ZM69.2335 51.3407L74.3021 54.9484L75.4619 53.319L70.3933 49.7113L69.2335 51.3407ZM74.3021 53.319L69.7463 56.5616L70.9061 58.191L75.4619 54.9484L74.3021 53.319ZM69.5115 57.9562L70.0914 58.7709L71.7208 57.6112L71.1409 56.7965L69.5115 57.9562ZM71.4859 59.0057L75.8241 55.918L74.6644 54.2886L70.3262 57.3763L71.4859 59.0057Z" fill="#4E00F6"/>
-<path d="M57.2442 60.4973H56.2442V61.4973H57.2442V60.4973ZM57.2442 55.1033H58.2442V53.164L56.6644 54.2886L57.2442 55.1033ZM58.2442 60.4973V61.4973H59.2442V60.4973H58.2442ZM58.2442 55.1033L58.8241 54.2886L57.2442 53.1641V55.1033H58.2442ZM63.0952 58.556L62.5153 59.3707L63.3301 59.9506L63.9099 59.1359L63.0952 58.556ZM63.6751 57.7413L64.4898 58.3212L65.0697 57.5065L64.255 56.9266L63.6751 57.7413ZM58.6065 54.1337L58.0266 53.319L56.882 54.1337L58.0266 54.9484L58.6065 54.1337ZM63.1623 50.891L63.7422 51.7057L64.5569 51.1258L63.977 50.3111L63.1623 50.891ZM62.5824 50.0763L63.3971 49.4964L62.8172 48.6817L62.0025 49.2616L62.5824 50.0763ZM58.2442 53.164H57.2442V55.1033L58.8241 53.9788L58.2442 53.164ZM58.2442 47.77H59.2442V46.77H58.2442V47.77ZM57.2442 47.77V46.77H56.2442V47.77H57.2442ZM57.2442 53.1641L56.6644 53.9788L58.2442 55.1033V53.1641H57.2442ZM52.3933 49.7113L52.9731 48.8966L52.1584 48.3167L51.5786 49.1314L52.3933 49.7113ZM51.8134 50.526L50.9987 49.9461L50.4188 50.7608L51.2335 51.3407L51.8134 50.526ZM56.882 54.1337L57.4619 54.9484L58.6065 54.1337L57.4619 53.319L56.882 54.1337ZM52.3262 57.3763L51.7463 56.5616L50.9316 57.1415L51.5115 57.9562L52.3262 57.3763ZM52.9061 58.191L52.0914 58.7709L52.6712 59.5856L53.4859 59.0057L52.9061 58.191ZM58.2442 60.4973V55.1033H56.2442V60.4973H58.2442ZM58.2442 59.4973H57.2442V61.4973H58.2442V59.4973ZM57.2442 55.1033V60.4973H59.2442V55.1033H57.2442ZM57.6644 55.918L62.5153 59.3707L63.6751 57.7413L58.8241 54.2886L57.6644 55.918ZM63.9099 59.1359L64.4898 58.3212L62.8604 57.1615L62.2805 57.9762L63.9099 59.1359ZM64.255 56.9266L59.1864 53.319L58.0266 54.9484L63.0952 58.556L64.255 56.9266ZM59.1864 54.9484L63.7422 51.7057L62.5824 50.0763L58.0266 53.319L59.1864 54.9484ZM63.977 50.3111L63.3971 49.4964L61.7677 50.6562L62.3476 51.4709L63.977 50.3111ZM62.0025 49.2616L57.6644 52.3493L58.8241 53.9788L63.1623 50.891L62.0025 49.2616ZM57.2442 47.77V53.164H59.2442V47.77H57.2442ZM57.2442 48.77H58.2442V46.77H57.2442V48.77ZM58.2442 53.1641V47.77H56.2442V53.1641H58.2442ZM57.8241 52.3493L52.9731 48.8966L51.8134 50.526L56.6644 53.9788L57.8241 52.3493ZM51.5786 49.1314L50.9987 49.9461L52.6281 51.1059L53.208 50.2911L51.5786 49.1314ZM51.2335 51.3407L56.3021 54.9484L57.4619 53.319L52.3933 49.7113L51.2335 51.3407ZM56.3021 53.319L51.7463 56.5616L52.9061 58.191L57.4619 54.9484L56.3021 53.319ZM51.5115 57.9562L52.0914 58.7709L53.7208 57.6112L53.1409 56.7965L51.5115 57.9562ZM53.4859 59.0057L57.8241 55.918L56.6644 54.2886L52.3262 57.3763L53.4859 59.0057Z" fill="#4E00F6"/>
-<path d="M40.2442 60.4973H39.2442V61.4973H40.2442V60.4973ZM40.2442 55.1033H41.2442V53.164L39.6644 54.2886L40.2442 55.1033ZM41.2442 60.4973V61.4973H42.2442V60.4973H41.2442ZM41.2442 55.1033L41.8241 54.2886L40.2442 53.1641V55.1033H41.2442ZM46.0952 58.556L45.5153 59.3707L46.3301 59.9506L46.9099 59.1359L46.0952 58.556ZM46.6751 57.7413L47.4898 58.3212L48.0697 57.5065L47.255 56.9266L46.6751 57.7413ZM41.6065 54.1337L41.0266 53.319L39.882 54.1337L41.0266 54.9484L41.6065 54.1337ZM46.1623 50.891L46.7422 51.7057L47.5569 51.1258L46.977 50.3111L46.1623 50.891ZM45.5824 50.0763L46.3971 49.4964L45.8172 48.6817L45.0025 49.2616L45.5824 50.0763ZM41.2442 53.164H40.2442V55.1033L41.8241 53.9788L41.2442 53.164ZM41.2442 47.77H42.2442V46.77H41.2442V47.77ZM40.2442 47.77V46.77H39.2442V47.77H40.2442ZM40.2442 53.1641L39.6644 53.9788L41.2442 55.1033V53.1641H40.2442ZM35.3933 49.7113L35.9731 48.8966L35.1584 48.3167L34.5786 49.1314L35.3933 49.7113ZM34.8134 50.526L33.9987 49.9461L33.4188 50.7608L34.2335 51.3407L34.8134 50.526ZM39.882 54.1337L40.4619 54.9484L41.6065 54.1337L40.4619 53.319L39.882 54.1337ZM35.3262 57.3763L34.7463 56.5616L33.9316 57.1415L34.5115 57.9562L35.3262 57.3763ZM35.9061 58.191L35.0914 58.7709L35.6712 59.5856L36.4859 59.0057L35.9061 58.191ZM41.2442 60.4973V55.1033H39.2442V60.4973H41.2442ZM41.2442 59.4973H40.2442V61.4973H41.2442V59.4973ZM40.2442 55.1033V60.4973H42.2442V55.1033H40.2442ZM40.6644 55.918L45.5153 59.3707L46.6751 57.7413L41.8241 54.2886L40.6644 55.918ZM46.9099 59.1359L47.4898 58.3212L45.8604 57.1615L45.2805 57.9762L46.9099 59.1359ZM47.255 56.9266L42.1864 53.319L41.0266 54.9484L46.0952 58.556L47.255 56.9266ZM42.1864 54.9484L46.7422 51.7057L45.5824 50.0763L41.0266 53.319L42.1864 54.9484ZM46.977 50.3111L46.3971 49.4964L44.7677 50.6562L45.3476 51.4709L46.977 50.3111ZM45.0025 49.2616L40.6644 52.3493L41.8241 53.9788L46.1623 50.891L45.0025 49.2616ZM40.2442 47.77V53.164H42.2442V47.77H40.2442ZM40.2442 48.77H41.2442V46.77H40.2442V48.77ZM41.2442 53.1641V47.77H39.2442V53.1641H41.2442ZM40.8241 52.3493L35.9731 48.8966L34.8134 50.526L39.6644 53.9788L40.8241 52.3493ZM34.5786 49.1314L33.9987 49.9461L35.6281 51.1059L36.208 50.2911L34.5786 49.1314ZM34.2335 51.3407L39.3021 54.9484L40.4619 53.319L35.3933 49.7113L34.2335 51.3407ZM39.3021 53.319L34.7463 56.5616L35.9061 58.191L40.4619 54.9484L39.3021 53.319ZM34.5115 57.9562L35.0914 58.7709L36.7208 57.6112L36.1409 56.7965L34.5115 57.9562ZM36.4859 59.0057L40.8241 55.918L39.6644 54.2886L35.3262 57.3763L36.4859 59.0057Z" fill="#4E00F6"/>
-<defs>
-<linearGradient id="paint0_linear" x1="66.4683" y1="9.3479" x2="8.88062" y2="66.9355" gradientUnits="userSpaceOnUse">
-<stop stop-color="#E0D3FC" stop-opacity="0.25"/>
-<stop offset="1" stop-color="#C3A9FB" stop-opacity="0.5"/>
-</linearGradient>
-<linearGradient id="paint1_linear" x1="79.0854" y1="21.9647" x2="21.4978" y2="79.5524" gradientUnits="userSpaceOnUse">
-<stop stop-color="#E0D3FC" stop-opacity="0.15"/>
-<stop offset="1" stop-color="#C3A9FB" stop-opacity="0.25"/>
-</linearGradient>
-</defs>
-</svg>
-
-          </div>
-          <div v-if="currentStep === 4">
-            <h4>About Your Payment Code</h4>
-            <p class="desc">I understand that if I lose my Payment Code I will no longer be able to access the StealthSend app and will need to use my Recovery Phrase.</p>
-            <svg width="116" height="116" viewBox="0 0 116 116" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M59.2364 15.6786L93.2581 35.1703L93.2581 75.6642L57.9783 115.066L22.9176 75.6642L22.9176 35.1703L59.2364 15.6786Z" fill="#E0D3FC" fill-opacity="0.1"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M59.2359 15.6786L93.2577 35.1703L93.2577 75.6642L57.9778 115.066L59.2359 15.6786Z" fill="url(#paint0_linear)"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M93.2581 35.1703V75.6643L57.9782 115.066L40.3653 95.1305L75.3296 24.8189L93.2581 35.1703Z" fill="url(#paint1_linear)"/>
-<path d="M24.4176 36.0676L59.2126 17.3937L91.7581 36.0396L91.7581 75.0908L57.9818 112.813L24.4176 75.0935L24.4176 36.0676Z" stroke="#4E00F6" stroke-width="3"/>
-<path d="M74.777 59.563H73.777V60.563H74.777V59.563ZM74.777 55.1385H75.777V53.1993L74.1971 54.3238L74.777 55.1385ZM76.777 59.563V60.563H77.777V59.563H76.777ZM76.777 55.1385L77.3568 54.3238L75.777 53.1993V55.1385H76.777ZM80.838 58.0291L80.2581 58.8438L81.0728 59.4236L81.6527 58.6089L80.838 58.0291ZM81.9978 56.3997L82.8125 56.9795L83.3923 56.1648L82.5776 55.585L81.9978 56.3997ZM77.5015 53.1993L76.9216 52.3846L75.777 53.1993L76.9216 54.014L77.5015 53.1993ZM81.485 50.364L82.0648 51.1787L82.8795 50.5988L82.2997 49.7841L81.485 50.364ZM80.3252 48.7346L81.1399 48.1547L80.56 47.34L79.7453 47.9199L80.3252 48.7346ZM76.777 51.2601H75.777V53.1993L77.3568 52.0748L76.777 51.2601ZM76.777 46.8357H77.777V45.8357H76.777V46.8357ZM74.777 46.8357V45.8357H73.777V46.8357H74.777ZM74.777 51.2601L74.1971 52.0748L75.777 53.1993V51.2601H74.777ZM70.7159 48.3696L71.2958 47.5549L70.4811 46.975L69.9012 47.7897L70.7159 48.3696ZM69.5562 49.999L68.7415 49.4191L68.1616 50.2338L68.9763 50.8137L69.5562 49.999ZM74.0525 53.1993L74.6323 54.014L75.777 53.1993L74.6323 52.3846L74.0525 53.1993ZM70.069 56.0347L69.4891 55.22L68.6744 55.7998L69.2543 56.6145L70.069 56.0347ZM71.2287 57.6641L70.414 58.2439L70.9939 59.0586L71.8086 58.4788L71.2287 57.6641ZM75.777 59.563V55.1385H73.777V59.563H75.777ZM76.777 58.563H74.777V60.563H76.777V58.563ZM75.777 55.1385V59.563H77.777V55.1385H75.777ZM76.1971 55.9532L80.2581 58.8438L81.4179 57.2144L77.3568 54.3238L76.1971 55.9532ZM81.6527 58.6089L82.8125 56.9795L81.1831 55.8198L80.0233 57.4492L81.6527 58.6089ZM82.5776 55.585L78.0813 52.3846L76.9216 54.014L81.4179 57.2144L82.5776 55.585ZM78.0813 54.014L82.0648 51.1787L80.9051 49.5493L76.9216 52.3846L78.0813 54.014ZM82.2997 49.7841L81.1399 48.1547L79.5105 49.3145L80.6702 50.9439L82.2997 49.7841ZM79.7453 47.9199L76.1971 50.4454L77.3568 52.0748L80.9051 49.5493L79.7453 47.9199ZM75.777 46.8357V51.2601H77.777V46.8357H75.777ZM74.777 47.8357H76.777V45.8357H74.777V47.8357ZM75.777 51.2601V46.8357H73.777V51.2601H75.777ZM75.3568 50.4454L71.2958 47.5549L70.136 49.1843L74.1971 52.0748L75.3568 50.4454ZM69.9012 47.7897L68.7415 49.4191L70.3709 50.5789L71.5306 48.9495L69.9012 47.7897ZM68.9763 50.8137L73.4726 54.014L74.6323 52.3846L70.136 49.1843L68.9763 50.8137ZM73.4726 52.3846L69.4891 55.22L70.6488 56.8494L74.6323 54.014L73.4726 52.3846ZM69.2543 56.6145L70.414 58.2439L72.0434 57.0842L70.8837 55.4548L69.2543 56.6145ZM71.8086 58.4788L75.3568 55.9532L74.1971 54.3238L70.6488 56.8494L71.8086 58.4788Z" fill="#4E00F6"/>
-<path d="M56.777 59.563H55.777V60.563H56.777V59.563ZM56.777 55.1385H57.777V53.1993L56.1971 54.3238L56.777 55.1385ZM58.777 59.563V60.563H59.777V59.563H58.777ZM58.777 55.1385L59.3568 54.3238L57.777 53.1993V55.1385H58.777ZM62.838 58.0291L62.2581 58.8438L63.0728 59.4236L63.6527 58.6089L62.838 58.0291ZM63.9978 56.3997L64.8125 56.9795L65.3923 56.1648L64.5776 55.585L63.9978 56.3997ZM59.5015 53.1993L58.9216 52.3846L57.777 53.1993L58.9216 54.014L59.5015 53.1993ZM63.485 50.364L64.0648 51.1787L64.8795 50.5988L64.2997 49.7841L63.485 50.364ZM62.3252 48.7346L63.1399 48.1547L62.56 47.34L61.7453 47.9199L62.3252 48.7346ZM58.777 51.2601H57.777V53.1993L59.3568 52.0748L58.777 51.2601ZM58.777 46.8357H59.777V45.8357H58.777V46.8357ZM56.777 46.8357V45.8357H55.777V46.8357H56.777ZM56.777 51.2601L56.1971 52.0748L57.777 53.1993V51.2601H56.777ZM52.7159 48.3696L53.2958 47.5549L52.4811 46.975L51.9012 47.7897L52.7159 48.3696ZM51.5562 49.999L50.7415 49.4191L50.1616 50.2338L50.9763 50.8137L51.5562 49.999ZM56.0525 53.1993L56.6323 54.014L57.777 53.1993L56.6323 52.3846L56.0525 53.1993ZM52.069 56.0347L51.4891 55.22L50.6744 55.7998L51.2543 56.6145L52.069 56.0347ZM53.2287 57.6641L52.414 58.2439L52.9939 59.0586L53.8086 58.4788L53.2287 57.6641ZM57.777 59.563V55.1385H55.777V59.563H57.777ZM58.777 58.563H56.777V60.563H58.777V58.563ZM57.777 55.1385V59.563H59.777V55.1385H57.777ZM58.1971 55.9532L62.2581 58.8438L63.4179 57.2144L59.3568 54.3238L58.1971 55.9532ZM63.6527 58.6089L64.8125 56.9795L63.1831 55.8198L62.0233 57.4492L63.6527 58.6089ZM64.5776 55.585L60.0813 52.3846L58.9216 54.014L63.4179 57.2144L64.5776 55.585ZM60.0813 54.014L64.0648 51.1787L62.9051 49.5493L58.9216 52.3846L60.0813 54.014ZM64.2997 49.7841L63.1399 48.1547L61.5105 49.3145L62.6702 50.9439L64.2997 49.7841ZM61.7453 47.9199L58.1971 50.4454L59.3568 52.0748L62.9051 49.5493L61.7453 47.9199ZM57.777 46.8357V51.2601H59.777V46.8357H57.777ZM56.777 47.8357H58.777V45.8357H56.777V47.8357ZM57.777 51.2601V46.8357H55.777V51.2601H57.777ZM57.3568 50.4454L53.2958 47.5549L52.136 49.1843L56.1971 52.0748L57.3568 50.4454ZM51.9012 47.7897L50.7415 49.4191L52.3709 50.5789L53.5306 48.9495L51.9012 47.7897ZM50.9763 50.8137L55.4726 54.014L56.6323 52.3846L52.136 49.1843L50.9763 50.8137ZM55.4726 52.3846L51.4891 55.22L52.6488 56.8494L56.6323 54.014L55.4726 52.3846ZM51.2543 56.6145L52.414 58.2439L54.0434 57.0842L52.8837 55.4548L51.2543 56.6145ZM53.8086 58.4788L57.3568 55.9532L56.1971 54.3238L52.6488 56.8494L53.8086 58.4788Z" fill="#4E00F6"/>
-<path d="M39.777 59.563H38.777V60.563H39.777V59.563ZM39.777 55.1385H40.777V53.1993L39.1971 54.3238L39.777 55.1385ZM41.777 59.563V60.563H42.777V59.563H41.777ZM41.777 55.1385L42.3568 54.3238L40.777 53.1993V55.1385H41.777ZM45.838 58.0291L45.2581 58.8438L46.0728 59.4236L46.6527 58.6089L45.838 58.0291ZM46.9978 56.3997L47.8125 56.9795L48.3923 56.1648L47.5776 55.585L46.9978 56.3997ZM42.5015 53.1993L41.9216 52.3846L40.777 53.1993L41.9216 54.014L42.5015 53.1993ZM46.485 50.364L47.0648 51.1787L47.8795 50.5988L47.2997 49.7841L46.485 50.364ZM45.3252 48.7346L46.1399 48.1547L45.56 47.34L44.7453 47.9199L45.3252 48.7346ZM41.777 51.2601H40.777V53.1993L42.3568 52.0748L41.777 51.2601ZM41.777 46.8357H42.777V45.8357H41.777V46.8357ZM39.777 46.8357V45.8357H38.777V46.8357H39.777ZM39.777 51.2601L39.1971 52.0748L40.777 53.1993V51.2601H39.777ZM35.7159 48.3696L36.2958 47.5549L35.4811 46.975L34.9012 47.7897L35.7159 48.3696ZM34.5562 49.999L33.7415 49.4191L33.1616 50.2338L33.9763 50.8137L34.5562 49.999ZM39.0525 53.1993L39.6323 54.014L40.777 53.1993L39.6323 52.3846L39.0525 53.1993ZM35.069 56.0347L34.4891 55.22L33.6744 55.7998L34.2543 56.6145L35.069 56.0347ZM36.2287 57.6641L35.414 58.2439L35.9939 59.0586L36.8086 58.4788L36.2287 57.6641ZM40.777 59.563V55.1385H38.777V59.563H40.777ZM41.777 58.563H39.777V60.563H41.777V58.563ZM40.777 55.1385V59.563H42.777V55.1385H40.777ZM41.1971 55.9532L45.2581 58.8438L46.4179 57.2144L42.3568 54.3238L41.1971 55.9532ZM46.6527 58.6089L47.8125 56.9795L46.1831 55.8198L45.0233 57.4492L46.6527 58.6089ZM47.5776 55.585L43.0813 52.3846L41.9216 54.014L46.4179 57.2144L47.5776 55.585ZM43.0813 54.014L47.0648 51.1787L45.9051 49.5493L41.9216 52.3846L43.0813 54.014ZM47.2997 49.7841L46.1399 48.1547L44.5105 49.3145L45.6702 50.9439L47.2997 49.7841ZM44.7453 47.9199L41.1971 50.4454L42.3568 52.0748L45.9051 49.5493L44.7453 47.9199ZM40.777 46.8357V51.2601H42.777V46.8357H40.777ZM39.777 47.8357H41.777V45.8357H39.777V47.8357ZM40.777 51.2601V46.8357H38.777V51.2601H40.777ZM40.3568 50.4454L36.2958 47.5549L35.136 49.1843L39.1971 52.0748L40.3568 50.4454ZM34.9012 47.7897L33.7415 49.4191L35.3709 50.5789L36.5306 48.9495L34.9012 47.7897ZM33.9763 50.8137L38.4726 54.014L39.6323 52.3846L35.136 49.1843L33.9763 50.8137ZM38.4726 52.3846L34.4891 55.22L35.6488 56.8494L39.6323 54.014L38.4726 52.3846ZM34.2543 56.6145L35.414 58.2439L37.0434 57.0842L35.8837 55.4548L34.2543 56.6145ZM36.8086 58.4788L40.3568 55.9532L39.1971 54.3238L35.6488 56.8494L36.8086 58.4788Z" fill="#4E00F6"/>
-<defs>
-<linearGradient id="paint0_linear" x1="66.501" y1="8.41357" x2="8.91333" y2="66.0012" gradientUnits="userSpaceOnUse">
-<stop stop-color="#E0D3FC" stop-opacity="0.25"/>
-<stop offset="1" stop-color="#C3A9FB" stop-opacity="0.5"/>
-</linearGradient>
-<linearGradient id="paint1_linear" x1="79.1182" y1="21.0304" x2="21.5305" y2="78.618" gradientUnits="userSpaceOnUse">
-<stop stop-color="#E0D3FC" stop-opacity="0.15"/>
-<stop offset="1" stop-color="#C3A9FB" stop-opacity="0.25"/>
-</linearGradient>
-</defs>
-</svg>
-
-          </div>
-          <div v-if="currentStep === 5">
-            <h4>Terms of Use</h4>
-            <h5>This Terms of Use (“ToU” and/or “Terms”)</h5>
-            <div class="terms-of-service">
-              <p class="tos-desc">1. A. These Terms shall be considered to be a framework agreement which sets out the terms of:</p>
-              <p class="tos-desc">A) you and us entering into Business relationship by providing you services of cryptocurrencie transaction(s); and</p>
-              <p class="tos-desc">B) the use of the Stealth mobile wallet Dashboard and other Stealth mobile wallet Services</p>
-              <p class="tos-desc">C) you using any of our services related to or utilizing any of the foregoing, which we refer to in this Terms. </p>
-              <p class="tos-desc">Before you can enter into Stealth mobile walletvTransactions and benefit from the Stealth mobile wallet Services with us you are required to:</p>
-              <p class="tos-desc">• carefully read these Terms and validate that you have read them by ticking the box confirming the accuracy of the information.</p>
-              <p class="tos-desc">"Top-Up" means you or a third party sending money to us in return for us issuing Electronic</p>
-              <div class="terms-of-service--box">
-                <ul>
-                  <li>
-                    <p>I understand that my XST (Stealth) stored on this device are not secured by any entity.</p>
-                  </li>
-                  <li>
-                    <p>I understand that if this app is deleted or my device is either damaged or lost, my XST can only be recovered using the "Recovery Phrase" that I will set-up</p>
-                  </li>
-                  <li>
-                    <p>I have read and agree to the Terms of Use</p>
-                  </li>
-                </ul>
-                <StCheckbox v-model="termsOfService">I have read and agree to the Terms of Use</StCheckbox>
-              </div>
-              <div class="button-confirm">
-                <StButton :disabled="!termsOfService" @click="nextStep">Confirm</StButton>
+              <h4>About Your Funds</h4>
+              <p class="desc">
+                This wallet acts as a vault that contains your XST. It’s only
+                accessible with your Recovery Phrase.
+              </p>
+              <svg
+                width="104"
+                height="80"
+                viewBox="0 0 104 80"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M40 13H64.0262V33.3125L83 56.3333V78H40L40 13Z"
+                  fill="url(#paint0_linear)"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M37.2342 13H61.8525V33.3125L81 56.3333V78H8L37.2342 13Z"
+                  fill="url(#paint1_linear)"
+                />
+                <path
+                  d="M83 56.3333V78H2L2 13H63.4032"
+                  stroke="#4E00F6"
+                  stroke-width="3"
+                  stroke-linecap="square"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M102 13.8537V33.6098L82.5 56L63 33.6098L63 13.8537L82.4987 2L102 13.8537Z"
+                  stroke="#4E00F6"
+                  stroke-width="3"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M11 33H15V24H11V33Z"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M39 33H43V24H39V33Z"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M11 68H15V59H11V68Z"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M39 68H43V59H39V68Z"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M46 52H50V43H46V52Z"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M22 52H26V43H22V52Z"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M79 22H88V15H79V22Z"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M77 34H91V24H77V34Z"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                />
+                <path
+                  d="M10.5 43V52"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+                <path
+                  d="M54.5 24V33"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+                <path
+                  d="M54.5 59V68"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+                <path
+                  d="M37.5 43V52"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+                <path
+                  d="M28.5 24V33"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+                <path
+                  d="M28.5 59V68"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+                <defs>
+                  <linearGradient
+                    id="paint0_linear"
+                    x1="40"
+                    y1="13"
+                    x2="40"
+                    y2="78"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stop-color="#E0D3FC" stop-opacity="0.25" />
+                    <stop offset="1" stop-color="#C3A9FB" stop-opacity="0.5" />
+                  </linearGradient>
+                  <linearGradient
+                    id="paint1_linear"
+                    x1="8"
+                    y1="13"
+                    x2="8"
+                    y2="78"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stop-color="#E0D3FC" stop-opacity="0.15" />
+                    <stop offset="1" stop-color="#C3A9FB" stop-opacity="0.25" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <div v-if="currentStep === 1">
+              <h4>Recovery Phrase</h4>
+              <p class="desc">
+                The Recovery Phrase is a set of 12-24 randomly selected words
+                that will enable you to regain access to your wallet should you
+                lose or damage your device.
+              </p>
+              <svg
+                width="58"
+                height="86"
+                viewBox="0 0 58 86"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect
+                  x="29"
+                  y="10"
+                  width="27"
+                  height="74"
+                  fill="url(#paint0_linear)"
+                />
+                <rect
+                  x="2"
+                  y="10"
+                  width="54"
+                  height="74"
+                  stroke="#4E00F6"
+                  stroke-width="3"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M49.2302 10H56V84H13L49.2302 10Z"
+                  fill="url(#paint1_linear)"
+                />
+                <rect
+                  x="19"
+                  y="2"
+                  width="21"
+                  height="14"
+                  stroke="#4E00F6"
+                  stroke-width="3"
+                />
+                <path
+                  d="M16.587 48.5H42.413"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+                <path
+                  d="M16.587 40.5H42.413"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+                <path
+                  d="M16.587 31.5H42.413"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+                <path
+                  d="M16.587 65.5H42.413"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+                <path
+                  d="M16.587 56.5H42.413"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+                <defs>
+                  <linearGradient
+                    id="paint0_linear"
+                    x1="29"
+                    y1="10"
+                    x2="29"
+                    y2="84"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stop-color="#E0D3FC" stop-opacity="0.25" />
+                    <stop offset="1" stop-color="#C3A9FB" stop-opacity="0.5" />
+                  </linearGradient>
+                  <linearGradient
+                    id="paint1_linear"
+                    x1="13"
+                    y1="10"
+                    x2="13"
+                    y2="84"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stop-color="#E0D3FC" stop-opacity="0.15" />
+                    <stop offset="1" stop-color="#C3A9FB" stop-opacity="0.25" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <div v-if="currentStep === 2">
+              <h4>Save the Phrase!</h4>
+              <p class="desc">
+                Please keep a secure and confidential copy of your Recovery
+                Phrase offline to protect your funds from hackers and thieves.
+              </p>
+              <svg
+                width="76"
+                height="78"
+                viewBox="0 0 76 78"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect
+                  x="30.5"
+                  y="2"
+                  width="27"
+                  height="74"
+                  fill="url(#paint0_linear)"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M50.4153 2H57.5V76H12.5L50.4153 2Z"
+                  fill="url(#paint1_linear)"
+                />
+                <path
+                  d="M57.4988 2H1.5L1.5 76H57.5V50.9355L39.2391 30.6452V12.7419L57.5 2"
+                  stroke="#4E00F6"
+                  stroke-width="3"
+                />
+                <path
+                  d="M13.0217 40.5H35.9783"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+                <path
+                  d="M12.8261 31.5H27.1739"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+                <path
+                  d="M12.8261 24.5H27.1739"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+                <path
+                  d="M13.0217 56.5H35.9783"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+                <path
+                  d="M13.0217 49.5H35.9783"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                  stroke-linecap="square"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M74.5 12.7561V30.6829L56.5 51L38.5 30.6829L38.5 12.7561L56.4988 2L74.5 12.7561Z"
+                  stroke="#4E00F6"
+                  stroke-width="3"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M51.5 22H61.5V14H51.5V22Z"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M49.5 31H63.5V20H49.5V31Z"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                />
+                <defs>
+                  <linearGradient
+                    id="paint0_linear"
+                    x1="30.5"
+                    y1="2"
+                    x2="30.5"
+                    y2="76"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stop-color="#E0D3FC" stop-opacity="0.25" />
+                    <stop offset="1" stop-color="#C3A9FB" stop-opacity="0.5" />
+                  </linearGradient>
+                  <linearGradient
+                    id="paint1_linear"
+                    x1="12.5"
+                    y1="2"
+                    x2="12.5"
+                    y2="76"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stop-color="#E0D3FC" stop-opacity="0.15" />
+                    <stop offset="1" stop-color="#C3A9FB" stop-opacity="0.25" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <div v-if="currentStep === 3">
+              <h4>About Your Password</h4>
+              <p class="desc">
+                I understand that if I lose my Password I will no longer be able
+                to access the StealthSend app and will need to use my Recovery
+                Phrase.
+              </p>
+              <svg
+                width="116"
+                height="116"
+                viewBox="0 0 116 116"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M59.2032 16.6129L93.2249 36.1046L93.2249 76.5985L57.9451 116L22.8844 76.5985L22.8844 36.1046L59.2032 16.6129Z"
+                  fill="#E0D3FC"
+                  fill-opacity="0.1"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M59.2032 16.613L93.225 36.1046L93.225 76.5986L57.9451 116L59.2032 16.613Z"
+                  fill="url(#paint0_linear)"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M93.2254 36.1046V76.5986L57.9455 116L40.3326 96.0648L75.2969 25.7533L93.2254 36.1046Z"
+                  fill="url(#paint1_linear)"
+                />
+                <path
+                  d="M24.3844 37.0019L59.1794 18.3281L91.7249 36.9739L91.7249 76.0251L57.9486 113.747L24.3844 76.0278L24.3844 37.0019Z"
+                  stroke="#4E00F6"
+                  stroke-width="3"
+                />
+                <path
+                  d="M75.2442 60.4973H74.2442V61.4973H75.2442V60.4973ZM75.2442 55.1033H76.2442V53.164L74.6644 54.2886L75.2442 55.1033ZM76.2442 60.4973V61.4973H77.2442V60.4973H76.2442ZM76.2442 55.1033L76.8241 54.2886L75.2442 53.1641V55.1033H76.2442ZM81.0952 58.556L80.5153 59.3707L81.3301 59.9506L81.9099 59.1359L81.0952 58.556ZM81.6751 57.7413L82.4898 58.3212L83.0697 57.5065L82.255 56.9266L81.6751 57.7413ZM76.6065 54.1337L76.0266 53.319L74.882 54.1337L76.0266 54.9484L76.6065 54.1337ZM81.1623 50.891L81.7422 51.7057L82.5569 51.1258L81.977 50.3111L81.1623 50.891ZM80.5824 50.0763L81.3971 49.4964L80.8172 48.6817L80.0025 49.2616L80.5824 50.0763ZM76.2442 53.164H75.2442V55.1033L76.8241 53.9788L76.2442 53.164ZM76.2442 47.77H77.2442V46.77H76.2442V47.77ZM75.2442 47.77V46.77H74.2442V47.77H75.2442ZM75.2442 53.1641L74.6644 53.9788L76.2442 55.1033V53.1641H75.2442ZM70.3933 49.7113L70.9731 48.8966L70.1584 48.3167L69.5786 49.1314L70.3933 49.7113ZM69.8134 50.526L68.9987 49.9461L68.4188 50.7608L69.2335 51.3407L69.8134 50.526ZM74.882 54.1337L75.4619 54.9484L76.6065 54.1337L75.4619 53.319L74.882 54.1337ZM70.3262 57.3763L69.7463 56.5616L68.9316 57.1415L69.5115 57.9562L70.3262 57.3763ZM70.9061 58.191L70.0914 58.7709L70.6712 59.5856L71.4859 59.0057L70.9061 58.191ZM76.2442 60.4973V55.1033H74.2442V60.4973H76.2442ZM76.2442 59.4973H75.2442V61.4973H76.2442V59.4973ZM75.2442 55.1033V60.4973H77.2442V55.1033H75.2442ZM75.6644 55.918L80.5153 59.3707L81.6751 57.7413L76.8241 54.2886L75.6644 55.918ZM81.9099 59.1359L82.4898 58.3212L80.8604 57.1615L80.2805 57.9762L81.9099 59.1359ZM82.255 56.9266L77.1864 53.319L76.0266 54.9484L81.0952 58.556L82.255 56.9266ZM77.1864 54.9484L81.7422 51.7057L80.5824 50.0763L76.0266 53.319L77.1864 54.9484ZM81.977 50.3111L81.3971 49.4964L79.7677 50.6562L80.3476 51.4709L81.977 50.3111ZM80.0025 49.2616L75.6644 52.3493L76.8241 53.9788L81.1623 50.891L80.0025 49.2616ZM75.2442 47.77V53.164H77.2442V47.77H75.2442ZM75.2442 48.77H76.2442V46.77H75.2442V48.77ZM76.2442 53.1641V47.77H74.2442V53.1641H76.2442ZM75.8241 52.3493L70.9731 48.8966L69.8134 50.526L74.6644 53.9788L75.8241 52.3493ZM69.5786 49.1314L68.9987 49.9461L70.6281 51.1059L71.208 50.2911L69.5786 49.1314ZM69.2335 51.3407L74.3021 54.9484L75.4619 53.319L70.3933 49.7113L69.2335 51.3407ZM74.3021 53.319L69.7463 56.5616L70.9061 58.191L75.4619 54.9484L74.3021 53.319ZM69.5115 57.9562L70.0914 58.7709L71.7208 57.6112L71.1409 56.7965L69.5115 57.9562ZM71.4859 59.0057L75.8241 55.918L74.6644 54.2886L70.3262 57.3763L71.4859 59.0057Z"
+                  fill="#4E00F6"
+                />
+                <path
+                  d="M57.2442 60.4973H56.2442V61.4973H57.2442V60.4973ZM57.2442 55.1033H58.2442V53.164L56.6644 54.2886L57.2442 55.1033ZM58.2442 60.4973V61.4973H59.2442V60.4973H58.2442ZM58.2442 55.1033L58.8241 54.2886L57.2442 53.1641V55.1033H58.2442ZM63.0952 58.556L62.5153 59.3707L63.3301 59.9506L63.9099 59.1359L63.0952 58.556ZM63.6751 57.7413L64.4898 58.3212L65.0697 57.5065L64.255 56.9266L63.6751 57.7413ZM58.6065 54.1337L58.0266 53.319L56.882 54.1337L58.0266 54.9484L58.6065 54.1337ZM63.1623 50.891L63.7422 51.7057L64.5569 51.1258L63.977 50.3111L63.1623 50.891ZM62.5824 50.0763L63.3971 49.4964L62.8172 48.6817L62.0025 49.2616L62.5824 50.0763ZM58.2442 53.164H57.2442V55.1033L58.8241 53.9788L58.2442 53.164ZM58.2442 47.77H59.2442V46.77H58.2442V47.77ZM57.2442 47.77V46.77H56.2442V47.77H57.2442ZM57.2442 53.1641L56.6644 53.9788L58.2442 55.1033V53.1641H57.2442ZM52.3933 49.7113L52.9731 48.8966L52.1584 48.3167L51.5786 49.1314L52.3933 49.7113ZM51.8134 50.526L50.9987 49.9461L50.4188 50.7608L51.2335 51.3407L51.8134 50.526ZM56.882 54.1337L57.4619 54.9484L58.6065 54.1337L57.4619 53.319L56.882 54.1337ZM52.3262 57.3763L51.7463 56.5616L50.9316 57.1415L51.5115 57.9562L52.3262 57.3763ZM52.9061 58.191L52.0914 58.7709L52.6712 59.5856L53.4859 59.0057L52.9061 58.191ZM58.2442 60.4973V55.1033H56.2442V60.4973H58.2442ZM58.2442 59.4973H57.2442V61.4973H58.2442V59.4973ZM57.2442 55.1033V60.4973H59.2442V55.1033H57.2442ZM57.6644 55.918L62.5153 59.3707L63.6751 57.7413L58.8241 54.2886L57.6644 55.918ZM63.9099 59.1359L64.4898 58.3212L62.8604 57.1615L62.2805 57.9762L63.9099 59.1359ZM64.255 56.9266L59.1864 53.319L58.0266 54.9484L63.0952 58.556L64.255 56.9266ZM59.1864 54.9484L63.7422 51.7057L62.5824 50.0763L58.0266 53.319L59.1864 54.9484ZM63.977 50.3111L63.3971 49.4964L61.7677 50.6562L62.3476 51.4709L63.977 50.3111ZM62.0025 49.2616L57.6644 52.3493L58.8241 53.9788L63.1623 50.891L62.0025 49.2616ZM57.2442 47.77V53.164H59.2442V47.77H57.2442ZM57.2442 48.77H58.2442V46.77H57.2442V48.77ZM58.2442 53.1641V47.77H56.2442V53.1641H58.2442ZM57.8241 52.3493L52.9731 48.8966L51.8134 50.526L56.6644 53.9788L57.8241 52.3493ZM51.5786 49.1314L50.9987 49.9461L52.6281 51.1059L53.208 50.2911L51.5786 49.1314ZM51.2335 51.3407L56.3021 54.9484L57.4619 53.319L52.3933 49.7113L51.2335 51.3407ZM56.3021 53.319L51.7463 56.5616L52.9061 58.191L57.4619 54.9484L56.3021 53.319ZM51.5115 57.9562L52.0914 58.7709L53.7208 57.6112L53.1409 56.7965L51.5115 57.9562ZM53.4859 59.0057L57.8241 55.918L56.6644 54.2886L52.3262 57.3763L53.4859 59.0057Z"
+                  fill="#4E00F6"
+                />
+                <path
+                  d="M40.2442 60.4973H39.2442V61.4973H40.2442V60.4973ZM40.2442 55.1033H41.2442V53.164L39.6644 54.2886L40.2442 55.1033ZM41.2442 60.4973V61.4973H42.2442V60.4973H41.2442ZM41.2442 55.1033L41.8241 54.2886L40.2442 53.1641V55.1033H41.2442ZM46.0952 58.556L45.5153 59.3707L46.3301 59.9506L46.9099 59.1359L46.0952 58.556ZM46.6751 57.7413L47.4898 58.3212L48.0697 57.5065L47.255 56.9266L46.6751 57.7413ZM41.6065 54.1337L41.0266 53.319L39.882 54.1337L41.0266 54.9484L41.6065 54.1337ZM46.1623 50.891L46.7422 51.7057L47.5569 51.1258L46.977 50.3111L46.1623 50.891ZM45.5824 50.0763L46.3971 49.4964L45.8172 48.6817L45.0025 49.2616L45.5824 50.0763ZM41.2442 53.164H40.2442V55.1033L41.8241 53.9788L41.2442 53.164ZM41.2442 47.77H42.2442V46.77H41.2442V47.77ZM40.2442 47.77V46.77H39.2442V47.77H40.2442ZM40.2442 53.1641L39.6644 53.9788L41.2442 55.1033V53.1641H40.2442ZM35.3933 49.7113L35.9731 48.8966L35.1584 48.3167L34.5786 49.1314L35.3933 49.7113ZM34.8134 50.526L33.9987 49.9461L33.4188 50.7608L34.2335 51.3407L34.8134 50.526ZM39.882 54.1337L40.4619 54.9484L41.6065 54.1337L40.4619 53.319L39.882 54.1337ZM35.3262 57.3763L34.7463 56.5616L33.9316 57.1415L34.5115 57.9562L35.3262 57.3763ZM35.9061 58.191L35.0914 58.7709L35.6712 59.5856L36.4859 59.0057L35.9061 58.191ZM41.2442 60.4973V55.1033H39.2442V60.4973H41.2442ZM41.2442 59.4973H40.2442V61.4973H41.2442V59.4973ZM40.2442 55.1033V60.4973H42.2442V55.1033H40.2442ZM40.6644 55.918L45.5153 59.3707L46.6751 57.7413L41.8241 54.2886L40.6644 55.918ZM46.9099 59.1359L47.4898 58.3212L45.8604 57.1615L45.2805 57.9762L46.9099 59.1359ZM47.255 56.9266L42.1864 53.319L41.0266 54.9484L46.0952 58.556L47.255 56.9266ZM42.1864 54.9484L46.7422 51.7057L45.5824 50.0763L41.0266 53.319L42.1864 54.9484ZM46.977 50.3111L46.3971 49.4964L44.7677 50.6562L45.3476 51.4709L46.977 50.3111ZM45.0025 49.2616L40.6644 52.3493L41.8241 53.9788L46.1623 50.891L45.0025 49.2616ZM40.2442 47.77V53.164H42.2442V47.77H40.2442ZM40.2442 48.77H41.2442V46.77H40.2442V48.77ZM41.2442 53.1641V47.77H39.2442V53.1641H41.2442ZM40.8241 52.3493L35.9731 48.8966L34.8134 50.526L39.6644 53.9788L40.8241 52.3493ZM34.5786 49.1314L33.9987 49.9461L35.6281 51.1059L36.208 50.2911L34.5786 49.1314ZM34.2335 51.3407L39.3021 54.9484L40.4619 53.319L35.3933 49.7113L34.2335 51.3407ZM39.3021 53.319L34.7463 56.5616L35.9061 58.191L40.4619 54.9484L39.3021 53.319ZM34.5115 57.9562L35.0914 58.7709L36.7208 57.6112L36.1409 56.7965L34.5115 57.9562ZM36.4859 59.0057L40.8241 55.918L39.6644 54.2886L35.3262 57.3763L36.4859 59.0057Z"
+                  fill="#4E00F6"
+                />
+                <defs>
+                  <linearGradient
+                    id="paint0_linear"
+                    x1="66.4683"
+                    y1="9.3479"
+                    x2="8.88062"
+                    y2="66.9355"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stop-color="#E0D3FC" stop-opacity="0.25" />
+                    <stop offset="1" stop-color="#C3A9FB" stop-opacity="0.5" />
+                  </linearGradient>
+                  <linearGradient
+                    id="paint1_linear"
+                    x1="79.0854"
+                    y1="21.9647"
+                    x2="21.4978"
+                    y2="79.5524"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stop-color="#E0D3FC" stop-opacity="0.15" />
+                    <stop offset="1" stop-color="#C3A9FB" stop-opacity="0.25" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <div v-if="currentStep === 4">
+              <h4>About Your Payment Code</h4>
+              <p class="desc">
+                I understand that if I lose my Payment Code I will no longer be
+                able to access the StealthSend app and will need to use my
+                Recovery Phrase.
+              </p>
+              <svg
+                width="116"
+                height="116"
+                viewBox="0 0 116 116"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M59.2364 15.6786L93.2581 35.1703L93.2581 75.6642L57.9783 115.066L22.9176 75.6642L22.9176 35.1703L59.2364 15.6786Z"
+                  fill="#E0D3FC"
+                  fill-opacity="0.1"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M59.2359 15.6786L93.2577 35.1703L93.2577 75.6642L57.9778 115.066L59.2359 15.6786Z"
+                  fill="url(#paint0_linear)"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M93.2581 35.1703V75.6643L57.9782 115.066L40.3653 95.1305L75.3296 24.8189L93.2581 35.1703Z"
+                  fill="url(#paint1_linear)"
+                />
+                <path
+                  d="M24.4176 36.0676L59.2126 17.3937L91.7581 36.0396L91.7581 75.0908L57.9818 112.813L24.4176 75.0935L24.4176 36.0676Z"
+                  stroke="#4E00F6"
+                  stroke-width="3"
+                />
+                <path
+                  d="M74.777 59.563H73.777V60.563H74.777V59.563ZM74.777 55.1385H75.777V53.1993L74.1971 54.3238L74.777 55.1385ZM76.777 59.563V60.563H77.777V59.563H76.777ZM76.777 55.1385L77.3568 54.3238L75.777 53.1993V55.1385H76.777ZM80.838 58.0291L80.2581 58.8438L81.0728 59.4236L81.6527 58.6089L80.838 58.0291ZM81.9978 56.3997L82.8125 56.9795L83.3923 56.1648L82.5776 55.585L81.9978 56.3997ZM77.5015 53.1993L76.9216 52.3846L75.777 53.1993L76.9216 54.014L77.5015 53.1993ZM81.485 50.364L82.0648 51.1787L82.8795 50.5988L82.2997 49.7841L81.485 50.364ZM80.3252 48.7346L81.1399 48.1547L80.56 47.34L79.7453 47.9199L80.3252 48.7346ZM76.777 51.2601H75.777V53.1993L77.3568 52.0748L76.777 51.2601ZM76.777 46.8357H77.777V45.8357H76.777V46.8357ZM74.777 46.8357V45.8357H73.777V46.8357H74.777ZM74.777 51.2601L74.1971 52.0748L75.777 53.1993V51.2601H74.777ZM70.7159 48.3696L71.2958 47.5549L70.4811 46.975L69.9012 47.7897L70.7159 48.3696ZM69.5562 49.999L68.7415 49.4191L68.1616 50.2338L68.9763 50.8137L69.5562 49.999ZM74.0525 53.1993L74.6323 54.014L75.777 53.1993L74.6323 52.3846L74.0525 53.1993ZM70.069 56.0347L69.4891 55.22L68.6744 55.7998L69.2543 56.6145L70.069 56.0347ZM71.2287 57.6641L70.414 58.2439L70.9939 59.0586L71.8086 58.4788L71.2287 57.6641ZM75.777 59.563V55.1385H73.777V59.563H75.777ZM76.777 58.563H74.777V60.563H76.777V58.563ZM75.777 55.1385V59.563H77.777V55.1385H75.777ZM76.1971 55.9532L80.2581 58.8438L81.4179 57.2144L77.3568 54.3238L76.1971 55.9532ZM81.6527 58.6089L82.8125 56.9795L81.1831 55.8198L80.0233 57.4492L81.6527 58.6089ZM82.5776 55.585L78.0813 52.3846L76.9216 54.014L81.4179 57.2144L82.5776 55.585ZM78.0813 54.014L82.0648 51.1787L80.9051 49.5493L76.9216 52.3846L78.0813 54.014ZM82.2997 49.7841L81.1399 48.1547L79.5105 49.3145L80.6702 50.9439L82.2997 49.7841ZM79.7453 47.9199L76.1971 50.4454L77.3568 52.0748L80.9051 49.5493L79.7453 47.9199ZM75.777 46.8357V51.2601H77.777V46.8357H75.777ZM74.777 47.8357H76.777V45.8357H74.777V47.8357ZM75.777 51.2601V46.8357H73.777V51.2601H75.777ZM75.3568 50.4454L71.2958 47.5549L70.136 49.1843L74.1971 52.0748L75.3568 50.4454ZM69.9012 47.7897L68.7415 49.4191L70.3709 50.5789L71.5306 48.9495L69.9012 47.7897ZM68.9763 50.8137L73.4726 54.014L74.6323 52.3846L70.136 49.1843L68.9763 50.8137ZM73.4726 52.3846L69.4891 55.22L70.6488 56.8494L74.6323 54.014L73.4726 52.3846ZM69.2543 56.6145L70.414 58.2439L72.0434 57.0842L70.8837 55.4548L69.2543 56.6145ZM71.8086 58.4788L75.3568 55.9532L74.1971 54.3238L70.6488 56.8494L71.8086 58.4788Z"
+                  fill="#4E00F6"
+                />
+                <path
+                  d="M56.777 59.563H55.777V60.563H56.777V59.563ZM56.777 55.1385H57.777V53.1993L56.1971 54.3238L56.777 55.1385ZM58.777 59.563V60.563H59.777V59.563H58.777ZM58.777 55.1385L59.3568 54.3238L57.777 53.1993V55.1385H58.777ZM62.838 58.0291L62.2581 58.8438L63.0728 59.4236L63.6527 58.6089L62.838 58.0291ZM63.9978 56.3997L64.8125 56.9795L65.3923 56.1648L64.5776 55.585L63.9978 56.3997ZM59.5015 53.1993L58.9216 52.3846L57.777 53.1993L58.9216 54.014L59.5015 53.1993ZM63.485 50.364L64.0648 51.1787L64.8795 50.5988L64.2997 49.7841L63.485 50.364ZM62.3252 48.7346L63.1399 48.1547L62.56 47.34L61.7453 47.9199L62.3252 48.7346ZM58.777 51.2601H57.777V53.1993L59.3568 52.0748L58.777 51.2601ZM58.777 46.8357H59.777V45.8357H58.777V46.8357ZM56.777 46.8357V45.8357H55.777V46.8357H56.777ZM56.777 51.2601L56.1971 52.0748L57.777 53.1993V51.2601H56.777ZM52.7159 48.3696L53.2958 47.5549L52.4811 46.975L51.9012 47.7897L52.7159 48.3696ZM51.5562 49.999L50.7415 49.4191L50.1616 50.2338L50.9763 50.8137L51.5562 49.999ZM56.0525 53.1993L56.6323 54.014L57.777 53.1993L56.6323 52.3846L56.0525 53.1993ZM52.069 56.0347L51.4891 55.22L50.6744 55.7998L51.2543 56.6145L52.069 56.0347ZM53.2287 57.6641L52.414 58.2439L52.9939 59.0586L53.8086 58.4788L53.2287 57.6641ZM57.777 59.563V55.1385H55.777V59.563H57.777ZM58.777 58.563H56.777V60.563H58.777V58.563ZM57.777 55.1385V59.563H59.777V55.1385H57.777ZM58.1971 55.9532L62.2581 58.8438L63.4179 57.2144L59.3568 54.3238L58.1971 55.9532ZM63.6527 58.6089L64.8125 56.9795L63.1831 55.8198L62.0233 57.4492L63.6527 58.6089ZM64.5776 55.585L60.0813 52.3846L58.9216 54.014L63.4179 57.2144L64.5776 55.585ZM60.0813 54.014L64.0648 51.1787L62.9051 49.5493L58.9216 52.3846L60.0813 54.014ZM64.2997 49.7841L63.1399 48.1547L61.5105 49.3145L62.6702 50.9439L64.2997 49.7841ZM61.7453 47.9199L58.1971 50.4454L59.3568 52.0748L62.9051 49.5493L61.7453 47.9199ZM57.777 46.8357V51.2601H59.777V46.8357H57.777ZM56.777 47.8357H58.777V45.8357H56.777V47.8357ZM57.777 51.2601V46.8357H55.777V51.2601H57.777ZM57.3568 50.4454L53.2958 47.5549L52.136 49.1843L56.1971 52.0748L57.3568 50.4454ZM51.9012 47.7897L50.7415 49.4191L52.3709 50.5789L53.5306 48.9495L51.9012 47.7897ZM50.9763 50.8137L55.4726 54.014L56.6323 52.3846L52.136 49.1843L50.9763 50.8137ZM55.4726 52.3846L51.4891 55.22L52.6488 56.8494L56.6323 54.014L55.4726 52.3846ZM51.2543 56.6145L52.414 58.2439L54.0434 57.0842L52.8837 55.4548L51.2543 56.6145ZM53.8086 58.4788L57.3568 55.9532L56.1971 54.3238L52.6488 56.8494L53.8086 58.4788Z"
+                  fill="#4E00F6"
+                />
+                <path
+                  d="M39.777 59.563H38.777V60.563H39.777V59.563ZM39.777 55.1385H40.777V53.1993L39.1971 54.3238L39.777 55.1385ZM41.777 59.563V60.563H42.777V59.563H41.777ZM41.777 55.1385L42.3568 54.3238L40.777 53.1993V55.1385H41.777ZM45.838 58.0291L45.2581 58.8438L46.0728 59.4236L46.6527 58.6089L45.838 58.0291ZM46.9978 56.3997L47.8125 56.9795L48.3923 56.1648L47.5776 55.585L46.9978 56.3997ZM42.5015 53.1993L41.9216 52.3846L40.777 53.1993L41.9216 54.014L42.5015 53.1993ZM46.485 50.364L47.0648 51.1787L47.8795 50.5988L47.2997 49.7841L46.485 50.364ZM45.3252 48.7346L46.1399 48.1547L45.56 47.34L44.7453 47.9199L45.3252 48.7346ZM41.777 51.2601H40.777V53.1993L42.3568 52.0748L41.777 51.2601ZM41.777 46.8357H42.777V45.8357H41.777V46.8357ZM39.777 46.8357V45.8357H38.777V46.8357H39.777ZM39.777 51.2601L39.1971 52.0748L40.777 53.1993V51.2601H39.777ZM35.7159 48.3696L36.2958 47.5549L35.4811 46.975L34.9012 47.7897L35.7159 48.3696ZM34.5562 49.999L33.7415 49.4191L33.1616 50.2338L33.9763 50.8137L34.5562 49.999ZM39.0525 53.1993L39.6323 54.014L40.777 53.1993L39.6323 52.3846L39.0525 53.1993ZM35.069 56.0347L34.4891 55.22L33.6744 55.7998L34.2543 56.6145L35.069 56.0347ZM36.2287 57.6641L35.414 58.2439L35.9939 59.0586L36.8086 58.4788L36.2287 57.6641ZM40.777 59.563V55.1385H38.777V59.563H40.777ZM41.777 58.563H39.777V60.563H41.777V58.563ZM40.777 55.1385V59.563H42.777V55.1385H40.777ZM41.1971 55.9532L45.2581 58.8438L46.4179 57.2144L42.3568 54.3238L41.1971 55.9532ZM46.6527 58.6089L47.8125 56.9795L46.1831 55.8198L45.0233 57.4492L46.6527 58.6089ZM47.5776 55.585L43.0813 52.3846L41.9216 54.014L46.4179 57.2144L47.5776 55.585ZM43.0813 54.014L47.0648 51.1787L45.9051 49.5493L41.9216 52.3846L43.0813 54.014ZM47.2997 49.7841L46.1399 48.1547L44.5105 49.3145L45.6702 50.9439L47.2997 49.7841ZM44.7453 47.9199L41.1971 50.4454L42.3568 52.0748L45.9051 49.5493L44.7453 47.9199ZM40.777 46.8357V51.2601H42.777V46.8357H40.777ZM39.777 47.8357H41.777V45.8357H39.777V47.8357ZM40.777 51.2601V46.8357H38.777V51.2601H40.777ZM40.3568 50.4454L36.2958 47.5549L35.136 49.1843L39.1971 52.0748L40.3568 50.4454ZM34.9012 47.7897L33.7415 49.4191L35.3709 50.5789L36.5306 48.9495L34.9012 47.7897ZM33.9763 50.8137L38.4726 54.014L39.6323 52.3846L35.136 49.1843L33.9763 50.8137ZM38.4726 52.3846L34.4891 55.22L35.6488 56.8494L39.6323 54.014L38.4726 52.3846ZM34.2543 56.6145L35.414 58.2439L37.0434 57.0842L35.8837 55.4548L34.2543 56.6145ZM36.8086 58.4788L40.3568 55.9532L39.1971 54.3238L35.6488 56.8494L36.8086 58.4788Z"
+                  fill="#4E00F6"
+                />
+                <defs>
+                  <linearGradient
+                    id="paint0_linear"
+                    x1="66.501"
+                    y1="8.41357"
+                    x2="8.91333"
+                    y2="66.0012"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stop-color="#E0D3FC" stop-opacity="0.25" />
+                    <stop offset="1" stop-color="#C3A9FB" stop-opacity="0.5" />
+                  </linearGradient>
+                  <linearGradient
+                    id="paint1_linear"
+                    x1="79.1182"
+                    y1="21.0304"
+                    x2="21.5305"
+                    y2="78.618"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stop-color="#E0D3FC" stop-opacity="0.15" />
+                    <stop offset="1" stop-color="#C3A9FB" stop-opacity="0.25" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <div v-if="currentStep === 5">
+              <h4>Terms of Use</h4>
+              <h5>This Terms of Use (“ToU” and/or “Terms”)</h5>
+              <div class="terms-of-service">
+                <p class="tos-desc">
+                  1. A. These Terms shall be considered to be a framework
+                  agreement which sets out the terms of:
+                </p>
+                <p class="tos-desc">
+                  A) you and us entering into Business relationship by providing
+                  you services of cryptocurrencie transaction(s); and
+                </p>
+                <p class="tos-desc">
+                  B) the use of the Stealth mobile wallet Dashboard and other
+                  Stealth mobile wallet Services
+                </p>
+                <p class="tos-desc">
+                  C) you using any of our services related to or utilizing any
+                  of the foregoing, which we refer to in this Terms.
+                </p>
+                <p class="tos-desc">
+                  Before you can enter into Stealth mobile walletvTransactions
+                  and benefit from the Stealth mobile wallet Services with us
+                  you are required to:
+                </p>
+                <p class="tos-desc">
+                  • carefully read these Terms and validate that you have read
+                  them by ticking the box confirming the accuracy of the
+                  information.
+                </p>
+                <p class="tos-desc">
+                  "Top-Up" means you or a third party sending money to us in
+                  return for us issuing Electronic
+                </p>
+                <div class="terms-of-service--box">
+                  <ul>
+                    <li>
+                      <p>
+                        I understand that my XST (Stealth) stored on this device
+                        are not secured by any entity.
+                      </p>
+                    </li>
+                    <li>
+                      <p>
+                        I understand that if this app is deleted or my device is
+                        either damaged or lost, my XST can only be recovered
+                        using the "Recovery Phrase" that I will set-up
+                      </p>
+                    </li>
+                    <li>
+                      <p>I have read and agree to the Terms of Use</p>
+                    </li>
+                  </ul>
+                  <StCheckbox v-model="termsOfService"
+                    >I have read and agree to the Terms of Use</StCheckbox
+                  >
+                </div>
+                <div class="button-confirm">
+                  <StButton :disabled="!termsOfService" @click="nextStep"
+                    >Confirm</StButton
+                  >
+                </div>
               </div>
             </div>
-          </div>
-          <div v-if="currentStep === 6">
-            <h4>Set Your Password</h4>
-            <p class="desc">Your Password will be used to unlock your StealthSend app.</p>
-            <StFormItem label="Password">
-              <StInput v-model="password">
-                <svg width="22" height="12" viewBox="0 0 22 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" clip-rule="evenodd" d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z" stroke="#4E00F6" stroke-width="2"/>
-                  <path d="M9 6L13 6" stroke="#4E00F6" stroke-width="2"/>
-                  <path d="M11 4V8" stroke="#4E00F6" stroke-width="2"/>
-                </svg>
-              </StInput>
-            </StFormItem>
-            <StFormItem>
-              <StInput label="Confirm password" v-model="confirmPassword">
-                <svg width="22" height="12" viewBox="0 0 22 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" clip-rule="evenodd" d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z" stroke="#4E00F6" stroke-width="2"/>
-                  <path d="M9 6L13 6" stroke="#4E00F6" stroke-width="2"/>
-                  <path d="M11 4V8" stroke="#4E00F6" stroke-width="2"/>
-                </svg>
-              </StInput>
-            </StFormItem>
-          </div>
+            <div v-if="currentStep === 6">
+              <h4>Set Your Password</h4>
+              <p class="desc">
+                Your Password will be used to unlock your StealthSend app.
+              </p>
+              <StFormItem label="Password">
+                <StInput v-model="password">
+                  <svg
+                    width="22"
+                    height="12"
+                    viewBox="0 0 22 12"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
+                      stroke="#4E00F6"
+                      stroke-width="2"
+                    />
+                    <path d="M9 6L13 6" stroke="#4E00F6" stroke-width="2" />
+                    <path d="M11 4V8" stroke="#4E00F6" stroke-width="2" />
+                  </svg>
+                </StInput>
+              </StFormItem>
+              <StFormItem>
+                <StInput label="Confirm password" v-model="confirmPassword">
+                  <svg
+                    width="22"
+                    height="12"
+                    viewBox="0 0 22 12"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
+                      stroke="#4E00F6"
+                      stroke-width="2"
+                    />
+                    <path d="M9 6L13 6" stroke="#4E00F6" stroke-width="2" />
+                    <path d="M11 4V8" stroke="#4E00F6" stroke-width="2" />
+                  </svg>
+                </StInput>
+              </StFormItem>
+            </div>
           </transition-group>
         </div>
         <div v-if="currentStep < 5" class="right__inner-bottom">
-          <div class="pagination-prev" :class="{ 'pagination-prev--none': currentStep === 0 }" @click="prevStep">
-            <svg width="19" height="14" viewBox="0 0 19 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 7H19" stroke="#4E00F6" stroke-width="2"/>
-            <path d="M8 13L2 7L8 1" stroke="#4E00F6" stroke-width="2"/>
-          </svg>
+          <div
+            class="pagination-prev"
+            :class="{ 'pagination-prev--none': currentStep === 0 }"
+            @click="prevStep"
+          >
+            <svg
+              width="19"
+              height="14"
+              viewBox="0 0 19 14"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M2 7H19" stroke="#4E00F6" stroke-width="2" />
+              <path d="M8 13L2 7L8 1" stroke="#4E00F6" stroke-width="2" />
+            </svg>
           </div>
           <div class="pagination-dot">
-            <span class="dot" @click="chooseStep(index)" v-for="(pagination, index) in 5" :key="index" :class="{ 'dot-active': currentStep === index }"></span>
+            <span
+              class="dot"
+              @click="chooseStep(index)"
+              v-for="(pagination, index) in 5"
+              :key="index"
+              :class="{ 'dot-active': currentStep === index }"
+            ></span>
           </div>
-          <div class="pagination-next" :class="{ 'pagination-next--none': currentStep === 5 }" @click="nextStep">
-            <svg width="19" height="14" viewBox="0 0 19 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 7H17" stroke="#4E00F6" stroke-width="2"/>
-            <path d="M11 13L17 7L11 1" stroke="#4E00F6" stroke-width="2"/>
-          </svg>
+          <div
+            class="pagination-next"
+            :class="{ 'pagination-next--none': currentStep === 5 }"
+            @click="nextStep"
+          >
+            <svg
+              width="19"
+              height="14"
+              viewBox="0 0 19 14"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M0 7H17" stroke="#4E00F6" stroke-width="2" />
+              <path d="M11 13L17 7L11 1" stroke="#4E00F6" stroke-width="2" />
+            </svg>
           </div>
         </div>
       </div>
@@ -326,7 +796,7 @@ import StFormItem from '@/components/elements/StFormItem.vue';
 export default {
   name: 'StWelcome',
   components: {
-    StFormItem
+    StFormItem,
   },
   setup() {
     const mainStore = useMainStore();
@@ -356,16 +826,16 @@ export default {
       isAccount.value = !isAccount.value;
     }
     function prevStep() {
-      if(currentStep.value !== 0) {
-        currentStep.value -= 1
+      if (currentStep.value !== 0) {
+        currentStep.value -= 1;
       }
     }
     function chooseStep(step) {
-      currentStep.value = step
+      currentStep.value = step;
     }
     function nextStep() {
-      if(currentStep.value < paginationLength.value - 1) {
-        currentStep.value += 1
+      if (currentStep.value < paginationLength.value - 1) {
+        currentStep.value += 1;
       }
     }
 
@@ -517,7 +987,6 @@ export default {
   flex-direction: column;
   justify-content: center;
   transition: width 0.3s;
-  
 }
 .left__inner--active {
   align-items: baseline;
@@ -624,7 +1093,8 @@ export default {
   max-width: 100%;
   text-align: center;
 }
-.right__inner-top h4, .right__inner-top h5 {
+.right__inner-top h4,
+.right__inner-top h5 {
   margin-bottom: 36px;
 }
 .right__inner-top .desc {
@@ -638,9 +1108,9 @@ export default {
 .pagination-prev {
   cursor: pointer;
   display: flex;
-    flex: 1 1 0%;
-    justify-content: flex-start;
-    transition: 0.3s;
+  flex: 1 1 0%;
+  justify-content: flex-start;
+  transition: 0.3s;
 }
 .pagination-prev--none {
   opacity: 0;
@@ -668,17 +1138,19 @@ export default {
 .pagination-next {
   cursor: pointer;
   display: flex;
-    flex: 1 1 0%;
-    justify-content: flex-end;
-    transition: 0.3s;
+  flex: 1 1 0%;
+  justify-content: flex-end;
+  transition: 0.3s;
 }
 .pagination-next--none {
   opacity: 0;
 }
-.pagination-prev svg path, .pagination-next svg path {
+.pagination-prev svg path,
+.pagination-next svg path {
   transition: 0.3s;
 }
-.pagination-prev:hover svg path, .pagination-next:hover svg path {
+.pagination-prev:hover svg path,
+.pagination-next:hover svg path {
   stroke: var(--marine100);
 }
 .terms-of-service {
@@ -712,15 +1184,15 @@ export default {
 }
 :deep .st-checkbox__checkmark {
   width: 16px;
-    height: 16px;
-    border-radius: 4px;
-    margin-right: 0;
+  height: 16px;
+  border-radius: 4px;
+  margin-right: 0;
 }
 :deep .st-checkbox__checkmark .check {
   top: 3px;
-    left: 6px;
-    width: 3px;
-    height: 7px;
+  left: 6px;
+  width: 3px;
+  height: 7px;
 }
 .terms-of-service .button-confirm {
   margin-top: 48px;
