@@ -881,37 +881,125 @@
                   >
                 </div>
               </div>
-            <StButton @click="handleSubmit">Proceed</StButton>
+              <StButton @click="handleSubmit">Proceed</StButton>
             </div>
             <div class="step" v-if="currentStep === 12">
               <div>
                 <h5>Recovery Phrase</h5>
                 <h6>Your new StealthSend Account is being prepared.</h6>
-                <p class="desc-medium">Please move your mouse to generate a random list of words unique to your wallet.</p>
-                <svg width="76" height="78" viewBox="0 0 76 78" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="30.5" y="2" width="27" height="74" fill="url(#paint0_linear)"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M50.4153 2H57.5V76H12.5L50.4153 2Z" fill="url(#paint1_linear)"/>
-<path d="M57.4988 2H1.5L1.5 76H57.5V50.9355L39.2391 30.6452V12.7419L57.5 2" stroke="#4E00F6" stroke-width="3"/>
-<path d="M13.0217 40.5H35.9783" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path d="M12.8261 31.5H27.1739" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path d="M12.8261 24.5H27.1739" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path d="M13.0217 56.5H35.9783" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path d="M13.0217 49.5H35.9783" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M74.5 12.7561V30.6829L56.5 51L38.5 30.6829L38.5 12.7561L56.4988 2L74.5 12.7561Z" stroke="#4E00F6" stroke-width="3"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M51.5 22H61.5V14H51.5V22Z" stroke="#4E00F6" stroke-width="2"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M49.5 31H63.5V20H49.5V31Z" stroke="#4E00F6" stroke-width="2"/>
-<defs>
-<linearGradient id="paint0_linear" x1="30.5" y1="2" x2="30.5" y2="76" gradientUnits="userSpaceOnUse">
-<stop stop-color="#E0D3FC" stop-opacity="0.25"/>
-<stop offset="1" stop-color="#C3A9FB" stop-opacity="0.5"/>
-</linearGradient>
-<linearGradient id="paint1_linear" x1="12.5" y1="2" x2="12.5" y2="76" gradientUnits="userSpaceOnUse">
-<stop stop-color="#E0D3FC" stop-opacity="0.15"/>
-<stop offset="1" stop-color="#C3A9FB" stop-opacity="0.25"/>
-</linearGradient>
-</defs>
-</svg>
-
+                <p class="desc-medium">
+                  Please move your mouse to generate a random list of words
+                  unique to your wallet.
+                </p>
+                <svg
+                  width="76"
+                  height="78"
+                  viewBox="0 0 76 78"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    x="30.5"
+                    y="2"
+                    width="27"
+                    height="74"
+                    fill="url(#paint0_linear)"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M50.4153 2H57.5V76H12.5L50.4153 2Z"
+                    fill="url(#paint1_linear)"
+                  />
+                  <path
+                    d="M57.4988 2H1.5L1.5 76H57.5V50.9355L39.2391 30.6452V12.7419L57.5 2"
+                    stroke="#4E00F6"
+                    stroke-width="3"
+                  />
+                  <path
+                    d="M13.0217 40.5H35.9783"
+                    stroke="#4E00F6"
+                    stroke-width="2"
+                    stroke-linecap="square"
+                  />
+                  <path
+                    d="M12.8261 31.5H27.1739"
+                    stroke="#4E00F6"
+                    stroke-width="2"
+                    stroke-linecap="square"
+                  />
+                  <path
+                    d="M12.8261 24.5H27.1739"
+                    stroke="#4E00F6"
+                    stroke-width="2"
+                    stroke-linecap="square"
+                  />
+                  <path
+                    d="M13.0217 56.5H35.9783"
+                    stroke="#4E00F6"
+                    stroke-width="2"
+                    stroke-linecap="square"
+                  />
+                  <path
+                    d="M13.0217 49.5H35.9783"
+                    stroke="#4E00F6"
+                    stroke-width="2"
+                    stroke-linecap="square"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M74.5 12.7561V30.6829L56.5 51L38.5 30.6829L38.5 12.7561L56.4988 2L74.5 12.7561Z"
+                    stroke="#4E00F6"
+                    stroke-width="3"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M51.5 22H61.5V14H51.5V22Z"
+                    stroke="#4E00F6"
+                    stroke-width="2"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M49.5 31H63.5V20H49.5V31Z"
+                    stroke="#4E00F6"
+                    stroke-width="2"
+                  />
+                  <defs>
+                    <linearGradient
+                      id="paint0_linear"
+                      x1="30.5"
+                      y1="2"
+                      x2="30.5"
+                      y2="76"
+                      gradientUnits="userSpaceOnUse"
+                    >
+                      <stop stop-color="#E0D3FC" stop-opacity="0.25" />
+                      <stop
+                        offset="1"
+                        stop-color="#C3A9FB"
+                        stop-opacity="0.5"
+                      />
+                    </linearGradient>
+                    <linearGradient
+                      id="paint1_linear"
+                      x1="12.5"
+                      y1="2"
+                      x2="12.5"
+                      y2="76"
+                      gradientUnits="userSpaceOnUse"
+                    >
+                      <stop stop-color="#E0D3FC" stop-opacity="0.15" />
+                      <stop
+                        offset="1"
+                        stop-color="#C3A9FB"
+                        stop-opacity="0.25"
+                      />
+                    </linearGradient>
+                  </defs>
+                </svg>
               </div>
               <StProgress :duration="progressDuration" />
             </div>
@@ -919,30 +1007,118 @@
               <div>
                 <h5>Recovery Phrase</h5>
                 <h6>Your new StealthSend Account is being prepared.</h6>
-                <p class="desc-medium">Your random list of words is ready to be saved.</p>
-                <svg width="76" height="78" viewBox="0 0 76 78" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="30.5" y="2" width="27" height="74" fill="url(#paint0_linear)"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M50.4153 2H57.5V76H12.5L50.4153 2Z" fill="url(#paint1_linear)"/>
-<path d="M57.4988 2H1.5L1.5 76H57.5V50.9355L39.2391 30.6452V12.7419L57.5 2" stroke="#4E00F6" stroke-width="3"/>
-<path d="M13.0217 40.5H35.9783" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path d="M12.8261 31.5H27.1739" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path d="M12.8261 24.5H27.1739" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path d="M13.0217 56.5H35.9783" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path d="M13.0217 49.5H35.9783" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M74.5 12.7561V30.6829L56.5 51L38.5 30.6829L38.5 12.7561L56.4988 2L74.5 12.7561Z" stroke="#4E00F6" stroke-width="3"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M51.5 22H61.5V14H51.5V22Z" stroke="#4E00F6" stroke-width="2"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M49.5 31H63.5V20H49.5V31Z" stroke="#4E00F6" stroke-width="2"/>
-<defs>
-<linearGradient id="paint0_linear" x1="30.5" y1="2" x2="30.5" y2="76" gradientUnits="userSpaceOnUse">
-<stop stop-color="#E0D3FC" stop-opacity="0.25"/>
-<stop offset="1" stop-color="#C3A9FB" stop-opacity="0.5"/>
-</linearGradient>
-<linearGradient id="paint1_linear" x1="12.5" y1="2" x2="12.5" y2="76" gradientUnits="userSpaceOnUse">
-<stop stop-color="#E0D3FC" stop-opacity="0.15"/>
-<stop offset="1" stop-color="#C3A9FB" stop-opacity="0.25"/>
-</linearGradient>
-</defs>
-</svg>
+                <p class="desc-medium">
+                  Your random list of words is ready to be saved.
+                </p>
+                <svg
+                  width="76"
+                  height="78"
+                  viewBox="0 0 76 78"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    x="30.5"
+                    y="2"
+                    width="27"
+                    height="74"
+                    fill="url(#paint0_linear)"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M50.4153 2H57.5V76H12.5L50.4153 2Z"
+                    fill="url(#paint1_linear)"
+                  />
+                  <path
+                    d="M57.4988 2H1.5L1.5 76H57.5V50.9355L39.2391 30.6452V12.7419L57.5 2"
+                    stroke="#4E00F6"
+                    stroke-width="3"
+                  />
+                  <path
+                    d="M13.0217 40.5H35.9783"
+                    stroke="#4E00F6"
+                    stroke-width="2"
+                    stroke-linecap="square"
+                  />
+                  <path
+                    d="M12.8261 31.5H27.1739"
+                    stroke="#4E00F6"
+                    stroke-width="2"
+                    stroke-linecap="square"
+                  />
+                  <path
+                    d="M12.8261 24.5H27.1739"
+                    stroke="#4E00F6"
+                    stroke-width="2"
+                    stroke-linecap="square"
+                  />
+                  <path
+                    d="M13.0217 56.5H35.9783"
+                    stroke="#4E00F6"
+                    stroke-width="2"
+                    stroke-linecap="square"
+                  />
+                  <path
+                    d="M13.0217 49.5H35.9783"
+                    stroke="#4E00F6"
+                    stroke-width="2"
+                    stroke-linecap="square"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M74.5 12.7561V30.6829L56.5 51L38.5 30.6829L38.5 12.7561L56.4988 2L74.5 12.7561Z"
+                    stroke="#4E00F6"
+                    stroke-width="3"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M51.5 22H61.5V14H51.5V22Z"
+                    stroke="#4E00F6"
+                    stroke-width="2"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M49.5 31H63.5V20H49.5V31Z"
+                    stroke="#4E00F6"
+                    stroke-width="2"
+                  />
+                  <defs>
+                    <linearGradient
+                      id="paint0_linear"
+                      x1="30.5"
+                      y1="2"
+                      x2="30.5"
+                      y2="76"
+                      gradientUnits="userSpaceOnUse"
+                    >
+                      <stop stop-color="#E0D3FC" stop-opacity="0.25" />
+                      <stop
+                        offset="1"
+                        stop-color="#C3A9FB"
+                        stop-opacity="0.5"
+                      />
+                    </linearGradient>
+                    <linearGradient
+                      id="paint1_linear"
+                      x1="12.5"
+                      y1="2"
+                      x2="12.5"
+                      y2="76"
+                      gradientUnits="userSpaceOnUse"
+                    >
+                      <stop stop-color="#E0D3FC" stop-opacity="0.15" />
+                      <stop
+                        offset="1"
+                        stop-color="#C3A9FB"
+                        stop-opacity="0.25"
+                      />
+                    </linearGradient>
+                  </defs>
+                </svg>
               </div>
               <StButton @click="handleSubmit">Show Recovery Phrase</StButton>
             </div>
@@ -951,8 +1127,11 @@
                 <h5>Recovery Phrase</h5>
                 <p>Carefully record {{ recoveryPhrase }} words</p>
                 <div class="mnemonic">
-                  <span v-for="(mnemonic, index) in createdMnemonic" :key="mnemonic">
-                    <strong>{{index + 1}}. </strong>{{ mnemonic }}
+                  <span
+                    v-for="(mnemonic, index) in createdMnemonic"
+                    :key="mnemonic"
+                  >
+                    <strong>{{ index + 1 }}. </strong>{{ mnemonic }}
                   </span>
                 </div>
               </div>
@@ -960,32 +1139,52 @@
             </div>
             <div v-if="currentStep === 15">
               <h5>Recovery Phrase Verification</h5>
-              <p>To verify your Recovery Phrase select the words in the order received.</p>
+              <p>
+                To verify your Recovery Phrase select the words in the order
+                received.
+              </p>
               <p>{{ createdMnemonic }}</p>
               <div>
                 <div class="mnemonic-list">
                   <template v-if="reorderMnemonic.length">
-                    <span v-for="word in reorderMnemonic" :key="word" @click="selectWordsInOrder(word)">{{ word }}</span>
+                    <span
+                      v-for="word in reorderMnemonic"
+                      :key="word"
+                      @click="selectWordsInOrder(word)"
+                      >{{ word }}</span
+                    >
                   </template>
                   <p v-else class="no-results">No words to select</p>
                 </div>
-              <div class="mnemonic-list mnemonic-list__selected">
-                <transition-group name="bounce">
-                  <template v-if="selectedWords.length">
-                  <span v-for="word in selectedWords" :key="word">{{ word }}</span>
-                </template>
-                <p v-else class="no-results">Select the words in the order received</p>
-                </transition-group>
-              </div>
-              <transition name="fade">
-                <a v-if="selectedWords.length" class="clear" @click="clearAndRedoWords">Clear and redo</a>
-              </transition>
-              <p>{{ mnemonicError }}</p>
+                <div class="mnemonic-list mnemonic-list__selected">
+                  <transition-group name="bounce">
+                    <template v-if="selectedWords.length">
+                      <span v-for="word in selectedWords" :key="word">{{
+                        word
+                      }}</span>
+                    </template>
+                    <p v-else class="no-results">
+                      Select the words in the order received
+                    </p>
+                  </transition-group>
+                </div>
+                <transition name="fade">
+                  <a
+                    v-if="selectedWords.length"
+                    class="clear"
+                    @click="clearAndRedoWords"
+                    >Clear and redo</a
+                  >
+                </transition>
+                <p>{{ mnemonicError }}</p>
               </div>
             </div>
             <div v-if="currentStep === 16">
               <h5>Checking Recovery Phrase</h5>
-              <p class="desc-medium">Please be patient and don’t turn off the computer or exit the application</p>
+              <p class="desc-medium">
+                Please be patient and don’t turn off the computer or exit the
+                application
+              </p>
               <img src="../../static/xstloader.gif" alt="Test gif" />
             </div>
             <div v-if="currentStep === 17"></div>
@@ -1060,7 +1259,7 @@ export default {
   components: {
     StFormItem,
     PaymentCode,
-    StProgress
+    StProgress,
   },
   setup() {
     const mainStore = useMainStore();
@@ -1172,24 +1371,24 @@ export default {
     const termsOfService = ref(false);
 
     watchEffect(async () => {
-      if(currentStep.value === 12) {
+      if (currentStep.value === 12) {
         setTimeout(() => {
-          handleSubmit()
-        }, progressDuration.value * 1000)
+          handleSubmit();
+        }, progressDuration.value * 1000);
       }
-      if(currentStep.value === 14) {
+      if (currentStep.value === 14) {
         /* recover() */
         let generateMnemonic = await CryptoService.generateMnemonicAndSeed();
-        createdMnemonic.value = generateMnemonic.mnemonic.split(' ')
-        clonedCreatedMnemonic.value = _cloneDeep(createdMnemonic.value)
+        createdMnemonic.value = generateMnemonic.mnemonic.split(' ');
+        clonedCreatedMnemonic.value = _cloneDeep(createdMnemonic.value);
       }
-    })
+    });
 
-    const selectedWords = ref([])
+    const selectedWords = ref([]);
 
     const reorderMnemonic = computed(() => {
-      return _shuffle(clonedCreatedMnemonic.value)
-    })
+      return _shuffle(clonedCreatedMnemonic.value);
+    });
 
     onMounted(() => {
       setTimeout(() => {
@@ -1198,35 +1397,39 @@ export default {
     });
 
     function selectWordsInOrder(item) {
-      let removedWord = clonedCreatedMnemonic.value.splice(clonedCreatedMnemonic.value.indexOf(item), 1)
-      selectedWords.value.push(removedWord[0])
-      let isEqual = true
-      if(selectedWords.value.length === createdMnemonic.value.length) {
-        for(let i = 0; i <= createdMnemonic.value.length; i++) {
-          if(selectedWords.value[i] !== createdMnemonic.value[i]) {
-            isEqual = false
+      let removedWord = clonedCreatedMnemonic.value.splice(
+        clonedCreatedMnemonic.value.indexOf(item),
+        1
+      );
+      selectedWords.value.push(removedWord[0]);
+      let isEqual = true;
+      if (selectedWords.value.length === createdMnemonic.value.length) {
+        for (let i = 0; i <= createdMnemonic.value.length; i++) {
+          if (selectedWords.value[i] !== createdMnemonic.value[i]) {
+            isEqual = false;
             break;
           }
         }
-        if(!mnemonicError.value) {
-          nextStep()
+        if (!mnemonicError.value) {
+          nextStep();
         }
         setTimeout(() => {
-          if(isEqual) {
-          nextStep()
-        } else {
-          prevStep()
-          mnemonicError.value = 'Words are not selected in the order received'
-          clearAndRedoWords()
-        }
-        }, 4200)
+          if (isEqual) {
+            nextStep();
+          } else {
+            prevStep();
+            mnemonicError.value =
+              'Words are not selected in the order received';
+            clearAndRedoWords();
+          }
+        }, 4200);
       }
     }
 
     function clearAndRedoWords() {
-      clonedCreatedMnemonic.value = _cloneDeep(createdMnemonic.value)
-      selectedWords.value = []
-      setTimeout(() => mnemonicError.value = '', 2000)
+      clonedCreatedMnemonic.value = _cloneDeep(createdMnemonic.value);
+      selectedWords.value = [];
+      setTimeout(() => (mnemonicError.value = ''), 2000);
     }
 
     function toggleAccount() {
@@ -1401,7 +1604,7 @@ export default {
 
 <style scoped>
 .bounce-enter-active {
-  animation: bounce-in .5s;
+  animation: bounce-in 0.5s;
 }
 .bounce-leave-active {
   display: none;
@@ -1697,7 +1900,8 @@ export default {
   grid-gap: 33px 10px;
   grid-template-columns: repeat(4, 3fr);
 }
-.mnemonic span, .mnemonic-list span {
+.mnemonic span,
+.mnemonic-list span {
   position: relative;
   width: fit-content;
   padding: 0 8px;
@@ -1708,24 +1912,35 @@ export default {
   letter-spacing: 0.12px;
   border-radius: 2px;
   white-space: nowrap;
-  background: linear-gradient(153.02deg, rgba(221, 222, 242, 0.15) 0%, rgba(205, 206, 236, 0.15) 83.23%), var(--purple100);
+  background: linear-gradient(
+      153.02deg,
+      rgba(221, 222, 242, 0.15) 0%,
+      rgba(205, 206, 236, 0.15) 83.23%
+    ),
+    var(--purple100);
 }
 .mnemonic-list__selected span {
-  background: linear-gradient(153.02deg, rgba(250, 249, 252, 0.15) 0%, rgba(207, 205, 209, 0.15) 83.23%, rgba(229, 228, 232, 0.15) 83.23%), var(--grey100) !important;
+  background: linear-gradient(
+      153.02deg,
+      rgba(250, 249, 252, 0.15) 0%,
+      rgba(207, 205, 209, 0.15) 83.23%,
+      rgba(229, 228, 232, 0.15) 83.23%
+    ),
+    var(--grey100) !important;
 }
 .mnemonic span:first-child::after {
   display: none !important;
 }
 .mnemonic span:nth-child(4n + 1)::after {
   content: '';
-    position: absolute;
-    left: 0;
-    top: -16px;
-    right: 0;
-    background-color: var(--grey100);
-    display: block;
-    height: 1px;
-    width: 359px;
+  position: absolute;
+  left: 0;
+  top: -16px;
+  right: 0;
+  background-color: var(--grey100);
+  display: block;
+  height: 1px;
+  width: 359px;
 }
 .mnemonic span strong {
   font-weight: 700;
