@@ -857,30 +857,139 @@
                   offline storage.
                 </p>
                 <p>Please select your choice of the following options:</p>
-                <div>
+                <div class="radio-container">
                   <StRadio
                     v-model="recoveryPhrase"
+                    type="square"
                     name="recoveryPhrase"
                     value="12"
                     >12 Word Recovery Phrase</StRadio
                   >
                   <StRadio
                     v-model="recoveryPhrase"
+                    type="square"
                     name="recoveryPhrase"
                     value="18"
                     >18 Word Recovery Phrase</StRadio
                   >
                   <StRadio
                     v-model="recoveryPhrase"
+                    type="square"
                     name="recoveryPhrase"
                     value="24"
                     >24 Word Recovery Phrase</StRadio
                   >
-                  {{ recoveryPhrase }}
                 </div>
               </div>
-            </div>
             <StButton @click="handleSubmit">Proceed</StButton>
+            </div>
+            <div class="step" v-if="currentStep === 12">
+              <div>
+                <h5>Recovery Phrase</h5>
+                <h6>Your new StealthSend Account is being prepared.</h6>
+                <p class="desc-medium">Please move your mouse to generate a random list of words unique to your wallet.</p>
+                <svg width="76" height="78" viewBox="0 0 76 78" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="30.5" y="2" width="27" height="74" fill="url(#paint0_linear)"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M50.4153 2H57.5V76H12.5L50.4153 2Z" fill="url(#paint1_linear)"/>
+<path d="M57.4988 2H1.5L1.5 76H57.5V50.9355L39.2391 30.6452V12.7419L57.5 2" stroke="#4E00F6" stroke-width="3"/>
+<path d="M13.0217 40.5H35.9783" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
+<path d="M12.8261 31.5H27.1739" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
+<path d="M12.8261 24.5H27.1739" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
+<path d="M13.0217 56.5H35.9783" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
+<path d="M13.0217 49.5H35.9783" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M74.5 12.7561V30.6829L56.5 51L38.5 30.6829L38.5 12.7561L56.4988 2L74.5 12.7561Z" stroke="#4E00F6" stroke-width="3"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M51.5 22H61.5V14H51.5V22Z" stroke="#4E00F6" stroke-width="2"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M49.5 31H63.5V20H49.5V31Z" stroke="#4E00F6" stroke-width="2"/>
+<defs>
+<linearGradient id="paint0_linear" x1="30.5" y1="2" x2="30.5" y2="76" gradientUnits="userSpaceOnUse">
+<stop stop-color="#E0D3FC" stop-opacity="0.25"/>
+<stop offset="1" stop-color="#C3A9FB" stop-opacity="0.5"/>
+</linearGradient>
+<linearGradient id="paint1_linear" x1="12.5" y1="2" x2="12.5" y2="76" gradientUnits="userSpaceOnUse">
+<stop stop-color="#E0D3FC" stop-opacity="0.15"/>
+<stop offset="1" stop-color="#C3A9FB" stop-opacity="0.25"/>
+</linearGradient>
+</defs>
+</svg>
+
+              </div>
+              <StProgress :duration="progressDuration" />
+            </div>
+            <div class="step" v-if="currentStep === 13">
+              <div>
+                <h5>Recovery Phrase</h5>
+                <h6>Your new StealthSend Account is being prepared.</h6>
+                <p class="desc-medium">Your random list of words is ready to be saved.</p>
+                <svg width="76" height="78" viewBox="0 0 76 78" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="30.5" y="2" width="27" height="74" fill="url(#paint0_linear)"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M50.4153 2H57.5V76H12.5L50.4153 2Z" fill="url(#paint1_linear)"/>
+<path d="M57.4988 2H1.5L1.5 76H57.5V50.9355L39.2391 30.6452V12.7419L57.5 2" stroke="#4E00F6" stroke-width="3"/>
+<path d="M13.0217 40.5H35.9783" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
+<path d="M12.8261 31.5H27.1739" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
+<path d="M12.8261 24.5H27.1739" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
+<path d="M13.0217 56.5H35.9783" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
+<path d="M13.0217 49.5H35.9783" stroke="#4E00F6" stroke-width="2" stroke-linecap="square"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M74.5 12.7561V30.6829L56.5 51L38.5 30.6829L38.5 12.7561L56.4988 2L74.5 12.7561Z" stroke="#4E00F6" stroke-width="3"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M51.5 22H61.5V14H51.5V22Z" stroke="#4E00F6" stroke-width="2"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M49.5 31H63.5V20H49.5V31Z" stroke="#4E00F6" stroke-width="2"/>
+<defs>
+<linearGradient id="paint0_linear" x1="30.5" y1="2" x2="30.5" y2="76" gradientUnits="userSpaceOnUse">
+<stop stop-color="#E0D3FC" stop-opacity="0.25"/>
+<stop offset="1" stop-color="#C3A9FB" stop-opacity="0.5"/>
+</linearGradient>
+<linearGradient id="paint1_linear" x1="12.5" y1="2" x2="12.5" y2="76" gradientUnits="userSpaceOnUse">
+<stop stop-color="#E0D3FC" stop-opacity="0.15"/>
+<stop offset="1" stop-color="#C3A9FB" stop-opacity="0.25"/>
+</linearGradient>
+</defs>
+</svg>
+              </div>
+              <StButton @click="handleSubmit">Show Recovery Phrase</StButton>
+            </div>
+            <div class="step" v-if="currentStep === 14">
+              <div>
+                <h5>Recovery Phrase</h5>
+                <p>Carefully record {{ recoveryPhrase }} words</p>
+                <div class="mnemonic">
+                  <span v-for="(mnemonic, index) in createdMnemonic" :key="mnemonic">
+                    <strong>{{index + 1}}. </strong>{{ mnemonic }}
+                  </span>
+                </div>
+              </div>
+              <StButton @click="nextStep">Start Verification</StButton>
+            </div>
+            <div v-if="currentStep === 15">
+              <h5>Recovery Phrase Verification</h5>
+              <p>To verify your Recovery Phrase select the words in the order received.</p>
+              <p>{{ createdMnemonic }}</p>
+              <div>
+                <div class="mnemonic-list">
+                  <template v-if="reorderMnemonic.length">
+                    <span v-for="word in reorderMnemonic" :key="word" @click="selectWordsInOrder(word)">{{ word }}</span>
+                  </template>
+                  <p v-else class="no-results">No words to select</p>
+                </div>
+              <div class="mnemonic-list mnemonic-list__selected">
+                <transition-group name="bounce">
+                  <template v-if="selectedWords.length">
+                  <span v-for="word in selectedWords" :key="word">{{ word }}</span>
+                </template>
+                <p v-else class="no-results">Select the words in the order received</p>
+                </transition-group>
+              </div>
+              <transition name="fade">
+                <a v-if="selectedWords.length" class="clear" @click="clearAndRedoWords">Clear and redo</a>
+              </transition>
+              <p>{{ mnemonicError }}</p>
+              </div>
+            </div>
+            <div v-if="currentStep === 16">
+              <h5>Checking Recovery Phrase</h5>
+              <p class="desc-medium">Please be patient and don’t turn off the computer or exit the application</p>
+              <img src="../../static/xstloader.gif" alt="Test gif" />
+            </div>
+            <div v-if="currentStep === 17"></div>
+            <div v-if="currentStep === 18"></div>
           </transition-group>
         </div>
         <div v-if="currentStep < 5" class="right__inner-bottom">
@@ -932,7 +1041,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watchEffect, computed } from 'vue';
 import * as bip39 from 'bip39';
 import * as bip32 from 'bip32';
 import { useMainStore } from '@/store';
@@ -942,31 +1051,19 @@ import { add, format } from 'mathjs';
 import StFormItem from '@/components/elements/StFormItem.vue';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import PaymentCode from '@/components/elements/PaymentCode.vue';
+import StProgress from '@/components/elements/StProgress.vue';
+import _shuffle from 'lodash/shuffle';
+import _cloneDeep from 'lodash/cloneDeep';
 
 export default {
   name: 'StWelcome',
   components: {
     StFormItem,
     PaymentCode,
+    StProgress
   },
   setup() {
     const mainStore = useMainStore();
-
-    const recoverWallet = ref(false);
-    const mnemonic = ref(
-      'caution quantum bright middle grocery cross blouse walk piece copper already inhale'
-    );
-    const recovered = ref({});
-    const password = ref('');
-    const confirmPassword = ref('');
-    const paymentCode = ref('');
-    /* const confirmPaymentCode = ref(''); */
-    const account = ref('');
-    const recoveryPhrase = ref('12');
-
-    const showPassword = ref(false);
-    const showConfirmPassword = ref(false);
-
     const { form, errors, submitting, validateFields, resetFields } =
       useValidation({
         password: {
@@ -1051,17 +1148,86 @@ export default {
         },
       });
 
+    const recoverWallet = ref(false);
+    const mnemonic = ref('');
+    const recovered = ref({});
+    const password = ref('');
+    const confirmPassword = ref('');
+    const paymentCode = ref('');
+    /* const confirmPaymentCode = ref(''); */
+    const account = ref('');
+    const recoveryPhrase = ref('12');
+    const progressDuration = ref(5);
+    const createdMnemonic = ref([]);
+    const clonedCreatedMnemonic = ref([]);
+    const mnemonicError = ref('');
+
+    const showPassword = ref(false);
+    const showConfirmPassword = ref(false);
+
     const isWelcome = ref(false);
     const isAccount = ref(true);
-    const currentStep = ref(11);
+    const currentStep = ref(14);
     const paginationLength = ref(21);
     const termsOfService = ref(false);
+
+    watchEffect(async () => {
+      if(currentStep.value === 12) {
+        setTimeout(() => {
+          handleSubmit()
+        }, progressDuration.value * 1000)
+      }
+      if(currentStep.value === 14) {
+        /* recover() */
+        let generateMnemonic = await CryptoService.generateMnemonicAndSeed();
+        createdMnemonic.value = generateMnemonic.mnemonic.split(' ')
+        clonedCreatedMnemonic.value = _cloneDeep(createdMnemonic.value)
+      }
+    })
+
+    const selectedWords = ref([])
+
+    const reorderMnemonic = computed(() => {
+      return _shuffle(clonedCreatedMnemonic.value)
+    })
 
     onMounted(() => {
       setTimeout(() => {
         isWelcome.value = true;
       }, 2000);
     });
+
+    function selectWordsInOrder(item) {
+      let removedWord = clonedCreatedMnemonic.value.splice(clonedCreatedMnemonic.value.indexOf(item), 1)
+      selectedWords.value.push(removedWord[0])
+      let isEqual = true
+      if(selectedWords.value.length === createdMnemonic.value.length) {
+        for(let i = 0; i <= createdMnemonic.value.length; i++) {
+          if(selectedWords.value[i] !== createdMnemonic.value[i]) {
+            isEqual = false
+            break;
+          }
+        }
+        if(!mnemonicError.value) {
+          nextStep()
+        }
+        setTimeout(() => {
+          if(isEqual) {
+          nextStep()
+        } else {
+          prevStep()
+          mnemonicError.value = 'Words are not selected in the order received'
+          clearAndRedoWords()
+        }
+        }, 4200)
+      }
+    }
+
+    function clearAndRedoWords() {
+      clonedCreatedMnemonic.value = _cloneDeep(createdMnemonic.value)
+      selectedWords.value = []
+      setTimeout(() => mnemonicError.value = '', 2000)
+    }
 
     function toggleAccount() {
       /* isWelcome.value = false */
@@ -1159,12 +1325,11 @@ export default {
     }
 
     const createWallet = ref(false);
-    const created = ref(false);
     async function createNewWallet() {
       // new wallet is created
       // therefore, new password can be made
       mainStore.START_GLOBAL_LOADING();
-      created.value = await CryptoService.generateMnemonicAndSeed();
+      /* createdMnemonic.value = await CryptoService.generateMnemonicAndSeed(); */
       await CryptoService.storeWalletInDb(password.value);
       mainStore.STOP_GLOBAL_LOADING();
     }
@@ -1197,6 +1362,12 @@ export default {
       handleSubmit,
       showPassword,
       showConfirmPassword,
+      progressDuration,
+      mnemonicError,
+
+      reorderMnemonic,
+      clonedCreatedMnemonic,
+      selectedWords,
 
       recoverWallet,
       mnemonic,
@@ -1212,6 +1383,8 @@ export default {
       wif,
       imported,
 
+      clearAndRedoWords,
+      selectWordsInOrder,
       prevStep,
       chooseStep,
       nextStep,
@@ -1219,7 +1392,7 @@ export default {
       password,
       confirmPassword,
       createWallet,
-      created,
+      createdMnemonic,
       createNewWallet,
     };
   },
@@ -1227,6 +1400,20 @@ export default {
 </script>
 
 <style scoped>
+.bounce-enter-active {
+  animation: bounce-in .5s;
+}
+.bounce-leave-active {
+  display: none;
+}
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
 .welcome {
   display: flex;
   height: 100vh;
@@ -1364,6 +1551,9 @@ export default {
 .right__inner-top .desc {
   margin-bottom: 132px;
 }
+.right__inner-top .desc-medium {
+  margin-bottom: 76px;
+}
 .right__inner-bottom {
   width: 100%;
   display: flex;
@@ -1488,5 +1678,100 @@ export default {
 }
 .recovery p + p {
   margin-top: 30px;
+}
+.radio-container {
+  margin-top: 36px;
+}
+:deep .st-radio {
+  margin-bottom: 16px;
+  font-size: 12px;
+}
+:deep .st-radio__square {
+  top: 0;
+}
+.mnemonic {
+  margin-top: 36px;
+  padding: 20px;
+  background-color: var(--background100);
+  display: grid;
+  grid-gap: 33px 10px;
+  grid-template-columns: repeat(4, 3fr);
+}
+.mnemonic span, .mnemonic-list span {
+  position: relative;
+  width: fit-content;
+  padding: 0 8px;
+  display: block;
+  text-align: center;
+  font-size: 12px;
+  line-height: 24px;
+  letter-spacing: 0.12px;
+  border-radius: 2px;
+  white-space: nowrap;
+  background: linear-gradient(153.02deg, rgba(221, 222, 242, 0.15) 0%, rgba(205, 206, 236, 0.15) 83.23%), var(--purple100);
+}
+.mnemonic-list__selected span {
+  background: linear-gradient(153.02deg, rgba(250, 249, 252, 0.15) 0%, rgba(207, 205, 209, 0.15) 83.23%, rgba(229, 228, 232, 0.15) 83.23%), var(--grey100) !important;
+}
+.mnemonic span:first-child::after {
+  display: none !important;
+}
+.mnemonic span:nth-child(4n + 1)::after {
+  content: '';
+    position: absolute;
+    left: 0;
+    top: -16px;
+    right: 0;
+    background-color: var(--grey100);
+    display: block;
+    height: 1px;
+    width: 359px;
+}
+.mnemonic span strong {
+  font-weight: 700;
+}
+.mnemonic span:nth-child(4n + 1) {
+  margin-right: auto;
+}
+.mnemonic span:nth-child(4n + 2) {
+  margin: 0 auto;
+}
+.mnemonic span:nth-child(4n + 3) {
+  margin: 0 auto;
+}
+.mnemonic span:nth-child(4n + 4) {
+  margin-left: auto;
+}
+.mnemonic-list:first-child {
+  margin-top: 36px;
+}
+.mnemonic-list + .mnemonic-list {
+  margin-top: 12px;
+}
+.mnemonic-list {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: var(--background100);
+  padding: 12px 11px;
+}
+.mnemonic-list span {
+  margin: 8px 9px;
+}
+.mnemonic-list .no-results {
+  margin: 0 9px;
+}
+.clear {
+  margin-top: 12px;
+  cursor: pointer;
+  display: block;
+  width: fit-content;
+  color: var(--marine500);
+  font-size: 12px;
+  line-height: 24px;
+  letter-spacing: 0.12px;
+  transition: 0.3s;
+}
+.clear:hover {
+  color: var(--marine100);
 }
 </style>
