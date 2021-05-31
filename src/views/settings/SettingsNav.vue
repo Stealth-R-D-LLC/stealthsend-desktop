@@ -21,19 +21,19 @@
         </svg>
       </p>
       <ul class="group">
-        <li class="group-item" @click="goTo('/settings')">
+        <li class="group-item" @click="goTo('/settings/password')">
           <p class="group-item__name">Password</p>
           <p class="group-item__desc">Authorise access to application</p>
         </li>
-        <li class="group-item" @click="goTo('/settings')">
+        <li class="group-item" @click="goTo('/settings/payment-code')">
           <p class="group-item__name">Payment Code</p>
           <p class="group-item__desc">Authorise sending funds</p>
         </li>
-        <li class="group-item" @click="goTo('/settings')">
+        <li class="group-item" @click="goTo('/settings/recovery-phrase')">
           <p class="group-item__name">Recovery Phrase</p>
           <p class="group-item__desc">See and backup created seed</p>
         </li>
-        <li class="group-item" @click="goTo('/settings')">
+        <li class="group-item" @click="goTo('/settings/auto-lock')">
           <p class="group-item__name">Auto-lock</p>
           <p class="group-item__desc">Configure idle time in application</p>
         </li>
@@ -62,19 +62,19 @@
         </svg>
       </p>
       <ul class="group">
-        <li class="group-item" @click="goTo('/settings')">
+        <li class="group-item" @click="goTo('/settings/faq')">
           <p class="group-item__name">FAQ</p>
           <p class="group-item__desc">Lorem ipsum</p>
         </li>
-        <li class="group-item" @click="goTo('/settings')">
+        <li class="group-item" @click="goTo('/settings/my-tickets')">
           <p class="group-item__name">My Tickets</p>
           <p class="group-item__desc">Lorem ipsum</p>
         </li>
-        <li class="group-item" @click="goTo('/settings')">
+        <li class="group-item" @click="goTo('/settings/new-ticket')">
           <p class="group-item__name">Open New Ticket</p>
           <p class="group-item__desc">Lorem ipsum</p>
         </li>
-        <li class="group-item" @click="goTo('/settings')">
+        <li class="group-item" @click="goTo('/settings/report-a-bug')">
           <p class="group-item__name">Report a Bug</p>
           <p class="group-item__desc">Lorem ipsum</p>
         </li>
@@ -104,15 +104,15 @@
       </p>
 
       <ul class="group">
-        <li class="group-item" @click="goTo('/settings')">
+        <li class="group-item" @click="goTo('/settings/desktop-notifications')">
           <p class="group-item__name">Desktop</p>
           <p class="group-item__desc">Notifications appear in system</p>
         </li>
-        <li class="group-item" @click="goTo('/settings')">
+        <li class="group-item" @click="goTo('/settings/app-notifications')">
           <p class="group-item__name">In-App</p>
           <p class="group-item__desc">Notifications appear in application</p>
         </li>
-        <li class="group-item" @click="goTo('/settings')">
+        <li class="group-item" @click="goTo('/settings/email-notifications')">
           <p class="group-item__name">E-mail</p>
           <p class="group-item__desc">Notifications appear in mailbox</p>
         </li>
@@ -133,19 +133,19 @@
       </p>
 
       <ul class="group">
-        <li class="group-item" @click="goTo('/settings')">
+        <li class="group-item" @click="goTo('/settings/general-information')">
           <p class="group-item__name">General Information</p>
           <p class="group-item__desc">Lorem ipsum</p>
         </li>
-        <li class="group-item" @click="goTo('/settings')">
+        <li class="group-item" @click="goTo('/settings/website')">
           <p class="group-item__name">Website</p>
           <p class="group-item__desc">Lorem ipsum</p>
         </li>
-        <li class="group-item" @click="goTo('/settings')">
+        <li class="group-item" @click="goTo('/settings/privacy-policy')">
           <p class="group-item__name">Privacy Policy</p>
           <p class="group-item__desc">Lorem ipsum</p>
         </li>
-        <li class="group-item" @click="goTo('/settings')">
+        <li class="group-item" @click="goTo('/settings/terms-of-use')">
           <p class="group-item__name">Terms of Use</p>
           <p class="group-item__desc">Lorem ipsum</p>
         </li>
@@ -155,11 +155,14 @@
 </template>
 
 <script>
+import router from '@/router';
+
 export default {
   name: 'StSettingsNav',
   setup() {
     function goTo(path) {
       console.log('path: ', path);
+      router.push(path);
     }
     return {
       goTo,
@@ -172,6 +175,8 @@ export default {
 .st-settings-nav {
   min-width: 346px;
   width: 346px;
+  margin-top: -83px;
+  height: 100vh;
   padding: 0 24px;
   background-color: var(--background50);
 }
@@ -181,7 +186,7 @@ export default {
   line-height: 28px;
   letter-spacing: 0.32px;
   color: var(--grey1000);
-  padding: 32px 24px 0;
+  padding: 32px 24px 0 0;
   height: 50px;
   border-bottom: 1px solid var(--grey100);
 }
