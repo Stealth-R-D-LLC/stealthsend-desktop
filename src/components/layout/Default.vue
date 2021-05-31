@@ -3,7 +3,6 @@
     <MenuBar></MenuBar>
     <main class="layout__main">
       <Side v-if="$route.path === '/dashboard'"></Side>
-      <SettingsNav v-if="$route.path === '/settings'"></SettingsNav>
       <router-view v-slot="{ Component }">
         <div class="full-widht">
           <TopBar></TopBar>
@@ -21,12 +20,10 @@ import MenuBar from '@/components/layout/MenuBar.vue';
 import TopBar from '@/components/layout/TopBar.vue';
 import CryptoService from '@/services/crypto';
 import Side from '@/views/dashboard/components/side.vue';
-import SettingsNav from '@/views/settings/SettingsNav.vue';
 
 export default {
   name: 'TsDefault',
   components: {
-    SettingsNav,
     MenuBar,
     TopBar,
     Side,
