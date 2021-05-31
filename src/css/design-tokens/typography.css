@@ -30,6 +30,13 @@ h4 {
 
 h5 {
   color: var(--grey1000);
+  font-size: 18px;
+  letter-spacing: 0.32px;
+  line-height: 28px;
+}
+
+h6 {
+  color: var(--grey1000);
   font-size: 16px;
   letter-spacing: 0.32px;
   line-height: 24px;
