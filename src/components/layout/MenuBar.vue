@@ -14,7 +14,7 @@
           </a>
         </li>
         <li>
-          <router-link tag="a" class="item" to="/dashboard">
+          <router-link class="item" to="/dashboard">
             <div class="icon">
               <svg
                 width="24"
@@ -42,7 +42,7 @@
           </router-link>
         </li>
         <!-- <li>
-          <router-link tag="a" class="item" to="/uikit">
+          <router-link  class="item" to="/uikit">
             <div class="icon">
               <svg
                 width="24"
@@ -109,7 +109,7 @@
           </span>
         </li>
         <li>
-          <router-link tag="a" class="item" to="/transactions">
+          <router-link class="item" to="/transactions">
             <div class="icon">
               <svg
                 width="24"
@@ -172,7 +172,7 @@
           </router-link>
         </li>
         <li>
-          <router-link tag="a" class="item" to="/account/add">
+          <router-link class="item" to="/account/add">
             <div class="icon">
               <svg
                 width="24"
@@ -201,7 +201,7 @@
           </router-link>
         </li>
         <li>
-          <router-link tag="a" class="item" to="/account/archived">
+          <router-link class="item" to="/account/archived">
             <div class="icon">
               <svg
                 width="24"
@@ -261,7 +261,7 @@
         </li>
       </ul>
     </nav>
-    <router-link tag="a" class="item__footer" to="/lock">
+    <router-link class="item__footer" to="/lock">
       <svg
         width="24"
         height="24"
