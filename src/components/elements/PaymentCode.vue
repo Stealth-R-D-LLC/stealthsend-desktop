@@ -1,11 +1,11 @@
 <template>
-  <div class="payment-code">
+  <div :class="`payment-code payment-code--${position}`">
     <input
       v-for="(digit, index) in digits"
       type="text"
       :key="index"
       maxlength="1"
-      :class="`digit-${index}`"
+      :class="`digit-${index} digit-${position}`"
       :name="`digit-${index}`"
       :data-next="index !== digits - 1 ? `digit-${index + 1}` : undefined"
       :data-previous="index !== 0 ? `digit-${index - 1}` : undefined"
@@ -18,6 +18,10 @@
 export default {
   name: 'StPaymentCode',
   props: {
+    position: {
+      type: String,
+      default: 'center',
+    },
     digits: {
       type: Number,
       required: false,
@@ -79,15 +83,30 @@ export default {
 </script>
 
 <style scoped>
-.payment-code input {
-  background-color: pink;
-  width: 30px;
-  height: 50px;
-  border: none;
-  line-height: 50px;
+.payment-code--center,
+.digit-center {
   text-align: center;
-  font-size: 24px;
-  font-weight: 200;
-  margin: 0 2px;
+}
+.digit-center {
+  font-size: 20px;
+  line-height: 28px;
+}
+.payment-code--left,
+.digit-left {
+  text-align: left;
+}
+.digit-left {
+  font-size: 12px;
+  line-height: 24px;
+}
+.payment-code input {
+  width: 40px;
+  border: none;
+  outline: none;
+  padding: 8px 0;
+  border-bottom: 2px solid var(--grey200);
+}
+.payment-code input + input {
+  margin-left: 16px;
 }
 </style>
