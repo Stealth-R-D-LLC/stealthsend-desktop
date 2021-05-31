@@ -27,9 +27,22 @@
           <template v-if="isWelcome">
             <div class="box__inner" :class="{ 'box__inner--right': isAccount }">
               <transition-group name="fade">
-                <h2 class="title" v-if="isAccount">
-                  The Fastest Private<br />Digital Currency
-                </h2>
+                <template v-if="isAccount">
+                  <h2 class="title" v-if="currentStep <= 5">
+                    The Fastest Private<br />Digital Currency
+                  </h2>
+                  <h2
+                    class="title"
+                    v-if="currentStep === 6 || currentStep === 7"
+                  >
+                    The Holy Grail of Crypto:<br />fast, feeless, private<br />and
+                    scalable
+                  </h2>
+                  <h2 class="title" v-if="currentStep >= 8">
+                    World’s first feeless,<br />private high performance<br />blockchain
+                    protocol
+                  </h2>
+                </template>
                 <div v-else>
                   <h3 class="title">Welcome to StealthSend</h3>
                   <h4 class="subtitle">
@@ -696,7 +709,7 @@
                   :error-message="form.password.$errors"
                 >
                   <StInput
-                    :type="[showPassword ? 'text' : 'password']"
+                    :type="showPassword ? 'text' : 'password'"
                     v-model="form.password.$value"
                   >
                     <svg
@@ -711,17 +724,17 @@
                         fill-rule="evenodd"
                         clip-rule="evenodd"
                         d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
-                        :stroke="[showPassword ? '#C3A9FB' : '#4E00F6']"
+                        :stroke="showPassword ? '#C3A9FB' : '#4E00F6'"
                         stroke-width="2"
                       />
                       <path
                         d="M9 6L13 6"
-                        :stroke="[showPassword ? '#C3A9FB' : '#4E00F6']"
+                        :stroke="showPassword ? '#C3A9FB' : '#4E00F6'"
                         stroke-width="2"
                       />
                       <path
                         d="M11 4V8"
-                        :stroke="[showPassword ? '#C3A9FB' : '#4E00F6']"
+                        :stroke="showPassword ? '#C3A9FB' : '#4E00F6'"
                         stroke-width="2"
                       />
                     </svg>
@@ -732,7 +745,7 @@
                   :error-message="form.confirmPassword.$errors"
                 >
                   <StInput
-                    :type="[showConfirmPassword ? 'text' : 'password']"
+                    :type="showConfirmPassword ? 'text' : 'password'"
                     v-model="form.confirmPassword.$value"
                   >
                     <svg
@@ -747,17 +760,17 @@
                         fill-rule="evenodd"
                         clip-rule="evenodd"
                         d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
-                        :stroke="[showConfirmPassword ? '#C3A9FB' : '#4E00F6']"
+                        :stroke="showConfirmPassword ? '#C3A9FB' : '#4E00F6'"
                         stroke-width="2"
                       />
                       <path
                         d="M9 6L13 6"
-                        :stroke="[showConfirmPassword ? '#C3A9FB' : '#4E00F6']"
+                        :stroke="showConfirmPassword ? '#C3A9FB' : '#4E00F6'"
                         stroke-width="2"
                       />
                       <path
                         d="M11 4V8"
-                        :stroke="[showConfirmPassword ? '#C3A9FB' : '#4E00F6']"
+                        :stroke="showConfirmPassword ? '#C3A9FB' : '#4E00F6'"
                         stroke-width="2"
                       />
                     </svg>
@@ -1135,7 +1148,7 @@
                   </span>
                 </div>
               </div>
-              <StButton @click="nextStep">Start Verification</StButton>
+              <StButton @click="handleSubmit">Start Verification</StButton>
             </div>
             <div v-if="currentStep === 15">
               <h5>Recovery Phrase Verification</h5>
@@ -1143,12 +1156,11 @@
                 To verify your Recovery Phrase select the words in the order
                 received.
               </p>
-              <p>{{ createdMnemonic }}</p>
               <div>
                 <div class="mnemonic-list">
-                  <template v-if="reorderMnemonic.length">
+                  <template v-if="reorderedMnemonic.length">
                     <span
-                      v-for="word in reorderMnemonic"
+                      v-for="word in reorderedMnemonic"
                       :key="word"
                       @click="selectWordsInOrder(word)"
                       >{{ word }}</span
@@ -1176,7 +1188,7 @@
                     >Clear and redo</a
                   >
                 </transition>
-                <p>{{ mnemonicError }}</p>
+                <p class="mnemonic-error">{{ mnemonicError }}</p>
               </div>
             </div>
             <div v-if="currentStep === 16">
@@ -1187,8 +1199,27 @@
               </p>
               <img src="../../static/xstloader.gif" alt="Test gif" />
             </div>
-            <div v-if="currentStep === 17"></div>
-            <div v-if="currentStep === 18"></div>
+            <div class="step" v-if="currentStep === 17">
+              <div>
+                <h5>Congratulations</h5>
+                <p>Recovery Phrase successfully verified</p>
+                <div class="recovery-check">
+                  <p>
+                    Keep your Recovery Phrase in a safe place, the safety of
+                    your XST is based on it.
+                  </p>
+                  <StCheckbox v-model="recoveryPhraseConfirmation"
+                    >I have stored the Recovery Phrase in the safe
+                    place</StCheckbox
+                  >
+                </div>
+              </div>
+              <StButton
+                @click="createNewWallet"
+                :disabled="!recoveryPhraseConfirmation"
+                >Confirm</StButton
+              >
+            </div>
           </transition-group>
         </div>
         <div v-if="currentStep < 5" class="right__inner-bottom">
@@ -1240,7 +1271,7 @@
 </template>
 
 <script>
-import { ref, onMounted, watchEffect, computed } from 'vue';
+import { ref, onMounted, watchEffect } from 'vue';
 import * as bip39 from 'bip39';
 import * as bip32 from 'bip32';
 import { useMainStore } from '@/store';
@@ -1263,13 +1294,38 @@ export default {
   },
   setup() {
     const mainStore = useMainStore();
+
+    const recoverWallet = ref(false);
+    const mnemonic = ref('');
+    const recovered = ref({});
+    const password = ref('');
+    const confirmPassword = ref('');
+    const paymentCode = ref('');
+    /* const confirmPaymentCode = ref(''); */
+    const account = ref('');
+    const recoveryPhrase = ref('12');
+    const recoveryPhraseConfirmation = ref(false);
+    const progressDuration = ref(5);
+    const createdMnemonic = ref([]);
+    const reorderedMnemonic = ref([]);
+    const mnemonicError = ref('');
+
+    const showPassword = ref(false);
+    const showConfirmPassword = ref(false);
+
+    const isWelcome = ref(false);
+    const isAccount = ref(false);
+    const currentStep = ref(0);
+    const paginationLength = ref(18);
+    const termsOfService = ref(false);
+
     const { form, errors, submitting, validateFields, resetFields } =
       useValidation({
         password: {
           $value: password,
           $rules: [
             {
-              rule: () => password.value.length > 0 || 'Password is required',
+              rule: () => password.value.length || 'Password is required',
             },
             {
               key: 'pw',
@@ -1284,8 +1340,7 @@ export default {
           $rules: [
             {
               rule: () =>
-                confirmPassword.value.length > 0 ||
-                'Confirm password is required',
+                confirmPassword.value.length || 'Confirm password is required',
             },
             {
               key: 'pw',
@@ -1347,29 +1402,6 @@ export default {
         },
       });
 
-    const recoverWallet = ref(false);
-    const mnemonic = ref('');
-    const recovered = ref({});
-    const password = ref('');
-    const confirmPassword = ref('');
-    const paymentCode = ref('');
-    /* const confirmPaymentCode = ref(''); */
-    const account = ref('');
-    const recoveryPhrase = ref('12');
-    const progressDuration = ref(5);
-    const createdMnemonic = ref([]);
-    const clonedCreatedMnemonic = ref([]);
-    const mnemonicError = ref('');
-
-    const showPassword = ref(false);
-    const showConfirmPassword = ref(false);
-
-    const isWelcome = ref(false);
-    const isAccount = ref(true);
-    const currentStep = ref(14);
-    const paginationLength = ref(21);
-    const termsOfService = ref(false);
-
     watchEffect(async () => {
       if (currentStep.value === 12) {
         setTimeout(() => {
@@ -1380,15 +1412,11 @@ export default {
         /* recover() */
         let generateMnemonic = await CryptoService.generateMnemonicAndSeed();
         createdMnemonic.value = generateMnemonic.mnemonic.split(' ');
-        clonedCreatedMnemonic.value = _cloneDeep(createdMnemonic.value);
+        reorderedMnemonic.value = _shuffle(_cloneDeep(createdMnemonic.value));
       }
     });
 
     const selectedWords = ref([]);
-
-    const reorderMnemonic = computed(() => {
-      return _shuffle(clonedCreatedMnemonic.value);
-    });
 
     onMounted(() => {
       setTimeout(() => {
@@ -1397,8 +1425,8 @@ export default {
     });
 
     function selectWordsInOrder(item) {
-      let removedWord = clonedCreatedMnemonic.value.splice(
-        clonedCreatedMnemonic.value.indexOf(item),
+      let removedWord = reorderedMnemonic.value.splice(
+        reorderedMnemonic.value.indexOf(item),
         1
       );
       selectedWords.value.push(removedWord[0]);
@@ -1427,9 +1455,9 @@ export default {
     }
 
     function clearAndRedoWords() {
-      clonedCreatedMnemonic.value = _cloneDeep(createdMnemonic.value);
+      reorderedMnemonic.value = _shuffle(_cloneDeep(createdMnemonic.value));
       selectedWords.value = [];
-      setTimeout(() => (mnemonicError.value = ''), 2000);
+      setTimeout(() => (mnemonicError.value = ''), 4000);
     }
 
     function toggleAccount() {
@@ -1487,11 +1515,6 @@ export default {
 
       const hdAccount = await mainStore.rpc('gethdaccount', [pk]);
 
-      // break out of recursion if last account doesn't have transactions
-      if (hdAccount.length === 0) {
-        return;
-      }
-
       let accUtxo = 0;
 
       for (let tx of hdAccount) {
@@ -1511,6 +1534,11 @@ export default {
       };
 
       await CryptoService.storeAccountInDb(account);
+
+      // break out of recursion if last account doesn't have transactions
+      if (hdAccount.length === 0) {
+        return;
+      }
 
       await restoreAccounts();
 
@@ -1534,6 +1562,8 @@ export default {
       mainStore.START_GLOBAL_LOADING();
       /* createdMnemonic.value = await CryptoService.generateMnemonicAndSeed(); */
       await CryptoService.storeWalletInDb(password.value);
+      restoreAccounts();
+      goToDashboard();
       mainStore.STOP_GLOBAL_LOADING();
     }
 
@@ -1568,8 +1598,7 @@ export default {
       progressDuration,
       mnemonicError,
 
-      reorderMnemonic,
-      clonedCreatedMnemonic,
+      reorderedMnemonic,
       selectedWords,
 
       recoverWallet,
@@ -1580,6 +1609,7 @@ export default {
       /* confirmPaymentCode, */
       account,
       recoveryPhrase,
+      recoveryPhraseConfirmation,
 
       importWalletFromWif,
       importWallet,
@@ -1975,6 +2005,10 @@ export default {
 .mnemonic-list .no-results {
   margin: 0 9px;
 }
+.mnemonic-error {
+  text-align: left;
+  color: var(--danger);
+}
 .clear {
   margin-top: 12px;
   cursor: pointer;
@@ -1988,5 +2022,11 @@ export default {
 }
 .clear:hover {
   color: var(--marine100);
+}
+.recovery-check {
+  text-align: left;
+  margin-top: 48px;
+  background-color: var(--background100);
+  padding: 24px;
 }
 </style>

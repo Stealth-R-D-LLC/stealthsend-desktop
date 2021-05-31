@@ -14,6 +14,7 @@ export default {
       default: 5,
     },
   },
+  emits: ['update:modelValue'],
   setup(props) {
     function beforeEnter(el) {
       el.style.width = 0;
