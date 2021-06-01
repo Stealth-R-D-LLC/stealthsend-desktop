@@ -41,8 +41,8 @@
             <span class="item__span"> Dashboard </span>
           </router-link>
         </li>
-        <!-- <li>
-          <router-link  class="item" to="/uikit">
+        <li>
+          <router-link class="item" to="/uikit">
             <div class="icon">
               <svg
                 width="24"
@@ -61,7 +61,7 @@
             </div>
             <span class="item__span"> UI Kit </span>
           </router-link>
-        </li> -->
+        </li>
         <li @click="openModal('send')">
           <span class="item">
             <div class="icon">
