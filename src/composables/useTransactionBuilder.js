@@ -76,7 +76,9 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         sendForm.account.path
       );
       const child = CryptoService.master.derivePath(
-        `m/44'/1'/${accountIndex}'/0/0` // TODO CHANGE 1 (TESTNET) TO 125 (XST)
+        `m/44'/${
+          process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
+        }'/${accountIndex}'/0/0` // TODO CHANGE 1 (TESTNET) TO 125 (XST)
       );
 
       const keyPair = bitcoin.ECPair.fromWIF(

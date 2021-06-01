@@ -18,11 +18,13 @@
 <script>
 import TransactionList from '@/components/partials/TransactionList.vue';
 import CryptoService from '@/services/crypto';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import DatePicker from 'vue2-datepicker';
 import 'vue2-datepicker/index.css';
 import isWithinInterval from 'date-fns/isWithinInterval';
 import isSameDay from 'date-fns/isSameDay';
+import { useMainStore } from '@/store';
+import { useRoute } from 'vue-router';
 
 export default {
   name: 'Transactions',
@@ -30,11 +32,45 @@ export default {
     TransactionList,
     DatePicker,
   },
+  beforeRouteLeave() {
+    //const mainStore = useMainStore();
+    //mainStore.SET_ACTIVE_TRANSACTION_ADDRESS('')
+    // called when the route that renders this component is about to
+    // be navigated away from.
+    // has access to `this` component instance.
+  },
+  beforeRouteEnter(to, from, next) {
+    const mainStore = useMainStore();
+
+    next((vm) => {
+      vm.query = mainStore.activeTransactionAddress;
+    });
+    // called before the route that renders this component is confirmed.
+    // does NOT have access to `this` component instance,
+    // because it has not been created yet when this guard is called!
+  },
   setup() {
     const transactions = ref([]);
-    const query = ref('');
+    let query = ref('');
     const date = ref([]);
 
+    const route = useRoute();
+
+    onMounted(() => {
+      console.log(111, route.params.address);
+      console.log(222, query.value);
+      if (route.params.address) {
+        query.value = route.params.address;
+      }
+    });
+
+    // eslint-disable-next-line vue/no-setup-props-destructure
+    // console.log(mainStore.activeTransactionAddress)
+
+    // if(mainStore.activeTransactionAddress !== ''){
+    //   query.value = mainStore.activeTransactionAddress
+    // }
+    console.log('PROPARA', route.params.address);
     function findLabelForTx(tx) {
       return CryptoService.txWithLabels[tx];
     }
@@ -50,6 +86,7 @@ export default {
       let filtered = [...transactions.value];
       if (filtered.length === 0) return [];
 
+      console.log('EEEE', query.value);
       if (query.value.length > 0) {
         filtered = filtered.filter((el) => {
           return (

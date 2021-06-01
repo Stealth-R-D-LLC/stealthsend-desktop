@@ -8,6 +8,29 @@ import cryptoJs from 'crypto-js';
 import { add, format } from 'mathjs';
 import db from '../db';
 
+let networkConfig = {
+  messagePrefix: 'unused',
+  bip32: {
+    public: 0x043587cf,
+    private: 0x04358394,
+  },
+  pubKeyHash: 0x6f,
+  scriptHash: 0xc4,
+  wif: 0xef,
+};
+
+if (process.env.VUE_APP_NETWORK === 'mainnet') {
+  networkConfig = {
+    messagePrefix: 'unused',
+    bip32: {
+      public: 0x0488b21e,
+      private: 0x0488ade4,
+    },
+    pubKeyHash: 0x3e,
+    scriptHash: 0x85,
+    wif: 0xbe,
+  };
+}
 // libs.bitcoin.networks.stealthtestnet = {
 //   messagePrefix: 'unused',
 //   bip32: {
@@ -38,16 +61,7 @@ const CryptoService = {
     MINIMAL_CHANGE: 0,
   },
   isFirstArrival: true,
-  network: {
-    messagePrefix: 'unused',
-    bip32: {
-      public: 0x043587cf, // testnet XPUB
-      private: 0x04358394, // testbet XPRV
-    },
-    pubKeyHash: 0x6f,
-    scriptHash: 0xc4,
-    wif: 0xef,
-  },
+  network: networkConfig,
   master: null,
   seed: null,
   txWithLabels: {},
@@ -143,9 +157,15 @@ const CryptoService = {
     // which enables watch-only wallets.
     // With hardened child keys, you cannot prove that a child public key is linked to a parent public key.
     const keypair = this.master.derivePath(
-      `m/44'/1'/${account}'/${change}/${address}` // TODO CHANGE 1 (TESTNET) TO 125 (XST)
+      `m/44'/${
+        process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
+      }'/${account}'/${change}/${address}` // TODO CHANGE 1 (TESTNET) TO 125 (XST)
     );
-    let acc = this.master.derivePath(`m/44'/1'/${account}'`); // TODO CHANGE 1 (TESTNET) TO 125 (XST)
+    let acc = this.master.derivePath(
+      `m/44'/${
+        process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
+      }'/${account}'`
+    ); // TODO CHANGE 1 (TESTNET) TO 125 (XST)
     // this.WIFtoPK(child.toWIF()) // decrypt
     return {
       address: bitcoin.payments.p2pkh({
@@ -275,6 +295,53 @@ const CryptoService = {
     await db.setItem('accounts', accounts);
 
     return this.getAccounts();
+  },
+
+  async addToAddressBook(addressBookItem) {
+    let addressBook = (await db.getItem('addresses')) || [];
+
+    // find largest ID of saved contacts amd add it to saving object
+    let largestExistingId = 0;
+    if (addressBook.length > 0) {
+      largestExistingId = addressBook.reduce((a, b) =>
+        a.id > b.id ? a : b
+      ).id;
+    }
+    addressBookItem.id = largestExistingId + 1;
+
+    addressBook.push(JSON.parse(JSON.stringify(addressBookItem)));
+    await db.setItem('addresses', addressBook);
+
+    return addressBook;
+  },
+
+  async deleteFromAddressBook(addressBookItem) {
+    let addressBook = (await db.getItem('addresses')) || [];
+
+    const wantedIndex = addressBook.findIndex(
+      (item) => item.id === addressBookItem.id
+    );
+
+    addressBook.splice(wantedIndex, 1);
+    await db.setItem('addresses', JSON.parse(JSON.stringify(addressBook)));
+
+    return addressBook;
+  },
+
+  async updateAddressBook(addressBookItem) {
+    let addressBook = (await db.getItem('addresses')) || [];
+    const wantedIndex = addressBook.findIndex(
+      (item) => item.id === addressBookItem.id
+    );
+
+    addressBook[wantedIndex] = addressBookItem;
+    await db.setItem('addresses', JSON.parse(JSON.stringify(addressBook)));
+
+    return addressBook;
+  },
+
+  async getAddressBook() {
+    return (await db.getItem('addresses')) || [];
   },
 
   async validatePassword(password) {
@@ -411,6 +478,15 @@ const CryptoService = {
       freeAddresses,
     };
     // grace concert hunt glide million orange enact habit amazing deal object nurse
+  },
+
+  isAddressValid(address) {
+    try {
+      bitcoin.address.fromBase58Check(address);
+      return true;
+    } catch (error) {
+      return false;
+    }
   },
 
   AESEncrypt(payload, key = '123456789') {
