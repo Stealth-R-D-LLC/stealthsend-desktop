@@ -98,7 +98,7 @@
             v-for="(item, index) in addressList"
             :key="item.address"
           >
-            <p v-if="index === 0" class="bold letter">{{ id }}</p>
+            <p v-if="index === 0" class="bold letter">{{ id.toUpperCase() }}</p>
             <div
               class="address-list__inner--redirect"
               @click="prePopulateForm(item)"
@@ -169,7 +169,7 @@
           v-model="addContactForm.favorite"
           >Favorite list</StCheckbox
         >
-        <p class="transactions">
+        <p @click="viewTransactions" class="transactions">
           <svg
             width="18"
             height="12"
@@ -282,7 +282,7 @@
         >
       </div>
       <div class="add-contact__bottom">
-        <p>
+        <p @click="deleteContact">
           <svg
             width="18"
             height="18"
@@ -303,7 +303,7 @@
               stroke-linejoin="round"
             />
           </svg>
-          Delete conact
+          Delete contact
         </p>
         <StButton @click="confirmEdit">Save</StButton>
       </div>
@@ -332,6 +332,9 @@
             placeholder="Please enter a valid XST address"
           />
         </div>
+        <StCheckbox class="custom-checkbox" v-model="addContactForm.favorite"
+          >Favorite list</StCheckbox
+        >
       </div>
       <div class="add-contact__bottom">
         <p @click="changeTab('address-book')">
@@ -364,9 +367,12 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import useHelpers from '@/composables/useHelpers';
 import { useMainStore } from '@/store';
+import CryptoService from '../../services/crypto';
+import router from '@/router';
+
 export default {
   name: 'AddressBook',
   setup() {
@@ -482,74 +488,28 @@ export default {
         letter: '#',
       },
     ]);
-    const addressList = ref([
-      {
-        name: 'Allen Lee',
-        description: 'Remitance address',
-        address: 'SM4AhY5SA4sYAxyYNtHLFtbGdaWyQK8frJ',
-        favorite: false,
-      },
-      {
-        name: 'Ivan Drago',
-        description: 'Remitance address',
-        address: 'SM4AhY5SA4sYAxyYNtHLFtbGdaWyQK8frJ',
-        favorite: true,
-      },
-      {
-        name: 'Alex Drago',
-        description: 'Remitance address',
-        address: 'SM4AhY5SA4sYAxyYNtHLFtbGdaWyQK8frJ',
-        favorite: false,
-      },
-      {
-        name: 'Cleo Hees',
-        description: 'Remitance address',
-        address: 'SM4AhY5SA4sYAxyYNtHLFtbGdaWyQK8frJ',
-        favorite: false,
-      },
-      {
-        name: 'John Doe',
-        description: 'Remitance address',
-        address: 'SM4AhY5SA4sYAxyYNtHLFtbGdaWyQK8frJ',
-        favorite: false,
-      },
-      {
-        name: 'Sascha Pahlke',
-        description: 'Design God and Crypto Jedi',
-        address: 'SM4AhY5SA4sYAxyYNtHLFtbGdaWyQK8frJ',
-        favorite: false,
-      },
-      {
-        name: 'Ivan Rimac',
-        description: 'Some guy I work with',
-        address: 'SM4AhY5SA4sYAxyYNtHLFtbGdaWyQK8frJ',
-        favorite: false,
-      },
-      {
-        name: 'John Smith',
-        description: 'Remitance address',
-        address: 'SM4AhY5SA4sYAxyYNtHLFtbGdaWyQK8frJ',
-        favorite: false,
-      },
-      {
-        name: 'Trench Mist',
-        description: 'Remitance address',
-        address: 'SM4AhY5SA4sYAxyYNtHLFtbGdaWyQK8frJ',
-        favorite: false,
-      },
-    ]);
+    let addressList = ref([]);
     const isActive = ref('');
-    const addContactForm = ref({
+    let addContactForm = ref({});
+
+    addContactForm.value = {
       name: '',
       description: '',
       address: '',
       favorite: false,
-    });
-    const editContactForm = ref({
+    };
+
+    let editContactForm = ref({});
+    editContactForm.value = {
+      id: '',
       name: '',
       description: '',
       address: '',
       favorite: false,
+    };
+
+    onMounted(async () => {
+      addressList.value = await CryptoService.getAddressBook();
     });
 
     const activeTab = computed(() => {
@@ -588,9 +548,38 @@ export default {
       }
     }
 
-    function addContact() {
-      addressList.value.push(addContactForm.value);
+    async function addContact() {
+      if (!CryptoService.isAddressValid(addContactForm.value.address)) {
+        console.error('Address invalid');
+        return;
+      }
+
+      addressList.value = await CryptoService.addToAddressBook(
+        addContactForm.value
+      );
       changeTab('address-book');
+    }
+
+    async function deleteContact() {
+      addressList.value = await CryptoService.deleteFromAddressBook(
+        editContactForm.value
+      );
+      changeTab('address-book');
+    }
+
+    function viewTransactions() {
+      resetForm();
+      mainStore.TOGGLE_DRAWER(false);
+      //mainStore.SET_ACTIVE_TRANSACTION_ADDRESS(editContactForm.value.address)
+
+      router.push({
+        name: 'Transactions',
+        params: { address: editContactForm.value.address },
+      });
+
+      /*      if(router.currentRoute.value.path !== '/transactions'){
+        router.push('/transactions');
+      }*/
     }
 
     function prePopulateForm(item) {
@@ -631,7 +620,15 @@ export default {
       changeTab('edit-contact');
     }
 
-    function confirmEdit() {
+    async function confirmEdit() {
+      if (!CryptoService.isAddressValid(editContactForm.value.address)) {
+        console.error('Address invalid');
+        return;
+      }
+
+      addressList.value = await CryptoService.updateAddressBook(
+        editContactForm.value
+      );
       changeTab('address-book');
     }
 
@@ -642,6 +639,7 @@ export default {
       addContactForm,
       editContactForm,
       isActive,
+      addressList,
 
       // Computed
       orderByName,
@@ -651,10 +649,12 @@ export default {
       closeCanvas,
       changeTab,
       addContact,
+      deleteContact,
       prePopulateForm,
       editContact,
       confirmEdit,
       scrollToElement,
+      viewTransactions,
       /* toggleFavorite */
     };
   },
