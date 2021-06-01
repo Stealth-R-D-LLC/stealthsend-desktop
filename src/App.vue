@@ -1,7 +1,8 @@
 <template>
   <div class="container">
-    <ReceiveModal :steps="3" :current-step="1" />
-    <SendModal :steps="3" :current-step="1" />
+    <ReceiveModal />
+    <SendModal />
+    <AddAccount />
     <StLoading :visibility="isLoading" :opaque="true"></StLoading>
     <component :is="layout"> </component>
     <OffCanvas></OffCanvas>
@@ -20,6 +21,7 @@ import OffCanvas from './components/elements/StOffCanvas.vue';
 import LockLayout from './components/layout/Lock.vue';
 import ReceiveModal from './components/partials/ReceiveModal.vue';
 import SendModal from './components/partials/SendModal.vue';
+import AddAccount from './components/partials/AddAccount.vue';
 import { useRoute } from 'vue-router';
 
 export default {
@@ -28,6 +30,7 @@ export default {
     ReceiveModal,
     SendModal,
     OffCanvas,
+    AddAccount,
   },
   setup() {
     const mainStore = useMainStore();
