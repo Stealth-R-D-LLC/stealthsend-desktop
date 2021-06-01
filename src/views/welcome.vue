@@ -1720,7 +1720,7 @@ export default {
 
       CryptoService.seed = bytes.toString('hex');
       CryptoService.master = master;
-      /* await CryptoService.storeWalletInDb(password.value); */
+      await CryptoService.storeWalletInDb('123');//password.value
 
       await restoreAccounts();
 
@@ -1762,7 +1762,7 @@ export default {
 
       await CryptoService.storeAccountInDb(account);
 
-      // break out of recursion if last account doesn't have transactions
+      // break out of recursion after saving first account that doesn't have transactions
       if (hdAccount.length === 0) {
         return;
       }
@@ -1789,7 +1789,7 @@ export default {
       mainStore.START_GLOBAL_LOADING();
       /* createdMnemonic.value = await CryptoService.generateMnemonicAndSeed(); */
       await CryptoService.storeWalletInDb(password.value);
-      restoreAccounts();
+      await restoreAccounts();
       goToDashboard();
       mainStore.STOP_GLOBAL_LOADING();
     }

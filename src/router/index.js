@@ -76,6 +76,7 @@ const routes = [
     path: '/transactions',
     name: 'Transactions',
     component: Transactions,
+    props: true,
   },
   {
     path: '/settings',
