@@ -22,7 +22,7 @@ import SettingsWebsite from '@/views/settings/website.vue';
 import SettingsPrivacyPolicy from '@/views/settings/privacy-policy.vue';
 import SettingsTermsOfUse from '@/views/settings/terms-of-use.vue';
 import Transactions from '@/views/transactions.vue';
-// import UIKit from '@/views/uikit.vue';
+import UIKit from '@/views/uikit.vue';
 import Welcome from '@/views/welcome.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
@@ -62,11 +62,11 @@ const routes = [
       layout: 'default',
     },
   },
-  // {
-  //   path: '/uikit',
-  //   name: 'UIKit',
-  //   component: UIKit,
-  // },
+  {
+    path: '/uikit',
+    name: 'UIKit',
+    component: UIKit,
+  },
   {
     path: '/receive',
     name: 'Receive',
