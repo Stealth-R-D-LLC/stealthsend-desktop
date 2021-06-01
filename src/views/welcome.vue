@@ -1,9 +1,12 @@
 <template>
   <div class="welcome">
-    <div class="left" :class="{ 'left-active': isAccount }">
+    <div class="left" :class="{ 'left-active': isAccount || isRecovery }">
       <img src="@/assets/welcome.png" alt="welcome" />
       <div class="overlay"></div>
-      <div class="left__inner" :class="{ 'left__inner--active': isAccount }">
+      <div
+        class="left__inner"
+        :class="{ 'left__inner--active': isAccount || isRecovery }"
+      >
         <div class="logo">
           <svg
             width="161"
@@ -22,10 +25,16 @@
         </div>
         <div
           class="box"
-          :class="{ 'box-animated': isWelcome, 'box-full': isAccount }"
+          :class="{
+            'box-animated': isWelcome,
+            'box-full': isAccount || isRecovery,
+          }"
         >
           <template v-if="isWelcome">
-            <div class="box__inner" :class="{ 'box__inner--right': isAccount }">
+            <div
+              class="box__inner"
+              :class="{ 'box__inner--right': isAccount || isRecovery }"
+            >
               <transition-group name="fade">
                 <template v-if="isAccount">
                   <h2 class="title" v-if="currentStep <= 5">
@@ -43,14 +52,20 @@
                     protocol
                   </h2>
                 </template>
-                <div v-else>
+                <template v-if="isRecovery">
+                  <h2 class="title">
+                    World’s first feeless,<br />private high performance<br />blockchain
+                    protocol
+                  </h2>
+                </template>
+                <div v-if="!isAccount && !isRecovery">
                   <h3 class="title">Welcome to StealthSend</h3>
                   <h4 class="subtitle">
                     Would you like to create a new account or restore from
                     Recovery Phrase?
                   </h4>
                 </div>
-                <div v-if="isAccount" class="support">
+                <div v-if="isAccount || isRecovery" class="support">
                   <svg
                     width="22"
                     height="22"
@@ -96,10 +111,10 @@
                   <p>Customer Support</p>
                 </div>
                 <div class="buttons" v-else>
-                  <StButton color="white" @click="toggleAccount"
+                  <StButton color="white" @click="isAccount = true"
                     >Create a New Account</StButton
                   >
-                  <StButton color="white"
+                  <StButton color="white" @click="isRecovery = true"
                     >Restore from Recovery Phrase</StButton
                   >
                 </div>
@@ -109,8 +124,8 @@
         </div>
       </div>
     </div>
-    <div class="right" :class="{ 'right-opened': isAccount }">
-      <div class="right__inner">
+    <div class="right" :class="{ 'right-opened': isAccount || isRecovery }">
+      <div v-if="isAccount" class="right__inner">
         <div class="right__inner-top">
           <transition-group name="fade">
             <div v-if="currentStep === 0">
@@ -812,13 +827,6 @@
                     complete the setup.
                   </p>
                 </div>
-              </div>
-              <StButton @click="handleSubmit">Proceed</StButton>
-            </div>
-            <div class="step" v-if="currentStep === 9">
-              <div>
-                <h5>New Account</h5>
-                <p class="desc">Enter Account Name</p>
                 <StFormItem
                   label="Account name"
                   :error-message="form.account.$errors"
@@ -831,7 +839,7 @@
               </div>
               <StButton @click="handleSubmit">Proceed</StButton>
             </div>
-            <div class="step" v-if="currentStep === 10">
+            <div class="step" v-if="currentStep === 9">
               <div class="recovery">
                 <h5>Recovery Phrase</h5>
                 <p>Security is as important to us as it is to you!</p>
@@ -857,7 +865,7 @@
               </div>
               <StButton @click="handleSubmit">Proceed</StButton>
             </div>
-            <div class="step" v-if="currentStep === 11">
+            <div class="step" v-if="currentStep === 10">
               <div class="recovery">
                 <h5>Recovery Phrase</h5>
                 <p>Let's get started creating your unique Recovery Phrase.</p>
@@ -896,7 +904,7 @@
               </div>
               <StButton @click="handleSubmit">Proceed</StButton>
             </div>
-            <div class="step" v-if="currentStep === 12">
+            <div class="step" v-if="currentStep === 11">
               <div>
                 <h5>Recovery Phrase</h5>
                 <h6>Your new StealthSend Account is being prepared.</h6>
@@ -1016,7 +1024,7 @@
               </div>
               <StProgress :duration="progressDuration" />
             </div>
-            <div class="step" v-if="currentStep === 13">
+            <div class="step" v-if="currentStep === 12">
               <div>
                 <h5>Recovery Phrase</h5>
                 <h6>Your new StealthSend Account is being prepared.</h6>
@@ -1135,7 +1143,7 @@
               </div>
               <StButton @click="handleSubmit">Show Recovery Phrase</StButton>
             </div>
-            <div class="step" v-if="currentStep === 14">
+            <div class="step" v-if="currentStep === 13">
               <div>
                 <h5>Recovery Phrase</h5>
                 <p>Carefully record {{ recoveryPhrase }} words</p>
@@ -1144,13 +1152,13 @@
                     v-for="(mnemonic, index) in createdMnemonic"
                     :key="mnemonic"
                   >
-                    <strong>{{ index + 1 }}. </strong>{{ mnemonic }}
+                    <strong>{{ index + 1 }}.</strong>{{ mnemonic }}
                   </span>
                 </div>
               </div>
               <StButton @click="handleSubmit">Start Verification</StButton>
             </div>
-            <div v-if="currentStep === 15">
+            <div v-if="currentStep === 14">
               <h5>Recovery Phrase Verification</h5>
               <p>
                 To verify your Recovery Phrase select the words in the order
@@ -1160,6 +1168,7 @@
                 <div class="mnemonic-list">
                   <template v-if="reorderedMnemonic.length">
                     <span
+                      class="clickable"
                       v-for="word in reorderedMnemonic"
                       :key="word"
                       @click="selectWordsInOrder(word)"
@@ -1191,7 +1200,7 @@
                 <p class="mnemonic-error">{{ mnemonicError }}</p>
               </div>
             </div>
-            <div v-if="currentStep === 16">
+            <div v-if="currentStep === 15">
               <h5>Checking Recovery Phrase</h5>
               <p class="desc-medium">
                 Please be patient and don’t turn off the computer or exit the
@@ -1199,7 +1208,7 @@
               </p>
               <img src="../../static/xstloader.gif" alt="Test gif" />
             </div>
-            <div class="step" v-if="currentStep === 17">
+            <div class="step" v-if="currentStep === 16">
               <div>
                 <h5>Congratulations</h5>
                 <p>Recovery Phrase successfully verified</p>
@@ -1266,12 +1275,172 @@
           </div>
         </div>
       </div>
+      <div v-if="isRecovery" class="right__inner">
+        <div class="right__inner-top">
+          <div class="step" v-if="recoveryStep === 0">
+            <div>
+              <h5>Restore from Recovery Phrase</h5>
+              <p class="desc-small">
+                You are about to restore a backup using an existing Recovery
+                Phrase.
+              </p>
+              <div class="recovery-select">
+                <p>Please select:</p>
+                <StRadio
+                  type="square"
+                  v-model="restoreRecoveryPhrase"
+                  value="12"
+                  >12 Word Recovery Phrase</StRadio
+                >
+                <StRadio
+                  type="square"
+                  v-model="restoreRecoveryPhrase"
+                  value="18"
+                  >18 Word Recovery Phrase</StRadio
+                >
+                <StRadio
+                  type="square"
+                  v-model="restoreRecoveryPhrase"
+                  value="24"
+                  >24 Word Recovery Phrase</StRadio
+                >
+              </div>
+            </div>
+            <StButton @click="recoveryStepNext">Proceed</StButton>
+          </div>
+          <div v-if="recoveryStep === 1">
+            <h5>Recovery Phrase Verification</h5>
+            <p class="desc-small">
+              To verify your Recovery Phrase enter the words<br />
+              in the order received.
+            </p>
+            <div class="mnemonic-list">
+              <template v-if="selectedRecoveryWords.length">
+                <span v-for="(word, index) in selectedRecoveryWords" :key="word"
+                  >{{ word }}
+                  <div
+                    v-if="index + 1 === selectedRecoveryWords.length"
+                    @click="removeSelectedWord(word)"
+                  >
+                    <svg
+                      width="8"
+                      height="8"
+                      viewBox="0 0 8 8"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M1 1L7 7"
+                        stroke="#1C1A1C"
+                        stroke-width="1.5"
+                        stroke-linejoin="round"
+                      />
+                      <path
+                        d="M1 7L7 1"
+                        stroke="#1C1A1C"
+                        stroke-width="1.5"
+                        stroke-linejoin="round"
+                      />
+                    </svg></div
+                ></span>
+              </template>
+              <p v-else class="no-results">No selected words</p>
+            </div>
+            <transition name="fade">
+              <a
+                v-if="selectedRecoveryWords.length"
+                class="clear"
+                @click="clearRecoveryWords"
+                >Clear and redo</a
+              >
+            </transition>
+            <StFormItem
+              :label="`Word ${selectedRecoveryWords.length} (of ${restoreRecoveryPhrase})`"
+            >
+              <StInput
+                id="recovery-word"
+                v-model="recoveryWord"
+                @keyup.enter="selectRecoveryPhraseWord(recoveryWord)"
+              >
+                <div @click="recoveryWord = ''" class="clear-icon">
+                  <svg
+                    width="15"
+                    height="14"
+                    viewBox="0 0 15 14"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M1.45459 1L13.4546 13"
+                      stroke="#4E00F6"
+                      stroke-width="2"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M1.45459 13L13.4546 0.999999"
+                      stroke="#4E00F6"
+                      stroke-width="2"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+                <div
+                  @click="selectRecoveryPhraseWord(recoveryWord)"
+                  class="check-icon"
+                >
+                  <svg
+                    width="17"
+                    height="12"
+                    viewBox="0 0 17 12"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M15.4546 1L5.90914 10L1.45459 5"
+                      stroke="#4E00F6"
+                      stroke-width="2"
+                    />
+                  </svg>
+                </div>
+              </StInput>
+              <div class="searched-words">
+                <transition-group name="fade">
+                  <a
+                    v-for="word in searchWordlist"
+                    :key="word"
+                    @click="selectRecoveryPhraseWord(word)"
+                    >{{ word }}</a
+                  >
+                </transition-group>
+              </div>
+              <p v-if="isError" class="mnemonic-error">
+                Selected word is not in wordlist
+              </p>
+            </StFormItem>
+          </div>
+          <div v-if="recoveryStep === 2">
+            <h5>Checking Recovery Phrase</h5>
+            <p class="desc-medium">
+              Please be patient and don’t turn off the computer or exit the
+              application
+            </p>
+            <img src="../../static/xstloader.gif" alt="Test gif" />
+          </div>
+          <div v-if="recoveryStep === 3" class="step">
+            <div>
+              <h5>Congratulations</h5>
+              <p>Recovery Phrase successfully verified</p>
+            </div>
+            <StButton @click="recover">Proceed to Dashboard</StButton>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ref, onMounted, watchEffect } from 'vue';
+import { ref, onMounted, watchEffect, computed } from 'vue';
 import * as bip39 from 'bip39';
 import * as bip32 from 'bip32';
 import { useMainStore } from '@/store';
@@ -1304,6 +1473,7 @@ export default {
     /* const confirmPaymentCode = ref(''); */
     const account = ref('');
     const recoveryPhrase = ref('12');
+    const restoreRecoveryPhrase = ref('12');
     const recoveryPhraseConfirmation = ref(false);
     const progressDuration = ref(5);
     const createdMnemonic = ref([]);
@@ -1315,9 +1485,14 @@ export default {
 
     const isWelcome = ref(false);
     const isAccount = ref(false);
+    const isRecovery = ref(false);
     const currentStep = ref(0);
+    const recoveryStep = ref(0);
     const paginationLength = ref(18);
     const termsOfService = ref(false);
+    const wordlist = ref([]);
+    const recoveryWord = ref('');
+    const selectedRecoveryWords = ref([]);
 
     const { form, errors, submitting, validateFields, resetFields } =
       useValidation({
@@ -1393,7 +1568,7 @@ export default {
           $rules: [
             {
               rule: () => {
-                if (currentStep.value === 9) {
+                if (currentStep.value === 8) {
                   return !account.value && 'Account name is required';
                 }
               },
@@ -1403,26 +1578,74 @@ export default {
       });
 
     watchEffect(async () => {
-      if (currentStep.value === 12) {
+      if (currentStep.value === 11) {
         setTimeout(() => {
           handleSubmit();
         }, progressDuration.value * 1000);
       }
-      if (currentStep.value === 14) {
+      if (currentStep.value === 13) {
         /* recover() */
         let generateMnemonic = await CryptoService.generateMnemonicAndSeed();
         createdMnemonic.value = generateMnemonic.mnemonic.split(' ');
         reorderedMnemonic.value = _shuffle(_cloneDeep(createdMnemonic.value));
       }
+      if (recoveryStep.value === 1) {
+        wordlist.value = await bip39.wordlists.EN;
+        document
+          .getElementById('recovery-word')
+          .getElementsByClassName('st-input__inner')[0]
+          .focus();
+      }
+      if (recoveryStep.value === 2) {
+        setTimeout(() => recoveryStepNext(), 4200);
+      }
     });
 
     const selectedWords = ref([]);
+
+    const checkWordlist = computed(() => {
+      return wordlist.value.filter((obj) => {
+        return selectedRecoveryWords.value.indexOf(obj) === -1;
+      });
+    });
+
+    const searchWordlist = computed(() => {
+      if (recoveryWord.value.length < 2) return;
+      return checkWordlist.value
+        .filter((word) => word.startsWith(recoveryWord.value))
+        .slice(0, 3);
+    });
 
     onMounted(() => {
       setTimeout(() => {
         isWelcome.value = true;
       }, 2000);
     });
+
+    const isError = ref(false);
+
+    function selectRecoveryPhraseWord(word) {
+      recoveryWord.value = '';
+      if (checkWordlist.value.includes(word)) {
+        selectedRecoveryWords.value.push(word);
+      } else {
+        isError.value = true;
+        setTimeout(() => (isError.value = false), 3000);
+      }
+      if (
+        selectedRecoveryWords.value.length ===
+        Number(restoreRecoveryPhrase.value)
+      ) {
+        recoveryStepNext();
+      }
+    }
+
+    function removeSelectedWord(word) {
+      selectedRecoveryWords.value.splice(
+        selectedRecoveryWords.value.indexOf(word),
+        1
+      );
+    }
 
     function selectWordsInOrder(item) {
       let removedWord = reorderedMnemonic.value.splice(
@@ -1453,16 +1676,16 @@ export default {
         }, 4200);
       }
     }
+    async function clearRecoveryWords() {
+      wordlist.value = await bip39.wordlists.EN;
+      recoveryWord.value = '';
+      selectedRecoveryWords.value = [];
+    }
 
     function clearAndRedoWords() {
       reorderedMnemonic.value = _shuffle(_cloneDeep(createdMnemonic.value));
       selectedWords.value = [];
       setTimeout(() => (mnemonicError.value = ''), 4000);
-    }
-
-    function toggleAccount() {
-      /* isWelcome.value = false */
-      isAccount.value = !isAccount.value;
     }
     function prevStep() {
       if (currentStep.value !== 0) {
@@ -1477,14 +1700,18 @@ export default {
         currentStep.value += 1;
       }
     }
+    function recoveryStepNext() {
+      recoveryStep.value += 1;
+    }
 
     async function recover() {
       // recover an existing wallet via mnemonic
       // password is asked because we have to lock the seed in the database
       // user is createing a new password in this step
       mainStore.START_GLOBAL_LOADING();
-      console.log('mnemonic:::', mnemonic);
-      let bytes = await bip39.mnemonicToSeedSync(mnemonic.value);
+      let mnemonic = selectedRecoveryWords.value.join(' ');
+      console.log(mnemonic);
+      let bytes = await bip39.mnemonicToSeedSync(mnemonic);
       const master = await bip32.fromSeed(bytes, CryptoService.network); // root
       recovered.value = {
         seed: bytes.toString('hex'),
@@ -1493,14 +1720,14 @@ export default {
 
       CryptoService.seed = bytes.toString('hex');
       CryptoService.master = master;
-      await CryptoService.storeWalletInDb(password.value);
+      /* await CryptoService.storeWalletInDb(password.value); */
 
       await restoreAccounts();
 
       setTimeout(() => {
         goToDashboard();
         mainStore.STOP_GLOBAL_LOADING();
-      }, 3000);
+      }, 2000);
     }
 
     async function restoreAccounts() {
@@ -1584,7 +1811,9 @@ export default {
     return {
       isWelcome,
       isAccount,
+      isRecovery,
       currentStep,
+      recoveryStep,
       paginationLength,
       termsOfService,
       goToDashboard,
@@ -1597,6 +1826,11 @@ export default {
       showConfirmPassword,
       progressDuration,
       mnemonicError,
+      wordlist,
+      searchWordlist,
+      recoveryWord,
+      selectedRecoveryWords,
+      isError,
 
       reorderedMnemonic,
       selectedWords,
@@ -1610,6 +1844,7 @@ export default {
       account,
       recoveryPhrase,
       recoveryPhraseConfirmation,
+      restoreRecoveryPhrase,
 
       importWalletFromWif,
       importWallet,
@@ -1617,11 +1852,14 @@ export default {
       imported,
 
       clearAndRedoWords,
+      clearRecoveryWords,
       selectWordsInOrder,
+      selectRecoveryPhraseWord,
+      removeSelectedWord,
       prevStep,
       chooseStep,
       nextStep,
-      toggleAccount,
+      recoveryStepNext,
       password,
       confirmPassword,
       createWallet,
@@ -1787,6 +2025,9 @@ export default {
 .right__inner-top .desc-medium {
   margin-bottom: 76px;
 }
+.right__inner-top .desc-small {
+  margin-bottom: 48px;
+}
 .right__inner-bottom {
   width: 100%;
   display: flex;
@@ -1862,6 +2103,10 @@ export default {
   padding: 24px;
   background-color: var(--background100);
 }
+.terms-of-service--box ul {
+  list-style: initial;
+  margin-left: 17px;
+}
 :deep .st-checkbox {
   margin-top: 24px;
   font-size: 12px;
@@ -1935,7 +2180,8 @@ export default {
   position: relative;
   width: fit-content;
   padding: 0 8px;
-  display: block;
+  display: flex;
+  align-items: center;
   text-align: center;
   font-size: 12px;
   line-height: 24px;
@@ -1948,6 +2194,16 @@ export default {
       rgba(205, 206, 236, 0.15) 83.23%
     ),
     var(--purple100);
+}
+.mnemonic-list .clickable {
+  cursor: pointer;
+}
+.mnemonic span strong {
+  margin-right: 5px;
+}
+.mnemonic-list span div {
+  cursor: pointer;
+  margin-left: 8px;
 }
 .mnemonic-list__selected span {
   background: linear-gradient(
@@ -2028,5 +2284,44 @@ export default {
   margin-top: 48px;
   background-color: var(--background100);
   padding: 24px;
+}
+
+/* RECOVERY PHRASE  */
+.recovery-select {
+  text-align: left;
+}
+.recovery-select p {
+  margin-bottom: 24px;
+}
+.searched-words {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.searched-words a {
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 24px;
+  letter-spacing: 0.12px;
+  transition: 0.3s;
+}
+.searched-words a:hover {
+  color: var(--marine500);
+}
+.clear-icon,
+.check-icon {
+  cursor: pointer;
+}
+.clear-icon path,
+.check-icon path {
+  transition: 0.3s;
+}
+.clear-icon:hover path,
+.check-icon:hover path {
+  stroke: var(--marine100);
+}
+.check-icon {
+  margin-left: 28px;
 }
 </style>
