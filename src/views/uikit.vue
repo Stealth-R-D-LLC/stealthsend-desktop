@@ -86,11 +86,11 @@
     <button @click="showModal = true">Show modal</button>
     <br /><br />
     <h2>Select</h2>
-    <StMultiselect
+    <!-- <StMultiselect
       v-model="multiselectValue"
       :can-deselect="false"
       :options="multiselectOptions"
-    />
+    /> -->
     <br />
     <br />
     <h2>Table</h2>
