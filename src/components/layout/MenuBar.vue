@@ -42,7 +42,7 @@
           </router-link>
         </li>
         <li>
-          <router-link  class="item" to="/uikit">
+          <router-link class="item" to="/uikit">
             <div class="icon">
               <svg
                 width="24"
