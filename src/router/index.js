@@ -5,9 +5,24 @@ import AddressBook from '@/views/address-book.vue';
 import Dashboard from '@/views/dashboard/dashboard.vue';
 import Lock from '@/views/lock.vue';
 import Receive from '@/views/receive.vue';
-import Settings from '@/views/settings.vue';
+import Settings from '@/views/settings/settings.vue';
+import SettingsPassword from '@/views/settings/password.vue';
+import SettingsPaymentCode from '@/views/settings/payment-code.vue';
+import SettingsRecoveryPhrase from '@/views/settings/recovery-phrase.vue';
+import SettingsAutoLock from '@/views/settings/auto-lock.vue';
+import SettingsFaq from '@/views/settings/faq.vue';
+import SettingsMyTickets from '@/views/settings/my-tickets.vue';
+import SettingsNewTicket from '@/views/settings/new-ticket.vue';
+import SettingsReportABug from '@/views/settings/report-a-bug.vue';
+import SettingsDesktopNotifications from '@/views/settings/desktop-notifications.vue';
+import SettingsAppNotifications from '@/views/settings/app-notifications.vue';
+import SettingsEmailNotifications from '@/views/settings/email-notifications.vue';
+import SettingsGeneralInformation from '@/views/settings/general-information.vue';
+import SettingsWebsite from '@/views/settings/website.vue';
+import SettingsPrivacyPolicy from '@/views/settings/privacy-policy.vue';
+import SettingsTermsOfUse from '@/views/settings/terms-of-use.vue';
 import Transactions from '@/views/transactions.vue';
-// import UIKit from '@/views/uikit.vue';
+import UIKit from '@/views/uikit.vue';
 import Welcome from '@/views/welcome.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
@@ -47,11 +62,11 @@ const routes = [
       layout: 'default',
     },
   },
-  // {
-  //   path: '/uikit',
-  //   name: 'UIKit',
-  //   component: UIKit,
-  // },
+  {
+    path: '/uikit',
+    name: 'UIKit',
+    component: UIKit,
+  },
   {
     path: '/receive',
     name: 'Receive',
@@ -66,6 +81,71 @@ const routes = [
     path: '/settings',
     name: 'Settings',
     component: Settings,
+    meta: {
+      layout: 'default',
+    },
+    children: [
+      {
+        path: 'password',
+        component: SettingsPassword,
+      },
+      {
+        path: 'payment-code',
+        component: SettingsPaymentCode,
+      },
+      {
+        path: 'recovery-phrase',
+        component: SettingsRecoveryPhrase,
+      },
+      {
+        path: 'auto-lock',
+        component: SettingsAutoLock,
+      },
+      {
+        path: 'faq',
+        component: SettingsFaq,
+      },
+      {
+        path: 'my-tickets',
+        component: SettingsMyTickets,
+      },
+      {
+        path: 'new-ticket',
+        component: SettingsNewTicket,
+      },
+      {
+        path: 'report-a-bug',
+        component: SettingsReportABug,
+      },
+      {
+        path: 'desktop-notifications',
+        component: SettingsDesktopNotifications,
+      },
+      {
+        path: 'app-notifications',
+        component: SettingsAppNotifications,
+      },
+      {
+        path: 'email-notifications',
+        component: SettingsEmailNotifications,
+      },
+      {
+        path: 'general-information',
+        component: SettingsGeneralInformation,
+      },
+      {
+        path: 'website',
+        component: SettingsWebsite,
+      },
+      {
+        path: 'privacy-policy',
+        component: SettingsPrivacyPolicy,
+      },
+      {
+        path: 'terms-of-use',
+        component: SettingsTermsOfUse,
+      },
+    ],
   },
   {
     path: '/account/add',

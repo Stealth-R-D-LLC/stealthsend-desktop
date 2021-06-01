@@ -18,7 +18,7 @@
 <script>
 import MenuBar from '@/components/layout/MenuBar.vue';
 import TopBar from '@/components/layout/TopBar.vue';
-import CryptoService from '../../services/crypto';
+import CryptoService from '@/services/crypto';
 import Side from '@/views/dashboard/components/side.vue';
 
 export default {
