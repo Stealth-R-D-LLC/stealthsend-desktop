@@ -1,7 +1,28 @@
 <template>
   <div class="settings-container">
     <SettingsNav></SettingsNav>
-    <router-view> </router-view>
+    <div class="st-settings-child" v-if="$route.path === '/settings'">
+      <h2 class="title">General Information</h2>
+      <p class="subtitle">
+        Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
+      </p>
+      <div class="content">
+        <p>Stealth: The Fastest Private Digital Currency</p>
+        <p>
+          We are building the Holy Grail of Crypto: a fast, feeless, private and
+          scalable digital currency
+        </p>
+        <p>Application version: v1.0.0.0.</p>
+        <p>
+          Github Source Repository https://github.com/Stealth-R-D-LLC/Stealth
+        </p>
+
+        <p>This application is provided to you for free by Stealth R&D LLC</p>
+
+        <p>Exchange rate source coincap.io</p>
+      </div>
+    </div>
+    <router-view></router-view>
   </div>
 </template>
 
