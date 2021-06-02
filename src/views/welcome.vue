@@ -1720,7 +1720,7 @@ export default {
 
       CryptoService.seed = bytes.toString('hex');
       CryptoService.master = master;
-      await CryptoService.storeWalletInDb('123');//password.value
+      await CryptoService.storeWalletInDb('123'); //password.value
 
       await restoreAccounts();
 
