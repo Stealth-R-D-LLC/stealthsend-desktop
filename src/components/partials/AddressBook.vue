@@ -570,16 +570,10 @@ export default {
     function viewTransactions() {
       resetForm();
       mainStore.TOGGLE_DRAWER(false);
-      //mainStore.SET_ACTIVE_TRANSACTION_ADDRESS(editContactForm.value.address)
 
-      router.push({
-        name: 'Transactions',
-        params: { address: editContactForm.value.address },
-      });
+      router.push(`/transactions/${editContactForm.value.address}`)
 
-      /*      if(router.currentRoute.value.path !== '/transactions'){
-        router.push('/transactions');
-      }*/
+      changeTab('address-book');
     }
 
     function prePopulateForm(item) {

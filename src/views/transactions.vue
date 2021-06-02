@@ -18,7 +18,7 @@
 <script>
 import TransactionList from '@/components/partials/TransactionList.vue';
 import CryptoService from '@/services/crypto';
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watchEffect } from 'vue';
 import DatePicker from 'vue2-datepicker';
 import 'vue2-datepicker/index.css';
 import isWithinInterval from 'date-fns/isWithinInterval';
@@ -57,20 +57,19 @@ export default {
     const route = useRoute();
 
     onMounted(() => {
-      console.log(111, route.params.address);
-      console.log(222, query.value);
+      query.value = '';
+
       if (route.params.address) {
         query.value = route.params.address;
       }
     });
 
-    // eslint-disable-next-line vue/no-setup-props-destructure
-    // console.log(mainStore.activeTransactionAddress)
+    watchEffect(() => {
+      query.value = route.params.address;
 
-    // if(mainStore.activeTransactionAddress !== ''){
-    //   query.value = mainStore.activeTransactionAddress
-    // }
-    console.log('PROPARA', route.params.address);
+      console.log("HEH", route.params.address)
+    })
+
     function findLabelForTx(tx) {
       return CryptoService.txWithLabels[tx];
     }
@@ -86,8 +85,7 @@ export default {
       let filtered = [...transactions.value];
       if (filtered.length === 0) return [];
 
-      console.log('EEEE', query.value);
-      if (query.value.length > 0) {
+      if (query && query.value.length > 0) {
         filtered = filtered.filter((el) => {
           return (
             el.account === query.value ||
