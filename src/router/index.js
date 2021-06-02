@@ -73,10 +73,14 @@ const routes = [
     component: Receive,
   },
   {
+    path: '/transactions/:address',
+    name: 'TransactionsQuery',
+    component: Transactions,
+  },
+  {
     path: '/transactions',
     name: 'Transactions',
     component: Transactions,
-    props: true,
   },
   {
     path: '/settings',
