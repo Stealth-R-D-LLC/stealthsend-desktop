@@ -66,9 +66,7 @@ export default {
 
     watchEffect(() => {
       query.value = route.params.address;
-
-      console.log("HEH", route.params.address)
-    })
+    });
 
     function findLabelForTx(tx) {
       return CryptoService.txWithLabels[tx];
