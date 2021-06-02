@@ -571,7 +571,7 @@ export default {
       resetForm();
       mainStore.TOGGLE_DRAWER(false);
 
-      router.push(`/transactions/${editContactForm.value.address}`)
+      router.push(`/transactions/${editContactForm.value.address}`);
 
       changeTab('address-book');
     }
