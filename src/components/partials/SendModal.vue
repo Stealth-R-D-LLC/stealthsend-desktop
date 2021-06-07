@@ -328,10 +328,9 @@ export default {
     scanWallet();
     let unspentOutputs = [];
 
-    async function getUnspentOutputs(item) {
-      console.log(item);
+    async function getUnspentOutputs(account) {
       const outputs = await mainStore.rpc('getaddressoutputs', [
-        item.address,
+        account.address,
         1,
         100,
       ]);
@@ -504,34 +503,19 @@ export default {
 .multiselect-single-label {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  position: absolute;
-  top: -17px;
-  padding-left: 0;
   color: var(--white);
 }
 .multiselect-single-label .account-utxo {
   margin-top: 6px;
   font-family: Noto Sans;
-  font-style: normal;
-  font-weight: normal;
   font-size: 14px;
   line-height: 14px;
-  /* identical to box height, or 200% */
-
   letter-spacing: 0.12px;
 }
 .multiselect-single-label .account-label {
   font-family: Noto Sans;
-  font-style: normal;
-  font-weight: normal;
   font-size: 14px;
   line-height: 14px;
-  height: 48px;
-  top: -14px;
-  /* identical to box height, or 200% */
-
   letter-spacing: 0.12px;
 }
 </style>
