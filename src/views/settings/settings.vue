@@ -69,7 +69,7 @@ export default {
 .content .text {
   font-weight: normal;
   margin-bottom: 26px;
-    font-size: 14px;
+  font-size: 14px;
   letter-spacing: 0.12px;
   line-height: 24px;
 }
@@ -103,5 +103,4 @@ export default {
   color: var(--black);
   margin-top: 12px;
 }
-
 </style>
