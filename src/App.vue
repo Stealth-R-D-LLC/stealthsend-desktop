@@ -62,5 +62,3 @@ export default {
 <style scoped>
 @import 'css/skeleton/layout.css';
 </style>
-
-<style src="@vueform/multiselect/themes/default.css"></style>

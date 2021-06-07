@@ -1,5 +1,4 @@
 import StCard from '@/components/elements/Card.vue';
-import Multiselect from '@vueform/multiselect';
 import { createPinia } from 'pinia';
 import {
   StAmount,
@@ -21,6 +20,7 @@ import {
   StTooltip,
 } from 'stealth-kit';
 import { createApp } from 'vue';
+import VueMultiselect from 'vue-multiselect';
 import App from './App.vue';
 import directives from './directives/';
 import './index.css';
@@ -33,7 +33,7 @@ app.use(createPinia());
 app.component('StAmount', StAmount);
 app.component('StSwitch', StSwitch);
 app.component('StButton', StButton);
-app.component('StMultiselect', Multiselect);
+app.component('StMultiselect', VueMultiselect);
 app.component('StLink', StLink);
 app.component('StCheckbox', StCheckbox);
 app.component('StRadio', StRadio);
