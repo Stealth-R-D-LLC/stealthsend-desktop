@@ -38,7 +38,7 @@
           <p class="group-item__desc">Configure idle time in application</p>
         </li>
       </ul>
-      <p class="group-title">
+      <!-- <p class="group-title">
         <span>Support Center</span>
         <svg
           width="18"
@@ -78,7 +78,7 @@
           <p class="group-item__name">Report a Bug</p>
           <p class="group-item__desc">Lorem ipsum</p>
         </li>
-      </ul>
+      </ul> -->
       <p class="group-title">
         <span>Notifications</span>
         <svg

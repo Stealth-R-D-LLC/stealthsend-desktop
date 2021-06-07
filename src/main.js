@@ -19,6 +19,8 @@ import {
   StTag,
   StTooltip,
 } from 'stealth-kit';
+import StFormItem from '@/components/elements/StFormItem.vue';
+
 import { createApp } from 'vue';
 import VueMultiselect from 'vue-multiselect';
 import App from './App.vue';
@@ -49,6 +51,7 @@ app.component('StLoading', StLoading);
 app.component('StCard', StCard);
 app.component('StTag', StTag);
 app.component('StIcon', StIcon);
+app.component('StFormItem', StFormItem);
 // end global components
 
 // register all directives
