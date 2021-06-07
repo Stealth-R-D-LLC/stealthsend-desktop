@@ -9,7 +9,15 @@
   >
     <label for="">{{ label }}</label>
     <slot v-bind="{ field, name }"></slot>
-    <p class="st-form-item__message" :class="[notice && !errorMessage ? 'st-form-item__message--is-notice' : 'st-form-item__message--is-error']" v-show="errorMessage || notice">
+    <p
+      class="st-form-item__message"
+      :class="[
+        notice && !errorMessage
+          ? 'st-form-item__message--is-notice'
+          : 'st-form-item__message--is-error',
+      ]"
+      v-show="errorMessage || notice"
+    >
       {{ errorMessage[0] || notice }}
     </p>
   </div>
@@ -75,7 +83,7 @@ export default {
   line-height: 20px;
 }
 .st-form-item__message {
-    position: absolute;
+  position: absolute;
   top: calc(100% + 10px);
   font-size: 12px;
   line-height: 24px;
