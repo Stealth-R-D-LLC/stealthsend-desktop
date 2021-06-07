@@ -171,8 +171,8 @@
             <span class="item__span"> Transactions </span>
           </router-link>
         </li>
-        <li>
-          <router-link class="item" to="/account/add">
+        <li @click="openModal('account')">
+          <span class="item">
             <div class="icon">
               <svg
                 width="24"
@@ -198,7 +198,7 @@
               </svg>
             </div>
             <span class="item__span"> Add Account </span>
-          </router-link>
+          </span>
         </li>
         <li>
           <router-link class="item" to="/account/archived">
