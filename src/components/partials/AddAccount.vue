@@ -5,11 +5,12 @@
     :current-step="currentStep"
     :visible="isVisible"
     @close="closeModal"
-    class="acconnt-modal"
+    class="account-modal"
+    :class="{ 'account-modal__hide-header': currentStep > 2 }"
   >
     <template #header>Account Wizard</template>
     <template #body>
-      <div class="account-tabs">
+      <div class="account-tabs" v-if="currentStep < 3">
         <a
           :class="{ active: activeStep === 'add-account' }"
           @click="changeStep('add-account')"
@@ -108,6 +109,18 @@
             <StButton @click="nextStep">Import</StButton>
           </div>
         </template>
+        <template v-if="currentStep === 3">
+          <h5>Importing Private Key</h5>
+          <p class="medium">
+            Please be patient and don’t turn off the phone or exit the
+            application
+          </p>
+        </template>
+        <template v-if="currentStep === 4">
+          <h5>Success</h5>
+          <p class="medium">Your account has been successfully imported.</p>
+          <p class="medium">You may now access your funds.</p>
+        </template>
       </div>
     </template>
   </StModal>
@@ -115,7 +128,7 @@
 
 <script>
 import { useMainStore } from '@/store';
-import { computed, ref } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import CryptoService from '@/services/crypto';
 import StFormItem from '@/components/elements/StFormItem.vue';
 export default {
@@ -132,6 +145,20 @@ export default {
     const understand = ref(false);
     const privateKey = ref('');
     const copyPending = ref(false);
+
+    // WATCH
+    watchEffect(() => {
+      if (currentStep.value === 3) {
+        setTimeout(() => {
+          nextStep();
+        }, 2000);
+      }
+      if (currentStep.value === 4) {
+        setTimeout(() => {
+          closeModal();
+        }, 2000);
+      }
+    });
 
     // COMPUTED
     const isVisible = computed(() => {
@@ -247,9 +274,20 @@ export default {
 <style scoped>
 :deep .st-modal-container {
   width: 416px;
+  min-height: 512px;
 }
 :deep .st-modal__body {
   margin-bottom: 0;
+}
+.account-modal__hide-header :deep .st-modal__header {
+  display: none;
+}
+.account-modal__hide-header :deep .st-modal__body {
+  margin-top: 0;
+  text-align: center;
+}
+.account-modal__hide-header h5 {
+  margin-bottom: 36px;
 }
 .account-tabs {
   margin-bottom: 36px;
@@ -332,5 +370,11 @@ export default {
 }
 .button .st-button {
   min-width: 177px;
+}
+:deep .st-modal__stepper {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 32px;
 }
 </style>
