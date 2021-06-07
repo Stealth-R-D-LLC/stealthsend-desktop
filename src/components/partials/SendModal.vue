@@ -12,8 +12,13 @@
     <template #body>
       <template v-if="currentStep === 1">
         <div class="form-item account">
-          <StFormItem :error-message="form.account.$errors" label="Account">
+          <StFormItem
+            color="dark"
+            :error-message="form.account.$errors"
+            label="Account"
+          >
             <StMultiselect
+              class="dark"
               v-model="form.account.$value"
               :class="{ 'multiselect-filled': account }"
               :options="accounts"
@@ -25,13 +30,13 @@
               placeholder="Select account"
               @select="getUnspentOutputs"
             >
-              <template #singlelabel="{ value }">
+              <template #singleLabel>
                 <div class="multiselect-single-label">
                   <p class="account-label">
-                    {{ value.label }}
+                    {{ account && account.label }}
                   </p>
                   <p class="account-utxo">
-                    {{ value.utxo }}
+                    {{ account && account.utxo }}
                   </p>
                 </div>
               </template>
@@ -323,9 +328,10 @@ export default {
     scanWallet();
     let unspentOutputs = [];
 
-    async function getUnspentOutputs() {
+    async function getUnspentOutputs(item) {
+      console.log(item);
       const outputs = await mainStore.rpc('getaddressoutputs', [
-        account.value.address,
+        item.address,
         1,
         100,
       ]);
@@ -501,7 +507,9 @@ export default {
   justify-content: flex-start;
   align-items: flex-start;
   position: absolute;
-  top: -13px;
+  top: -17px;
+  padding-left: 0;
+  color: var(--white);
 }
 .multiselect-single-label .account-utxo {
   margin-top: 6px;
