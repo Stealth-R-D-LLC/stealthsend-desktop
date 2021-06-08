@@ -130,12 +130,8 @@
 import { useMainStore } from '@/store';
 import { computed, ref, watchEffect } from 'vue';
 import CryptoService from '@/services/crypto';
-import StFormItem from '@/components/elements/StFormItem.vue';
 export default {
   name: 'StAccountModal',
-  components: {
-    StFormItem,
-  },
   setup() {
     // VARIABLES
     const mainStore = useMainStore();
