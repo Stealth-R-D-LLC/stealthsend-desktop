@@ -17,6 +17,7 @@ export const useMainStore = defineStore({
     modals: {
       receive: false,
       send: false,
+      account: false,
     },
     componentVisibility: {
       chart: true, // chart on dashboard,

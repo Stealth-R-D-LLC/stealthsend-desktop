@@ -233,15 +233,11 @@ import { computed, ref, watch } from 'vue';
 import CryptoService from '@/services/crypto';
 import useCoinControl from '@/composables/useCoinControl';
 import useTransactionBuilder from '@/composables/useTransactionBuilder';
-import StFormItem from '@/components/elements/StFormItem';
 
 import { useValidation, ValidationError } from 'vue3-form-validation';
 
 export default {
   name: 'StSendModal',
-  components: {
-    StFormItem,
-  },
   setup() {
     const mainStore = useMainStore();
 
