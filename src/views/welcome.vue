@@ -1447,7 +1447,6 @@ import { useMainStore } from '@/store';
 import router from '../router';
 import CryptoService from '../services/crypto';
 import { add, format } from 'mathjs';
-import StFormItem from '@/components/elements/StFormItem.vue';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import PaymentCode from '@/components/elements/PaymentCode.vue';
 import StProgress from '@/components/elements/StProgress.vue';
@@ -1457,7 +1456,6 @@ import _cloneDeep from 'lodash/cloneDeep';
 export default {
   name: 'StWelcome',
   components: {
-    StFormItem,
     PaymentCode,
     StProgress,
   },
