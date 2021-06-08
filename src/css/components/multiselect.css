@@ -131,7 +131,7 @@ fieldset[disabled] .multiselect {
   position: absolute;
   bottom: -2px;
   height: 2px;
-  width: 20%;
+  width: 60px;
   background-color: var(--marine400);
   transition: width 0.3s;
 }

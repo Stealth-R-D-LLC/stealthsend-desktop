@@ -53,6 +53,6 @@ export default {
 }
 .full-width__grey {
   background-color: var(--background100);
-  height: fit-content;
+  height: 100%;
 }
 </style>

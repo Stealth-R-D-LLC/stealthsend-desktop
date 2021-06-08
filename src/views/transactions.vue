@@ -32,11 +32,47 @@
       </StFormItem>
       <StFormItem label="Range">
         <date-picker
+          :class="{ 'mx-datepicker__filled': date.length }"
           placeholder="Filter list using date range"
           v-model="date"
           value-type="format"
           range
+          @clear="
+            (clear) => {
+              date = [];
+            }
+          "
         ></date-picker>
+        <svg
+          class="calendar"
+          width="19"
+          height="19"
+          viewBox="0 0 19 19"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M11.625 2.40039H7.375M3.125 3.60039H1V18.0004H18V3.60039H15.875"
+            stroke="#4E00F6"
+            stroke-width="2"
+          />
+          <path d="M4.1875 8.40039H6.3125" stroke="#4E00F6" stroke-width="2" />
+          <path d="M5.25 4.8V0" stroke="#4E00F6" stroke-width="2" />
+          <path d="M13.75 4.8V0" stroke="#4E00F6" stroke-width="2" />
+          <path d="M4.1875 13.2002H6.3125" stroke="#4E00F6" stroke-width="2" />
+          <path d="M8.4375 8.40039H10.5625" stroke="#4E00F6" stroke-width="2" />
+          <path
+            d="M12.6875 8.40039H14.8125"
+            stroke="#4E00F6"
+            stroke-width="2"
+          />
+          <path d="M8.4375 13.2002H10.5625" stroke="#4E00F6" stroke-width="2" />
+          <path
+            d="M12.6875 13.2002H14.8125"
+            stroke="#4E00F6"
+            stroke-width="2"
+          />
+        </svg>
       </StFormItem>
     </div>
     <TransactionList
@@ -159,9 +195,6 @@ export default {
 </script>
 
 <style scoped>
-.transactions-container {
-  /* height: calc(100vh - 82px); */
-}
 .controls {
   margin: 0 24px;
   display: grid;
@@ -170,5 +203,11 @@ export default {
 }
 .st-form-item {
   margin: 40px 0 10px;
+}
+.calendar {
+  pointer-events: none;
+  position: absolute;
+  bottom: calc(50% - 15px);
+  right: 0;
 }
 </style>
