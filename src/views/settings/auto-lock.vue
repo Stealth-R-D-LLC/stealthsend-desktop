@@ -1,24 +1,26 @@
 <template>
   <div class="st-settings-child st-password-container">
-    <h2 class="title">Auto Lock</h2>
-    <p class="subtitle">Automatically lock StealthSend after inactivity.</p>
-    <div class="content">
-      <p class="notice">
-        <span class="bold">Note:</span> For enhanced security it is recommended
-        to enable Auto-lock. When enabled you will need your password to unlock
-        your StealthSend app.
-      </p>
-      <div class="minutes-picker" v-if="isEnabled">
-        <p>Select one of the following options:</p>
-        <div class="options">
-          <span
-            class="option"
-            :class="{ 'option--is-selected': option.value === selected }"
-            v-for="option in options"
-            :key="option.value"
-            @click="selected = option.value"
-            >{{ option.label }}</span
-          >
+    <div class="st-settings-child__overflow">
+      <h2 class="title">Auto Lock</h2>
+      <p class="subtitle">Automatically lock StealthSend after inactivity.</p>
+      <div class="content">
+        <p class="notice">
+          <span class="bold">Note:</span> For enhanced security it is
+          recommended to enable Auto-lock. When enabled you will need your
+          password to unlock your StealthSend app.
+        </p>
+        <div class="minutes-picker" v-if="isEnabled">
+          <p>Select one of the following options:</p>
+          <div class="options">
+            <span
+              class="option"
+              :class="{ 'option--is-selected': option.value === selected }"
+              v-for="option in options"
+              :key="option.value"
+              @click="selected = option.value"
+              >{{ option.label }}</span
+            >
+          </div>
         </div>
       </div>
     </div>

@@ -1,8 +1,12 @@
 <template>
   <div class="accounts-container">
-    <transition-group v-if="accounts.length !== 0" name="list" tag="div">
-      <accounts :accounts="accounts"></accounts>
-    </transition-group>
+    <div class="accounts-container__overflow">
+      <div class="accounts-container__content">
+        <transition-group v-if="accounts.length !== 0" name="list" tag="div">
+          <accounts :accounts="accounts"></accounts>
+        </transition-group>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -38,6 +42,26 @@ export default {
 
 <style scoped>
 .accounts-container {
+  height: calc(100vh - 85px);
+}
+.accounts-container__overflow {
+  height: 100%;
+  overflow: auto;
+}
+.accounts-container__overflow::-webkit-scrollbar {
+  width: 4px;
+}
+.accounts-container__overflow::-webkit-scrollbar-thumb {
+  background: var(--grey100);
+}
+.accounts-container__content {
+  margin-top: 144px;
   padding: 24px 28px;
+  height: calc(100% - 192px);
+  background-color: var(--background0);
+}
+.accounts-container__content > div {
+  margin-top: -144px;
+  padding-bottom: 30px;
 }
 </style>

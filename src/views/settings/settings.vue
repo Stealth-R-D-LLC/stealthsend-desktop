@@ -2,32 +2,36 @@
   <div class="settings-container">
     <SettingsNav></SettingsNav>
     <div class="st-settings-child" v-if="$route.path === '/settings'">
-      <h2 class="title">General Information</h2>
-      <p class="subtitle">
-        Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-      </p>
-      <div class="content">
-        <p class="page-title">Stealth: The Fastest Private Digital Currency</p>
-        <p class="text">
-          We are building the Holy Grail of Crypto: a fast, feeless, private and
-          scalable digital currency
+      <div class="st-settings-child__overflow">
+        <h2 class="title">General Information</h2>
+        <p class="subtitle">
+          Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
         </p>
-        <p class="text">Application version: v1.0.0.0.</p>
-        <p class="text">
-          Github Source Repository
-          <br />
-          <StLink> https://github.com/Stealth-R-D-LLC/Stealth </StLink>
-        </p>
+        <div class="content">
+          <p class="page-title">
+            Stealth: The Fastest Private Digital Currency
+          </p>
+          <p class="text">
+            We are building the Holy Grail of Crypto: a fast, feeless, private
+            and scalable digital currency
+          </p>
+          <p class="text">Application version: v1.0.0.0.</p>
+          <p class="text">
+            Github Source Repository
+            <br />
+            <StLink> https://github.com/Stealth-R-D-LLC/Stealth </StLink>
+          </p>
 
-        <p class="text">
-          This application is provided to you for free by Stealth R&D LLC
-        </p>
+          <p class="text">
+            This application is provided to you for free by Stealth R&D LLC
+          </p>
 
-        <p class="text">
-          Exchange rate source
-          <br />
-          <StLink> coincap.io </StLink>
-        </p>
+          <p class="text">
+            Exchange rate source
+            <br />
+            <StLink> coincap.io </StLink>
+          </p>
+        </div>
       </div>
     </div>
     <router-view></router-view>
@@ -85,7 +89,20 @@ export default {
 
 <style>
 .st-settings-child {
-  padding: 42px 64px;
+  padding: 42px 10px 42px 64px;
+  height: calc(100vh - 166px);
+  width: 100%;
+}
+.st-settings-child__overflow {
+  overflow: auto;
+  height: 100%;
+  padding-right: 50px;
+}
+.st-settings-child__overflow::-webkit-scrollbar {
+  width: 4px;
+}
+.st-settings-child__overflow::-webkit-scrollbar-thumb {
+  background: var(--grey100);
 }
 .st-settings-child .title {
   font-family: var(--primary-font);
