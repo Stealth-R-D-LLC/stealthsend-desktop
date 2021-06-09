@@ -1,12 +1,14 @@
 <template>
   <div class="dashboard-container">
-    <!-- <TopBar></TopBar> -->
-    <Chart v-if="componentVisibility.chart"></Chart>
-    <TransactionList
-      v-if="componentVisibility.txDashboard"
-      has-table-header
-      :transactions="transactions"
-    ></TransactionList>
+    <div class="dashboard-container__overflow">
+      <!-- <TopBar></TopBar> -->
+      <Chart v-if="componentVisibility.chart"></Chart>
+      <TransactionList
+        v-if="componentVisibility.txDashboard"
+        has-table-header
+        :transactions="transactions"
+      ></TransactionList>
+    </div>
   </div>
 </template>
 
@@ -61,6 +63,17 @@ export default {
 
 <style scoped>
 .dashboard-container {
-  padding: 24px;
+  padding: 24px 10px 24px 24px;
+  height: calc(100vh - 130px);
+}
+.dashboard-container__overflow {
+  overflow: auto;
+  height: 100%;
+}
+.dashboard-container__overflow::-webkit-scrollbar {
+  width: 4px;
+}
+.dashboard-container__overflow::-webkit-scrollbar-thumb {
+  background: var(--grey100);
 }
 </style>
