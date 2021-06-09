@@ -4,7 +4,10 @@
     <main class="layout__main">
       <Side v-if="$route.path === '/dashboard'"></Side>
       <router-view v-slot="{ Component }">
-        <div class="full-widht">
+        <div
+          class="full-width"
+          :class="{ 'full-width__grey': $route.name !== 'Dashboard' }"
+        >
           <TopBar></TopBar>
           <transition name="fade">
             <component :is="Component" />
@@ -45,7 +48,11 @@ export default {
 .layout {
   position: relative;
 }
-.full-widht {
+.full-width {
   width: 100%;
+}
+.full-width__grey {
+  background-color: var(--background100);
+  height: 100%;
 }
 </style>
