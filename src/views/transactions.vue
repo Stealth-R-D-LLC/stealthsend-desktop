@@ -1,12 +1,79 @@
 <template>
   <div class="transactions-container">
     <div class="controls">
-      <StInput
-        label="Search"
-        v-model="query"
-        placeholder="You may enter an Account, Address, Amount or Label"
-      ></StInput>
-      <date-picker v-model="date" value-type="format" range></date-picker>
+      <StFormItem label="Search">
+        <StInput
+          label="Search"
+          v-model="query"
+          placeholder="You may enter an Account, Address, Amount or Label"
+          ><svg
+            width="18"
+            height="19"
+            viewBox="0 0 18 19"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M13.2222 14L17 18"
+              stroke="#6B2AF7"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <ellipse
+              cx="8.50003"
+              cy="9"
+              rx="6.61111"
+              ry="7"
+              stroke="#4E00F6"
+              stroke-width="2"
+            />
+          </svg>
+        </StInput>
+      </StFormItem>
+      <StFormItem label="Range">
+        <date-picker
+          :class="{ 'mx-datepicker__filled': date.length }"
+          placeholder="Filter list using date range"
+          v-model="date"
+          value-type="format"
+          range
+          @clear="
+            (clear) => {
+              date = [];
+            }
+          "
+        ></date-picker>
+        <svg
+          class="calendar"
+          width="19"
+          height="19"
+          viewBox="0 0 19 19"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M11.625 2.40039H7.375M3.125 3.60039H1V18.0004H18V3.60039H15.875"
+            stroke="#4E00F6"
+            stroke-width="2"
+          />
+          <path d="M4.1875 8.40039H6.3125" stroke="#4E00F6" stroke-width="2" />
+          <path d="M5.25 4.8V0" stroke="#4E00F6" stroke-width="2" />
+          <path d="M13.75 4.8V0" stroke="#4E00F6" stroke-width="2" />
+          <path d="M4.1875 13.2002H6.3125" stroke="#4E00F6" stroke-width="2" />
+          <path d="M8.4375 8.40039H10.5625" stroke="#4E00F6" stroke-width="2" />
+          <path
+            d="M12.6875 8.40039H14.8125"
+            stroke="#4E00F6"
+            stroke-width="2"
+          />
+          <path d="M8.4375 13.2002H10.5625" stroke="#4E00F6" stroke-width="2" />
+          <path
+            d="M12.6875 13.2002H14.8125"
+            stroke="#4E00F6"
+            stroke-width="2"
+          />
+        </svg>
+      </StFormItem>
     </div>
     <TransactionList
       :transactions="computedTransactions"
@@ -25,12 +92,14 @@ import isWithinInterval from 'date-fns/isWithinInterval';
 import isSameDay from 'date-fns/isSameDay';
 import { useMainStore } from '@/store';
 import { useRoute } from 'vue-router';
+import StFormItem from '@/components/elements/StFormItem.vue';
 
 export default {
   name: 'Transactions',
   components: {
     TransactionList,
     DatePicker,
+    StFormItem,
   },
   beforeRouteLeave() {
     //const mainStore = useMainStore();
@@ -125,4 +194,20 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.controls {
+  margin: 0 24px;
+  display: grid;
+  grid-template-columns: 9fr 3fr;
+  grid-gap: 0 47px;
+}
+.st-form-item {
+  margin: 40px 0 10px;
+}
+.calendar {
+  pointer-events: none;
+  position: absolute;
+  bottom: calc(50% - 15px);
+  right: 0;
+}
+</style>
