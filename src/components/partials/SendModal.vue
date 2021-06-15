@@ -48,8 +48,14 @@
           </StFormItem>
         </div>
         <div class="form-item">
-          <StFormItem color="dark" :error-message="form.amount.$errors" label="Amount">
-          <a v-if="account" class="load-max" @click="greet(account.utxo)">Load max</a>
+          <StFormItem
+            color="dark"
+            :error-message="form.amount.$errors"
+            label="Amount"
+          >
+            <a v-if="account" class="load-max" @click="greet(account.utxo)"
+              >Load max</a
+            >
             <StAmount
               v-if="inputAmountState === 'XST'"
               v-model="form.amount.$value"
@@ -137,7 +143,7 @@
       <template v-if="currentStep === 2">
         <div class="form-item">
           <StFormItem
-          color="dark"
+            color="dark"
             label="Receiving Address"
             :error-message="form.depositAddress.$errors"
           >
@@ -178,12 +184,11 @@
           </StFormItem>
         </div>
         <div class="form-item">
-          <StFormItem label="Label"
-            color="dark">
+          <StFormItem label="Label" color="dark">
             <StInput
-            v-model="label"
-            placeholder="Add a label to your transaction"
-          />
+              v-model="label"
+              placeholder="Add a label to your transaction"
+            />
           </StFormItem>
         </div>
       </template>
@@ -206,7 +211,7 @@
       </template>
       <template v-if="currentStep === 4">
         <StFormItem
-        color="dark"
+          color="dark"
           :error-message="form.paymentCode.$errors"
           label="Payment Code"
         >
@@ -426,10 +431,10 @@ export default {
     }
 
     function greet(item) {
-      form.amount.$value = item
+      form.amount.$value = item;
       //TODO: temporary solution
-      setTimeout(() => inputAmountState.value = 'USD', 1)
-      setTimeout(() => inputAmountState.value = 'XST', 1)
+      setTimeout(() => (inputAmountState.value = 'USD'), 1);
+      setTimeout(() => (inputAmountState.value = 'XST'), 1);
     }
 
     return {

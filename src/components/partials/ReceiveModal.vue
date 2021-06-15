@@ -12,7 +12,7 @@
     <template #body>
       <template v-if="currentStep === 1">
         <StFormItem color="dark" label="Account">
-            <StMultiselect
+          <StMultiselect
             :class="{ 'multiselect-filled': account }"
             v-model="account"
             :options="accounts"
@@ -39,9 +39,9 @@
               {{ option.label }} ({{ option.utxo }})
             </template>
           </StMultiselect>
-          </StFormItem>
+        </StFormItem>
         <StFormItem color="dark" label="Amount">
-            <StAmount
+          <StAmount
             v-if="inputAmountState === 'XST'"
             v-model="amount"
             placeholder="Amount"
@@ -57,33 +57,33 @@
           >
             <div @click="inputAmountState = 'USD'">
               <svg
-              width="19"
-              height="16"
-              viewBox="0 0 19 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M14.2222 14.2222L14.2222 1.77773"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M4.77777 1.77783V14.2223"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-            </svg>
+                width="19"
+                height="16"
+                viewBox="0 0 19 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M14.2222 14.2222L14.2222 1.77773"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M4.77777 1.77783V14.2223"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+              </svg>
             </div>
           </StAmount>
           <StAmount
@@ -93,36 +93,36 @@
           >
             <div @click="inputAmountState = 'XST'">
               <svg
-              width="19"
-              height="16"
-              viewBox="0 0 19 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M14.2222 14.2222L14.2222 1.77773"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M4.77777 1.77783V14.2223"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-            </svg>
+                width="19"
+                height="16"
+                viewBox="0 0 19 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M14.2222 14.2222L14.2222 1.77773"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M4.77777 1.77783V14.2223"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+              </svg>
             </div>
           </StAmount>
-          </StFormItem>
+        </StFormItem>
         <StFormItem color="dark" label="Address">
           <StInput
             v-model="depositAddress"
@@ -161,14 +161,13 @@
         </StFormItem>
       </template>
       <template v-if="currentStep === 2">
-        <StFormItem label="Receiving Address"
-          color="dark">
+        <StFormItem label="Receiving Address" color="dark">
           <StInput
-          class="address-input"
-          v-model="depositAddress"
-          placeholder="Deposit address"
-          disabled
-        ></StInput>
+            class="address-input"
+            v-model="depositAddress"
+            placeholder="Deposit address"
+            disabled
+          ></StInput>
         </StFormItem>
         <StTooltip
           class="tooltip"
@@ -181,16 +180,12 @@
         <img class="qr-img" :src="qrSrc" />
       </template>
       <template v-if="currentStep === 3">
-        <StFormItem label="Email"
-          color="dark">
-          <StInput
-          v-model="email"
-          placeholder="Email"
-        ></StInput>
-        <p class="email-desc">
-          Using this option you will share receive details via default email
-          client
-        </p>
+        <StFormItem label="Email" color="dark">
+          <StInput v-model="email" placeholder="Email"></StInput>
+          <p class="email-desc">
+            Using this option you will share receive details via default email
+            client
+          </p>
         </StFormItem>
       </template>
     </template>
