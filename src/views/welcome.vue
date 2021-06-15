@@ -1581,8 +1581,8 @@ export default {
           handleSubmit();
         }, progressDuration.value * 1000);
       }
-      if (currentStep.value === 13) {
-        /* recover() */
+      if (currentStep.value === 12) {
+        // create new mnemonic
         let generateMnemonic = await CryptoService.generateMnemonicAndSeed();
         createdMnemonic.value = generateMnemonic.mnemonic.split(' ');
         reorderedMnemonic.value = _shuffle(_cloneDeep(createdMnemonic.value));
@@ -1804,6 +1804,10 @@ export default {
       }
     }
 
+    const isLoading = computed(() => {
+      return mainStore.globalLoading;
+    });
+
     function goToDashboard() {
       router.push('/dashboard');
     }
@@ -1864,6 +1868,8 @@ export default {
       createWallet,
       createdMnemonic,
       createNewWallet,
+
+      isLoading
     };
   },
 };
