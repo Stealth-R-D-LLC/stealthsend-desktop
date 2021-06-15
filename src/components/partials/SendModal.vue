@@ -22,7 +22,7 @@
               v-model="form.account.$value"
               :class="{ 'multiselect-filled': account }"
               :options="accounts"
-              track-by="_id"
+              track-by="address"
               value-prop="address"
               label="label"
               :object="true"
