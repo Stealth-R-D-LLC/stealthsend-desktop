@@ -1,23 +1,25 @@
 <template>
   <div class="uikit-container">
     <h1>UI Kit</h1>
-                <StMultiselect
-              class="dark"
-              v-model="multiselVal"
-              :options="[{name: 'pero', id: 1},{name: 'jozo', id: 2},]"
-              track-by="id"
-              value-prop="id"
-              label="name"
-              :object="true"
-              :can-deselect="true"
-              placeholder="Select bla"
-              @select="selectChanged"
-            >
-
-              <template #option="{ option }">
-                {{ option.name }} ({{ option.id }})
-              </template>
-            </StMultiselect>
+    <StMultiselect
+      class="dark"
+      v-model="multiselVal"
+      :options="[
+        { name: 'pero', id: 1 },
+        { name: 'jozo', id: 2 },
+      ]"
+      track-by="id"
+      value-prop="id"
+      label="name"
+      :object="true"
+      :can-deselect="true"
+      placeholder="Select bla"
+      @select="selectChanged"
+    >
+      <template #option="{ option }">
+        {{ option.name }} ({{ option.id }})
+      </template>
+    </StMultiselect>
     <h2>FORM VALIDATION</h2>
     <!-- value, errorMessage -->
     <hr />
@@ -251,9 +253,9 @@ export default {
       },
       { key: 'blockHeight', title: 'Blockheight' },
     ]);
-    const multiselVal = ref('')
+    const multiselVal = ref('');
     function selectChanged(a) {
-      console.log('aaa',a);
+      console.log('aaa', a);
     }
     const bla = ref('');
     let checkboxPrvi = ref(false);
@@ -327,7 +329,7 @@ export default {
       handleSubmit,
 
       selectChanged,
-      multiselVal
+      multiselVal,
       // customClass
     };
   },
