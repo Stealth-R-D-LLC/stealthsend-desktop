@@ -2,13 +2,16 @@
 fieldset[disabled] .multiselect {
   pointer-events: none;
 }
+.dark .multiselect__tags .multiselect__single {
+  color: var(--white);
+}
 .multiselect__spinner {
   position: absolute;
   right: 1px;
   top: 1px;
   width: 48px;
   height: 35px;
-  background: #fff;
+  background: var(--white);
   display: block;
 }
 .multiselect__spinner::before,
