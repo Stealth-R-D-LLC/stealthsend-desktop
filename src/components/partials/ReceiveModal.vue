@@ -260,7 +260,7 @@ export default {
       accounts.value = hdWallet.accounts;
 
       // select first option
-      account.value = accounts.value[0]
+      account.value = accounts.value[0];
       // // manually start finding address for preselected account
       // changeAccount(account.value)
     }
