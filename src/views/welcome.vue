@@ -1869,7 +1869,7 @@ export default {
       createdMnemonic,
       createNewWallet,
 
-      isLoading
+      isLoading,
     };
   },
 };
