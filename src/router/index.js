@@ -4,7 +4,6 @@ import AccountDetails from '@/views/account/details.vue';
 import AddressBook from '@/views/address-book.vue';
 import Dashboard from '@/views/dashboard/dashboard.vue';
 import Lock from '@/views/lock.vue';
-import Receive from '@/views/receive.vue';
 import Settings from '@/views/settings/settings.vue';
 import SettingsPassword from '@/views/settings/password.vue';
 import SettingsPaymentCode from '@/views/settings/payment-code.vue';
@@ -66,11 +65,6 @@ const routes = [
     path: '/uikit',
     name: 'UIKit',
     component: UIKit,
-  },
-  {
-    path: '/receive',
-    name: 'Receive',
-    component: Receive,
   },
   {
     path: '/transactions/:address',
