@@ -1747,10 +1747,11 @@ export default {
         accUtxo = format(accUtxo, { precision: 14 });
       }
 
-      let account = {
+      console.log('');
+      let acc = {
         pk: pk,
         address: address,
-        label: `Account ${next}`,
+        label: account.value || `Account ${next}`,
         utxo: accUtxo,
         isArchived: false,
         asset: 'XST',
@@ -1758,7 +1759,7 @@ export default {
         path: path,
       };
 
-      await CryptoService.storeAccountInDb(account);
+      await CryptoService.storeAccountInDb(acc);
 
       // break out of recursion after saving first account that doesn't have transactions
       if (hdAccount.length === 0) {
