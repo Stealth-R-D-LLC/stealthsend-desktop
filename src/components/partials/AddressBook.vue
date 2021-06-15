@@ -73,46 +73,53 @@
     <!-- ADDRESS BOOK -->
     <div v-if="activeTab === 'address-book'" class="address-list">
       <div class="overflow-address" id="addressBook">
-        <div class="favorite-list">
-          <div
-            class="address-list__inner"
-            v-for="(item, index) in favoriteList"
-            :key="index"
-          >
-            <p v-if="index === 0" class="bold favorite">Favorites</p>
+        <template v-if="addressList.length">
+          <div class="favorite-list">
             <div
-              class="address-list__inner--redirect"
-              @click="prePopulateForm(item)"
+              class="address-list__inner"
+              v-for="(item, index) in favoriteList"
+              :key="index"
             >
-              <p>
-                <span class="bold medium">{{ item.name }}</span
-                >, {{ item.description }}
-              </p>
-              <p class="medium">{{ item.address }}</p>
+              <p v-if="index === 0" class="bold favorite">Favorites</p>
+              <div
+                class="address-list__inner--redirect"
+                @click="prePopulateForm(item)"
+              >
+                <p>
+                  <span class="bold medium">{{ item.name }}</span
+                  >, {{ item.description }}
+                </p>
+                <p class="medium">{{ item.address }}</p>
+              </div>
             </div>
           </div>
-        </div>
-        <div :id="id" v-for="(addressList, id) in orderByName" :key="id">
-          <div
-            class="address-list__inner"
-            v-for="(item, index) in addressList"
-            :key="item.address"
-          >
-            <p v-if="index === 0" class="bold letter">{{ id.toUpperCase() }}</p>
+          <div :id="id" v-for="(addressList, id) in orderByName" :key="id">
             <div
-              class="address-list__inner--redirect"
-              @click="prePopulateForm(item)"
+              class="address-list__inner"
+              v-for="(item, index) in addressList"
+              :key="item.address"
             >
-              <p>
-                <span class="bold medium">{{ item.name }}</span
-                >, {{ item.description }}
+              <p v-if="index === 0" class="bold letter">
+                {{ id.toUpperCase() }}
               </p>
-              <p class="medium">{{ item.address }}</p>
+              <div
+                class="address-list__inner--redirect"
+                @click="prePopulateForm(item)"
+              >
+                <p>
+                  <span class="bold medium">{{ item.name }}</span
+                  >, {{ item.description }}
+                </p>
+                <p class="medium">{{ item.address }}</p>
+              </div>
             </div>
           </div>
-        </div>
+        </template>
+        <template v-else>
+          <p>Address book is empty</p>
+        </template>
       </div>
-      <div class="alphabet">
+      <div v-if="addressList.length" class="alphabet">
         <svg
           width="12"
           height="12"
