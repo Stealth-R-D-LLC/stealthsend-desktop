@@ -48,11 +48,11 @@
           </StFormItem>
         </div>
         <div class="form-item">
-          <StFormItem :error-message="form.amount.$errors" label="Amount">
+          <StFormItem color="dark" :error-message="form.amount.$errors" label="Amount">
+          <a v-if="account" class="load-max" @click="greet(account.utxo)">Load max</a>
             <StAmount
               v-if="inputAmountState === 'XST'"
               v-model="form.amount.$value"
-              color="dark"
               placeholder="Amount"
               :options="{
                 locale: 'en',
@@ -130,12 +130,14 @@
                 />
               </svg>
             </StAmount>
+            <p class="form-desc">Minimum: 0.05 XST</p>
           </StFormItem>
         </div>
       </template>
       <template v-if="currentStep === 2">
         <div class="form-item">
           <StFormItem
+          color="dark"
             label="Receiving Address"
             :error-message="form.depositAddress.$errors"
           >
@@ -176,12 +178,13 @@
           </StFormItem>
         </div>
         <div class="form-item">
-          <StInput
+          <StFormItem label="Label"
+            color="dark">
+            <StInput
             v-model="label"
-            label="Label"
-            color="dark"
             placeholder="Add a label to your transaction"
           />
+          </StFormItem>
         </div>
       </template>
       <template v-if="currentStep === 3">
@@ -203,10 +206,11 @@
       </template>
       <template v-if="currentStep === 4">
         <StFormItem
+        color="dark"
           :error-message="form.paymentCode.$errors"
           label="Payment Code"
         >
-          <StInput v-model="paymentCode" color="dark" class="payment-input" />
+          <StInput v-model="paymentCode" class="payment-input" />
         </StFormItem>
       </template>
     </template>
@@ -421,7 +425,15 @@ export default {
       currentStep.value = step;
     }
 
+    function greet(item) {
+      form.amount.$value = item
+      //TODO: temporary solution
+      setTimeout(() => inputAmountState.value = 'USD', 1)
+      setTimeout(() => inputAmountState.value = 'XST', 1)
+    }
+
     return {
+      greet,
       validateFirstStep,
       validateSecondStep,
 
@@ -513,6 +525,20 @@ export default {
   font-size: 14px;
   line-height: 14px;
   letter-spacing: 0.12px;
+}
+.load-max {
+  cursor: pointer;
+  position: absolute;
+  top: -22px;
+  right: 0;
+  font-size: 12px;
+  line-height: 24px;
+  letter-spacing: 0.12px;
+  color: var(--grey100);
+  transition: 0.3s;
+}
+.load-max:hover {
+  color: var(--marine200);
 }
 </style>
 
