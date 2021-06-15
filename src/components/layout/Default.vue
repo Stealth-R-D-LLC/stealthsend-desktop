@@ -6,7 +6,11 @@
       <router-view v-slot="{ Component }">
         <div
           class="full-width"
-          :class="{ 'full-width__grey': $route.name !== 'Dashboard' }"
+          :class="{
+            'full-width__grey':
+              $route.name === 'Transactions' ||
+              $route.name === 'ArchivedAccounts',
+          }"
         >
           <TopBar></TopBar>
           <transition name="fade">

@@ -1,8 +1,10 @@
 <template>
   <div class="st-settings-child st-password-container">
-    <h2 class="title">Website</h2>
-    <p class="subtitle">Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum</p>
-    <div class="content">aaaaa</div>
+    <div class="st-settings-child__overflow">
+      <h2 class="title">Website</h2>
+      <p class="subtitle">Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum</p>
+      <div class="content">aaaaa</div>
+    </div>
   </div>
 </template>
 

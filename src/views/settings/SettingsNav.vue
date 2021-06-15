@@ -141,12 +141,12 @@
           <p class="group-item__name">Website</p>
           <p class="group-item__desc">Lorem ipsum</p>
         </li>
-        <li class="group-item" @click="goTo('/settings/privacy-policy')">
-          <p class="group-item__name">Privacy Policy</p>
-          <p class="group-item__desc">Lorem ipsum</p>
-        </li>
         <li class="group-item" @click="goTo('/settings/terms-of-use')">
           <p class="group-item__name">Terms of Use</p>
+          <p class="group-item__desc">Lorem ipsum</p>
+        </li>
+        <li class="group-item" @click="goTo('/settings/privacy-policy')">
+          <p class="group-item__name">Privacy Policy</p>
           <p class="group-item__desc">Lorem ipsum</p>
         </li>
       </ul>
@@ -192,7 +192,7 @@ export default {
 }
 .st-settings-nav__body {
   overflow: auto;
-  height: calc(100vh - 210px);
+  height: calc(100vh - 90px);
   width: 100%;
   padding-right: 10px;
 }
