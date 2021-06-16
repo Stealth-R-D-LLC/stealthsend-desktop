@@ -42,6 +42,7 @@ Build Windows:
     - Copy-Item -Path .\* -Destination "$workdir" -PassThru -Recurse -Exclude @(".git")
     - cd "$workdir"
     # - nvm use 14.17.1
+    - set NODE_EXTRA_CA_CERTS="C:\Users\Barrage\bipa.crt"
     - npm --cafile "C:\Users\Barrage\bipa.crt" install --no-package-lock
     - npm --cafile "C:\Users\Barrage\bipa.crt" run electron:build --windows
     - cd "$CI_PROJECT_DIR"
