@@ -224,7 +224,6 @@ export default {
     });
     const inputAmountState = ref('XST');
 
-
     const currentStep = ref(1);
 
     function closeModal() {
@@ -315,7 +314,7 @@ export default {
       handleCopy,
       copyPending,
 
-      onOpen
+      onOpen,
     };
   },
 };
