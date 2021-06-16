@@ -182,12 +182,18 @@ h4 {
   color: var(--white);
 }
 .st-button {
-  margin-top: 122px;
+  margin: 0 auto;
   width: 100%;
   max-width: 184px;
 }
 :deep .st-input input {
   background-position: 92% 49% !important;
+}
+.form {
+  height: calc(100% - 270px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 svg path,
 svg circle {
