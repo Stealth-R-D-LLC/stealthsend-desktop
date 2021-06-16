@@ -51,4 +51,4 @@ Build Windows:
     - windows
   artifacts:
     paths:
-      - dist_electron/*.exe
+      - dist_electron/*.msi
