@@ -39,7 +39,7 @@ Build Windows:
   script:
     - npm cache clean --force
     - $workdir = Join-Path $Env:Temp $(New-Guid); New-Item -Type Directory -Path $workdir | Out-Null
-    - Copy-Item -Path .\* -Destination "$workdir" -PassThru -Recurse -Exclude @(".git")
+    - Copy-Item -Path .\* -Destination "$workdir" -PassThru -Recurse -Exclude @(".git") | Out-Null
     - cd "$workdir"
     - npm install --no-package-lock
     - npm run electron:build --windows
