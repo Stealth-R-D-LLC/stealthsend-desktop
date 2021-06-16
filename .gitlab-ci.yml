@@ -22,7 +22,7 @@ Build MacOS:
     - rsync -r --exclude=.git ./ "$WORKDIR"
     - cd "$WORKDIR"
     - nvm use 14
-    - npm install --only=prod --no-package-lock
+    - npm install --only=prod --no-package-lock --registry=https://nexus.barrage.net --username=gitlab-ci-readonly --password=$CI_NEXUS_DOCKER_REGISTRY_READ_ONLY
     - npm run electron:build --mac
     - cd $CI_PROJECT_DIR
     - rsync -r $WORKDIR/dist_electron ./
