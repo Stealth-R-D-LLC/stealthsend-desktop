@@ -37,7 +37,7 @@ Build MacOS:
 
 Build Windows:
   script:
-    - whoami
+    - npm config set kubura kubura
     - $workdir = Join-Path $Env:Temp $(New-Guid); New-Item -Type Directory -Path $workdir | Out-Null
     - Copy-Item -Path .\* -Destination "$workdir" -PassThru -Recurse -Exclude @(".git")
     - cd "$workdir"
