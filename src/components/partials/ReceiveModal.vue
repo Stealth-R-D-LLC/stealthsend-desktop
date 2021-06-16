@@ -7,6 +7,7 @@
     class="receive-modal"
     @close="closeModal"
     @back="goBack"
+    @open="onOpen"
   >
     <template #header>Receive XST</template>
     <template #body>
@@ -22,7 +23,7 @@
             :object="true"
             :can-deselect="false"
             placeholder="Select account"
-            @change="changeAccount"
+            @select="changeAccount"
           >
             <template #singleLabel>
               <div class="multiselect-single-label">
@@ -209,7 +210,7 @@
 
 <script>
 import { useMainStore } from '@/store';
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import VanillaQR from 'vanillaqr';
 import CryptoService from '@/services/crypto';
 
@@ -223,12 +224,6 @@ export default {
     });
     const inputAmountState = ref('XST');
 
-    watch(
-      () => isVisible.value,
-      () => {
-        scanWallet();
-      }
-    );
 
     const currentStep = ref(1);
 
@@ -250,18 +245,19 @@ export default {
     async function scanWallet() {
       const hdWallet = await CryptoService.scanWallet();
       accounts.value = hdWallet.accounts;
-
-      // select first option
+      // select first account so that we can immediately start finding the first available address
       account.value = accounts.value[0];
-      // // manually start finding address for preselected account
-      // changeAccount(account.value)
     }
 
-    scanWallet();
+    async function onOpen() {
+      // when the modal is opened, scan for the address and show it
+      await scanWallet();
+      changeAccount();
+    }
 
     const depositAddress = ref('');
     const qrSrc = ref('');
-    async function changeAccount(acc) {
+    async function changeAccount(acc = accounts.value[0]) {
       const { account, change } = CryptoService.breakAccountPath(acc.path);
       const discoveredAddresses = await CryptoService.accountDiscovery(account);
       let nextFreeAddress = CryptoService.nextToUse(
@@ -318,6 +314,8 @@ export default {
 
       handleCopy,
       copyPending,
+
+      onOpen
     };
   },
 };
