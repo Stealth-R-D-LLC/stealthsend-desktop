@@ -21,7 +21,7 @@ Build MacOS:
     - WORKDIR=$(mktemp -d)
     - rsync -r --exclude=.git ./ "$WORKDIR"
     - cd "$WORKDIR"
-    - npm install
+    - npm install --only=prod --no-package-lock
     - npm run electron:build --mac
     - cd $CI_PROJECT_DIR
     - rsync -r $WORKDIR/dist_electron ./
