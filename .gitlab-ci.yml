@@ -37,16 +37,16 @@ Build MacOS:
 
 Build Windows:
   script:
-    - WORKDIR="testDir"
-    - cwRsync -r --exclude=.git ./ "$WORKDIR"
-    - cd "$WORKDIR"
-    - nvm install 14
+    - $workdir = Join-Path $Env:Temp $(New-Guid); New-Item -Type Directory -Path $workdir | Out-Null
+    - Copy-Item -Path .\* -Destination "$workdir" -PassThru -Recurse -Exclude @(".git")
+    - cd "$workdir"
+    # - nvm use 14.17.1
     - npm install --no-package-lock --registry=https://nexus.barrage.net/repository/npm.barrage.net/ --username=gitlab-ci-readonly --password=$CI_NEXUS_DOCKER_REGISTRY_READ_ONLY
     - npm run electron:build --windows
     - cd $CI_PROJECT_DIR
-    - cwRsync -r $WORKDIR/dist_electron ./
-    - rm -rf "$WORKDIR"
-    - nvm use default
+    - Copy-Item -Path "$workdir\dist_electron\*" -Destination ".\" -PassThru -Recurse
+    - Remove-Item -Recurse -Force "$workdir"
+    # - nvm use default
   tags:
     - windows
   artifacts:
