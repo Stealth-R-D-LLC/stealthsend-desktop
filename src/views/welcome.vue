@@ -724,6 +724,7 @@
                   :error-message="form.password.$errors"
                 >
                   <StInput
+                    id="password"
                     :type="showPassword ? 'text' : 'password'"
                     v-model="form.password.$value"
                   >
@@ -805,6 +806,7 @@
                   :error-message="form.paymentCode.$errors"
                 >
                   <PaymentCode
+                    id="digit"
                     key="paymentCode"
                     position="left"
                     v-model="form.paymentCode.$value"
@@ -832,6 +834,7 @@
                   :error-message="form.account.$errors"
                 >
                   <StInput
+                    id="account-name"
                     v-model="form.account.$value"
                     placeholder="Enter Account Name"
                   />
@@ -1576,6 +1579,34 @@ export default {
       });
 
     watchEffect(async () => {
+      if (currentStep.value === 6) {
+        setTimeout(
+          () =>
+            document
+              .getElementById('password')
+              .getElementsByClassName('st-input__inner')[0]
+              .focus(),
+          1
+        );
+      }
+      if (currentStep.value === 7) {
+        setTimeout(
+          () =>
+            document
+              .getElementById('digit')
+              .getElementsByClassName('digit-0')[0]
+              .focus(),
+          1
+        );
+      }
+      if (currentStep.value === 8) {
+        setTimeout(() => {
+          document
+            .getElementById('account-name')
+            .getElementsByClassName('st-input__inner')[0]
+            .focus();
+        });
+      }
       if (currentStep.value === 11) {
         setTimeout(() => {
           handleSubmit();
@@ -1589,10 +1620,14 @@ export default {
       }
       if (recoveryStep.value === 1) {
         wordlist.value = await bip39.wordlists.EN;
-        document
-          .getElementById('recovery-word')
-          .getElementsByClassName('st-input__inner')[0]
-          .focus();
+        setTimeout(
+          () =>
+            document
+              .getElementById('recovery-word')
+              .getElementsByClassName('st-input__inner')[0]
+              .focus(),
+          1
+        );
       }
       if (recoveryStep.value === 2) {
         setTimeout(() => recoveryStepNext(), 4200);
