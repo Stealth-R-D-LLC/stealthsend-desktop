@@ -29,8 +29,34 @@
                 id="password"
                 v-model="password"
                 placeholder="··········"
-                type="password"
-              ></StInput>
+                :type="showPassword ? 'text' : 'password'"
+              >
+                <div v-if="password" @click="showPassword = !showPassword">
+                  <svg
+                    :class="{ 'icon-active': showPassword }"
+                    width="22"
+                    height="12"
+                    viewBox="0 0 22 12"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
+                      stroke="#FEFEFE"
+                      stroke-width="2"
+                    />
+                    <circle
+                      r="1"
+                      transform="matrix(-1 0 0 1 11 6)"
+                      fill="#4E00F6"
+                      stroke="#4E00F6"
+                      stroke-width="2"
+                    />
+                  </svg>
+                </div>
+              </StInput>
             </StFormItem>
             <StButton color="white" @click="handlePassword">Continue</StButton>
           </form>
@@ -50,6 +76,7 @@ export default {
   setup() {
     const isAnimated = ref(false);
     const password = ref('');
+    const showPassword = ref(false);
 
     onMounted(() => {
       setTimeout(() => {
@@ -76,6 +103,7 @@ export default {
       }
     };
     return {
+      showPassword,
       isAnimated,
       password,
       handlePassword,
@@ -157,5 +185,18 @@ h4 {
   margin-top: 122px;
   width: 100%;
   max-width: 184px;
+}
+:deep .st-input input {
+  background-position: 92% 49% !important;
+}
+svg path,
+svg circle {
+  transition: 0.3s;
+}
+.icon-active path {
+  stroke: var(--marine500) !important;
+}
+.icon-active circle {
+  stroke: var(--background0) !important;
 }
 </style>
