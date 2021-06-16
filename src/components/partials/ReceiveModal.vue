@@ -11,8 +11,7 @@
     <template #header>Receive XST</template>
     <template #body>
       <template v-if="currentStep === 1">
-        <div class="form-item account">
-          <label for="multiselect">Account</label>
+        <StFormItem color="dark" label="Account">
           <StMultiselect
             :class="{ 'multiselect-filled': account }"
             v-model="account"
@@ -25,13 +24,13 @@
             placeholder="Select account"
             @change="changeAccount"
           >
-            <template #singlelabel="{ value }">
+            <template #singleLabel>
               <div class="multiselect-single-label">
                 <p class="account-label">
-                  {{ value.label }}
+                  {{ account && account.label }}
                 </p>
                 <p class="account-utxo">
-                  {{ value.utxo }}
+                  {{ account && account.utxo }}
                 </p>
               </div>
             </template>
@@ -40,13 +39,11 @@
               {{ option.label }} ({{ option.utxo }})
             </template>
           </StMultiselect>
-        </div>
-        <div class="form-item">
+        </StFormItem>
+        <StFormItem color="dark" label="Amount">
           <StAmount
             v-if="inputAmountState === 'XST'"
             v-model="amount"
-            label="Amount"
-            color="dark"
             placeholder="Amount"
             :options="{
               locale: 'en',
@@ -58,80 +55,78 @@
               allowNegative: false,
             }"
           >
-            <svg
-              @click="inputAmountState = 'USD'"
-              width="19"
-              height="16"
-              viewBox="0 0 19 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M14.2222 14.2222L14.2222 1.77773"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M4.77777 1.77783V14.2223"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-            </svg>
+            <div @click="inputAmountState = 'USD'">
+              <svg
+                width="19"
+                height="16"
+                viewBox="0 0 19 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M14.2222 14.2222L14.2222 1.77773"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M4.77777 1.77783V14.2223"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
           </StAmount>
           <StAmount
             v-else-if="inputAmountState === 'USD'"
             v-model="amount"
-            label="Amount"
-            color="dark"
             placeholder="Amount"
           >
-            <svg
-              @click="inputAmountState = 'XST'"
-              width="19"
-              height="16"
-              viewBox="0 0 19 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M14.2222 14.2222L14.2222 1.77773"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M4.77777 1.77783V14.2223"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-            </svg>
+            <div @click="inputAmountState = 'XST'">
+              <svg
+                width="19"
+                height="16"
+                viewBox="0 0 19 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M14.2222 14.2222L14.2222 1.77773"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M4.77777 1.77783V14.2223"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
           </StAmount>
-        </div>
-        <div class="form-item">
+        </StFormItem>
+        <StFormItem color="dark" label="Address">
           <StInput
             v-model="depositAddress"
             placeholder="Deposit address"
-            label="Address"
-            color="dark"
             disabled
           >
             <StTooltip
@@ -163,17 +158,17 @@
               </StClipboard>
             </StTooltip>
           </StInput>
-        </div>
+        </StFormItem>
       </template>
       <template v-if="currentStep === 2">
-        <StInput
-          class="address-input"
-          v-model="depositAddress"
-          placeholder="Deposit address"
-          label="Receiving Address"
-          color="dark"
-          disabled
-        ></StInput>
+        <StFormItem label="Receiving Address" color="dark">
+          <StInput
+            class="address-input"
+            v-model="depositAddress"
+            placeholder="Deposit address"
+            disabled
+          ></StInput>
+        </StFormItem>
         <StTooltip
           class="tooltip"
           :tooltip-text="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
@@ -185,16 +180,13 @@
         <img class="qr-img" :src="qrSrc" />
       </template>
       <template v-if="currentStep === 3">
-        <StInput
-          v-model="email"
-          label="Email"
-          color="dark"
-          placeholder="Email"
-        ></StInput>
-        <p class="email-desc">
-          Using this option you will share receive details via default email
-          client
-        </p>
+        <StFormItem label="Email" color="dark">
+          <StInput v-model="email" placeholder="Email"></StInput>
+          <p class="email-desc">
+            Using this option you will share receive details via default email
+            client
+          </p>
+        </StFormItem>
       </template>
     </template>
     <template #footer class="flex-center-all">
@@ -375,32 +367,19 @@ export default {
 .multiselect-single-label {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  position: absolute;
-  top: -13px;
+  color: var(--white);
 }
 .multiselect-single-label .account-utxo {
   margin-top: 6px;
   font-family: Noto Sans;
-  font-style: normal;
-  font-weight: normal;
   font-size: 14px;
   line-height: 14px;
-  /* identical to box height, or 200% */
-
   letter-spacing: 0.12px;
 }
 .multiselect-single-label .account-label {
   font-family: Noto Sans;
-  font-style: normal;
-  font-weight: normal;
   font-size: 14px;
   line-height: 14px;
-  height: 48px;
-  top: -14px;
-  /* identical to box height, or 200% */
-
   letter-spacing: 0.12px;
 }
 </style>
