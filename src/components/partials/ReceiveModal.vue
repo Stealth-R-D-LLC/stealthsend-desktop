@@ -272,7 +272,8 @@ export default {
       depositAddress.value = child.address;
       var qr = new VanillaQR({
         url: depositAddress.value,
-        noBorder: true,
+        noBorder: false,
+        borderSize: 1,
         colorDark: '#140435',
         colorLight: '#FAF9FC',
         size: 260,
