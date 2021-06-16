@@ -21,7 +21,7 @@
 import StSwitcher from '@/components/elements/StSwitcher.vue';
 import Card from '@/components/elements/Card';
 import CryptoService from '@/services/crypto';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useMainStore } from '@/store';
 import router from '@/router';
 
@@ -37,6 +37,36 @@ export default {
 
     const utxo = ref(0);
     const txs = ref([]);
+
+    watch(
+      () => mainStore.modals.receive,
+      (newVal) => {
+        // if receive any modal is now closed
+        if (!newVal) {
+          scanWallet();
+        }
+      }
+    );
+
+    watch(
+      () => mainStore.modals.send,
+      (newVal) => {
+        // if send any modal is now closed
+        if (!newVal) {
+          scanWallet();
+        }
+      }
+    );
+
+    watch(
+      () => mainStore.modals.account,
+      (newVal) => {
+        // if account any modal is now closed
+        if (!newVal) {
+          scanWallet();
+        }
+      }
+    );
 
     async function scanWallet() {
       const hdWallet = await CryptoService.scanWallet();
