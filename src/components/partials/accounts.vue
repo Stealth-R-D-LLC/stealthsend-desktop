@@ -6,7 +6,7 @@
         v-for="(account, index) in activeAccounts"
         :key="account._id"
         class="card"
-        :class="{ 'card-purple': account.utxo < 1 }"
+        :class="{ 'card-purple': account.utxo === 0 }"
       >
         <div class="card__inner">
           <div class="card-header">
