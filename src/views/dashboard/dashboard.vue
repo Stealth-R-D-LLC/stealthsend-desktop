@@ -37,7 +37,6 @@ export default {
       return mainStore.componentVisibility;
     });
 
-
     async function scanWallet() {
       const hdWallet = await CryptoService.scanWallet();
       utxo.value = hdWallet.utxo;
