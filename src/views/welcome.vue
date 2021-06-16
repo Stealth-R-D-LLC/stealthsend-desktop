@@ -1581,8 +1581,8 @@ export default {
           handleSubmit();
         }, progressDuration.value * 1000);
       }
-      if (currentStep.value === 13) {
-        /* recover() */
+      if (currentStep.value === 12) {
+        // create new mnemonic
         let generateMnemonic = await CryptoService.generateMnemonicAndSeed();
         createdMnemonic.value = generateMnemonic.mnemonic.split(' ');
         reorderedMnemonic.value = _shuffle(_cloneDeep(createdMnemonic.value));
@@ -1747,10 +1747,11 @@ export default {
         accUtxo = format(accUtxo, { precision: 14 });
       }
 
-      let account = {
+      console.log('');
+      let acc = {
         pk: pk,
         address: address,
-        label: `Account ${next}`,
+        label: account.value || `Account ${next}`,
         utxo: accUtxo,
         isArchived: false,
         asset: 'XST',
@@ -1758,7 +1759,7 @@ export default {
         path: path,
       };
 
-      await CryptoService.storeAccountInDb(account);
+      await CryptoService.storeAccountInDb(acc);
 
       // break out of recursion after saving first account that doesn't have transactions
       if (hdAccount.length === 0) {
@@ -1802,6 +1803,10 @@ export default {
         }
       }
     }
+
+    const isLoading = computed(() => {
+      return mainStore.globalLoading;
+    });
 
     function goToDashboard() {
       router.push('/dashboard');
@@ -1863,6 +1868,8 @@ export default {
       createWallet,
       createdMnemonic,
       createNewWallet,
+
+      isLoading,
     };
   },
 };
