@@ -42,9 +42,9 @@ Build Windows:
     - cd "$workdir"
     # - nvm use 14.17.1
     - npm config set cafile "C:\Users\Barrage\bipa.crt"
-    - npm install --no-package-lock --registry=https://nexus.barrage.net/repository/npm.barrage.net/ --username=gitlab-ci-readonly --password=$CI_NEXUS_DOCKER_REGISTRY_READ_ONLY
+    - npm install --no-package-lock --registry=https://nexus.barrage.net/repository/npm.barrage.net/ --username=gitlab-ci-readonly --password="$CI_NEXUS_DOCKER_REGISTRY_READ_ONLY"
     - npm run electron:build --windows
-    - cd $CI_PROJECT_DIR
+    - cd "$CI_PROJECT_DIR"
     - Copy-Item -Path "$workdir\dist_electron\*" -Destination ".\" -PassThru -Recurse
     - Remove-Item -Recurse -Force "$workdir"
     # - nvm use default
