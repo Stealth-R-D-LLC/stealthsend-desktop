@@ -296,7 +296,7 @@ export default {
     }
 
     function sendEmail() {
-      closeModal()
+      closeModal();
       alert('Email sent - missing design');
     }
 
@@ -320,7 +320,7 @@ export default {
       copyPending,
 
       onOpen,
-      sendEmail
+      sendEmail,
     };
   },
 };
