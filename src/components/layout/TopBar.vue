@@ -71,11 +71,11 @@
     </div>
     <div class="header-right">
       <StIcon name="sync-status"></StIcon>
-      <StIcon name="support"></StIcon>
-      <StIcon
+      <!-- <StIcon name="support"></StIcon> -->
+      <!-- <StIcon
         name="notifications"
         @click="toggleDrawer('recent-notifications')"
-      ></StIcon>
+      ></StIcon> -->
       <StIcon name="qr"></StIcon>
       <StIcon @click="goto('/settings')" name="settings"></StIcon>
     </div>
