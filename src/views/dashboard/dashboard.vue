@@ -1,7 +1,6 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-container__overflow">
-      <!-- <TopBar></TopBar> -->
       <Chart v-if="componentVisibility.chart"></Chart>
       <TransactionList
         v-if="componentVisibility.txDashboard"

@@ -30,8 +30,14 @@
             Phrase protects all of your accounts.
           </p>
         </div>
-        <StFormItem label="Account Name">
-          <StInput v-model="accountName" placeholder="Account name"></StInput>
+        <StFormItem
+          label="Account Name"
+          :error-message="form.accountName.$errors"
+        >
+          <StInput
+            v-model="form.accountName.$value"
+            placeholder="Account name"
+          ></StInput>
         </StFormItem>
         <div class="buttons">
           <StButton color="secondary" @click="closeModal">Cancel</StButton>
@@ -130,6 +136,8 @@
 import { useMainStore } from '@/store';
 import { computed, ref, watchEffect } from 'vue';
 import CryptoService from '@/services/crypto';
+import { useValidation } from 'vue3-form-validation';
+
 export default {
   name: 'StAccountModal',
   setup() {
@@ -141,6 +149,26 @@ export default {
     const understand = ref(false);
     const privateKey = ref('');
     const copyPending = ref(false);
+
+    const {
+      form,
+      errors,
+      // add,
+      // submitting,
+      validateFields,
+      resetFields,
+    } = useValidation({
+      accountName: {
+        $value: accountName,
+        $rules: [
+          () => {
+            if (isLastAccountEmpty) {
+              return 'Cannot create account - last account is unused';
+            }
+          },
+        ],
+      },
+    });
 
     // WATCH
     watchEffect(() => {
@@ -174,6 +202,7 @@ export default {
     function closeModal() {
       mainStore.SET_MODAL_VISIBILITY('account', false);
       accountName.value = '';
+      resetFields();
     }
     function changeStep(name) {
       currentStep.value = 1;
@@ -188,15 +217,17 @@ export default {
       }
     }
     function handleCopy() {
-      console.log('hahah');
       copyPending.value = true;
       setTimeout(() => {
         copyPending.value = false;
       }, 2000);
     }
+
+    let isLastAccountEmpty = false;
     async function generateAccount() {
+      isLastAccountEmpty = false;
       let account = {};
-      mainStore.SET_MODAL_VISIBILITY('account', false);
+      // mainStore.SET_MODAL_VISIBILITY('account', false);
       mainStore.START_GLOBAL_LOADING();
 
       let next = await CryptoService.getNextAccountPath();
@@ -212,13 +243,11 @@ export default {
       const lastHdAccount = await mainStore.rpc('gethdaccount', [
         lastAccountPk,
       ]);
+
       // if does have transactions, don't create new account
       if (lastHdAccount.length === 0) {
-        console.error(
-          "CANNOT CREATE ACCOUNT - last account doesn't have transaction(s)"
-        );
-        accountName.value = '';
-        mainStore.STOP_GLOBAL_LOADING();
+        isLastAccountEmpty = true;
+        await validateFields();
         return;
       }
 
@@ -241,6 +270,7 @@ export default {
 
       await CryptoService.storeAccountInDb(account);
       mainStore.STOP_GLOBAL_LOADING();
+      closeModal();
     }
 
     return {
@@ -262,6 +292,10 @@ export default {
       nextStep,
       generateAccount,
       handleCopy,
+
+      form,
+      errors,
+      isLastAccountEmpty,
     };
   },
 };

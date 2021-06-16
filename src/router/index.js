@@ -1,4 +1,3 @@
-import AddAccount from '@/views/account/add.vue';
 import ArchivedAccounts from '@/views/account/archived.vue';
 import AccountDetails from '@/views/account/details.vue';
 import AddressBook from '@/views/address-book.vue';
@@ -145,11 +144,6 @@ const routes = [
         component: SettingsTermsOfUse,
       },
     ],
-  },
-  {
-    path: '/account/add',
-    name: 'AddAccount',
-    component: AddAccount,
   },
   {
     path: '/account/details',
