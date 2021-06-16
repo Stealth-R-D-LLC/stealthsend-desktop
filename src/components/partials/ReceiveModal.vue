@@ -202,7 +202,7 @@
         >
       </template>
       <template v-if="currentStep === 3">
-        <StButton color="white" @click="closeModal">Send Email</StButton>
+        <StButton color="white" @click="sendEmail">Send Email</StButton>
       </template>
     </template>
   </StModal>
@@ -295,6 +295,11 @@ export default {
       currentStep.value = step;
     }
 
+    function sendEmail() {
+      closeModal()
+      alert('Email sent - missing design');
+    }
+
     return {
       isVisible,
       closeModal,
@@ -315,6 +320,7 @@ export default {
       copyPending,
 
       onOpen,
+      sendEmail
     };
   },
 };
