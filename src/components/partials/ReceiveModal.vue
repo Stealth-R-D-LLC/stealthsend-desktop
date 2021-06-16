@@ -249,7 +249,7 @@ export default {
     }
 
     async function onOpen() {
-      // when the modal is opened, scan for the address and show it
+      // when the modal is opened, scan for the address and show ith
       await scanWallet();
       changeAccount();
     }
