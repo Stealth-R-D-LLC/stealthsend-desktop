@@ -38,7 +38,7 @@ export default {
     const utxo = ref(0);
     const txs = ref([]);
 
-        watch(
+    watch(
       () => mainStore.modals.receive,
       (newVal) => {
         // if receive any modal is now closed

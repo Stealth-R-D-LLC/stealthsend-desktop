@@ -155,7 +155,7 @@ export default {
       errors,
       // add,
       // submitting,
-      // validateFields,
+      validateFields,
       resetFields,
     } = useValidation({
       accountName: {
@@ -233,23 +233,23 @@ export default {
       let next = await CryptoService.getNextAccountPath();
 
       // get current last existing account
-      // const { pk: lastAccountPk } = CryptoService.getChildFromRoot(
-      //   next - 1 >= 0 ? next - 1 : 0,
-      //   0,
-      //   0
-      // );
+      const { pk: lastAccountPk } = CryptoService.getChildFromRoot(
+        next - 1 >= 0 ? next - 1 : 0,
+        0,
+        0
+      );
 
       // check if last existing account has transactions
-      // const lastHdAccount = await mainStore.rpc('gethdaccount', [
-      //   lastAccountPk,
-      // ]);
+      const lastHdAccount = await mainStore.rpc('gethdaccount', [
+        lastAccountPk,
+      ]);
 
       // if does have transactions, don't create new account
-      // if (lastHdAccount.length === 0) {
-      //   isLastAccountEmpty = true;
-      //   await validateFields();
-      //   return;
-      // }
+      if (lastHdAccount.length === 0) {
+        isLastAccountEmpty = true;
+        await validateFields();
+        return;
+      }
 
       const { address, path, pk, wif } = CryptoService.getChildFromRoot(
         next,
@@ -270,7 +270,7 @@ export default {
 
       await CryptoService.storeAccountInDb(account);
       mainStore.STOP_GLOBAL_LOADING();
-      closeModal()
+      closeModal();
     }
 
     return {
