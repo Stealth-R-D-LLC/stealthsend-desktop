@@ -116,4 +116,10 @@ export default {
 .st-form-item--has-error :deep .st-icon path {
   stroke: var(--danger);
 }
+:deep .form-desc {
+  font-size: 12px;
+  line-height: 24px;
+  letter-spacing: 0.12px;
+  color: var(--grey400);
+}
 </style>
