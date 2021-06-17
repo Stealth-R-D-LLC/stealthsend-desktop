@@ -1,6 +1,6 @@
 /* fonts  */
 
-@font-face {
+/* @font-face {
   font-family: var(--primary-font);
   font-display: swap;
   src: local('SourceSansPro'), local('SourceSansPro'),
@@ -34,7 +34,7 @@
     url('./fonts/NotoSans/NotoSans-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
-}
+} */
 
 
 :root {
