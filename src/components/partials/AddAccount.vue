@@ -165,8 +165,8 @@ export default {
             if (isLastAccountEmpty) {
               return 'You can only have one account with zero balance. Please add XST to your previous account prior to opening a new one.';
             }
-            if (existingAccounts.some(el => el.label === accountName)) {
-              return 'Account name already exists.'
+            if (existingAccounts.some((el) => el.label === accountName)) {
+              return 'Account name already exists.';
             }
           },
         ],
@@ -264,7 +264,7 @@ export default {
         await validateFields();
         return;
       }
-      
+
       await validateFields();
 
       const { address, path, pk, wif } = CryptoService.getChildFromRoot(
