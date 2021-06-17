@@ -1865,7 +1865,7 @@ export default {
         accUtxo = add(accUtxo, tx.account_balance_change);
         accUtxo = format(accUtxo, { precision: 14 });
       }
-      
+
       let acc = {
         pk: pk,
         address: address,
