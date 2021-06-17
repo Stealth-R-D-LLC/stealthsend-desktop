@@ -294,7 +294,7 @@ export default {
       () => {
         scanWallet();
         if (!isVisible.value) {
-          closeModal()
+          closeModal();
         }
       }
     );
@@ -320,7 +320,7 @@ export default {
       const hdWallet = await CryptoService.scanWallet();
       accounts.value = hdWallet.accounts;
       // select first option
-      account.value = hdWallet.accounts[0]
+      account.value = hdWallet.accounts[0];
       // // manually start finding address for preselected account
       // changeAccount(account.value)
     }
