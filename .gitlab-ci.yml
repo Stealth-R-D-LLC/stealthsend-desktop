@@ -37,15 +37,10 @@ Build MacOS:
 
 Build Windows:
   script:
+    - Set-Variable -name NODE_EXTRA_CA_CERTS -value C:\runner\bipa.crt
     - npm cache clean --force
-    - $workdir = Join-Path $Env:Temp $(New-Guid); New-Item -Type Directory -Path $workdir | Out-Null
-    - Copy-Item -Path .\* -Destination "$workdir" -PassThru -Recurse -Exclude @(".git") | Out-Null
-    - cd "$workdir"
-    - npm install --no-package-lock
+    - npm install --unsafe-perm
     - npm run electron:build --windows
-    - cd "$CI_PROJECT_DIR"
-    - Copy-Item -Path "$workdir\dist_electron\*" -Destination ".\" -PassThru -Recurse
-    - Remove-Item -Recurse -Force "$workdir"
   tags:
     - windows
   artifacts:
