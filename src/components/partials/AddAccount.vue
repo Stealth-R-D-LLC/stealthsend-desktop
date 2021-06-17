@@ -163,7 +163,7 @@ export default {
         $rules: [
           () => {
             if (isLastAccountEmpty) {
-              return 'Cannot create account - last account is unused';
+              return 'You can only have one account with zero balance. Please add XST to your previous account prior to opening a new one.';
             }
           },
         ],
@@ -228,7 +228,7 @@ export default {
       isLastAccountEmpty = false;
       let account = {};
       // mainStore.SET_MODAL_VISIBILITY('account', false);
-      mainStore.START_GLOBAL_LOADING();
+      // mainStore.START_GLOBAL_LOADING();
 
       let next = await CryptoService.getNextAccountPath();
 
@@ -269,7 +269,7 @@ export default {
       accountName.value = '';
 
       await CryptoService.storeAccountInDb(account);
-      mainStore.STOP_GLOBAL_LOADING();
+      // mainStore.STOP_GLOBAL_LOADING();
       closeModal();
     }
 
