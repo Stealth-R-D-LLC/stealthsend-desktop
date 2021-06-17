@@ -36,19 +36,18 @@ Build MacOS:
       - dist_electron/*.pkg
 
 Build Windows:
-  image: electronuserland/builder:wine
   script:
-    - id
-    - pwd
-    - ls -la
-    # - cp -R ./ /project
-    # - cd /project
-    - npm install --only=prod --no-package-lock
-    # - npm run electron:build --linux
-    # - cd $CI_PROJECT_DIR
-    # - rsync -r /project/dist_electron ./
+    - npm cache clean --force
+    - $workdir = Join-Path $Env:Temp $(New-Guid); New-Item -Type Directory -Path $workdir | Out-Null
+    - Copy-Item -Path .\* -Destination "$workdir" -PassThru -Recurse -Exclude @(".git") | Out-Null
+    - cd "$workdir"
+    - npm install --no-package-lock
+    - npm run electron:build --windows
+    - cd "$CI_PROJECT_DIR"
+    - Copy-Item -Path "$workdir\dist_electron\*" -Destination ".\" -PassThru -Recurse
+    - Remove-Item -Recurse -Force "$workdir"
   tags:
-    - docker-executor-sysops
+    - windows
   artifacts:
     paths:
       - dist_electron/*.msi
