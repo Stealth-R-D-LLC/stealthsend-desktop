@@ -125,11 +125,7 @@
           </StAmount>
         </StFormItem>
         <StFormItem color="dark" label="Address">
-          <StInput
-            v-model="depositAddress"
-            placeholder="Deposit address"
-            disabled
-          >
+          <StInput v-model="depositAddress" placeholder="Loading..." disabled>
             <StTooltip
               v-if="depositAddress"
               :tooltip-text="
@@ -158,6 +154,25 @@
                 </svg>
               </StClipboard>
             </StTooltip>
+            <svg
+              v-else
+              class="address-loader"
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                cx="9"
+                cy="9"
+                r="7"
+                stroke="#E5E4E8"
+                stroke-width="2"
+                stroke-linejoin="round"
+                stroke-dasharray="2 4"
+              />
+            </svg>
           </StInput>
         </StFormItem>
       </template>
@@ -192,7 +207,10 @@
     </template>
     <template #footer class="flex-center-all">
       <template v-if="currentStep === 1">
-        <StButton color="white" @click="changeStep(2)"
+        <StButton
+          :disabled="!depositAddress"
+          color="white"
+          @click="changeStep(2)"
           >Generate QR Code</StButton
         >
       </template>
@@ -273,10 +291,10 @@ export default {
       var qr = new VanillaQR({
         url: depositAddress.value,
         noBorder: false,
-        borderSize: 1,
+        // borderSize: 20,
         colorDark: '#140435',
         colorLight: '#FAF9FC',
-        size: 260,
+        // size: 140,
       });
       qrSrc.value = qr.toImage('png').src;
     }
@@ -358,8 +376,7 @@ export default {
 .qr-img {
   margin: 46px auto 0;
   display: block;
-  width: 100%;
-  max-width: 120px;
+  max-width: 145px;
 }
 .email-desc {
   margin-top: 10px;
@@ -386,8 +403,39 @@ export default {
   line-height: 14px;
   letter-spacing: 0.12px;
 }
-</style>
 
+@-webkit-keyframes rotating /* Safari and Chrome */ {
+  from {
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes rotating {
+  from {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+.address-loader {
+  animation: rotating 2s linear infinite;
+}
+</style>
 <style>
 .receive-modal .st-modal__footer {
   display: flex;

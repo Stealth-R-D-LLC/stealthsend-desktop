@@ -66,7 +66,7 @@
                   </h4>
                 </div>
                 <div v-if="isAccount || isRecovery" class="support">
-                  <svg
+                  <!-- <svg
                     width="22"
                     height="22"
                     viewBox="0 0 22 22"
@@ -108,7 +108,7 @@
                       stroke-width="2"
                     />
                   </svg>
-                  <p>Customer Support</p>
+                  <p>Customer Support</p> -->
                 </div>
                 <div class="buttons" v-else>
                   <StButton color="white" @click="isAccount = true"
@@ -894,6 +894,7 @@
                     type="square"
                     name="recoveryPhrase"
                     value="18"
+                    disabled
                     >18 Word Recovery Phrase</StRadio
                   >
                   <StRadio
@@ -901,6 +902,7 @@
                     type="square"
                     name="recoveryPhrase"
                     value="24"
+                    disabled
                     >24 Word Recovery Phrase</StRadio
                   >
                 </div>

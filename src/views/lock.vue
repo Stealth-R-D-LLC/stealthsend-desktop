@@ -24,7 +24,11 @@
           <h3>Welcome back</h3>
           <h4>Enter your password to continue</h4>
           <form class="form" @submit.prevent>
-            <StFormItem color="dark" label="Password">
+            <StFormItem
+              color="dark"
+              label="Password"
+              :error-message="form.password.$errors"
+            >
               <StInput
                 id="password"
                 v-model="password"
@@ -58,7 +62,9 @@
                 </div>
               </StInput>
             </StFormItem>
-            <StButton color="white" @click="handlePassword">Continue</StButton>
+            <StButton color="white" @click="validatePassword"
+              >Continue</StButton
+            >
           </form>
         </template>
       </div>
@@ -70,6 +76,8 @@
 import { ref, onMounted } from 'vue';
 import router from '@/router';
 import CryptoService from '@/services/crypto';
+import { useValidation } from 'vue3-form-validation';
+
 export default {
   name: 'StLock',
   components: {},
@@ -77,6 +85,38 @@ export default {
     const isAnimated = ref(false);
     const password = ref('');
     const showPassword = ref(false);
+
+    const {
+      form,
+      // errors,
+      // add,
+      // submitting,
+      validateFields,
+      resetFields,
+    } = useValidation({
+      // depositAddress: {
+      //   $value: depositAddress,
+      //   $rules: [(depositAddress) => !depositAddress && 'Address is required'],
+      // },
+      password: {
+        $value: password,
+        $rules: [
+          async (password) => {
+            if (!password) {
+              return 'Password is required.';
+            }
+            let isValid = await CryptoService.validatePassword(password);
+            if (!isValid) {
+              return 'Incorrect password.';
+            } else {
+              await CryptoService.unlock(password.value);
+              router.push('/dashboard');
+              resetFields();
+            }
+          },
+        ],
+      },
+    });
 
     onMounted(() => {
       setTimeout(() => {
@@ -92,21 +132,16 @@ export default {
       }, 2000);
     });
 
-    const handlePassword = async () => {
-      let isPasswordMatch = false;
-      isPasswordMatch = await CryptoService.validatePassword(password.value);
-      if (isPasswordMatch) {
-        await CryptoService.unlock(password.value);
-        router.push('/dashboard');
-      } else {
-        console.log('wrong password!');
-      }
-    };
+    async function validatePassword() {
+      await validateFields();
+    }
+
     return {
       showPassword,
       isAnimated,
       password,
-      handlePassword,
+      validatePassword,
+      form,
     };
   },
 };

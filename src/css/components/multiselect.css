@@ -2,8 +2,12 @@
 fieldset[disabled] .multiselect {
   pointer-events: none;
 }
-.dark .multiselect__tags .multiselect__single {
+.st-form-item--is-dark .multiselect__tags .multiselect__single {
   color: var(--white);
+}
+
+.st-form-item--is-dark .multiselect__select::before {
+  border-color: var(--white) transparent transparent transparent;
 }
 .multiselect__spinner {
   position: absolute;
