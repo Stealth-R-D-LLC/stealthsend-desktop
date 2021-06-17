@@ -203,7 +203,7 @@
             <p class="bold">Address</p>
             <p>{{ depositAddress }}</p>
             <p class="bold">Label:</p>
-            <p>{{ label ? label : 'No label'}}</p>
+            <p>{{ label ? label : 'No label' }}</p>
             <p class="bold">Fee:</p>
             <p>0.0 XST</p>
           </div>
@@ -263,11 +263,11 @@ export default {
         $value: account,
         $rules: [
           (account) => {
-          if (!account) {
-            return 'Account is required'
-          }
-        }
-        ]
+            if (!account) {
+              return 'Account is required';
+            }
+          },
+        ],
       },
       amount: {
         $value: amount,
