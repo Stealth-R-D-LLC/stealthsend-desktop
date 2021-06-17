@@ -207,7 +207,10 @@
     </template>
     <template #footer class="flex-center-all">
       <template v-if="currentStep === 1">
-        <StButton :disabled="!depositAddress" color="white" @click="changeStep(2)"
+        <StButton
+          :disabled="!depositAddress"
+          color="white"
+          @click="changeStep(2)"
           >Generate QR Code</StButton
         >
       </template>
