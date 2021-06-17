@@ -6,6 +6,7 @@ import CryptoService from '@/services/crypto';
 import { add, format, subtract } from 'mathjs';
 
 export default function useCoinControl(outputs, target) {
+  console.log('use coin control outputs: ', outputs, target);
   const orderBy = (arr, props, orders) =>
     [...arr].sort((a, b) =>
       props.reduce((acc, prop, i) => {
