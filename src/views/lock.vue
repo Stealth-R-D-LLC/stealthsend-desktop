@@ -94,10 +94,6 @@ export default {
       validateFields,
       resetFields,
     } = useValidation({
-      // depositAddress: {
-      //   $value: depositAddress,
-      //   $rules: [(depositAddress) => !depositAddress && 'Address is required'],
-      // },
       password: {
         $value: password,
         $rules: [
@@ -108,10 +104,6 @@ export default {
             let isValid = await CryptoService.validatePassword(password);
             if (!isValid) {
               return 'Incorrect password.';
-            } else {
-              await CryptoService.unlock(password.value);
-              router.push('/dashboard');
-              resetFields();
             }
           },
         ],
@@ -133,7 +125,11 @@ export default {
     });
 
     async function validatePassword() {
-      await validateFields();
+      if (await validateFields()) {
+        await CryptoService.unlock(password.value);
+        router.push('/dashboard');
+        resetFields();
+      }
     }
 
     return {
