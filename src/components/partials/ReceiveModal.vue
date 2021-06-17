@@ -375,13 +375,13 @@ export default {
 }
 .multiselect-single-label .account-utxo {
   margin-top: 6px;
-  font-family: Noto Sans;
+  font-family: var(--secondary-font);
   font-size: 14px;
   line-height: 14px;
   letter-spacing: 0.12px;
 }
 .multiselect-single-label .account-label {
-  font-family: Noto Sans;
+  font-family: var(--secondary-font);
   font-size: 14px;
   line-height: 14px;
   letter-spacing: 0.12px;

@@ -67,6 +67,7 @@ export default {
 }
 .dashboard-container__overflow {
   overflow: auto;
+  overflow-x: hidden;
   height: 100%;
 }
 .dashboard-container__overflow::-webkit-scrollbar {
@@ -74,5 +75,14 @@ export default {
 }
 .dashboard-container__overflow::-webkit-scrollbar-thumb {
   background: var(--grey100);
+}
+:deep .st-transaction-list {
+  padding: 16px 10px 16px 12px;
+  background-color: #ffffff;
+}
+:deep .st-transaction-list .overflow {
+  padding: 0;
+  overflow: initial;
+  height: initial;
 }
 </style>
