@@ -43,7 +43,7 @@ Build Windows:
     - ls -la
     # - cp -R ./ /project
     # - cd /project
-    # - npm install --only=prod --no-package-lock
+    - npm install --only=prod --no-package-lock
     # - npm run electron:build --linux
     # - cd $CI_PROJECT_DIR
     # - rsync -r /project/dist_electron ./
