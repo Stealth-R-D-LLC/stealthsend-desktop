@@ -1434,6 +1434,88 @@
               <h5>Congratulations</h5>
               <p>Recovery Phrase successfully verified</p>
             </div>
+            <StButton @click="recoveryStepNext">Proceed</StButton>
+          </div>
+          <div class="step" v-if="recoveryStep === 4">
+            <div>
+              <h5>Set Your Password</h5>
+              <p class="desc">
+                Your Password will be used to unlock your StealthSend app.
+              </p>
+              <StFormItem
+                label="Password"
+                :error-message="form.password.$errors"
+              >
+                <StInput
+                  id="password"
+                  :type="showPassword ? 'text' : 'password'"
+                  v-model="form.password.$value"
+                >
+                  <svg
+                    @click="showPassword = !showPassword"
+                    width="22"
+                    height="12"
+                    viewBox="0 0 22 12"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
+                      :stroke="showPassword ? '#C3A9FB' : '#4E00F6'"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M9 6L13 6"
+                      :stroke="showPassword ? '#C3A9FB' : '#4E00F6'"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M11 4V8"
+                      :stroke="showPassword ? '#C3A9FB' : '#4E00F6'"
+                      stroke-width="2"
+                    />
+                  </svg>
+                </StInput>
+              </StFormItem>
+              <StFormItem
+                label="Confirm password"
+                :error-message="form.confirmPassword.$errors"
+              >
+                <StInput
+                  :type="showConfirmPassword ? 'text' : 'password'"
+                  v-model="form.confirmPassword.$value"
+                >
+                  <svg
+                    @click="showConfirmPassword = !showConfirmPassword"
+                    width="22"
+                    height="12"
+                    viewBox="0 0 22 12"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
+                      :stroke="showConfirmPassword ? '#C3A9FB' : '#4E00F6'"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M9 6L13 6"
+                      :stroke="showConfirmPassword ? '#C3A9FB' : '#4E00F6'"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M11 4V8"
+                      :stroke="showConfirmPassword ? '#C3A9FB' : '#4E00F6'"
+                      stroke-width="2"
+                    />
+                  </svg>
+                </StInput>
+              </StFormItem>
+            </div>
             <StButton @click="recover">Proceed to Dashboard</StButton>
           </div>
         </div>
@@ -1741,26 +1823,28 @@ export default {
       // recover an existing wallet via mnemonic
       // password is asked because we have to lock the seed in the database
       // user is createing a new password in this step
-      mainStore.START_GLOBAL_LOADING();
-      let mnemonic = selectedRecoveryWords.value.join(' ');
-      console.log(mnemonic);
-      let bytes = await bip39.mnemonicToSeedSync(mnemonic);
-      const master = await bip32.fromSeed(bytes, CryptoService.network); // root
-      recovered.value = {
-        seed: bytes.toString('hex'),
-        master: master,
-      };
+      try {
+        await validateFields();
+        let mnemonic = selectedRecoveryWords.value.join(' ');
+        console.log(mnemonic);
+        let bytes = await bip39.mnemonicToSeedSync(mnemonic);
+        const master = await bip32.fromSeed(bytes, CryptoService.network); // root
+        recovered.value = {
+          seed: bytes.toString('hex'),
+          master: master,
+        };
 
-      CryptoService.seed = bytes.toString('hex');
-      CryptoService.master = master;
-      await CryptoService.storeWalletInDb('123'); //password.value
+        CryptoService.seed = bytes.toString('hex');
+        CryptoService.master = master;
+        await CryptoService.storeWalletInDb(password.value);
 
-      await restoreAccounts();
-
-      setTimeout(() => {
+        await restoreAccounts();
         goToDashboard();
-        mainStore.STOP_GLOBAL_LOADING();
-      }, 2000);
+      } catch (e) {
+        if (e instanceof ValidationError) {
+          console.log(e.message);
+        }
+      }
     }
 
     async function restoreAccounts() {
@@ -1781,8 +1865,7 @@ export default {
         accUtxo = add(accUtxo, tx.account_balance_change);
         accUtxo = format(accUtxo, { precision: 14 });
       }
-
-      console.log('');
+      
       let acc = {
         pk: pk,
         address: address,
