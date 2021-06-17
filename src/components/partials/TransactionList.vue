@@ -95,9 +95,9 @@
                 <path d="M5 5L6 0L0 7H3L2 12L8 5H5Z" fill="#4E00F6" />
               </svg>
               <svg
-                v-if="isExpanded !== item.txid"
+                v-if="isExpanded !== item.index"
                 class="icon"
-                @click="expandIcons(item.txid)"
+                @click="expandIcons(item.index)"
                 width="12"
                 height="10"
                 viewBox="0 0 12 10"
@@ -124,7 +124,7 @@
                 />
               </svg>
               <svg
-                @click="expandIcons(item.txid)"
+                @click="expandIcons(item.index)"
                 v-else
                 class="icon"
                 width="18"
@@ -149,7 +149,7 @@
             </div>
             <div
               class="expanded"
-              :class="{ expanded__active: isExpanded === item.txid }"
+              :class="{ expanded__active: isExpanded === item.index }"
             >
               <svg
                 class="icon"
@@ -289,8 +289,9 @@ export default {
     function orderTransactions(filter) {
       // sort transactions by blocktime
       const transactionsTmp = props.transactions
-        .map((el) => {
+        .map((el, index) => {
           const obj = Object.assign({}, el);
+          obj['index'] = index;
           obj['blocktimeDate'] = format(
             fromUnixTime(el['blocktime']),
             'd MMM, Y'
