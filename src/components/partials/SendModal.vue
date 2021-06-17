@@ -273,7 +273,7 @@ export default {
       // },
       account: {
         $value: account,
-        $rules: [(account) => !account && 'account is required'],
+        $rules: [(account) => !account && 'Account is required'],
       },
       amount: {
         $value: amount,
@@ -293,6 +293,9 @@ export default {
       () => isVisible.value,
       () => {
         scanWallet();
+        if (!isVisible.value) {
+          closeModal()
+        }
       }
     );
 
@@ -302,19 +305,12 @@ export default {
       mainStore.SET_MODAL_VISIBILITY('send', false);
       // reset all variables
       // account.value = null;
-      // accounts.value = [];
+      accounts.value = [];
       // amount.value = null;
-      // currentStep.value = 1;
-      // depositAddress.value = '';
-      // label.value = '';
-      resetFields({
-        account: null,
-        accounts: [],
-        amount: null,
-        currentStep: 1,
-        depositAddress: '',
-        label: '',
-      });
+      currentStep.value = 1;
+      depositAddress.value = '';
+      label.value = '';
+      resetFields();
     }
 
     const accounts = ref([]);
@@ -323,9 +319,8 @@ export default {
     async function scanWallet() {
       const hdWallet = await CryptoService.scanWallet();
       accounts.value = hdWallet.accounts;
-
       // select first option
-      // account.value = hdWallet.accounts[0]
+      account.value = hdWallet.accounts[0]
       // // manually start finding address for preselected account
       // changeAccount(account.value)
     }
