@@ -144,6 +144,11 @@ export default {
   display: flex;
   justify-content: space-between;
 }
+.header-left,
+.header-right {
+  display: flex;
+  align-items: center;
+}
 h .layout__header--is-grey {
   background: var(--background100);
 }

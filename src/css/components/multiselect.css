@@ -222,6 +222,7 @@ fieldset[disabled] .multiselect {
 .multiselect__placeholder {
   color: var(--grey100);
   display: inline-block;
+  font-family: var(--secondary-font);
 }
 .multiselect--active .multiselect__placeholder {
   display: none;
