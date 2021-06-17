@@ -36,7 +36,7 @@
         >
           <StInput
             v-model="form.accountName.$value"
-            placeholder="Account name"
+            placeholder="Please add unique account name"
           ></StInput>
         </StFormItem>
         <div class="buttons">
@@ -134,7 +134,7 @@
 
 <script>
 import { useMainStore } from '@/store';
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref, watchEffect, watch } from 'vue';
 import CryptoService from '@/services/crypto';
 import { useValidation } from 'vue3-form-validation';
 
@@ -161,9 +161,12 @@ export default {
       accountName: {
         $value: accountName,
         $rules: [
-          () => {
+          (accountName) => {
             if (isLastAccountEmpty) {
               return 'You can only have one account with zero balance. Please add XST to your previous account prior to opening a new one.';
+            }
+            if (existingAccounts.some(el => el.label === accountName)) {
+              return 'Account name already exists.'
             }
           },
         ],
@@ -197,6 +200,17 @@ export default {
       }
       return steps;
     });
+
+    let existingAccounts = [];
+    watch(
+      () => isVisible.value,
+      async () => {
+        if (isVisible.value) {
+          existingAccounts = await CryptoService.getAccounts();
+          console.log('eeee', existingAccounts);
+        }
+      }
+    );
 
     // METHODS
     function closeModal() {
@@ -250,6 +264,8 @@ export default {
         await validateFields();
         return;
       }
+      
+      await validateFields();
 
       const { address, path, pk, wif } = CryptoService.getChildFromRoot(
         next,
