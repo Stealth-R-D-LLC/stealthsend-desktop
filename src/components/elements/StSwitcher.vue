@@ -3,29 +3,40 @@
     <p class="st-switcher__asset">
       <span class="asset">{{ steps[step].asset }}</span>
       <svg
-        v-if="isHiddenAmounts"
-        width="22"
-        height="16"
+        v-if="!isHiddenAmounts"
+        @click="toggleHiddenAmounts"
+        width="26"
+        height="14"
+        viewBox="0 0 26 14"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        @click="toggleHiddenAmounts"
       >
         <path
-          d="M11 3C7.686 3 4.686 4.667 2 8c2.686 3.333 5.686 5 9 5s6.314-1.667 9-5a17.964 17.964 0 00-1.864-2M6 8h6M19 1L5 15"
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M13 13C17.0501 13 20.7168 11 24 7C20.7168 3 17.0501 1 13 1C8.94991 1 5.28325 3 2 7C5.28325 11 8.94991 13 13 13Z"
           stroke="#4E00F6"
           stroke-width="2"
         />
+        <circle cx="13" cy="7" r="2" fill="#4E00F6" />
       </svg>
       <svg
-        v-if="!isHiddenAmounts"
-        width="20"
-        height="8"
+        v-else
+        @click="toggleHiddenAmounts"
+        width="26"
+        height="19"
+        viewBox="0 0 26 19"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        @click="toggleHiddenAmounts"
       >
         <path
-          d="M8 1.5h4M1 1.5c3 3.333 6 5 9 5s6-1.667 9-5"
+          d="M13 3C8.94991 3 5.28325 5.03704 2 9.11111C5.28325 13.1852 8.94991 15.2222 13 15.2222C17.0501 15.2222 20.7168 13.1852 24 9.11111C23.2599 8.1928 22.5004 7.37799 21.7214 6.66667"
+          stroke="#4E00F6"
+          stroke-width="2"
+        />
+        <path d="M9 9L15.1111 9" stroke="#4E00F6" stroke-width="2" />
+        <path
+          d="M23.1113 1L6.00022 18.1111"
           stroke="#4E00F6"
           stroke-width="2"
         />

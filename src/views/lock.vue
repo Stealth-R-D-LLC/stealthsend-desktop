@@ -21,8 +21,8 @@
       </div>
       <div class="box" :class="{ 'box-animated': isAnimated }">
         <template v-if="isAnimated">
-          <h3>Welcome back</h3>
-          <h4>Enter your password to continue</h4>
+          <h4>Welcome back</h4>
+          <h5>Enter your password to continue</h5>
           <form class="form" @submit.prevent>
             <StFormItem
               color="dark"
@@ -35,31 +35,46 @@
                 placeholder="··········"
                 :type="showPassword ? 'text' : 'password'"
               >
-                <div v-if="password" @click="showPassword = !showPassword">
-                  <svg
-                    :class="{ 'icon-active': showPassword }"
-                    width="22"
-                    height="12"
-                    viewBox="0 0 22 12"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
-                      stroke="#FEFEFE"
-                      stroke-width="2"
-                    />
-                    <circle
-                      r="1"
-                      transform="matrix(-1 0 0 1 11 6)"
-                      fill="#4E00F6"
-                      stroke="#4E00F6"
-                      stroke-width="2"
-                    />
-                  </svg>
-                </div>
+                <svg
+                  v-if="!showPassword"
+                  @click="showPassword = true"
+                  width="26"
+                  height="14"
+                  viewBox="0 0 26 14"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M13 13C17.0501 13 20.7168 11 24 7C20.7168 3 17.0501 1 13 1C8.94991 1 5.28325 3 2 7C5.28325 11 8.94991 13 13 13Z"
+                    stroke="#FEFEFE"
+                    stroke-width="2"
+                  />
+                  <circle cx="13" cy="7" r="2" fill="#4E00F6" />
+                </svg>
+                <svg
+                  v-else
+                  @click="showPassword = false"
+                  :class="{ 'icon-active': showPassword }"
+                  width="26"
+                  height="19"
+                  viewBox="0 0 26 19"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M13 3C8.94991 3 5.28325 5.03704 2 9.11111C5.28325 13.1852 8.94991 15.2222 13 15.2222C17.0501 15.2222 20.7168 13.1852 24 9.11111C23.2599 8.1928 22.5004 7.37799 21.7214 6.66667"
+                    stroke="#FEFEFE"
+                    stroke-width="2"
+                  />
+                  <path d="M9 9L15.1111 9" stroke="#4E00F6" stroke-width="2" />
+                  <path
+                    d="M23.1113 1L6.00022 18.1111"
+                    stroke="#4E00F6"
+                    stroke-width="2"
+                  />
+                </svg>
               </StInput>
             </StFormItem>
             <StButton color="white" @click="validatePassword"
@@ -203,12 +218,12 @@ export default {
 .lock-container .box-animated {
   height: 100%;
 }
-h3 {
+h4 {
   margin-top: 79px;
   margin-bottom: 40px;
   color: var(--white);
 }
-h4 {
+h5 {
   margin-bottom: 86px;
   color: var(--white);
 }
@@ -230,10 +245,10 @@ svg path,
 svg circle {
   transition: 0.3s;
 }
-.icon-active path {
+.icon-active path + path {
   stroke: var(--marine500) !important;
 }
-.icon-active circle {
-  stroke: var(--background0) !important;
+:deep .st-input .st-icon {
+  cursor: pointer;
 }
 </style>
