@@ -203,20 +203,11 @@
             <p class="bold">Address</p>
             <p>{{ depositAddress }}</p>
             <p class="bold">Label:</p>
-            <p>{{ label }}</p>
+            <p>{{ label ? label : 'No label'}}</p>
             <p class="bold">Fee:</p>
             <p>0.0 XST</p>
           </div>
         </div>
-      </template>
-      <template v-if="currentStep === 4">
-        <StFormItem
-          color="dark"
-          :error-message="form.paymentCode.$errors"
-          label="Payment Code"
-        >
-          <StInput v-model="paymentCode" class="payment-input" />
-        </StFormItem>
       </template>
     </template>
     <template #footer class="flex-center-all">
@@ -227,9 +218,6 @@
         <StButton @click="validateSecondStep" color="white">Proceed</StButton>
       </template>
       <template v-if="currentStep === 3">
-        <StButton color="white" @click="changeStep(4)">Confirm</StButton>
-      </template>
-      <template v-if="currentStep === 4">
         <StButton color="white" @click="send">Confirm payment</StButton>
       </template>
     </template>
@@ -257,12 +245,12 @@ export default {
     const account = ref(null);
     const amount = ref(null);
     const depositAddress = ref('');
-    const paymentCode = ref('');
 
     const {
       form,
       errors,
       add,
+      // remove,
       // submitting,
       validateFields,
       resetFields,
@@ -273,7 +261,13 @@ export default {
       // },
       account: {
         $value: account,
-        $rules: [(account) => !account && 'Account is required'],
+        $rules: [
+          (account) => {
+          if (!account) {
+            return 'Account is required'
+          }
+        }
+        ]
       },
       amount: {
         $value: amount,
@@ -310,6 +304,7 @@ export default {
       currentStep.value = 1;
       depositAddress.value = '';
       label.value = '';
+      // remove(['depositAddress']);
       resetFields();
     }
 
@@ -321,6 +316,7 @@ export default {
       accounts.value = hdWallet.accounts;
       // select first option
       account.value = hdWallet.accounts[0];
+      getUnspentOutputs(account.value);
       // // manually start finding address for preselected account
       // changeAccount(account.value)
     }
@@ -358,6 +354,8 @@ export default {
           account: account.value,
         });
         CryptoService.storeTxAndLabel(txid, label.value);
+        // console.log('TXID: ', txid);
+        closeModal();
       } catch (e) {
         if (e instanceof ValidationError) {
           console.log(e);
@@ -390,10 +388,6 @@ export default {
     async function validateSecondStep() {
       try {
         await validateFields();
-        add(['paymentCode'], {
-          $value: paymentCode,
-          $rules: [(paymentCode) => !paymentCode && 'Payment code is required'],
-        });
         changeStep(3);
       } catch (e) {
         if (e instanceof ValidationError) {
@@ -445,7 +439,6 @@ export default {
       account,
       amount,
       depositAddress,
-      paymentCode,
       label,
       // changeAccount,
 
