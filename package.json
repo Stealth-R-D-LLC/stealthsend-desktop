@@ -22,6 +22,7 @@
   },
   "main": "background.js",
   "dependencies": {
+    "@beyonk/google-fonts-webpack-plugin": "^1.7.0",
     "@vueuse/core": "^4.11.1",
     "@vueuse/integrations": "^4.11.1",
     "apexcharts": "^3.26.3",
