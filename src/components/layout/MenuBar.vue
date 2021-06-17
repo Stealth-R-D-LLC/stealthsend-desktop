@@ -9,8 +9,21 @@
     <nav>
       <ul>
         <li>
-          <a class="item" @click.prevent="toggleMenu">
-            <StArrow :open="!isCollapsed"></StArrow>
+          <a
+            class="item"
+            :class="{ 'item-active': !isCollapsed }"
+            @click.prevent="toggleMenu"
+          >
+            <svg
+              width="19"
+              height="14"
+              viewBox="0 0 19 14"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M0 7H17" stroke="#FAF9FC" stroke-width="2" />
+              <path d="M11 13L17 7L11 1" stroke="#FAF9FC" stroke-width="2" />
+            </svg>
           </a>
         </li>
         <li>
@@ -290,15 +303,11 @@
 
 <script>
 import { ref, defineComponent } from 'vue';
-import StArrow from '@/components/elements/StArrow';
 import { useRouter } from 'vue-router';
 import { useMainStore } from '@/store';
 
 export default defineComponent({
   name: 'StMenuBar',
-  components: {
-    StArrow,
-  },
   setup() {
     const mainStore = useMainStore();
     const router = useRouter();
@@ -344,7 +353,7 @@ export default defineComponent({
 }
 
 .layout__aside nav {
-  margin-top: 30px;
+  margin-top: 25px;
 }
 
 .layout__aside .item__footer {
@@ -361,13 +370,9 @@ export default defineComponent({
   position: relative;
 }
 
-.layout__aside li:first-child {
+/* .layout__aside li:first-child {
   margin-bottom: 120px;
-}
-
-.layout__aside .item {
-  display: block;
-}
+} */
 
 .layout__aside .icon {
   display: flex;
@@ -382,11 +387,20 @@ export default defineComponent({
 }
 
 .layout__aside .item {
-  padding: 12px 0;
+  padding: 18px 0;
   text-decoration: none;
   padding-left: 24px;
   display: flex;
   align-items: center;
+  transition: 0.3s;
+}
+
+.layout__aside .item svg {
+  transition: 0.3s;
+}
+
+.layout__aside .item-active svg {
+  transform: rotate(-180deg);
 }
 
 .layout__aside .item span {
