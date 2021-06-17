@@ -250,15 +250,11 @@ export default {
       form,
       errors,
       add,
-      // remove,
+      remove,
       // submitting,
       validateFields,
       resetFields,
     } = useValidation({
-      // depositAddress: {
-      //   $value: depositAddress,
-      //   $rules: [(depositAddress) => !depositAddress && 'Address is required'],
-      // },
       account: {
         $value: account,
         $rules: [
@@ -304,7 +300,7 @@ export default {
       currentStep.value = 1;
       depositAddress.value = '';
       label.value = '';
-      // remove(['depositAddress']);
+      remove(['depositAddress']);
       resetFields();
     }
 
