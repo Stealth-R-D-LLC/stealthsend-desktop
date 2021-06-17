@@ -894,6 +894,7 @@
                     type="square"
                     name="recoveryPhrase"
                     value="18"
+                    disabled
                     >18 Word Recovery Phrase</StRadio
                   >
                   <StRadio
@@ -901,6 +902,7 @@
                     type="square"
                     name="recoveryPhrase"
                     value="24"
+                    disabled
                     >24 Word Recovery Phrase</StRadio
                   >
                 </div>

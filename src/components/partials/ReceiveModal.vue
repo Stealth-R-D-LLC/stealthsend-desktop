@@ -127,7 +127,7 @@
         <StFormItem color="dark" label="Address">
           <StInput
             v-model="depositAddress"
-            placeholder="Deposit address"
+            placeholder="Loading..."
             disabled
           >
             <StTooltip
@@ -158,7 +158,7 @@
                 </svg>
               </StClipboard>
             </StTooltip>
-          </StInput>
+<svg v-else class="address-loader" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="9" r="7" stroke="#E5E4E8" stroke-width="2" stroke-linejoin="round" stroke-dasharray="2 4"/></svg>          </StInput>
         </StFormItem>
       </template>
       <template v-if="currentStep === 2">
@@ -386,8 +386,39 @@ export default {
   line-height: 14px;
   letter-spacing: 0.12px;
 }
-</style>
 
+@-webkit-keyframes rotating /* Safari and Chrome */ {
+  from {
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes rotating {
+  from {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+.address-loader {
+  animation: rotating 2s linear infinite;
+}
+</style>
 <style>
 .receive-modal .st-modal__footer {
   display: flex;
