@@ -1,6 +1,6 @@
 <template>
   <div class="welcome">
-    {{currentStep}}
+    {{ currentStep }}
     <div class="left" :class="{ 'left-active': isAccount || isRecovery }">
       <img src="@/assets/welcome.png" alt="welcome" />
       <div class="overlay"></div>
@@ -1264,7 +1264,7 @@
                     your XST is based on it.
                   </p>
                   <StCheckbox v-model="recoveryPhraseConfirmation"
-                    >I have stored the Recovery Phrase in the safe
+                    >I have stored the Recovery Phrase in a safe
                     place</StCheckbox
                   >
                 </div>
