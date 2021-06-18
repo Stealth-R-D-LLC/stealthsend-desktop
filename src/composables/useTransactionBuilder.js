@@ -41,6 +41,12 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
         let vout = txDetails.vout.find((el) => el.value === tx.amount);
 
+        console.log('adding input: ',{
+          txid: txDetails.txid,
+          vout: vout.n,
+          pubkey: Buffer.from(vout.scriptPubKey.hex, 'hex')
+        });
+
         rawTransaction.addInput(
           txDetails.txid,
           vout.n,
@@ -86,8 +92,14 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         CryptoService.network
       );
 
+      console.log('keypair', keyPair);
+
       for (let i = 0; i < utxo.length; i++) {
-        rawTransaction.sign(i, keyPair);
+        try {
+          rawTransaction.sign(i, keyPair);
+        } catch(e) {
+          console.log('cannot sign tx', e);
+        }
       }
 
       console.dir(rawTransaction);
