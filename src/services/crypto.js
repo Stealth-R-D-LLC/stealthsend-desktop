@@ -522,6 +522,7 @@ const CryptoService = {
             accUtxo = add(accUtxo, tx.account_balance_change);
             accUtxo = format(accUtxo, { precision: 14 });
             txs.push({
+              outputs: tx.outputs,
               amount: tx.account_balance_change,
               txid: tx.txid,
               blocktime: tx.txinfo.blocktime,
