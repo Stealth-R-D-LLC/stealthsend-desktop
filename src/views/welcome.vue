@@ -37,33 +37,33 @@
             >
               <transition-group name="fade">
                 <template v-if="isAccount">
-                  <h2 class="title" v-if="currentStep <= 5">
-                    The Fastest Private<br />Digital Currency
-                  </h2>
-                  <h2
+                  <h3 class="title" v-if="currentStep <= 5">
+                    The Fastest Private Digital<br />Currency
+                  </h3>
+                  <h3
                     class="title"
                     v-if="currentStep === 6 || currentStep === 7"
                   >
                     The Holy Grail of Crypto:<br />fast, feeless, private<br />and
                     scalable
-                  </h2>
-                  <h2 class="title" v-if="currentStep >= 8">
+                  </h3>
+                  <h3 class="title" v-if="currentStep >= 8">
                     World’s first feeless,<br />private high performance<br />blockchain
                     protocol
-                  </h2>
+                  </h3>
                 </template>
                 <template v-if="isRecovery">
-                  <h2 class="title">
+                  <h3 class="title">
                     World’s first feeless,<br />private high performance<br />blockchain
                     protocol
-                  </h2>
+                  </h3>
                 </template>
                 <div v-if="!isAccount && !isRecovery">
-                  <h3 class="title">Welcome to StealthSend</h3>
-                  <h4 class="subtitle">
+                  <h4 class="title">Welcome to StealthSend</h4>
+                  <h5 class="subtitle">
                     Would you like to create a new account or restore from
                     Recovery Phrase?
-                  </h4>
+                  </h5>
                 </div>
                 <div v-if="isAccount || isRecovery" class="support">
                   <!-- <svg
@@ -114,8 +114,11 @@
                   <StButton color="white" @click="isAccount = true"
                     >Create a New Account</StButton
                   >
-                  <StButton color="white" @click="isRecovery = true"
-                    >Restore from Recovery Phrase</StButton
+                  <StButton
+                    class="button-medium"
+                    color="white"
+                    @click="isRecovery = true"
+                    >Restore a Backup</StButton
                   >
                 </div>
               </transition-group>
@@ -129,7 +132,7 @@
         <div class="right__inner-top">
           <transition-group name="fade">
             <div v-if="currentStep === 0">
-              <h4>About Your Funds</h4>
+              <h5>About Your Funds</h5>
               <p class="desc">
                 This wallet acts as a vault that contains your XST. It’s only
                 accessible with your Recovery Phrase.
@@ -573,7 +576,7 @@
                 </defs>
               </svg>
             </div>
-            <div v-if="currentStep === 4">
+            <!-- <div v-if="currentStep === 4">
               <h5>About Your Payment Code</h5>
               <p class="desc">
                 I understand that if I lose my Payment Code I will no longer be
@@ -648,8 +651,8 @@
                   </linearGradient>
                 </defs>
               </svg>
-            </div>
-            <div v-if="currentStep === 5">
+            </div> -->
+            <div v-if="currentStep === 4">
               <h5>Terms of Use</h5>
               <h6>This Terms of Use (“ToU” and/or “Terms”)</h6>
               <div class="terms-of-service">
@@ -713,7 +716,7 @@
                 </div>
               </div>
             </div>
-            <div class="step" v-if="currentStep === 6">
+            <div class="step" v-if="currentStep === 5">
               <div>
                 <h5>Set Your Password</h5>
                 <p class="desc">
@@ -727,66 +730,103 @@
                     id="password"
                     :type="showPassword ? 'text' : 'password'"
                     v-model="form.password.$value"
+                    placeholder="Please enter password"
                   >
                     <svg
-                      @click="showPassword = !showPassword"
-                      width="22"
-                      height="12"
-                      viewBox="0 0 22 12"
+                      v-if="!showPassword"
+                      @click="showPassword = true"
+                      width="26"
+                      height="14"
+                      viewBox="0 0 26 14"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
                         fill-rule="evenodd"
                         clip-rule="evenodd"
-                        d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
-                        :stroke="showPassword ? '#C3A9FB' : '#4E00F6'"
+                        d="M13 13C17.0501 13 20.7168 11 24 7C20.7168 3 17.0501 1 13 1C8.94991 1 5.28325 3 2 7C5.28325 11 8.94991 13 13 13Z"
+                        stroke="#4E00F6"
+                        stroke-width="2"
+                      />
+                      <circle cx="13" cy="7" r="2" fill="#4E00F6" />
+                    </svg>
+                    <svg
+                      v-else
+                      @click="showPassword = false"
+                      width="26"
+                      height="19"
+                      viewBox="0 0 26 19"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M13 3C8.94991 3 5.28325 5.03704 2 9.11111C5.28325 13.1852 8.94991 15.2222 13 15.2222C17.0501 15.2222 20.7168 13.1852 24 9.11111C23.2599 8.1928 22.5004 7.37799 21.7214 6.66667"
+                        stroke="#4E00F6"
                         stroke-width="2"
                       />
                       <path
-                        d="M9 6L13 6"
-                        :stroke="showPassword ? '#C3A9FB' : '#4E00F6'"
+                        d="M9 9L15.1111 9"
+                        stroke="#4E00F6"
                         stroke-width="2"
                       />
                       <path
-                        d="M11 4V8"
-                        :stroke="showPassword ? '#C3A9FB' : '#4E00F6'"
+                        d="M23.1113 1L6.00022 18.1111"
+                        stroke="#4E00F6"
                         stroke-width="2"
                       />
                     </svg>
                   </StInput>
                 </StFormItem>
                 <StFormItem
-                  label="Confirm password"
+                  label="Confirm Password"
                   :error-message="form.confirmPassword.$errors"
                 >
                   <StInput
                     :type="showConfirmPassword ? 'text' : 'password'"
                     v-model="form.confirmPassword.$value"
+                    placeholder="Please repeat the Password to confirm"
                   >
                     <svg
-                      @click="showConfirmPassword = !showConfirmPassword"
-                      width="22"
-                      height="12"
-                      viewBox="0 0 22 12"
+                      v-if="!showConfirmPassword"
+                      @click="showConfirmPassword = true"
+                      width="26"
+                      height="14"
+                      viewBox="0 0 26 14"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
                         fill-rule="evenodd"
                         clip-rule="evenodd"
-                        d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
-                        :stroke="showConfirmPassword ? '#C3A9FB' : '#4E00F6'"
+                        d="M13 13C17.0501 13 20.7168 11 24 7C20.7168 3 17.0501 1 13 1C8.94991 1 5.28325 3 2 7C5.28325 11 8.94991 13 13 13Z"
+                        stroke="#4E00F6"
+                        stroke-width="2"
+                      />
+                      <circle cx="13" cy="7" r="2" fill="#4E00F6" />
+                    </svg>
+
+                    <svg
+                      v-else
+                      @click="showConfirmPassword = false"
+                      width="26"
+                      height="19"
+                      viewBox="0 0 26 19"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M13 3C8.94991 3 5.28325 5.03704 2 9.11111C5.28325 13.1852 8.94991 15.2222 13 15.2222C17.0501 15.2222 20.7168 13.1852 24 9.11111C23.2599 8.1928 22.5004 7.37799 21.7214 6.66667"
+                        stroke="#4E00F6"
                         stroke-width="2"
                       />
                       <path
-                        d="M9 6L13 6"
-                        :stroke="showConfirmPassword ? '#C3A9FB' : '#4E00F6'"
+                        d="M9 9L15.1111 9"
+                        stroke="#4E00F6"
                         stroke-width="2"
                       />
                       <path
-                        d="M11 4V8"
-                        :stroke="showConfirmPassword ? '#C3A9FB' : '#4E00F6'"
+                        d="M23.1113 1L6.00022 18.1111"
+                        stroke="#4E00F6"
                         stroke-width="2"
                       />
                     </svg>
@@ -795,7 +835,7 @@
               </div>
               <StButton @click="handleSubmit">Proceed</StButton>
             </div>
-            <div class="step" v-if="currentStep === 7">
+            <!-- <div class="step" v-if="currentStep === 6">
               <div>
                 <h5>Set Your Payment Code</h5>
                 <p class="desc">
@@ -812,13 +852,13 @@
                     v-model="form.paymentCode.$value"
                   />
                 </StFormItem>
-                <!-- <StFormItem label="Confirm Payment Code" :error-message="form.confirmPaymentCode.$errors">
+              <StFormItem label="Confirm Payment Code" :error-message="form.confirmPaymentCode.$errors">
                 <PaymentCode key="confirmPaymentCode" position="left" v-model="form.confirmPaymentCode.$value" />
-              </StFormItem> -->
+              </StFormItem>
               </div>
               <StButton @click="handleSubmit">Proceed</StButton>
-            </div>
-            <div class="step" v-if="currentStep === 8">
+            </div> -->
+            <div class="step" v-if="currentStep === 6">
               <div>
                 <h5>Create a New Account</h5>
                 <div class="notice">
@@ -842,7 +882,7 @@
               </div>
               <StButton @click="handleSubmit">Proceed</StButton>
             </div>
-            <div class="step" v-if="currentStep === 9">
+            <div class="step" v-if="currentStep === 7">
               <div class="recovery">
                 <h5>Recovery Phrase</h5>
                 <p>Security is as important to us as it is to you!</p>
@@ -868,7 +908,7 @@
               </div>
               <StButton @click="handleSubmit">Proceed</StButton>
             </div>
-            <div class="step" v-if="currentStep === 10">
+            <div class="step" v-if="currentStep === 8">
               <div class="recovery">
                 <h5>Recovery Phrase</h5>
                 <p>Let's get started creating your unique Recovery Phrase.</p>
@@ -909,7 +949,7 @@
               </div>
               <StButton @click="handleSubmit">Proceed</StButton>
             </div>
-            <div class="step" v-if="currentStep === 11">
+            <div class="step" v-if="currentStep === 9">
               <div>
                 <h5>Recovery Phrase</h5>
                 <h6>Your new StealthSend Account is being prepared.</h6>
@@ -1029,10 +1069,10 @@
               </div>
               <StProgress :duration="progressDuration" />
             </div>
-            <div class="step" v-if="currentStep === 12">
+            <div class="step" v-if="currentStep === 10">
               <div>
                 <h5>Recovery Phrase</h5>
-                <h6>Your new StealthSend Account is being prepared.</h6>
+                <h6>Your new StealthSend account was created.</h6>
                 <p class="desc-medium">
                   Your random list of words is ready to be saved.
                 </p>
@@ -1148,7 +1188,7 @@
               </div>
               <StButton @click="handleSubmit">Show Recovery Phrase</StButton>
             </div>
-            <div class="step" v-if="currentStep === 13">
+            <div class="step" v-if="currentStep === 11">
               <div>
                 <h5>Recovery Phrase</h5>
                 <p>Carefully record {{ recoveryPhrase }} words</p>
@@ -1163,7 +1203,7 @@
               </div>
               <StButton @click="handleSubmit">Start Verification</StButton>
             </div>
-            <div v-if="currentStep === 14">
+            <div v-if="currentStep === 12">
               <h5>Recovery Phrase Verification</h5>
               <p>
                 To verify your Recovery Phrase select the words in the order
@@ -1205,7 +1245,7 @@
                 <p class="mnemonic-error">{{ mnemonicError }}</p>
               </div>
             </div>
-            <div v-if="currentStep === 15">
+            <div v-if="currentStep === 13">
               <h5>Checking Recovery Phrase</h5>
               <p class="desc-medium">
                 Please be patient and don’t turn off the computer or exit the
@@ -1213,7 +1253,7 @@
               </p>
               <img src="../../static/xstloader.gif" alt="Test gif" />
             </div>
-            <div class="step" v-if="currentStep === 16">
+            <div class="step" v-if="currentStep === 14">
               <div>
                 <h5>Congratulations</h5>
                 <p>Recovery Phrase successfully verified</p>
@@ -1236,7 +1276,7 @@
             </div>
           </transition-group>
         </div>
-        <div v-if="currentStep < 5" class="right__inner-bottom">
+        <div v-if="currentStep < 4" class="right__inner-bottom">
           <div
             class="pagination-prev"
             :class="{ 'pagination-prev--none': currentStep === 0 }"
@@ -1257,14 +1297,14 @@
             <span
               class="dot"
               @click="chooseStep(index)"
-              v-for="(pagination, index) in 5"
+              v-for="(pagination, index) in 4"
               :key="index"
               :class="{ 'dot-active': currentStep === index }"
             ></span>
           </div>
           <div
             class="pagination-next"
-            :class="{ 'pagination-next--none': currentStep === 5 }"
+            :class="{ 'pagination-next--none': currentStep === 4 }"
             @click="nextStep"
           >
             <svg
@@ -1360,7 +1400,9 @@
               >
             </transition>
             <StFormItem
-              :label="`Word ${selectedRecoveryWords.length} (of ${restoreRecoveryPhrase})`"
+              :label="`Word ${
+                selectedRecoveryWords.length + 1
+              } (of ${restoreRecoveryPhrase})`"
             >
               <StInput
                 id="recovery-word"
@@ -1454,35 +1496,52 @@
                   v-model="form.password.$value"
                 >
                   <svg
-                    @click="showPassword = !showPassword"
-                    width="22"
-                    height="12"
-                    viewBox="0 0 22 12"
+                    v-if="!showPassword"
+                    @click="showPassword = true"
+                    width="26"
+                    height="14"
+                    viewBox="0 0 26 14"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
                       fill-rule="evenodd"
                       clip-rule="evenodd"
-                      d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
-                      :stroke="showPassword ? '#C3A9FB' : '#4E00F6'"
+                      d="M13 13C17.0501 13 20.7168 11 24 7C20.7168 3 17.0501 1 13 1C8.94991 1 5.28325 3 2 7C5.28325 11 8.94991 13 13 13Z"
+                      stroke="#4E00F6"
+                      stroke-width="2"
+                    />
+                    <circle cx="13" cy="7" r="2" fill="#4E00F6" />
+                  </svg>
+                  <svg
+                    v-else
+                    @click="showPassword = false"
+                    width="26"
+                    height="19"
+                    viewBox="0 0 26 19"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M13 3C8.94991 3 5.28325 5.03704 2 9.11111C5.28325 13.1852 8.94991 15.2222 13 15.2222C17.0501 15.2222 20.7168 13.1852 24 9.11111C23.2599 8.1928 22.5004 7.37799 21.7214 6.66667"
+                      stroke="#4E00F6"
                       stroke-width="2"
                     />
                     <path
-                      d="M9 6L13 6"
-                      :stroke="showPassword ? '#C3A9FB' : '#4E00F6'"
+                      d="M9 9L15.1111 9"
+                      stroke="#4E00F6"
                       stroke-width="2"
                     />
                     <path
-                      d="M11 4V8"
-                      :stroke="showPassword ? '#C3A9FB' : '#4E00F6'"
+                      d="M23.1113 1L6.00022 18.1111"
+                      stroke="#4E00F6"
                       stroke-width="2"
                     />
                   </svg>
                 </StInput>
               </StFormItem>
               <StFormItem
-                label="Confirm password"
+                label="Confirm Password"
                 :error-message="form.confirmPassword.$errors"
               >
                 <StInput
@@ -1490,28 +1549,45 @@
                   v-model="form.confirmPassword.$value"
                 >
                   <svg
-                    @click="showConfirmPassword = !showConfirmPassword"
-                    width="22"
-                    height="12"
-                    viewBox="0 0 22 12"
+                    v-if="!showConfirmPassword"
+                    @click="showConfirmPassword = true"
+                    width="26"
+                    height="14"
+                    viewBox="0 0 26 14"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
                       fill-rule="evenodd"
                       clip-rule="evenodd"
-                      d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
-                      :stroke="showConfirmPassword ? '#C3A9FB' : '#4E00F6'"
+                      d="M13 13C17.0501 13 20.7168 11 24 7C20.7168 3 17.0501 1 13 1C8.94991 1 5.28325 3 2 7C5.28325 11 8.94991 13 13 13Z"
+                      stroke="#4E00F6"
+                      stroke-width="2"
+                    />
+                    <circle cx="13" cy="7" r="2" fill="#4E00F6" />
+                  </svg>
+                  <svg
+                    v-else
+                    @click="showConfirmPassword = false"
+                    width="26"
+                    height="19"
+                    viewBox="0 0 26 19"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M13 3C8.94991 3 5.28325 5.03704 2 9.11111C5.28325 13.1852 8.94991 15.2222 13 15.2222C17.0501 15.2222 20.7168 13.1852 24 9.11111C23.2599 8.1928 22.5004 7.37799 21.7214 6.66667"
+                      stroke="#4E00F6"
                       stroke-width="2"
                     />
                     <path
-                      d="M9 6L13 6"
-                      :stroke="showConfirmPassword ? '#C3A9FB' : '#4E00F6'"
+                      d="M9 9L15.1111 9"
+                      stroke="#4E00F6"
                       stroke-width="2"
                     />
                     <path
-                      d="M11 4V8"
-                      :stroke="showConfirmPassword ? '#C3A9FB' : '#4E00F6'"
+                      d="M23.1113 1L6.00022 18.1111"
+                      stroke="#4E00F6"
                       stroke-width="2"
                     />
                   </svg>
@@ -1535,7 +1611,7 @@ import router from '../router';
 import CryptoService from '../services/crypto';
 import { add, format } from 'mathjs';
 import { useValidation, ValidationError } from 'vue3-form-validation';
-import PaymentCode from '@/components/elements/PaymentCode.vue';
+/* import PaymentCode from '@/components/elements/PaymentCode.vue'; */
 import StProgress from '@/components/elements/StProgress.vue';
 import _shuffle from 'lodash/shuffle';
 import _cloneDeep from 'lodash/cloneDeep';
@@ -1543,7 +1619,7 @@ import _cloneDeep from 'lodash/cloneDeep';
 export default {
   name: 'StWelcome',
   components: {
-    PaymentCode,
+    /* PaymentCode, */
     StProgress,
   },
   setup() {
@@ -1610,7 +1686,7 @@ export default {
             },
           ],
         },
-        paymentCode: {
+        /* paymentCode: {
           $value: paymentCode,
           $rules: [
             {
@@ -1622,14 +1698,14 @@ export default {
                 }
               },
             },
-            /* {
+            {
             key: "pc",
             rule: () =>
               paymentCode.value === confirmPaymentCode.value ||
               "Payment codes do not match"
-          } */
+          }
           ],
-        },
+        }, */
         /* confirmPaymentCode: {
         $value: confirmPaymentCode,
         $rules: [
@@ -1663,7 +1739,7 @@ export default {
       });
 
     watchEffect(async () => {
-      if (currentStep.value === 6) {
+      if (currentStep.value === 5) {
         setTimeout(
           () =>
             document
@@ -1673,7 +1749,7 @@ export default {
           1
         );
       }
-      if (currentStep.value === 7) {
+      /* if (currentStep.value === 7) {
         setTimeout(
           () =>
             document
@@ -1682,8 +1758,8 @@ export default {
               .focus(),
           1
         );
-      }
-      if (currentStep.value === 8) {
+      } */
+      if (currentStep.value === 6) {
         setTimeout(() => {
           document
             .getElementById('account-name')
@@ -1691,12 +1767,12 @@ export default {
             .focus();
         });
       }
-      if (currentStep.value === 11) {
+      if (currentStep.value === 9) {
         setTimeout(() => {
           handleSubmit();
         }, progressDuration.value * 1000);
       }
-      if (currentStep.value === 12) {
+      if (currentStep.value === 10) {
         // create new mnemonic
         let generateMnemonic = await CryptoService.generateMnemonicAndSeed();
         createdMnemonic.value = generateMnemonic.mnemonic.split(' ');
@@ -1720,15 +1796,9 @@ export default {
 
     const selectedWords = ref([]);
 
-    const checkWordlist = computed(() => {
-      return wordlist.value.filter((obj) => {
-        return selectedRecoveryWords.value.indexOf(obj) === -1;
-      });
-    });
-
     const searchWordlist = computed(() => {
       if (recoveryWord.value.length < 2) return;
-      return checkWordlist.value
+      return wordlist.value
         .filter((word) => word.startsWith(recoveryWord.value))
         .slice(0, 3);
     });
@@ -1743,7 +1813,7 @@ export default {
 
     function selectRecoveryPhraseWord(word) {
       recoveryWord.value = '';
-      if (checkWordlist.value.includes(word)) {
+      if (wordlist.value.includes(word)) {
         selectedRecoveryWords.value.push(word);
       } else {
         isError.value = true;
@@ -2070,7 +2140,7 @@ export default {
   background-color: rgba(20, 4, 53, 0.6);
 }
 .left .box {
-  width: 370px;
+  width: 350px;
   max-width: 100%;
   height: 0;
   overflow: hidden;
@@ -2096,12 +2166,17 @@ export default {
 .left .box .box__inner .title {
   margin-bottom: 40px;
 }
+.left .box .box__inner .subtitle {
+  font-size: 20px;
+}
 .left .box .box__inner .title,
 .left .box .box__inner .subtitle {
   color: var(--white);
 }
 .left .box .box__inner .buttons {
+  margin: 0 auto;
   width: 100%;
+  max-width: 265px;
 }
 .left .box .box__inner .buttons button {
   width: 100%;
@@ -2109,6 +2184,11 @@ export default {
 }
 .left .box .box__inner .buttons button + button {
   margin-top: 24px;
+}
+.left .box .box__inner .buttons .button-medium {
+  font-size: 16px;
+  font-weight: 600;
+  font-family: var(--primary-font);
 }
 .left .box .box__inner .support {
   display: flex;
@@ -2127,7 +2207,7 @@ export default {
   width: 100%;
 }
 .right__inner {
-  padding: 80px 70px 64px;
+  padding: 80px 12px 64px 70px;
   height: calc(100% - 144px);
   display: flex;
   flex-direction: column;
@@ -2136,9 +2216,18 @@ export default {
 }
 .right__inner-top {
   height: 100%;
-  width: 430px;
-  max-width: 100%;
+  width: 100%;
+  max-width: 440px;
   text-align: center;
+  overflow: auto;
+  padding-right: 56px;
+  box-sizing: border-box;
+}
+.right__inner-top::-webkit-scrollbar {
+  width: 4px;
+}
+.right__inner-top::-webkit-scrollbar-thumb {
+  background: var(--grey100);
 }
 .right__inner-top h5,
 .right__inner-top h6 {
@@ -2154,9 +2243,11 @@ export default {
   margin-bottom: 48px;
 }
 .right__inner-bottom {
-  width: 100%;
+  padding-top: 10px;
+  width: calc(100% - 39px);
   display: flex;
   align-items: center;
+  padding-right: 60px;
 }
 .pagination-prev {
   cursor: pointer;
@@ -2207,19 +2298,7 @@ export default {
   stroke: var(--marine100);
 }
 .terms-of-service {
-  overflow-y: auto;
-  overflow-x: hidden;
-  height: 480px;
-  display: block;
   text-align: left;
-  padding-right: 56px;
-  width: 100%;
-}
-.terms-of-service::-webkit-scrollbar {
-  width: 4px;
-}
-.terms-of-service::-webkit-scrollbar-thumb {
-  background: var(--grey100);
 }
 .terms-of-service .tos-desc {
   margin-bottom: 36px;
@@ -2263,8 +2342,12 @@ export default {
   justify-content: space-between;
 }
 .step button {
-  width: 200px;
-  margin: 0 auto;
+  margin: 40px auto 0;
+}
+.st-button {
+  min-width: 200px;
+  padding: 5px 64px;
+  font-family: var(--secondary-font);
 }
 .notice {
   padding: 24px;
@@ -2289,11 +2372,16 @@ export default {
   margin-bottom: 16px;
   font-size: 12px;
 }
+:deep .st-radio__label {
+  font-family: var(--secondary-font);
+}
 :deep .st-radio__square {
   top: 0;
 }
 .mnemonic {
-  margin-top: 36px;
+  box-sizing: border-box;
+  width: 400px;
+  margin: 36px auto 0;
   padding: 20px;
   background-color: var(--background100);
   display: grid;
@@ -2319,6 +2407,7 @@ export default {
       rgba(205, 206, 236, 0.15) 83.23%
     ),
     var(--purple100);
+  font-family: var(--secondary-font);
 }
 .mnemonic-list .clickable {
   cursor: pointer;
@@ -2351,7 +2440,7 @@ export default {
   background-color: var(--grey100);
   display: block;
   height: 1px;
-  width: 359px;
+  width: 362px;
 }
 .mnemonic span strong {
   font-weight: 700;
@@ -2448,5 +2537,8 @@ export default {
 }
 .check-icon {
   margin-left: 28px;
+}
+:deep .st-input .st-icon {
+  cursor: pointer;
 }
 </style>

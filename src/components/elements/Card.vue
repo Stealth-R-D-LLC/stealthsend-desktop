@@ -82,7 +82,7 @@ export default {
         {
           assetA: 'XST',
           assetB: 'USD',
-          amountLeft: `${formatAmount(props.account.utxo, true, 8)}`,
+          amountLeft: `${formatAmount(props.account.utxo, true, 8)} XST`,
           amountRight: `$${formatAmount(
             multiply(props.account.utxo, props.rates.XST_USD, true, 2)
           )}`,
@@ -183,6 +183,10 @@ export default {
   font-size: 16px;
   line-height: 24px;
   letter-spacing: 0.12px;
+  font-family: var(--secondary-font);
+}
+.st-card .item.fiat {
+  font-family: var(--secondary-font);
 }
 
 /* .st-card .archive,

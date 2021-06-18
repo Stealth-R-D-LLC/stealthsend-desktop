@@ -21,14 +21,28 @@ Build MacOS:
     - WORKDIR=$(mktemp -d)
     - rsync -r --exclude=.git ./ "$WORKDIR"
     - cd "$WORKDIR"
-    - npm install
+    - nvm use 14
+    - npm install --no-package-lock --registry=https://nexus.barrage.net/repository/npm.barrage.net/ --username=gitlab-ci-readonly --password=$CI_NEXUS_DOCKER_REGISTRY_READ_ONLY
     - npm run electron:build --mac
     - cd $CI_PROJECT_DIR
     - rsync -r $WORKDIR/dist_electron ./
     - rm -rf "$WORKDIR"
+    - nvm use default
   tags:
     - macos-electronjs
   artifacts:
     paths:
       - dist_electron/*.dmg
       - dist_electron/*.pkg
+
+Build Windows:
+  script:
+    - Set-Variable -name NODE_EXTRA_CA_CERTS -value C:\runner\bipa.crt
+    - npm cache clean --force
+    - npm install --unsafe-perm
+    - npm run electron:build --windows
+  tags:
+    - windows
+  artifacts:
+    paths:
+      - dist_electron/*.msi

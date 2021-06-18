@@ -78,6 +78,7 @@ export default {
   pointer-events: none;
   font-size: 12px;
   color: var(--marine500);
+  font-family: var(--secondary-font);
   font-weight: 600;
   letter-spacing: 0.16px;
   line-height: 20px;
@@ -121,5 +122,22 @@ export default {
   line-height: 24px;
   letter-spacing: 0.12px;
   color: var(--grey400);
+  font-family: var(--secondary-font);
+}
+.st-form-item--is-dark :deep .multiselect__content-wrapper {
+  background: var(--marine800);
+  border: 1px solid var(--marine700);
+}
+.st-form-item--is-dark :deep .multiselect__option--selected {
+  color: var(--grey200);
+}
+.st-form-item--is-dark :deep .multiselect__option--selected {
+  color: var(--grey200);
+}
+.st-form-item--is-dark :deep .multiselect__option--highlight {
+  color: var(--grey200) !important;
+}
+.st-form-item--is-dark :deep .multiselect__option {
+  color: var(--grey100);
 }
 </style>

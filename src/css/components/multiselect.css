@@ -104,7 +104,8 @@ fieldset[disabled] .multiselect {
     vertical-align: top;
 }
 .multiselect__input::placeholder {
-  color: #35495e;
+  color: var(--grey100);
+  font-family: var(--secondary-font);
 }
 .multiselect__tag ~ .multiselect__input,
 .multiselect__tag ~ .multiselect__single {
@@ -226,12 +227,13 @@ fieldset[disabled] .multiselect {
 .multiselect__placeholder {
   color: var(--grey100);
   display: inline-block;
+  font-family: var(--secondary-font);
 }
 .multiselect--active .multiselect__placeholder {
   display: none;
 }
 .multiselect--active .multiselect__tags {
-  padding-top: 20px;
+  padding-top: 25px;
   margin: 0 auto;
   width: calc(100% - 32px);
   position: relative;
@@ -289,6 +291,7 @@ fieldset[disabled] .multiselect {
     position: relative;
     cursor: pointer;
     white-space: nowrap;
+    font-family: var(--secondary-font);
 }
 .multiselect__option::after {
   top: 0;
