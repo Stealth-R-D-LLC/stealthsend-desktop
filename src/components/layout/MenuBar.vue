@@ -218,7 +218,7 @@
                 <path d="M9 1H1V9H9V1Z" stroke="#FCFAFF" stroke-width="2" />
               </svg>
             </div>
-            <span class="item__span"> Archive </span>
+            <span class="item__span"> Manager </span>
           </router-link>
         </li>
         <li @click="toggleDrawer('address-book')">
