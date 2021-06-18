@@ -328,7 +328,7 @@ export default {
       }
     );
 
-    const currentStep = ref(0);
+    const currentStep = ref(1);
 
     function closeModal() {
       mainStore.SET_MODAL_VISIBILITY('send', false);
@@ -374,6 +374,14 @@ export default {
         .filter((el) => el.length > 0)
         .reduce((a, b) => a.concat(b), []);
       console.log('res', unspentOutputs);
+      //       const outputs = await mainStore.rpc('getaddressoutputs', [
+      //   account.address,
+      //   1,
+      //   100,
+      // ]);
+
+      // unspentOutputs = outputs.filter((el) => el.isspent === 'false');
+      // console.log('unspent outputs: ', unspentOutputs);
     }
 
     function coinSelection() {
@@ -400,6 +408,7 @@ export default {
         changeStep(4);
         setTimeout(() => closeModal(), 2000);
       } catch (e) {
+        console.log('ERRORČE', e);
         if (e instanceof ValidationError) {
           console.log(e);
         }
