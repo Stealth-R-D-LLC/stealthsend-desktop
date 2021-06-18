@@ -1,14 +1,17 @@
 <template>
   <StModal
-    show-back-button
-    :steps="4"
+    :show-back-button="currentStep < 4"
+    :steps="3"
     :current-step="currentStep"
     :visible="isVisible"
     class="send-modal"
     @close="closeModal"
     @back="goBack"
   >
-    <template #header>Send XST</template>
+    <template #header>
+      <template v-if="currentStep < 4">Send XST</template>
+      <template v-if="currentStep === 4">Sending XST</template>
+    </template>
     <template #body>
       <template v-if="currentStep === 1">
         <div class="form-item account">
@@ -209,6 +212,17 @@
           </div>
         </div>
       </template>
+      <template v-if="currentStep === 4">
+        <div class="progress">
+  <svg class="progress-animated" version="1.1" id="circle" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+  viewBox="0 0 100 100" xml:space="preserve">
+    <circle fill="none" stroke="#E0D3FC" stroke-width="1" stroke-mitterlimit="0" cx="50" cy="50" r="48" stroke-dasharray="360" stroke-linecap="round" transform="rotate(-90 ) translate(-100 0)" >
+        <animate attributeName="stroke-dashoffset" values="360;0" dur="4s" repeatCount="indefinite"></animate>
+    </circle>
+</svg>
+  <div class="overlay"></div>
+</div>
+      </template>
     </template>
     <template #footer class="flex-center-all">
       <template v-if="currentStep === 1">
@@ -289,7 +303,7 @@ export default {
       }
     );
 
-    const currentStep = ref(1);
+    const currentStep = ref(0);
 
     function closeModal() {
       mainStore.SET_MODAL_VISIBILITY('send', false);
@@ -351,7 +365,8 @@ export default {
         });
         CryptoService.storeTxAndLabel(txid, label.value);
         // console.log('TXID: ', txid);
-        closeModal();
+        changeStep(4);
+        setTimeout(() => closeModal(), 2000)
       } catch (e) {
         if (e instanceof ValidationError) {
           console.log(e);
@@ -528,6 +543,30 @@ export default {
 }
 .load-max:hover {
   color: var(--marine200);
+}
+.progress-animated {
+  position: relative;
+  top: -2px;
+    left: -2px;
+    width: 104px;
+    height: 104px;
+}
+.progress {
+  margin: 96px auto 44px;
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background: rgba(224, 211, 252, 0.3);
+  border-radius: 100px;
+}
+.overlay {
+  background-color: var(--marine900);
+    border-radius: 100%;
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    bottom: 1px;
+    left: 1px;
 }
 </style>
 
