@@ -38,7 +38,7 @@
               <transition-group name="fade">
                 <template v-if="isAccount">
                   <h3 class="title" v-if="currentStep <= 5">
-                    The Fastest Private<br />Digital Currency
+                    The Fastest Private Digital<br />Currency
                   </h3>
                   <h3
                     class="title"
@@ -778,13 +778,13 @@
                   </StInput>
                 </StFormItem>
                 <StFormItem
-                  label="Confirm password"
+                  label="Confirm Password"
                   :error-message="form.confirmPassword.$errors"
                 >
                   <StInput
                     :type="showConfirmPassword ? 'text' : 'password'"
                     v-model="form.confirmPassword.$value"
-                    placeholder="Please repeate the Password to confirm"
+                    placeholder="Please repeat the Password to confirm"
                   >
                     <svg
                       v-if="!showConfirmPassword"
@@ -1276,7 +1276,7 @@
             </div>
           </transition-group>
         </div>
-        <div v-if="currentStep < 5" class="right__inner-bottom">
+        <div v-if="currentStep < 4" class="right__inner-bottom">
           <div
             class="pagination-prev"
             :class="{ 'pagination-prev--none': currentStep === 0 }"
@@ -1297,14 +1297,14 @@
             <span
               class="dot"
               @click="chooseStep(index)"
-              v-for="(pagination, index) in 5"
+              v-for="(pagination, index) in 4"
               :key="index"
               :class="{ 'dot-active': currentStep === index }"
             ></span>
           </div>
           <div
             class="pagination-next"
-            :class="{ 'pagination-next--none': currentStep === 5 }"
+            :class="{ 'pagination-next--none': currentStep === 4 }"
             @click="nextStep"
           >
             <svg
@@ -1496,35 +1496,52 @@
                   v-model="form.password.$value"
                 >
                   <svg
-                    @click="showPassword = !showPassword"
-                    width="22"
-                    height="12"
-                    viewBox="0 0 22 12"
+                    v-if="!showPassword"
+                    @click="showPassword = true"
+                    width="26"
+                    height="14"
+                    viewBox="0 0 26 14"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
                       fill-rule="evenodd"
                       clip-rule="evenodd"
-                      d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
-                      :stroke="showPassword ? '#C3A9FB' : '#4E00F6'"
+                      d="M13 13C17.0501 13 20.7168 11 24 7C20.7168 3 17.0501 1 13 1C8.94991 1 5.28325 3 2 7C5.28325 11 8.94991 13 13 13Z"
+                      stroke="#4E00F6"
+                      stroke-width="2"
+                    />
+                    <circle cx="13" cy="7" r="2" fill="#4E00F6" />
+                  </svg>
+                  <svg
+                    v-else
+                    @click="showPassword = false"
+                    width="26"
+                    height="19"
+                    viewBox="0 0 26 19"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M13 3C8.94991 3 5.28325 5.03704 2 9.11111C5.28325 13.1852 8.94991 15.2222 13 15.2222C17.0501 15.2222 20.7168 13.1852 24 9.11111C23.2599 8.1928 22.5004 7.37799 21.7214 6.66667"
+                      stroke="#4E00F6"
                       stroke-width="2"
                     />
                     <path
-                      d="M9 6L13 6"
-                      :stroke="showPassword ? '#C3A9FB' : '#4E00F6'"
+                      d="M9 9L15.1111 9"
+                      stroke="#4E00F6"
                       stroke-width="2"
                     />
                     <path
-                      d="M11 4V8"
-                      :stroke="showPassword ? '#C3A9FB' : '#4E00F6'"
+                      d="M23.1113 1L6.00022 18.1111"
+                      stroke="#4E00F6"
                       stroke-width="2"
                     />
                   </svg>
                 </StInput>
               </StFormItem>
               <StFormItem
-                label="Confirm password"
+                label="Confirm Password"
                 :error-message="form.confirmPassword.$errors"
               >
                 <StInput
@@ -1532,28 +1549,45 @@
                   v-model="form.confirmPassword.$value"
                 >
                   <svg
-                    @click="showConfirmPassword = !showConfirmPassword"
-                    width="22"
-                    height="12"
-                    viewBox="0 0 22 12"
+                    v-if="!showConfirmPassword"
+                    @click="showConfirmPassword = true"
+                    width="26"
+                    height="14"
+                    viewBox="0 0 26 14"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
                       fill-rule="evenodd"
                       clip-rule="evenodd"
-                      d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
-                      :stroke="showConfirmPassword ? '#C3A9FB' : '#4E00F6'"
+                      d="M13 13C17.0501 13 20.7168 11 24 7C20.7168 3 17.0501 1 13 1C8.94991 1 5.28325 3 2 7C5.28325 11 8.94991 13 13 13Z"
+                      stroke="#4E00F6"
+                      stroke-width="2"
+                    />
+                    <circle cx="13" cy="7" r="2" fill="#4E00F6" />
+                  </svg>
+                  <svg
+                    v-else
+                    @click="showConfirmPassword = false"
+                    width="26"
+                    height="19"
+                    viewBox="0 0 26 19"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M13 3C8.94991 3 5.28325 5.03704 2 9.11111C5.28325 13.1852 8.94991 15.2222 13 15.2222C17.0501 15.2222 20.7168 13.1852 24 9.11111C23.2599 8.1928 22.5004 7.37799 21.7214 6.66667"
+                      stroke="#4E00F6"
                       stroke-width="2"
                     />
                     <path
-                      d="M9 6L13 6"
-                      :stroke="showConfirmPassword ? '#C3A9FB' : '#4E00F6'"
+                      d="M9 9L15.1111 9"
+                      stroke="#4E00F6"
                       stroke-width="2"
                     />
                     <path
-                      d="M11 4V8"
-                      :stroke="showConfirmPassword ? '#C3A9FB' : '#4E00F6'"
+                      d="M23.1113 1L6.00022 18.1111"
+                      stroke="#4E00F6"
                       stroke-width="2"
                     />
                   </svg>
@@ -2183,7 +2217,7 @@ export default {
 .right__inner-top {
   height: 100%;
   width: 100%;
-  max-width: 456px;
+  max-width: 440px;
   text-align: center;
   overflow: auto;
   padding-right: 56px;
@@ -2310,6 +2344,11 @@ export default {
 .step button {
   margin: 40px auto 0;
 }
+.st-button {
+  min-width: 200px;
+  padding: 5px 64px;
+  font-family: var(--secondary-font);
+}
 .notice {
   padding: 24px;
   background-color: var(--background50);
@@ -2332,6 +2371,9 @@ export default {
 :deep .st-radio {
   margin-bottom: 16px;
   font-size: 12px;
+}
+:deep .st-radio__label {
+  font-family: var(--secondary-font);
 }
 :deep .st-radio__square {
   top: 0;
@@ -2365,6 +2407,7 @@ export default {
       rgba(205, 206, 236, 0.15) 83.23%
     ),
     var(--purple100);
+  font-family: var(--secondary-font);
 }
 .mnemonic-list .clickable {
   cursor: pointer;
