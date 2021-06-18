@@ -36,15 +36,15 @@
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <path d="M7 11H1V17H7V11Z" stroke="#A67FFA" stroke-width="2" />
+                <path d="M7 11H1V17H7V11Z" stroke="#FAF9FC" stroke-width="2" />
                 <path
                   d="M17 11H11V17H17V11Z"
-                  stroke="#A67FFA"
+                  stroke="#FAF9FC"
                   stroke-width="2"
                 />
-                <path d="M0 7H8" stroke="#A67FFA" stroke-width="2" />
-                <path d="M0 3H8" stroke="#A67FFA" stroke-width="2" />
-                <path d="M17 1H11V7H17V1Z" stroke="#A67FFA" stroke-width="2" />
+                <path d="M0 7H8" stroke="#FAF9FC" stroke-width="2" />
+                <path d="M0 3H8" stroke="#FAF9FC" stroke-width="2" />
+                <path d="M17 1H11V7H17V1Z" stroke="#FAF9FC" stroke-width="2" />
               </svg>
             </div>
 
@@ -400,7 +400,8 @@ export default defineComponent({
 }
 
 .layout__aside li:hover span,
-.layout__aside li:hover svg path {
+.layout__aside li:hover svg path,
+.layout__aside li:hover svg circle {
   stroke: var(--marine200);
   color: var(--marine200);
 }
