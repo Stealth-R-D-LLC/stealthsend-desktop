@@ -41,10 +41,10 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
         let vout = txDetails.vout.find((el) => el.value === tx.amount);
 
-        console.log('adding input: ',{
+        console.log('adding input: ', {
           txid: txDetails.txid,
           vout: vout.n,
-          pubkey: Buffer.from(vout.scriptPubKey.hex, 'hex')
+          pubkey: Buffer.from(vout.scriptPubKey.hex, 'hex'),
         });
 
         rawTransaction.addInput(
@@ -97,7 +97,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       for (let i = 0; i < utxo.length; i++) {
         try {
           rawTransaction.sign(i, keyPair);
-        } catch(e) {
+        } catch (e) {
           console.log('cannot sign tx', e);
         }
       }
