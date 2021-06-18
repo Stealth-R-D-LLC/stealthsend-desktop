@@ -1,5 +1,6 @@
 const path = require("path");
 const vueSrc = "./src";
+const GoogleFontsPlugin = require("@beyonk/google-fonts-webpack-plugin")
 module.exports = {
   runtimeCompiler: true,
   css: {
@@ -11,7 +12,16 @@ module.exports = {
         "@": path.resolve(__dirname, vueSrc)
       },
       extensions: ['.js', '.vue', '.json']
-    }
+    },
+    plugins: [
+      new GoogleFontsPlugin({
+          fonts: [
+              { family: "Source Sans Pro", variants: [ "300", "400", "600", "700", "900" ] },
+              { family: "Noto Sans", variants: [ "400", "700" ] }
+          ]
+          /* ...options */
+      })
+  ],
   },
   pluginOptions: {
     electronBuilder: {

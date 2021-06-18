@@ -22,6 +22,7 @@
   },
   "main": "background.js",
   "dependencies": {
+    "@beyonk/google-fonts-webpack-plugin": "^1.7.0",
     "@vueuse/core": "^4.11.1",
     "@vueuse/integrations": "^4.11.1",
     "apexcharts": "^3.26.3",
@@ -36,7 +37,7 @@
     "mathjs": "^9.4.1",
     "nedb-promise": "^2.0.1",
     "pinia": "^2.0.0-alpha.13",
-    "stealth-kit": "^0.1.60",
+    "stealth-kit": "^0.1.64",
     "vanillaqr": "^1.0.0",
     "vue": "3.0.0",
     "vue-multiselect": "^3.0.0-alpha.2",
