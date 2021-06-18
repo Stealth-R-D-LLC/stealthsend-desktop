@@ -382,7 +382,6 @@ export default {
 
       // unspentOutputs = outputs.filter((el) => el.isspent === 'false');
       // console.log('unspent outputs: ', unspentOutputs);
-
     }
 
     function coinSelection() {
@@ -398,7 +397,6 @@ export default {
         if (utxo.length === 0) {
           return;
         }
-
 
         let { txid } = await useTransactionBuilder(utxo, {
           address: depositAddress.value,
