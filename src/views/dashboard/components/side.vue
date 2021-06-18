@@ -73,7 +73,7 @@ export default {
       console.log('scanned wallet: ', hdWallet);
       utxo.value = Number(hdWallet.utxo);
       txs.value = hdWallet.txs;
-      accounts.value = hdWallet.accounts;
+      accounts.value = hdWallet.accounts.filter(el => !el.isArchived);
     }
     scanWallet();
 
