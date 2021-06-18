@@ -462,7 +462,7 @@ export default {
 
 .form-item.account {
   position: relative;
-  margin-top: 92px;
+  margin-top: 64px;
 }
 
 .form-item.account label {
