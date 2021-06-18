@@ -177,7 +177,11 @@
         </StFormItem>
       </template>
       <template v-if="currentStep === 2">
-        <StFormItem label="Receiving Address" color="dark">
+        <StFormItem
+          class="receiving-address"
+          label="Receiving Address"
+          color="dark"
+        >
           <StInput
             class="address-input"
             v-model="depositAddress"
@@ -434,6 +438,10 @@ export default {
 }
 .address-loader {
   animation: rotating 2s linear infinite;
+}
+.receiving-address :deep label {
+  right: 0;
+  text-align: center;
 }
 </style>
 <style>

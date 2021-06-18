@@ -112,7 +112,7 @@ export default {
 .side {
   min-width: 346px;
   width: 346px;
-  padding: 32px 24px 0;
+  padding: 29px 24px 0;
   background: var(--background100);
 }
 
