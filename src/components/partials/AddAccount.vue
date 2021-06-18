@@ -36,7 +36,7 @@
         >
           <StInput
             v-model="form.accountName.$value"
-            placeholder="Please add unique account name"
+            placeholder="Please add Unique Account Name"
           ></StInput>
         </StFormItem>
         <div class="buttons">
@@ -70,13 +70,13 @@
         </template>
         <template v-if="currentStep === 2">
           <StFormItem label="Account Name">
-            <StInput
-              v-model="accountName"
-              placeholder="Please add Unique Account Name"
-            />
+            <StInput v-model="accountName" placeholder="Enter Account Name" />
           </StFormItem>
           <StFormItem label="Private Key">
-            <StInput v-model="privateKey" placeholder="Paste your private key">
+            <StInput
+              v-model="privateKey"
+              placeholder="Scan or paste your private key"
+            >
               <StTooltip
                 class="tooltip"
                 :tooltip-text="
