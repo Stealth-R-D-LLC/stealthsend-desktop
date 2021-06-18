@@ -30,24 +30,21 @@
           <router-link class="item" to="/dashboard">
             <div class="icon">
               <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
+                <path d="M7 11H1V17H7V11Z" stroke="#A67FFA" stroke-width="2" />
                 <path
-                  d="M9 13H1v8h8v-8zM21 13h-8v8h8v-8z"
-                  stroke="#FAF9FC"
+                  d="M17 11H11V17H17V11Z"
+                  stroke="#A67FFA"
                   stroke-width="2"
                 />
-                <path
-                  d="M1 9h8M1 5h8"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                  stroke-linecap="square"
-                />
-                <path d="M21 1h-8v8h8V1z" stroke="#FAF9FC" stroke-width="2" />
+                <path d="M0 7H8" stroke="#A67FFA" stroke-width="2" />
+                <path d="M0 3H8" stroke="#A67FFA" stroke-width="2" />
+                <path d="M17 1H11V7H17V1Z" stroke="#A67FFA" stroke-width="2" />
               </svg>
             </div>
 
@@ -79,8 +76,8 @@
           <span class="item">
             <div class="icon">
               <svg
-                width="24"
-                height="24"
+                width="18"
+                height="17"
                 viewBox="0 0 18 17"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -102,8 +99,8 @@
           <span class="item">
             <div class="icon">
               <svg
-                width="24"
-                height="24"
+                width="18"
+                height="17"
                 viewBox="0 0 18 17"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -125,56 +122,56 @@
           <router-link class="item" to="/transactions">
             <div class="icon">
               <svg
-                width="24"
-                height="24"
-                viewBox="0 0 21 14"
+                width="21"
+                height="18"
+                viewBox="0 0 21 18"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M5 1H21"
+                  d="M5 1.5H19"
                   stroke="#FAF9FC"
                   stroke-width="2"
                   stroke-linejoin="round"
                 />
                 <path
-                  d="M0 1H2"
+                  d="M0 1.5H2"
                   stroke="#FAF9FC"
                   stroke-width="2"
                   stroke-linejoin="round"
                 />
                 <path
-                  d="M5 5H21"
+                  d="M5 6.5H19"
                   stroke="#FAF9FC"
                   stroke-width="2"
                   stroke-linejoin="round"
                 />
                 <path
-                  d="M0 5H2"
+                  d="M0 6.5H2"
                   stroke="#FAF9FC"
                   stroke-width="2"
                   stroke-linejoin="round"
                 />
                 <path
-                  d="M5 9H21"
+                  d="M5 11.5H19"
                   stroke="#FAF9FC"
                   stroke-width="2"
                   stroke-linejoin="round"
                 />
                 <path
-                  d="M0 9H2"
+                  d="M0 11.5H2"
                   stroke="#FAF9FC"
                   stroke-width="2"
                   stroke-linejoin="round"
                 />
                 <path
-                  d="M5 13H21"
+                  d="M5 16.5H19"
                   stroke="#FAF9FC"
                   stroke-width="2"
                   stroke-linejoin="round"
                 />
                 <path
-                  d="M0 13H2"
+                  d="M0 16.5H2"
                   stroke="#FAF9FC"
                   stroke-width="2"
                   stroke-linejoin="round"
@@ -188,26 +185,18 @@
           <span class="item">
             <div class="icon">
               <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
+                width="18"
+                height="17"
+                viewBox="0 0 18 17"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <path d="M12 17.5H22" stroke="#FAF9FC" stroke-width="2" />
-                <path d="M17 12.5V22.5" stroke="#FAF9FC" stroke-width="2" />
-                <path d="M0 9.5H10" stroke="#FAF9FC" stroke-width="2" />
-                <path d="M0 5.5H10" stroke="#FAF9FC" stroke-width="2" />
-                <path
-                  d="M9 13.5H1V21.5H9V13.5Z"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                />
-                <path
-                  d="M21 1.5H13V9.5H21V1.5Z"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                />
+                <path d="M10 13L18 13" stroke="#FAF9FC" stroke-width="2" />
+                <path d="M14 9V17" stroke="#FAF9FC" stroke-width="2" />
+                <path d="M0 6H8.09524" stroke="#FAF9FC" stroke-width="2" />
+                <path d="M0 2H8.09524" stroke="#FAF9FC" stroke-width="2" />
+                <path d="M7 10H1V16H7V10Z" stroke="#FAF9FC" stroke-width="2" />
+                <path d="M17 1H11V7H17V1Z" stroke="#FAF9FC" stroke-width="2" />
               </svg>
             </div>
             <span class="item__span"> Add Account </span>
@@ -217,53 +206,38 @@
           <router-link class="item" to="/account/archived">
             <div class="icon">
               <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <path d="M12 20H22" stroke="#FCFAFF" stroke-width="2" />
-                <path d="M12 16H22" stroke="#FCFAFF" stroke-width="2" />
-                <path d="M9 13H1V21H9V13Z" stroke="#FCFAFF" stroke-width="2" />
-                <path d="M12 8H22" stroke="#FCFAFF" stroke-width="2" />
-                <path d="M12 4H22" stroke="#FCFAFF" stroke-width="2" />
-                <path d="M9 1H1V9H9V1Z" stroke="#FCFAFF" stroke-width="2" />
+                <path d="M10 16H18" stroke="#FAF9FC" stroke-width="2" />
+                <path d="M10 12L18 12" stroke="#FAF9FC" stroke-width="2" />
+                <path d="M7 11H1V17H7V11Z" stroke="#FAF9FC" stroke-width="2" />
+                <path d="M10 6H18" stroke="#FAF9FC" stroke-width="2" />
+                <path d="M10 2H18" stroke="#FAF9FC" stroke-width="2" />
+                <path d="M7 1H1V7H7V1Z" stroke="#FAF9FC" stroke-width="2" />
               </svg>
             </div>
-            <span class="item__span"> Archive </span>
+            <span class="item__span"> Manager </span>
           </router-link>
         </li>
         <li @click="toggleDrawer('address-book')">
           <span class="item">
             <div class="icon">
               <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
+                <path d="M12 13H18M14 9H18" stroke="#FAF9FC" stroke-width="2" />
+                <circle cx="8" cy="5" r="4" stroke="#FAF9FC" stroke-width="2" />
                 <path
-                  d="M24 23H2C2.27477 18.4999 2.89237 15.6416 3.85279 14.4251C4.64988 13.4154 5.69891 12.7108 6.9999 12.3306"
-                  stroke="#EAEAEA"
-                  stroke-width="2"
-                />
-                <path
-                  d="M17 19H23"
-                  stroke="#EAEAEA"
-                  stroke-width="2"
-                  stroke-linecap="square"
-                />
-                <path
-                  d="M17 15H23"
-                  stroke="#EAEAEA"
-                  stroke-width="2"
-                  stroke-linecap="square"
-                />
-                <path
-                  d="M10 13C13.3137 13 16 10.3137 16 7C16 3.68629 13.3137 1 10 1C6.68629 1 4 3.68629 4 7C4 10.3137 6.68629 13 10 13Z"
-                  stroke="#EAEAEA"
+                  d="M8.3125 9C5.0625 9 9.9375 9 6.6875 9C3.4375 9 1 11.4 1 13.8C1 16.2 1 17 1 17H18"
+                  stroke="#FAF9FC"
                   stroke-width="2"
                 />
               </svg>
@@ -340,7 +314,7 @@ export default defineComponent({
 
 <style scoped>
 .layout__aside {
-  width: 75px;
+  width: 64px;
   transition: 0.3s;
 }
 
@@ -349,7 +323,7 @@ export default defineComponent({
 }
 
 .layout__aside.width {
-  width: 280px;
+  width: 252px;
 }
 
 .layout__aside nav {
@@ -360,7 +334,7 @@ export default defineComponent({
   position: fixed;
   padding: 12px 0;
   text-decoration: none;
-  padding-left: 24px;
+  padding-left: 20px;
   bottom: 32px;
 }
 
@@ -389,7 +363,7 @@ export default defineComponent({
 .layout__aside .item {
   padding: 18px 0;
   text-decoration: none;
-  padding-left: 24px;
+  padding-left: 20px;
   display: flex;
   align-items: center;
   transition: 0.3s;
@@ -410,7 +384,7 @@ export default defineComponent({
   line-height: 24px;
   letter-spacing: 0.12px;
   color: var(--hampton50);
-  margin-left: 42px;
+  margin-left: 24px;
   opacity: 1;
   transition: opacity 0.3s ease-in-out;
   white-space: nowrap;
