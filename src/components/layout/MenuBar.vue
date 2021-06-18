@@ -380,7 +380,7 @@ export default defineComponent({
 .layout__aside .item span {
   width: 100%;
   overflow: hidden;
-  font-size: 18px;
+  font-size: 16px;
   line-height: 24px;
   letter-spacing: 0.12px;
   color: var(--hampton50);
@@ -388,6 +388,7 @@ export default defineComponent({
   opacity: 1;
   transition: opacity 0.3s ease-in-out;
   white-space: nowrap;
+  font-weight: 600;
 }
 
 .layout__aside .item.router-link-exact-active svg path {
