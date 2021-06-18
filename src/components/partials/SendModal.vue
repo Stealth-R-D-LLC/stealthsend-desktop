@@ -360,13 +360,20 @@ export default {
     let unspentOutputs = [];
 
     async function getUnspentOutputs(account) {
-      const outputs = await mainStore.rpc('getaddressoutputs', [
-        account.address,
-        1,
-        100,
-      ]);
+      const res = await mainStore.rpc('gethdaccount', [account.pk]);
 
-      unspentOutputs = outputs.filter((el) => el.isspent === 'false');
+      // map only unspent outputs, put txid in each one of them and flatten the array
+      unspentOutputs = res
+        .map((el) => {
+          let tmp = el.outputs.filter((el) => el.isspent === 'false');
+          for (let o of tmp) {
+            o['txid'] = el.txid;
+          }
+          return tmp;
+        })
+        .filter((el) => el.length > 0)
+        .reduce((a, b) => a.concat(b), []);
+      console.log('res', unspentOutputs);
     }
 
     function coinSelection() {
@@ -502,7 +509,7 @@ export default {
 
 .form-item.account {
   position: relative;
-  margin-top: 92px;
+  margin-top: 64px;
 }
 
 .form-item.account label {

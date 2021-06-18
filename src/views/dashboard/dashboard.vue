@@ -4,7 +4,7 @@
       <Chart v-if="componentVisibility.chart"></Chart>
       <TransactionList
         v-if="componentVisibility.txDashboard"
-        has-table-header
+        :has-table-header="false"
         :transactions="transactions"
       ></TransactionList>
     </div>
