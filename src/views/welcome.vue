@@ -1,5 +1,6 @@
 <template>
   <div class="welcome">
+    {{ currentStep }}
     <div class="left" :class="{ 'left-active': isAccount || isRecovery }">
       <img src="@/assets/welcome.png" alt="welcome" />
       <div class="overlay"></div>
@@ -1263,7 +1264,7 @@
                     your XST is based on it.
                   </p>
                   <StCheckbox v-model="recoveryPhraseConfirmation"
-                    >I have stored the Recovery Phrase in the safe
+                    >I have stored the Recovery Phrase in a safe
                     place</StCheckbox
                   >
                 </div>
@@ -1729,7 +1730,7 @@ export default {
           $rules: [
             {
               rule: () => {
-                if (currentStep.value === 8) {
+                if (currentStep.value === 6) {
                   return !account.value && 'Account name is required';
                 }
               },
