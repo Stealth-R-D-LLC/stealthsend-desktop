@@ -20,14 +20,14 @@
 }
 
 .layout__header {
-  padding: 38px 0 24px 0;
+  padding: 35px 0 24px 0;
   margin: 0 24px;
 }
 .layout__main {
   flex: 1;
   overflow: auto;
   position: relative;
-  margin-left: 75px; /*for fixed sidebar */
+  margin-left: 64px; /*for fixed sidebar */
   display: flex;
 }
 
@@ -35,7 +35,7 @@
     flex: 1;
     overflow: auto;
     position: relative;
-    margin-left: 75px; /*for fixed sidebar */
+    margin-left: 64px; /*for fixed sidebar */
 }
 
 .layout__main .triangle {
