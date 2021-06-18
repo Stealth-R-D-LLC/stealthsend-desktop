@@ -214,14 +214,39 @@
       </template>
       <template v-if="currentStep === 4">
         <div class="progress">
-  <svg class="progress-animated" version="1.1" id="circle" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-  viewBox="0 0 100 100" xml:space="preserve">
-    <circle fill="none" stroke="#E0D3FC" stroke-width="1" stroke-mitterlimit="0" cx="50" cy="50" r="48" stroke-dasharray="360" stroke-linecap="round" transform="rotate(-90 ) translate(-100 0)" >
-        <animate attributeName="stroke-dashoffset" values="360;0" dur="4s" repeatCount="indefinite"></animate>
-    </circle>
-</svg>
-  <div class="overlay"></div>
-</div>
+          <svg
+            class="progress-animated"
+            version="1.1"
+            id="circle"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            viewBox="0 0 100 100"
+            xml:space="preserve"
+          >
+            <circle
+              fill="none"
+              stroke="#E0D3FC"
+              stroke-width="1"
+              stroke-mitterlimit="0"
+              cx="50"
+              cy="50"
+              r="48"
+              stroke-dasharray="360"
+              stroke-linecap="round"
+              transform="rotate(-90 ) translate(-100 0)"
+            >
+              <animate
+                attributeName="stroke-dashoffset"
+                values="360;0"
+                dur="4s"
+                repeatCount="indefinite"
+              ></animate>
+            </circle>
+          </svg>
+          <div class="overlay"></div>
+        </div>
       </template>
     </template>
     <template #footer class="flex-center-all">
@@ -366,7 +391,7 @@ export default {
         CryptoService.storeTxAndLabel(txid, label.value);
         // console.log('TXID: ', txid);
         changeStep(4);
-        setTimeout(() => closeModal(), 2000)
+        setTimeout(() => closeModal(), 2000);
       } catch (e) {
         if (e instanceof ValidationError) {
           console.log(e);
@@ -547,9 +572,9 @@ export default {
 .progress-animated {
   position: relative;
   top: -2px;
-    left: -2px;
-    width: 104px;
-    height: 104px;
+  left: -2px;
+  width: 104px;
+  height: 104px;
 }
 .progress {
   margin: 96px auto 44px;
@@ -561,12 +586,12 @@ export default {
 }
 .overlay {
   background-color: var(--marine900);
-    border-radius: 100%;
-    position: absolute;
-    top: 1px;
-    right: 1px;
-    bottom: 1px;
-    left: 1px;
+  border-radius: 100%;
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  bottom: 1px;
+  left: 1px;
 }
 </style>
 
