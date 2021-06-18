@@ -37,7 +37,7 @@
     "mathjs": "^9.4.1",
     "nedb-promise": "^2.0.1",
     "pinia": "^2.0.0-alpha.13",
-    "stealth-kit": "^0.1.62",
+    "stealth-kit": "^0.1.64",
     "vanillaqr": "^1.0.0",
     "vue": "3.0.0",
     "vue-multiselect": "^3.0.0-alpha.2",

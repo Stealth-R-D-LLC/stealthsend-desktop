@@ -73,7 +73,7 @@ export default {
       console.log('scanned wallet: ', hdWallet);
       utxo.value = Number(hdWallet.utxo);
       txs.value = hdWallet.txs;
-      accounts.value = hdWallet.accounts;
+      accounts.value = hdWallet.accounts.filter((el) => !el.isArchived);
     }
     scanWallet();
 
@@ -112,7 +112,7 @@ export default {
 .side {
   min-width: 346px;
   width: 346px;
-  padding: 32px 24px 0;
+  padding: 29px 24px 0;
   background: var(--background100);
 }
 

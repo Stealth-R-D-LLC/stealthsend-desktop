@@ -156,7 +156,7 @@ export default function useCoinControl(outputs, target) {
     for (let i = 1; i <= LIMIT; i++) {
       if (!targetReached) {
         for (let j = 1; j <= 2; j++) {
-          // two tries?
+          // two tries?f
           for (let tx of smallerCoins) {
             if (
               (j === 2 && !selectedUtxos.some((el) => el.txid === tx.txid)) ||
@@ -267,6 +267,7 @@ export default function useCoinControl(outputs, target) {
   }
 
   let best = coinSelection(); // run coin selection on init
+  console.log('use coin control result: ', best);
 
   return {
     best,

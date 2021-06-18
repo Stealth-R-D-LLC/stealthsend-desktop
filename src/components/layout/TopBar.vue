@@ -76,7 +76,7 @@
         name="notifications"
         @click="toggleDrawer('recent-notifications')"
       ></StIcon> -->
-      <StIcon name="qr"></StIcon>
+      <!-- <StIcon name="qr"></StIcon> -->
       <StIcon @click="goto('/settings')" name="settings"></StIcon>
     </div>
   </header>
