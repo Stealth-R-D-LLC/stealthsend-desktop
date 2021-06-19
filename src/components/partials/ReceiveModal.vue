@@ -257,7 +257,8 @@ export default {
       // reset all variables
       account.value = null;
       accounts.value = [];
-      amount.value = null;
+      amount.value = 0;
+      amountFiat.value = 0;
       currentStep.value = 1;
       depositAddress.value = '';
       qrSrc.value = '';
