@@ -297,15 +297,7 @@ export default {
         next.address
       );
       depositAddress.value = child.address;
-      var qr = new VanillaQR({
-        url: depositAddress.value,
-        noBorder: false,
-        // borderSize: 20,
-        colorDark: '#140435',
-        colorLight: '#FAF9FC',
-        // size: 140,
-      });
-      qrSrc.value = qr.toImage('png').src;
+      generateQR()
     }
 
     let copyPending = ref(false);
@@ -316,8 +308,23 @@ export default {
       }, 2000);
     }
 
+    function generateQR() {
+      var qr = new VanillaQR({
+        url: amount.value > 0 ? `${depositAddress.value}?amount=${amount.value}` : depositAddress.value,
+        noBorder: false,
+        // borderSize: 20,
+        colorDark: '#140435',
+        colorLight: '#FAF9FC',
+        // size: 140,
+      });
+      qrSrc.value = qr.toImage('png').src;
+    }
+
     function changeStep(step) {
       currentStep.value = step;
+      if (step === 2) {
+        generateQR()
+      }
     }
     function goBack(step) {
       currentStep.value = step;
