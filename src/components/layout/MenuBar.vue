@@ -355,10 +355,10 @@ export default defineComponent({
   justify-content: center;
 }
 
-.layout__aside li svg {
+/* .layout__aside li svg {
   width: 1.5rem;
   height: 1.5rem;
-}
+} */
 
 .layout__aside .item {
   padding: 18px 0;
