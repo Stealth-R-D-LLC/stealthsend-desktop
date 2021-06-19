@@ -56,7 +56,7 @@
               allowNegative: false,
             }"
           >
-            <div @click="inputAmountState = 'USD'">
+            <div @click="changeCurrency('USD')">
               <svg
                 width="19"
                 height="16"
@@ -89,10 +89,11 @@
           </StAmount>
           <StAmount
             v-else-if="inputAmountState === 'USD'"
-            v-model="amount"
+            v-model="amountFiat"
+            @update:formattedValue="fiatKeyup"
             placeholder="Amount"
           >
-            <div @click="inputAmountState = 'XST'">
+            <div @click="changeCurrency('XST')">
               <svg
                 width="19"
                 height="16"
@@ -244,6 +245,9 @@ export default {
     const isVisible = computed(() => {
       return mainStore.modals.receive;
     });
+    const XST_USD = computed(() => {
+      return CryptoService.constraints.XST_USD
+    })
     const inputAmountState = ref('XST');
 
     const currentStep = ref(1);
@@ -262,6 +266,7 @@ export default {
     const accounts = ref([]);
     const account = ref(null);
     const amount = ref(null);
+    const amountFiat = ref(null);
 
     async function scanWallet() {
       const hdWallet = await CryptoService.scanWallet();
@@ -271,7 +276,7 @@ export default {
     }
 
     async function onOpen() {
-      // when the modal is opened, scan for the address and show ith
+      // when the modal is opened, scan for the address and show it
       await scanWallet();
       changeAccount();
     }
@@ -318,6 +323,22 @@ export default {
       currentStep.value = step;
     }
 
+    function fiatKeyup() {
+      amount.value = amountFiat.value * XST_USD.value
+    }
+
+    function changeCurrency(currency) {
+      if (currency === 'XST') {
+        amount.value = amountFiat.value / XST_USD.value
+        inputAmountState.value = 'XST'
+      } else if (currency === 'USD') {
+        amountFiat.value = amount.value * XST_USD.value
+        inputAmountState.value = 'USD'
+      } else {
+        console.error('Unhandled currency')
+      }
+    }
+
     function sendEmail() {
       closeModal();
       alert('Email sent - missing design');
@@ -331,6 +352,7 @@ export default {
       accounts,
       account,
       amount,
+      amountFiat,
       depositAddress,
       changeAccount,
       qrSrc,
@@ -340,10 +362,13 @@ export default {
       goBack,
 
       handleCopy,
-      copyPending,
+      copyPending, 
 
       onOpen,
       sendEmail,
+
+      changeCurrency,
+      fiatKeyup
     };
   },
 };
