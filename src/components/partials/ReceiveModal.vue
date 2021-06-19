@@ -246,8 +246,8 @@ export default {
       return mainStore.modals.receive;
     });
     const XST_USD = computed(() => {
-      return CryptoService.constraints.XST_USD
-    })
+      return CryptoService.constraints.XST_USD;
+    });
     const inputAmountState = ref('XST');
 
     const currentStep = ref(1);
@@ -324,18 +324,18 @@ export default {
     }
 
     function fiatKeyup() {
-      amount.value = amountFiat.value * XST_USD.value
+      amount.value = amountFiat.value * XST_USD.value;
     }
 
     function changeCurrency(currency) {
       if (currency === 'XST') {
-        amount.value = amountFiat.value / XST_USD.value
-        inputAmountState.value = 'XST'
+        amount.value = amountFiat.value / XST_USD.value;
+        inputAmountState.value = 'XST';
       } else if (currency === 'USD') {
-        amountFiat.value = amount.value * XST_USD.value
-        inputAmountState.value = 'USD'
+        amountFiat.value = amount.value * XST_USD.value;
+        inputAmountState.value = 'USD';
       } else {
-        console.error('Unhandled currency')
+        console.error('Unhandled currency');
       }
     }
 
@@ -362,13 +362,13 @@ export default {
       goBack,
 
       handleCopy,
-      copyPending, 
+      copyPending,
 
       onOpen,
       sendEmail,
 
       changeCurrency,
-      fiatKeyup
+      fiatKeyup,
     };
   },
 };
