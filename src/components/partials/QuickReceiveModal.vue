@@ -8,49 +8,50 @@
   >
     <template #header>Quick Receive XST</template>
     <template #body>
-        <StFormItem
-          class="receiving-address"
-          label="Receiving Address"
-          color="dark"
-          :notice="`Funds will be received on Account: ${account && account.label ? account.label : ''}`"
-
+      <StFormItem
+        class="receiving-address"
+        label="Receiving Address"
+        color="dark"
+        :notice="`Funds will be received on Account: ${
+          account && account.label ? account.label : ''
+        }`"
+      >
+        <StInput
+          class="address-input"
+          v-model="depositAddress"
+          placeholder="Loading..."
+          disabled
         >
-          <StInput
-            class="address-input"
-            v-model="depositAddress"
-            placeholder="Loading..."
-            disabled
+          <svg
+            v-if="!depositAddress"
+            class="address-loader"
+            width="18"
+            height="18"
+            viewBox="0 0 18 18"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
           >
-                      <svg
-              v-if="!depositAddress"
-              class="address-loader"
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle
-                cx="9"
-                cy="9"
-                r="7"
-                stroke="#E5E4E8"
-                stroke-width="2"
-                stroke-linejoin="round"
-                stroke-dasharray="2 4"
-              />
-            </svg>
-          </StInput>
-        </StFormItem>
-        <StTooltip
-          class="tooltip"
-          :tooltip-text="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
+            <circle
+              cx="9"
+              cy="9"
+              r="7"
+              stroke="#E5E4E8"
+              stroke-width="2"
+              stroke-linejoin="round"
+              stroke-dasharray="2 4"
+            />
+          </svg>
+        </StInput>
+      </StFormItem>
+      <StTooltip
+        class="tooltip"
+        :tooltip-text="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
+      >
+        <StClipboard :content="depositAddress" @click="handleCopy"
+          >Copy to Clipboard</StClipboard
         >
-          <StClipboard :content="depositAddress" @click="handleCopy"
-            >Copy to Clipboard</StClipboard
-          >
-        </StTooltip>
-        <img class="qr-img" :src="qrSrc" />
+      </StTooltip>
+      <img class="qr-img" :src="qrSrc" />
     </template>
   </StModal>
 </template>
@@ -69,7 +70,6 @@ export default {
     const isVisible = computed(() => {
       return mainStore.modals.quickReceive;
     });
-
 
     function closeModal() {
       mainStore.SET_MODAL_VISIBILITY('quickReceive', false);
@@ -132,7 +132,6 @@ export default {
       });
       qrSrc.value = qr.toImage('png').src;
     }
-
 
     return {
       isVisible,
@@ -199,11 +198,11 @@ export default {
 
 .st-clipboard {
   font-family: var(--secondary-font);
-font-weight: bold;
-font-size: 12px;
-line-height: 24px;
-letter-spacing: 0.12px;
-color: var(--grey50);
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 24px;
+  letter-spacing: 0.12px;
+  color: var(--grey50);
 }
 
 @-webkit-keyframes rotating /* Safari and Chrome */ {
@@ -241,7 +240,7 @@ color: var(--grey50);
 
 <style>
 .quick-receive-modal .st-modal-container {
-  width: 480px; 
+  width: 480px;
   height: 520px;
 }
 </style>
