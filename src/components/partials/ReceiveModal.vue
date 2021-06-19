@@ -353,7 +353,7 @@ export default {
 
     function sendEmail() {
       closeModal();
-window.location.href = "mailto:mail@example.org";
+      window.location.href = 'mailto:mail@example.org';
       // alert('Email sent - missing design');
     }
 
