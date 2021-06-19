@@ -178,7 +178,7 @@ export default {
     }
 
     function saveLabel() {
-      CryptoService.storeTxAndLabel(tx.value.txid, label.value)
+      CryptoService.storeTxAndLabel(tx.value.txid, label.value);
     }
 
     function openBlockExplorer(txid) {
@@ -210,7 +210,7 @@ export default {
       editMode,
       txWithLabels,
       label,
-      saveLabel
+      saveLabel,
     };
   },
 };
