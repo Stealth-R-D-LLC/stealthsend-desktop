@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <ReceiveModal />
+    <QuickReceiveModal />
     <SendModal />
     <AddAccount />
     <StLoading :visibility="isLoading" :opaque="true"></StLoading>
@@ -20,6 +21,7 @@ import SingleColumnLayout from './components/layout/SingleColumnLayout.vue';
 import OffCanvas from './components/elements/StOffCanvas.vue';
 import LockLayout from './components/layout/Lock.vue';
 import ReceiveModal from './components/partials/ReceiveModal.vue';
+import QuickReceiveModal from './components/partials/QuickReceiveModal.vue';
 import SendModal from './components/partials/SendModal.vue';
 import AddAccount from './components/partials/AddAccount.vue';
 import { useRoute } from 'vue-router';
@@ -28,6 +30,7 @@ export default {
   name: 'TsDefault',
   components: {
     ReceiveModal,
+    QuickReceiveModal,
     SendModal,
     OffCanvas,
     AddAccount,
