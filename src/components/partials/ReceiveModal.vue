@@ -265,8 +265,8 @@ export default {
 
     const accounts = ref([]);
     const account = ref(null);
-    const amount = ref(null);
-    const amountFiat = ref(null);
+    const amount = ref(0);
+    const amountFiat = ref(0);
 
     async function scanWallet() {
       const hdWallet = await CryptoService.scanWallet();
@@ -297,7 +297,7 @@ export default {
         next.address
       );
       depositAddress.value = child.address;
-      generateQR()
+      generateQR();
     }
 
     let copyPending = ref(false);
@@ -310,7 +310,10 @@ export default {
 
     function generateQR() {
       var qr = new VanillaQR({
-        url: amount.value > 0 ? `${depositAddress.value}?amount=${amount.value}` : depositAddress.value,
+        url:
+          amount.value > 0
+            ? `${depositAddress.value}?amount=${amount.value}`
+            : depositAddress.value,
         noBorder: false,
         // borderSize: 20,
         colorDark: '#140435',
@@ -323,7 +326,7 @@ export default {
     function changeStep(step) {
       currentStep.value = step;
       if (step === 2) {
-        generateQR()
+        generateQR();
       }
     }
     function goBack(step) {
