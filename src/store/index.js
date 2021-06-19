@@ -18,6 +18,7 @@ export const useMainStore = defineStore({
       receive: false,
       send: false,
       account: false,
+      quickReceive: false
     },
     componentVisibility: {
       chart: true, // chart on dashboard,
