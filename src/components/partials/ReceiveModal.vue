@@ -1,5 +1,6 @@
 <template>
   <StModal
+    :has-click-outside="false"
     show-back-button
     :steps="3"
     :current-step="currentStep"
