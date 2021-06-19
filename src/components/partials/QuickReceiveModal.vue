@@ -172,7 +172,7 @@ export default {
   text-align: center;
 }
 .tooltip {
-padding: 24px 0;
+  padding: 24px 0;
   display: block;
   width: 100%;
   text-align: center;
