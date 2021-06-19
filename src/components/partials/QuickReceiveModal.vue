@@ -172,13 +172,13 @@ export default {
   text-align: center;
 }
 .tooltip {
-  margin-top: 40px;
+  padding: 24px 0;
   display: block;
   width: 100%;
   text-align: center;
 }
 .qr-img {
-  margin: 46px auto 0;
+  margin: 16px auto;
   display: block;
   max-width: 145px;
 }

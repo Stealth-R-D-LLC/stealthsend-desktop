@@ -9,6 +9,7 @@
           viewBox="0 0 20 20"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          @click="openEditMode"
         >
           <path
             d="M0 6.5h6M0 2.5h9"
@@ -52,6 +53,15 @@
       </div>
     </div>
     <div class="body" v-if="tx">
+      <div class="item" v-if="editMode">
+        <StFormItem
+          label="Label"
+          notice="Edit transaction label for better personal accounting"
+        >
+          <StInput v-model="label" placeholder=""></StInput>
+        </StFormItem>
+        <span @click="saveLabel">save</span>
+      </div>
       <div class="item">
         <span> Amount </span>
         <p>
@@ -98,7 +108,7 @@
       </div>
       <div class="item">
         <span>Label</span>
-        <p>{{ tx.label || '-' }}</p>
+        <p>{{ txWithLabels[tx.txid] || '-' }}</p>
       </div>
       <div class="item">
         <span>Address</span>
@@ -131,8 +141,9 @@
 
 <script>
 import { useMainStore } from '@/store';
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import useHelpers from '@/composables/useHelpers';
+import CryptoService from '@/services/crypto';
 
 export default {
   name: 'StTransactionDetails',
@@ -140,11 +151,9 @@ export default {
     const mainStore = useMainStore();
     const { formatBlocktime, formatAmount } = useHelpers();
 
-    function close() {
-      mainStore.TOGGLE_DRAWER(false);
-    }
-
     const tx = ref(null);
+    const editMode = ref(false);
+    const label = ref('');
 
     watch(
       () => mainStore.offCanvasData,
@@ -153,6 +162,24 @@ export default {
           getTx(mainStore.offCanvasData.txid);
       }
     );
+
+    const txWithLabels = computed(() => {
+      return CryptoService.txWithLabels;
+    });
+
+    function close() {
+      mainStore.TOGGLE_DRAWER(false);
+      editMode.value = false;
+    }
+
+    function openEditMode() {
+      editMode.value = true;
+      label.value = txWithLabels.value[tx.value.txid];
+    }
+
+    function saveLabel() {
+      CryptoService.storeTxAndLabel(tx.value.txid, label.value);
+    }
 
     function openBlockExplorer(txid) {
       window
@@ -179,6 +206,11 @@ export default {
       formatAmount,
 
       openBlockExplorer,
+      openEditMode,
+      editMode,
+      txWithLabels,
+      label,
+      saveLabel,
     };
   },
 };
