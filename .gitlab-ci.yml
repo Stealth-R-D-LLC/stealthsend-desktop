@@ -39,7 +39,7 @@ Build Windows:
   script:
     - Set-Variable -name NODE_EXTRA_CA_CERTS -value C:\runner\bipa.crt
     - npm cache clean --force
-    - npm install --unsafe-perm
+    - npm install
     - npm run electron:build --windows
   tags:
     - windows
