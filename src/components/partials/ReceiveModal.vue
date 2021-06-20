@@ -237,6 +237,7 @@ import { useMainStore } from '@/store';
 import { computed, ref } from 'vue';
 import VanillaQR from 'vanillaqr';
 import CryptoService from '@/services/crypto';
+import { useRoute } from 'vue-router';
 
 export default {
   name: 'StReceiveModal',
@@ -253,6 +254,16 @@ export default {
 
     const currentStep = ref(1);
 
+    const pickedAccount = computed(() => {
+      return mainStore.accountDetails;
+    });
+
+    const route = useRoute();
+
+    const currentRoute = computed(() => {
+      return route.name;
+    });
+
     function closeModal() {
       mainStore.SET_MODAL_VISIBILITY('receive', false);
       // reset all variables
@@ -263,6 +274,10 @@ export default {
       currentStep.value = 1;
       depositAddress.value = '';
       qrSrc.value = '';
+      if (currentRoute.value !== 'AccountDetails') {
+        // because we don't want to mess up the account details screen if the modal is opened there
+        mainStore.SET_ACCOUNT_DETAILS(null);
+      }
     }
 
     const accounts = ref([]);
@@ -271,10 +286,16 @@ export default {
     const amountFiat = ref(0);
 
     async function scanWallet() {
+      if (pickedAccount.value) {
+        // already picked from account details
+        account.value = { ...pickedAccount.value };
+      }
       const hdWallet = await CryptoService.scanWallet();
       accounts.value = hdWallet.accounts;
       // select first account so that we can immediately start finding the first available address
-      account.value = accounts.value[0];
+      if (!pickedAccount.value) {
+        account.value = hdWallet.accounts[0];
+      }
     }
 
     async function onOpen() {

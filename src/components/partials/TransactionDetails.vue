@@ -56,11 +56,16 @@
       <div class="item" v-if="editMode">
         <StFormItem
           label="Label"
+          label-right="Save"
+          @rightLabelClick="saveLabel"
           notice="Edit transaction label for better personal accounting"
         >
-          <StInput v-model="label" placeholder=""></StInput>
+          <StInput
+            class="edit-label-input"
+            v-model="label"
+            placeholder=""
+          ></StInput>
         </StFormItem>
-        <span @click="saveLabel">save</span>
       </div>
       <div class="item">
         <span> Amount </span>
@@ -160,25 +165,39 @@ export default {
       () => {
         if (mainStore.offCanvasData && mainStore.offCanvasData.txid)
           getTx(mainStore.offCanvasData.txid);
-      }
+      },
+      { deep: true }
     );
 
     const txWithLabels = computed(() => {
-      return CryptoService.txWithLabels;
+      return mainStore.txWithLabels;
     });
 
     function close() {
       mainStore.TOGGLE_DRAWER(false);
+      setTimeout(() => {
+        mainStore.SET_ADDRESS_ACTIVE_TAB('address-book');
+        mainStore.SET_OFF_CANVAS_DATA(null);
+        mainStore.SET_CURRENT_CANVAS('');
+      }, 100);
       editMode.value = false;
     }
 
     function openEditMode() {
       editMode.value = true;
       label.value = txWithLabels.value[tx.value.txid];
+      setTimeout(() => {
+        document
+          .querySelector('.transaction-details .edit-label-input input')
+          .focus();
+      }, 1);
     }
 
     function saveLabel() {
       CryptoService.storeTxAndLabel(tx.value.txid, label.value);
+      editMode.value = false;
+      CryptoService.getTxWithLabels();
+      label.value = txWithLabels.value[tx.value.txid];
     }
 
     function openBlockExplorer(txid) {

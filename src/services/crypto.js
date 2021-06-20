@@ -72,6 +72,7 @@ const CryptoService = {
     // if so, ask for password via lock screen and
     // retrieve the stored wallet and generate the master from the stored seed
     let wallet = await this.getWalletFromDb();
+    this.getTxWithLabels();
     await this.getAccounts();
     if (!wallet || wallet.length <= 0) {
       router.push('/welcome');
@@ -225,7 +226,9 @@ const CryptoService = {
     // transactions with labels are stored in the local db
     // because we dont have any other way to remember labels for particular transactions
     // so we have to fetch them from the db
-    this.txWithLabels = (await db.getItem('transactions')) || {};
+    const txWithLabels = (await db.getItem('transactions')) || {};
+    const mainStore = useMainStore();
+    mainStore.SET_TX_WITH_LABELS(txWithLabels);
   },
   async storeAccountInDb(account) {
     let dbAccounts = (await db.getItem('accounts')) || [];

@@ -42,7 +42,7 @@ module.exports = {
         },
         "mac": {
           "target": ["dmg", "pkg"],
-          "icon": "src/assets/logo_512.png",
+          "icon": "build/icons/icon.png",
           "type": "development"
         }
       },

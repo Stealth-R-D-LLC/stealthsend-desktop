@@ -298,6 +298,7 @@ export default defineComponent({
       mainStore.SET_MODAL_VISIBILITY(modal, true);
     }
     function toggleDrawer(canvas) {
+      mainStore.SET_OFF_CANVAS_DATA({ addressBook: 'dummy' });
       mainStore.SET_CURRENT_CANVAS(canvas);
       mainStore.TOGGLE_DRAWER(true);
     }
