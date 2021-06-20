@@ -6,8 +6,8 @@
         <StLabel label="USD Value">${{ usdAmount }}</StLabel>
         <StLabel label="BTC Value">{{ btcAmount }}</StLabel>
         <StLabel label="24h %"><StTag> +280.88% </StTag> </StLabel>
-        <StButton disabled>Send</StButton>
-        <StButton disabled>Receive</StButton>
+        <StButton @click="openModal('send')">Send</StButton>
+        <StButton @click="openModal('receive')">Receive</StButton>
       </div>
     </div>
     <div class="account-details-container__body">
@@ -40,6 +40,7 @@ import Card from '@/components/elements/Card';
 import TransactionList from '@/components/partials/TransactionList';
 import CryptoService from '@/services/crypto';
 import router from '@/router';
+import { onBeforeRouteLeave } from 'vue-router'
 
 export default {
   name: 'StAccountDetails',
@@ -51,6 +52,11 @@ export default {
   setup() {
     const mainStore = useMainStore();
     mainStore.SET_HEADER_STYLE('grey');
+
+    onBeforeRouteLeave(() => {
+      mainStore.SET_ACCOUNT_DETAILS(null)
+    })
+
 
     function openTransaction(trx) {
       router.push(`/transaction/${trx.txid}`);
@@ -70,6 +76,10 @@ export default {
       setTimeout(() => {
         copyPending.value = false;
       }, 2000);
+    }
+
+    function openModal(name) {
+      mainStore.SET_MODAL_VISIBILITY(name, true)
     }
 
     const usdAmount = computed(() => {
@@ -134,6 +144,7 @@ export default {
       transactions,
       usdAmount,
       btcAmount,
+      openModal
     };
   },
 };
