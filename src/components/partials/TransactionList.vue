@@ -332,6 +332,7 @@ export default {
 
     function openTransaction(trx) {
       mainStore.SET_OFF_CANVAS_DATA(trx);
+      mainStore.SET_CURRENT_CANVAS('transaction-details');
       mainStore.TOGGLE_DRAWER(true);
     }
 

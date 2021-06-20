@@ -43,6 +43,7 @@ export const useMainStore = defineStore({
       this.txWithLabels = payload;
     },
     SET_OFF_CANVAS_DATA(payload) {
+      console.log('---------', payload);
       this.offCanvasData = payload;
     },
     SET_MODAL_VISIBILITY(modal, visibility) {

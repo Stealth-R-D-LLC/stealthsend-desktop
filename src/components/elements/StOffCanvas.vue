@@ -8,13 +8,13 @@
     >
       <div class="off-canvas-menu" :class="{ open: isOpen }" @click.stop>
         <TransactionDetails
-          v-if="currentOffCanvas === 'transaction-details'"
+          v-show="currentOffCanvas === 'transaction-details'"
         ></TransactionDetails>
-        <FavouriteList v-if="currentOffCanvas === 'favourite-list'" />
+        <FavouriteList v-show="currentOffCanvas === 'favourite-list'" />
         <RecentNotifications
-          v-if="currentOffCanvas === 'recent-notifications'"
+          v-show="currentOffCanvas === 'recent-notifications'"
         />
-        <AddressBook v-if="currentOffCanvas === 'address-book'" />
+        <AddressBook v-show="currentOffCanvas === 'address-book'" />
       </div>
     </div>
   </div>
@@ -58,8 +58,8 @@ export default {
       setTimeout(() => {
         mainStore.SET_ADDRESS_ACTIVE_TAB('address-book');
         mainStore.SET_OFF_CANVAS_DATA(null);
-        mainStore.SET_CURRENT_CANVAS('transaction-details');
-      }, 300);
+        mainStore.SET_CURRENT_CANVAS('');
+      }, 100);
     }
 
     return {
