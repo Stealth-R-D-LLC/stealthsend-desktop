@@ -161,21 +161,20 @@ export default {
     const label = ref('');
 
     watch(
-    () => mainStore.offCanvasData,
+      () => mainStore.offCanvasData,
       () => {
         if (mainStore.offCanvasData && mainStore.offCanvasData.txid)
           getTx(mainStore.offCanvasData.txid);
       },
-{      deep: true
-}    );
+      { deep: true }
+    );
 
     const txWithLabels = computed(() => {
       return mainStore.txWithLabels;
     });
 
-
     function close() {
-            mainStore.TOGGLE_DRAWER(false);
+      mainStore.TOGGLE_DRAWER(false);
       setTimeout(() => {
         mainStore.SET_ADDRESS_ACTIVE_TAB('address-book');
         mainStore.SET_OFF_CANVAS_DATA(null);
