@@ -290,7 +290,7 @@ export default {
       return mainStore.accountDetails;
     });
 
-        const route = useRoute();
+    const route = useRoute();
 
     const currentRoute = computed(() => {
       return route.name;
@@ -354,7 +354,7 @@ export default {
       resetFields();
       if (currentRoute.value !== 'AccountDetails') {
         // because we don't want to mess up the account details screen if the modal is opened there
-        mainStore.SET_ACCOUNT_DETAILS(null)
+        mainStore.SET_ACCOUNT_DETAILS(null);
       }
     }
 
@@ -363,9 +363,9 @@ export default {
 
     async function scanWallet() {
       // already picked from account details
-       if (pickedAccount.value) {
-        account.value = {...pickedAccount.value};
-      } 
+      if (pickedAccount.value) {
+        account.value = { ...pickedAccount.value };
+      }
       const hdWallet = await CryptoService.scanWallet();
       accounts.value = hdWallet.accounts;
 
