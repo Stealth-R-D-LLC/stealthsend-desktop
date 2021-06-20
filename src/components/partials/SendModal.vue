@@ -271,6 +271,7 @@ import useCoinControl from '@/composables/useCoinControl';
 import useTransactionBuilder from '@/composables/useTransactionBuilder';
 
 import { useValidation, ValidationError } from 'vue3-form-validation';
+import { useRoute } from 'vue-router';
 
 export default {
   name: 'StSendModal',
@@ -284,6 +285,16 @@ export default {
     const account = ref(null);
     const amount = ref(null);
     const depositAddress = ref('');
+
+    const pickedAccount = computed(() => {
+      return mainStore.accountDetails;
+    });
+
+    const route = useRoute();
+
+    const currentRoute = computed(() => {
+      return route.name;
+    });
 
     const {
       form,
@@ -341,16 +352,27 @@ export default {
       label.value = '';
       remove(['depositAddress']);
       resetFields();
+      if (currentRoute.value !== 'AccountDetails') {
+        // because we don't want to mess up the account details screen if the modal is opened there
+        mainStore.SET_ACCOUNT_DETAILS(null);
+      }
     }
 
     const accounts = ref([]);
     const label = ref('');
 
     async function scanWallet() {
+      if (pickedAccount.value) {
+        // already picked from account details
+        account.value = { ...pickedAccount.value };
+      }
       const hdWallet = await CryptoService.scanWallet();
       accounts.value = hdWallet.accounts;
+
       // select first option
-      account.value = hdWallet.accounts[0];
+      if (!pickedAccount.value) {
+        account.value = hdWallet.accounts[0];
+      }
       getUnspentOutputs(account.value);
       // // manually start finding address for preselected account
       // changeAccount(account.value)
@@ -360,6 +382,7 @@ export default {
     let unspentOutputs = [];
 
     async function getUnspentOutputs(account) {
+      if (!account) return;
       const res = await mainStore.rpc('gethdaccount', [account.pk]);
 
       // map only unspent outputs, put txid in each one of them and flatten the array
