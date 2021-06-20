@@ -228,7 +228,7 @@ const CryptoService = {
     // so we have to fetch them from the db
     const txWithLabels = (await db.getItem('transactions')) || {};
     const mainStore = useMainStore();
-    mainStore.SET_TX_WITH_LABELS(txWithLabels);    
+    mainStore.SET_TX_WITH_LABELS(txWithLabels);
   },
   async storeAccountInDb(account) {
     let dbAccounts = (await db.getItem('accounts')) || [];

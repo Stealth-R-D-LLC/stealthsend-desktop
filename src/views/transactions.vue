@@ -124,8 +124,7 @@ export default {
     const date = ref([]);
 
     const route = useRoute();
-        const mainStore = useMainStore();
-
+    const mainStore = useMainStore();
 
     onMounted(() => {
       query.value = '';
