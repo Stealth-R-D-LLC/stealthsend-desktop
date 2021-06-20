@@ -40,7 +40,7 @@ import Card from '@/components/elements/Card';
 import TransactionList from '@/components/partials/TransactionList';
 import CryptoService from '@/services/crypto';
 import router from '@/router';
-import { onBeforeRouteLeave } from 'vue-router'
+import { onBeforeRouteLeave } from 'vue-router';
 
 export default {
   name: 'StAccountDetails',
@@ -54,9 +54,8 @@ export default {
     mainStore.SET_HEADER_STYLE('grey');
 
     onBeforeRouteLeave(() => {
-      mainStore.SET_ACCOUNT_DETAILS(null)
-    })
-
+      mainStore.SET_ACCOUNT_DETAILS(null);
+    });
 
     function openTransaction(trx) {
       router.push(`/transaction/${trx.txid}`);
@@ -79,7 +78,7 @@ export default {
     }
 
     function openModal(name) {
-      mainStore.SET_MODAL_VISIBILITY(name, true)
+      mainStore.SET_MODAL_VISIBILITY(name, true);
     }
 
     const usdAmount = computed(() => {
@@ -144,7 +143,7 @@ export default {
       transactions,
       usdAmount,
       btcAmount,
-      openModal
+      openModal,
     };
   },
 };
