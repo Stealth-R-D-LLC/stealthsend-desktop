@@ -27,18 +27,18 @@ module.exports = {
     electronBuilder: {
       builderOptions: {
         "appId": "org.stealthsend.desktop",
-        "productName": "StealthSend-Desktop",
+        "productName": "StealthSend",
         "copyright": "Copyright © 2021 ${author}",
         "linux": {
           "target": ["deb", "AppImage"],
           "maintainer": "Stealth R&D LLC",
-          "icon": "build/icons/icon.png",
-          "description": "Stealth will soon be the fastest cryptographically private digital currency. With blazing fast 5 second blocks, Junaeth is a game-changer and offers what state-of-the-art payment systems of the future require: a fast, feeless, private and scalable crypto.",
+          "icon": "src/assets/logo.png",
+          "description": "Stealth is the fastest cryptographically private digital currency. With blazing fast 5 second blocks, Junaeth is a game-changer and offers what state-of-the-art payment systems of the future require: a fast, feeless, private and scalable crypto.",
           "category": "Development, Science, Utility"
         },
         "win": {
-          "target": "msi",
-          "icon": "build/icons/icon.png",
+          "target": ["nsis", "msi"],
+          "icon": "src/assets/logo.png"
         },
         "mac": {
           "target": ["dmg", "pkg"],
