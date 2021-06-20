@@ -362,8 +362,8 @@ export default {
     const label = ref('');
 
     async function scanWallet() {
-      // already picked from account details
       if (pickedAccount.value) {
+        // already picked from account details
         account.value = { ...pickedAccount.value };
       }
       const hdWallet = await CryptoService.scanWallet();
