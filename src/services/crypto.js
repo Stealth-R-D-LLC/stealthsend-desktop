@@ -226,7 +226,9 @@ const CryptoService = {
     // transactions with labels are stored in the local db
     // because we dont have any other way to remember labels for particular transactions
     // so we have to fetch them from the db
-    this.txWithLabels = (await db.getItem('transactions')) || {};
+    const txWithLabels = (await db.getItem('transactions')) || {};
+    const mainStore = useMainStore();
+    mainStore.SET_TX_WITH_LABELS(txWithLabels);    
   },
   async storeAccountInDb(account) {
     let dbAccounts = (await db.getItem('accounts')) || [];

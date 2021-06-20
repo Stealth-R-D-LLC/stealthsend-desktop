@@ -124,6 +124,8 @@ export default {
     const date = ref([]);
 
     const route = useRoute();
+        const mainStore = useMainStore();
+
 
     onMounted(() => {
       query.value = '';
@@ -138,7 +140,7 @@ export default {
     });
 
     function findLabelForTx(tx) {
-      return CryptoService.txWithLabels[tx];
+      return mainStore.txWithLabels[tx];
     }
 
     async function scanWallet() {

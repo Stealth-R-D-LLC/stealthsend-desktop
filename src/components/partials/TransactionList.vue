@@ -336,7 +336,7 @@ export default {
     }
 
     function findLabelForTx(tx) {
-      return CryptoService.txWithLabels[tx];
+      return mainStore.txWithLabels[tx];
     }
 
     onMounted(async () => {

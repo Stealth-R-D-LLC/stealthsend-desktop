@@ -56,11 +56,15 @@
       <div class="item" v-if="editMode">
         <StFormItem
           label="Label"
-          label-right="Saveeee"
+          label-right="Save"
           @rightLabelClick="saveLabel"
           notice="Edit transaction label for better personal accounting"
         >
-          <StInput class="edit-label-input" v-model="label" placeholder=""></StInput>
+          <StInput
+            class="edit-label-input"
+            v-model="label"
+            placeholder=""
+          ></StInput>
         </StFormItem>
       </div>
       <div class="item">
@@ -165,7 +169,7 @@ export default {
     );
 
     const txWithLabels = computed(() => {
-      return CryptoService.txWithLabels;
+      return mainStore.txWithLabels;
     });
 
     function close() {
@@ -177,14 +181,18 @@ export default {
       editMode.value = true;
       label.value = txWithLabels.value[tx.value.txid];
       setTimeout(() => {
-        document.querySelector('.transaction-details .edit-label-input input').focus()
-      }, 1)
+        document
+          .querySelector('.transaction-details .edit-label-input input')
+          .focus();
+      }, 1);
     }
 
     function saveLabel() {
       console.log('save label!');
       CryptoService.storeTxAndLabel(tx.value.txid, label.value);
       editMode.value = false;
+      CryptoService.getTxWithLabels();
+      label.value = txWithLabels.value[tx.value.txid];
     }
 
     function openBlockExplorer(txid) {
