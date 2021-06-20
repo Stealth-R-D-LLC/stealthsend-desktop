@@ -161,19 +161,26 @@ export default {
     const label = ref('');
 
     watch(
-      () => mainStore.offCanvasData,
+    () => mainStore.offCanvasData,
       () => {
         if (mainStore.offCanvasData && mainStore.offCanvasData.txid)
           getTx(mainStore.offCanvasData.txid);
-      }
-    );
+      },
+{      deep: true
+}    );
 
     const txWithLabels = computed(() => {
       return mainStore.txWithLabels;
     });
 
+
     function close() {
-      mainStore.TOGGLE_DRAWER(false);
+            mainStore.TOGGLE_DRAWER(false);
+      setTimeout(() => {
+        mainStore.SET_ADDRESS_ACTIVE_TAB('address-book');
+        mainStore.SET_OFF_CANVAS_DATA(null);
+        mainStore.SET_CURRENT_CANVAS('');
+      }, 100);
       editMode.value = false;
     }
 
@@ -188,7 +195,6 @@ export default {
     }
 
     function saveLabel() {
-      console.log('save label!');
       CryptoService.storeTxAndLabel(tx.value.txid, label.value);
       editMode.value = false;
       CryptoService.getTxWithLabels();
