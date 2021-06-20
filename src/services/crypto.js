@@ -72,6 +72,7 @@ const CryptoService = {
     // if so, ask for password via lock screen and
     // retrieve the stored wallet and generate the master from the stored seed
     let wallet = await this.getWalletFromDb();
+    this.getTxWithLabels();
     await this.getAccounts();
     if (!wallet || wallet.length <= 0) {
       router.push('/welcome');
