@@ -54,6 +54,7 @@
           viewBox="0 0 26 14"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          class="hide-amounts"
         >
           <path
             fill-rule="evenodd"
@@ -72,6 +73,7 @@
           viewBox="0 0 26 19"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          class="hide-amounts"
         >
           <path
             d="M13 3C8.94991 3 5.28325 5.03704 2 9.11111C5.28325 13.1852 8.94991 15.2222 13 15.2222C17.0501 15.2222 20.7168 13.1852 24 9.11111C23.2599 8.1928 22.5004 7.37799 21.7214 6.66667"
@@ -81,6 +83,25 @@
           <path d="M9 9L15.1111 9" stroke="#4E00F6" stroke-width="2" />
           <path
             d="M23.1113 1L6.00022 18.1111"
+            stroke="#4E00F6"
+            stroke-width="2"
+          />
+        </svg>
+        <svg
+          width="20"
+          height="22"
+          viewBox="0 0 20 22"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          class="hide-amounts"
+        >
+          <path
+            d="M10.611 10.253v2M7.611 10.253v3M14.611 10.253h-8M16.111 12.753a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"
+            stroke="#4E00F6"
+            stroke-width="2"
+          />
+          <path
+            d="M14.611 15.253c-2.4 3-5 5-5 5s-2.5-2-5-5-3-6-3-6l8-7 4 3.5"
             stroke="#4E00F6"
             stroke-width="2"
           />
@@ -258,6 +279,7 @@ export default {
 .header-right {
   display: flex;
   align-items: center;
+  margin: 0 24px;
 }
 
 .header-left {
@@ -289,5 +311,9 @@ export default {
 }
 :deep .multiselect__tags {
   border-bottom: none;
+}
+
+.hide-amounts {
+  margin: 0 0 0 24px !important;
 }
 </style>
