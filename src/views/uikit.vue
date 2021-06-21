@@ -16,14 +16,14 @@
       placeholder="Select bla"
       @select="selectChanged"
     >
-          <template #option="{ option }">
-            <div class="flex-space-between">
-              <span>
-                {{ option.label }}
-              </span>
-              <span> {{ option.utxo }} XST </span>
-            </div>
-          </template>
+      <template #option="{ option }">
+        <div class="flex-space-between">
+          <span>
+            {{ option.label }}
+          </span>
+          <span> {{ option.utxo }} XST </span>
+        </div>
+      </template>
     </StMultiselect>
     <h2>FORM VALIDATION</h2>
     <!-- value, errorMessage -->

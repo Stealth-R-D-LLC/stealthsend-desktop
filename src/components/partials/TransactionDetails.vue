@@ -120,9 +120,7 @@
         <p v-if="tx.vout[0]">
           <StLink>{{ tx.vout[0].scriptPubKey.addresses[0] }}</StLink>
         </p>
-        <p v-else>
-          -
-        </p>
+        <p v-else>-</p>
       </div>
       <div class="item">
         <span>Transaction ID</span>

@@ -159,7 +159,7 @@ import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import router from '@/router';
 import CryptoService from '@/services/crypto';
-import emitter from '@/services/emitter'
+import emitter from '@/services/emitter';
 
 export default {
   setup() {
@@ -212,8 +212,8 @@ export default {
 
     function accountChanged() {
       setTimeout(() => {
-        emitter.emit('header:account-changed', account.value)
-      }, 1)
+        emitter.emit('header:account-changed', account.value);
+      }, 1);
     }
 
     async function scanWallet() {
@@ -242,7 +242,7 @@ export default {
       accounts,
       toggleHiddenAmounts,
       isHiddenAmounts,
-      accountChanged
+      accountChanged,
     };
   },
 };
