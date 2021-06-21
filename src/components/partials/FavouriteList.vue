@@ -50,9 +50,14 @@
         </div>
       </template>
 
-      <template #option="{ option }">
-        {{ option.label }} ({{ option.utxo }})
-      </template>
+          <template #option="{ option }">
+            <div class="flex-space-between">
+              <span>
+                {{ option.label }}
+              </span>
+              <span> {{ option.utxo }} XST </span>
+            </div>
+          </template>
     </StMultiselect>
     <div class="accounts-list">
       <div

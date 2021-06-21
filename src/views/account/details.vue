@@ -41,7 +41,7 @@ import TransactionList from '@/components/partials/TransactionList';
 import CryptoService from '@/services/crypto';
 import router from '@/router';
 import { onBeforeRouteLeave } from 'vue-router';
-
+import emitter from '@/services/emitter';
 export default {
   name: 'StAccountDetails',
   components: {
@@ -94,8 +94,10 @@ export default {
       );
     });
 
-    if (account.value) {
-      mainStore
+    async function getData() {
+      addressInfo.value = {};
+      transactions.value = [];
+      await mainStore
         .rpc('getaddressinfo', [account.value.address])
         .then((res) => {
           addressInfo.value = res;
@@ -103,7 +105,7 @@ export default {
         .catch((err) => {
           return err;
         });
-      mainStore
+      await mainStore
         .rpc('getaddressinputs', [account.value.address])
         .then((res) => {
           let mappedAmounts = res.map((el) => {
@@ -117,7 +119,7 @@ export default {
         .catch((err) => {
           return err;
         });
-      mainStore
+      await mainStore
         .rpc('getaddressoutputs', [account.value.address])
         .then((res) => {
           let mappedAmounts = res.map((el) => {
@@ -134,6 +136,14 @@ export default {
           return err;
         });
     }
+
+    if (account.value) {
+      getData();
+    }
+    emitter.on('header:account-changed', (account) => {
+      mainStore.SET_ACCOUNT_DETAILS(account);
+      getData();
+    });
     return {
       account,
       addressInfo,
