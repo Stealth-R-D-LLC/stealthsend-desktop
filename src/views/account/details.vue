@@ -2,12 +2,30 @@
   <div class="account-details-container">
     <div class="account-details-container__top">
       <div class="left">
-        <StLabel label="XST Balance" bold>{{ account.utxo }}</StLabel>
-        <StLabel label="USD Value">${{ usdAmount }}</StLabel>
-        <StLabel label="BTC Value">{{ btcAmount }}</StLabel>
-        <StLabel label="24h %"><StTag> +280.88% </StTag> </StLabel>
-        <StButton @click="openModal('send')">Send</StButton>
-        <StButton @click="openModal('receive')">Receive</StButton>
+        <StLabel label="XST Balance" bold>{{
+          formatAmount(account.utxo, false, 2)
+        }}</StLabel>
+        <StLabel label="USD Value"
+          >${{ formatAmount(usdAmount, false, 2) }}</StLabel
+        >
+        <StLabel label="BTC Value">{{
+          formatAmount(btcAmount, false, 8, 8)
+        }}</StLabel>
+        <StLabel label="24h %"
+          ><StTag :color="Number(changePercent24Hr) > 0 ? 'success' : 'danger'">
+            {{
+              Number(changePercent24Hr) > 0
+                ? '+' + changePercent24Hr
+                : changePercent24Hr
+            }}%
+          </StTag>
+        </StLabel>
+        <div class="actions">
+          <StButton class="send-btn" @click="openModal('send')">Send</StButton>
+          <StButton class="receive-btn" @click="openModal('receive')"
+            >Receive</StButton
+          >
+        </div>
       </div>
     </div>
     <div class="account-details-container__body">
@@ -41,6 +59,8 @@ import TransactionList from '@/components/partials/TransactionList';
 import CryptoService from '@/services/crypto';
 import router from '@/router';
 import { onBeforeRouteLeave } from 'vue-router';
+import emitter from '@/services/emitter';
+import useHelpers from '@/composables/useHelpers';
 
 export default {
   name: 'StAccountDetails',
@@ -51,6 +71,8 @@ export default {
   },
   setup() {
     const mainStore = useMainStore();
+    const { formatAmount } = useHelpers();
+
     mainStore.SET_HEADER_STYLE('grey');
 
     onBeforeRouteLeave(() => {
@@ -82,20 +104,31 @@ export default {
     }
 
     const usdAmount = computed(() => {
+      console.log(
+        'CryptoService.constraints.XST_USD',
+        CryptoService.constraints.XST_USD
+      );
       return (
-        Number(addressInfo.value.balance) * CryptoService.constraints.XST_USD ||
-        0
+        Number(account.value.utxo) * CryptoService.constraints.XST_USD || 0
       );
     });
     const btcAmount = computed(() => {
       return (
-        Number(addressInfo.value.balance) * CryptoService.constraints.XST_BTC ||
-        0
+        Number(account.value.utxo) * CryptoService.constraints.XST_BTC || 0
+      );
+    });
+    const changePercent24Hr = computed(() => {
+      return formatAmount(
+        CryptoService.constraints.changePercent24Hr,
+        false,
+        2
       );
     });
 
-    if (account.value) {
-      mainStore
+    async function getData() {
+      addressInfo.value = {};
+      transactions.value = [];
+      await mainStore
         .rpc('getaddressinfo', [account.value.address])
         .then((res) => {
           addressInfo.value = res;
@@ -103,7 +136,7 @@ export default {
         .catch((err) => {
           return err;
         });
-      mainStore
+      await mainStore
         .rpc('getaddressinputs', [account.value.address])
         .then((res) => {
           let mappedAmounts = res.map((el) => {
@@ -117,7 +150,7 @@ export default {
         .catch((err) => {
           return err;
         });
-      mainStore
+      await mainStore
         .rpc('getaddressoutputs', [account.value.address])
         .then((res) => {
           let mappedAmounts = res.map((el) => {
@@ -134,6 +167,14 @@ export default {
           return err;
         });
     }
+
+    if (account.value) {
+      getData();
+    }
+    emitter.on('header:account-changed', (account) => {
+      mainStore.SET_ACCOUNT_DETAILS(account);
+      getData();
+    });
     return {
       account,
       addressInfo,
@@ -144,6 +185,8 @@ export default {
       usdAmount,
       btcAmount,
       openModal,
+      formatAmount,
+      changePercent24Hr,
     };
   },
 };
@@ -166,5 +209,45 @@ export default {
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(15ch, 1fr));
+}
+.send-btn,
+.receive-btn {
+  min-width: 120px !important;
+  width: 120px !important;
+  height: 36px;
+  padding: 6px 0;
+  font-family: var(--secondary-font);
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 24px;
+  letter-spacing: 0.12px;
+  color: var(--grey50);
+  border: 1px solid rgba(124, 126, 175, 0.5);
+  background: linear-gradient(
+      153.02deg,
+      rgba(124, 126, 175, 0.15) 0%,
+      rgba(124, 126, 175, 0.15) 83.23%
+    ),
+    var(--purple500);
+  align-self: flex-end;
+}
+.send-btn:hover,
+.receive-btn:hover {
+  border: 1px solid rgba(124, 126, 175, 0.5);
+  background: linear-gradient(
+      153.02deg,
+      rgba(124, 126, 175, 0.15) 0%,
+      rgba(124, 126, 175, 0.15) 83.23%
+    ),
+    var(--purple500);
+  cursor: pointer;
+}
+.actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+.receive-btn {
+  margin-left: 24px;
 }
 </style>
