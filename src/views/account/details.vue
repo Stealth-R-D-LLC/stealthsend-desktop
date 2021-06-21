@@ -229,8 +229,7 @@ export default {
       rgba(124, 126, 175, 0.15) 83.23%
     ),
     var(--purple500);
-      align-self: flex-end;
-
+  align-self: flex-end;
 }
 .send-btn:hover,
 .receive-btn:hover {
