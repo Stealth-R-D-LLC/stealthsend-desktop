@@ -37,6 +37,7 @@
     "date-fns": "^2.21.3",
     "localforage": "^1.9.0",
     "mathjs": "^9.4.1",
+    "mitt": "^2.1.0",
     "nedb-promise": "^2.0.1",
     "pinia": "^2.0.0-alpha.13",
     "stealth-kit": "^0.1.64",
