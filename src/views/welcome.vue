@@ -2478,7 +2478,7 @@ export default {
 }
 .mnemonic-error {
   text-align: left;
-  color: var(--danger);
+  color: var(--red300);
 }
 .clear {
   margin-top: 12px;

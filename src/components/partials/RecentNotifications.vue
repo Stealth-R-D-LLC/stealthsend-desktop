@@ -94,6 +94,6 @@ export default {
   background-color: var(--grey200);
 }
 .unread {
-  background-color: var(--danger);
+  background-color: var(--red500);
 }
 </style>
