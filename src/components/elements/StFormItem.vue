@@ -106,7 +106,7 @@ export default {
   margin-top: 6px;
 }
 .st-form-item__message--is-error {
-  color: var(--danger);
+  color: var(--red300);
 }
 .st-form-item__message--is-notice {
   color: var(--grey400);
@@ -124,13 +124,13 @@ export default {
   color: var(--grey100);
 }
 .st-form-item--has-error label {
-  color: var(--danger);
+  color: var(--red500);
 }
 .st-form-item--has-error :deep .st-input::after {
-  background-color: var(--danger);
+  background-color: var(--red500);
 }
 .st-form-item--has-error :deep .st-icon path {
-  stroke: var(--danger);
+  stroke: var(--red500);
 }
 :deep .form-desc {
   font-size: 12px;

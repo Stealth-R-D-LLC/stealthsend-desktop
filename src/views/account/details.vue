@@ -2,10 +2,24 @@
   <div class="account-details-container">
     <div class="account-details-container__top">
       <div class="left">
-        <StLabel label="XST Balance" bold>{{ account.utxo }}</StLabel>
-        <StLabel label="USD Value">${{ usdAmount }}</StLabel>
-        <StLabel label="BTC Value">{{ btcAmount }}</StLabel>
-        <StLabel label="24h %"><StTag> +280.88% </StTag> </StLabel>
+        <StLabel label="XST Balance" bold>{{
+          formatAmount(account.utxo, false, 2)
+        }}</StLabel>
+        <StLabel label="USD Value"
+          >${{ formatAmount(usdAmount, false, 2) }}</StLabel
+        >
+        <StLabel label="BTC Value">{{
+          formatAmount(btcAmount, false, 8, 8)
+        }}</StLabel>
+        <StLabel label="24h %"
+          ><StTag :color="Number(changePercent24Hr) > 0 ? 'success' : 'danger'">
+            {{
+              Number(changePercent24Hr) > 0
+                ? '+' + changePercent24Hr
+                : changePercent24Hr
+            }}%
+          </StTag>
+        </StLabel>
         <StButton @click="openModal('send')">Send</StButton>
         <StButton @click="openModal('receive')">Receive</StButton>
       </div>
@@ -42,6 +56,8 @@ import CryptoService from '@/services/crypto';
 import router from '@/router';
 import { onBeforeRouteLeave } from 'vue-router';
 import emitter from '@/services/emitter';
+import useHelpers from '@/composables/useHelpers';
+
 export default {
   name: 'StAccountDetails',
   components: {
@@ -51,6 +67,8 @@ export default {
   },
   setup() {
     const mainStore = useMainStore();
+    const { formatAmount } = useHelpers();
+
     mainStore.SET_HEADER_STYLE('grey');
 
     onBeforeRouteLeave(() => {
@@ -82,15 +100,24 @@ export default {
     }
 
     const usdAmount = computed(() => {
+      console.log(
+        'CryptoService.constraints.XST_USD',
+        CryptoService.constraints.XST_USD
+      );
       return (
-        Number(addressInfo.value.balance) * CryptoService.constraints.XST_USD ||
-        0
+        Number(account.value.utxo) * CryptoService.constraints.XST_USD || 0
       );
     });
     const btcAmount = computed(() => {
       return (
-        Number(addressInfo.value.balance) * CryptoService.constraints.XST_BTC ||
-        0
+        Number(account.value.utxo) * CryptoService.constraints.XST_BTC || 0
+      );
+    });
+    const changePercent24Hr = computed(() => {
+      return formatAmount(
+        CryptoService.constraints.changePercent24Hr,
+        false,
+        2
       );
     });
 
@@ -154,6 +181,8 @@ export default {
       usdAmount,
       btcAmount,
       openModal,
+      formatAmount,
+      changePercent24Hr,
     };
   },
 };

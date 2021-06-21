@@ -60,7 +60,13 @@
       <span class="amount-fiat">{{
         isHiddenAmounts ? '*****' : steps[step].amountBottom
       }}</span>
-      <StTag v-if="!isHiddenAmounts"> {{ steps[step].percentage }}% </StTag>
+      <StTag :color="Number(steps[step].percentage) > 0 ? 'success' : 'danger'">
+            {{
+              Number(steps[step].percentage) > 0
+                ? '+' + steps[step].percentage
+                : steps[step].percentage
+            }}%
+          </StTag>
     </div>
   </div>
 </template>
