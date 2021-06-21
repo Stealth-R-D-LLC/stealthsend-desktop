@@ -38,7 +38,12 @@
             </template>
 
             <template #option="{ option }">
-              {{ option.label }} ({{ option.utxo }})
+              <div class="flex-space-between">
+                <span>
+                  {{ option.label }}
+                </span>
+                <span> {{ option.utxo }} XST </span>
+              </div>
             </template>
           </StMultiselect>
         </StFormItem>

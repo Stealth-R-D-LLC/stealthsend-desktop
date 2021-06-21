@@ -17,7 +17,12 @@
       @select="selectChanged"
     >
       <template #option="{ option }">
-        {{ option.name }} ({{ option.id }})
+        <div class="flex-space-between">
+          <span>
+            {{ option.label }}
+          </span>
+          <span> {{ option.utxo }} XST </span>
+        </div>
       </template>
     </StMultiselect>
     <h2>FORM VALIDATION</h2>
