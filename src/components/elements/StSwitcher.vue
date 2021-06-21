@@ -61,12 +61,12 @@
         isHiddenAmounts ? '*****' : steps[step].amountBottom
       }}</span>
       <StTag :color="Number(steps[step].percentage) > 0 ? 'success' : 'danger'">
-            {{
-              Number(steps[step].percentage) > 0
-                ? '+' + steps[step].percentage
-                : steps[step].percentage
-            }}%
-          </StTag>
+        {{
+          Number(steps[step].percentage) > 0
+            ? '+' + steps[step].percentage
+            : steps[step].percentage
+        }}%
+      </StTag>
     </div>
   </div>
 </template>
