@@ -1,5 +1,6 @@
 <template>
   <StModal
+    :has-click-outside="false"
     show-back-button
     :steps="3"
     :current-step="currentStep"
@@ -56,7 +57,7 @@
               allowNegative: false,
             }"
           >
-            <div @click="inputAmountState = 'USD'">
+            <div @click="changeCurrency('USD')">
               <svg
                 width="19"
                 height="16"
@@ -89,10 +90,11 @@
           </StAmount>
           <StAmount
             v-else-if="inputAmountState === 'USD'"
-            v-model="amount"
+            v-model="amountFiat"
+            @update:formattedValue="fiatKeyup"
             placeholder="Amount"
           >
-            <div @click="inputAmountState = 'XST'">
+            <div @click="changeCurrency('XST')">
               <svg
                 width="19"
                 height="16"
@@ -235,6 +237,7 @@ import { useMainStore } from '@/store';
 import { computed, ref } from 'vue';
 import VanillaQR from 'vanillaqr';
 import CryptoService from '@/services/crypto';
+import { useRoute } from 'vue-router';
 
 export default {
   name: 'StReceiveModal',
@@ -244,34 +247,59 @@ export default {
     const isVisible = computed(() => {
       return mainStore.modals.receive;
     });
+    const XST_USD = computed(() => {
+      return CryptoService.constraints.XST_USD;
+    });
     const inputAmountState = ref('XST');
 
     const currentStep = ref(1);
+
+    const pickedAccount = computed(() => {
+      return mainStore.accountDetails;
+    });
+
+    const route = useRoute();
+
+    const currentRoute = computed(() => {
+      return route.name;
+    });
 
     function closeModal() {
       mainStore.SET_MODAL_VISIBILITY('receive', false);
       // reset all variables
       account.value = null;
       accounts.value = [];
-      amount.value = null;
+      amount.value = 0;
+      amountFiat.value = 0;
       currentStep.value = 1;
       depositAddress.value = '';
       qrSrc.value = '';
+      if (currentRoute.value !== 'AccountDetails') {
+        // because we don't want to mess up the account details screen if the modal is opened there
+        mainStore.SET_ACCOUNT_DETAILS(null);
+      }
     }
 
     const accounts = ref([]);
     const account = ref(null);
-    const amount = ref(null);
+    const amount = ref(0);
+    const amountFiat = ref(0);
 
     async function scanWallet() {
+      if (pickedAccount.value) {
+        // already picked from account details
+        account.value = { ...pickedAccount.value };
+      }
       const hdWallet = await CryptoService.scanWallet();
       accounts.value = hdWallet.accounts;
       // select first account so that we can immediately start finding the first available address
-      account.value = accounts.value[0];
+      if (!pickedAccount.value) {
+        account.value = hdWallet.accounts[0];
+      }
     }
 
     async function onOpen() {
-      // when the modal is opened, scan for the address and show ith
+      // when the modal is opened, scan for the address and show it
       await scanWallet();
       changeAccount();
     }
@@ -292,15 +320,7 @@ export default {
         next.address
       );
       depositAddress.value = child.address;
-      var qr = new VanillaQR({
-        url: depositAddress.value,
-        noBorder: false,
-        // borderSize: 20,
-        colorDark: '#140435',
-        colorLight: '#FAF9FC',
-        // size: 140,
-      });
-      qrSrc.value = qr.toImage('png').src;
+      generateQR();
     }
 
     let copyPending = ref(false);
@@ -311,16 +331,51 @@ export default {
       }, 2000);
     }
 
+    function generateQR() {
+      var qr = new VanillaQR({
+        url:
+          amount.value > 0
+            ? `${depositAddress.value}?amount=${amount.value}`
+            : depositAddress.value,
+        noBorder: false,
+        // borderSize: 20,
+        colorDark: '#140435',
+        colorLight: '#FAF9FC',
+        // size: 140,
+      });
+      qrSrc.value = qr.toImage('png').src;
+    }
+
     function changeStep(step) {
       currentStep.value = step;
+      if (step === 2) {
+        generateQR();
+      }
     }
     function goBack(step) {
       currentStep.value = step;
     }
 
+    function fiatKeyup() {
+      amount.value = amountFiat.value * XST_USD.value;
+    }
+
+    function changeCurrency(currency) {
+      if (currency === 'XST') {
+        amount.value = amountFiat.value / XST_USD.value;
+        inputAmountState.value = 'XST';
+      } else if (currency === 'USD') {
+        amountFiat.value = amount.value * XST_USD.value;
+        inputAmountState.value = 'USD';
+      } else {
+        console.error('Unhandled currency');
+      }
+    }
+
     function sendEmail() {
       closeModal();
-      alert('Email sent - missing design');
+      window.location.href = 'mailto:mail@example.org';
+      // alert('Email sent - missing design');
     }
 
     return {
@@ -331,6 +386,7 @@ export default {
       accounts,
       account,
       amount,
+      amountFiat,
       depositAddress,
       changeAccount,
       qrSrc,
@@ -344,6 +400,9 @@ export default {
 
       onOpen,
       sendEmail,
+
+      changeCurrency,
+      fiatKeyup,
     };
   },
 };

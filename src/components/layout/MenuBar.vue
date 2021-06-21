@@ -298,6 +298,7 @@ export default defineComponent({
       mainStore.SET_MODAL_VISIBILITY(modal, true);
     }
     function toggleDrawer(canvas) {
+      mainStore.SET_OFF_CANVAS_DATA({ addressBook: 'dummy' });
       mainStore.SET_CURRENT_CANVAS(canvas);
       mainStore.TOGGLE_DRAWER(true);
     }
@@ -355,10 +356,10 @@ export default defineComponent({
   justify-content: center;
 }
 
-.layout__aside li svg {
+/* .layout__aside li svg {
   width: 1.5rem;
   height: 1.5rem;
-}
+} */
 
 .layout__aside .item {
   padding: 18px 0;

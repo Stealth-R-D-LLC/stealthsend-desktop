@@ -76,7 +76,7 @@
         name="notifications"
         @click="toggleDrawer('recent-notifications')"
       ></StIcon> -->
-      <!-- <StIcon name="qr"></StIcon> -->
+      <StIcon @click="openQuickDeposit" name="qr"></StIcon>
       <StIcon @click="goto('/settings')" name="settings"></StIcon>
     </div>
   </header>
@@ -120,6 +120,10 @@ export default {
       );
     }
 
+    function openQuickDeposit() {
+      mainStore.SET_MODAL_VISIBILITY('quickReceive', true);
+    }
+
     function goto(path) {
       router.push(path);
     }
@@ -132,6 +136,7 @@ export default {
       checkVisibilityForRoute,
       toggleComponentVisibility,
       goto,
+      openQuickDeposit,
       headerStyle: computed(() => mainStore.headerStyle),
     };
   },
