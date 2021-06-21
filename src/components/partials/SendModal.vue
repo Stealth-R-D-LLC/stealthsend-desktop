@@ -222,7 +222,7 @@
             <p class="bold">Label:</p>
             <p>{{ label ? label : 'No label' }}</p>
             <p class="bold">Fee:</p>
-            <p>{{aproxFee ? formatAmount(aproxFee) : '0.02'}} XST</p>
+            <p>{{ aproxFee ? formatAmount(aproxFee) : '0.02' }} XST</p>
           </div>
         </div>
       </template>
@@ -421,11 +421,9 @@ export default {
       // ]);
 
       // purpose of this is to calculate fee for next step
-      let outputsForTx = coinSelection()
+      let outputsForTx = coinSelection();
       let { fee } = useFeeEstimator(outputsForTx.length);
       aproxFee.value = fee;
-
-
 
       // unspentOutputs = outputs.filter((el) => el.isspent === 'false');
       // console.log('unspent outputs: ', unspentOutputs);
