@@ -5,7 +5,6 @@ import Dashboard from '@/views/dashboard/dashboard.vue';
 import Lock from '@/views/lock.vue';
 import Settings from '@/views/settings/settings.vue';
 import SettingsPassword from '@/views/settings/password.vue';
-import SettingsPaymentCode from '@/views/settings/payment-code.vue';
 import SettingsRecoveryPhrase from '@/views/settings/recovery-phrase.vue';
 import SettingsAutoLock from '@/views/settings/auto-lock.vue';
 import SettingsFaq from '@/views/settings/faq.vue';
@@ -86,10 +85,6 @@ const routes = [
       {
         path: 'password',
         component: SettingsPassword,
-      },
-      {
-        path: 'payment-code',
-        component: SettingsPaymentCode,
       },
       {
         path: 'recovery-phrase',
