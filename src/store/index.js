@@ -12,12 +12,14 @@ export const useMainStore = defineStore({
     wallet: null,
     accountDetails: null,
     isAmountsHidden: false, // all amounts are visible or hidden as ***
+    txWithLabels: null,
 
     // modals visibility
     modals: {
       receive: false,
       send: false,
       account: false,
+      quickReceive: false,
     },
     componentVisibility: {
       chart: true, // chart on dashboard,
@@ -36,6 +38,9 @@ export const useMainStore = defineStore({
     },
     SET_COMPONENT_VISIBILITY(component, visibility = false) {
       this.componentVisibility[component] = visibility;
+    },
+    SET_TX_WITH_LABELS(payload) {
+      this.txWithLabels = payload;
     },
     SET_OFF_CANVAS_DATA(payload) {
       this.offCanvasData = payload;

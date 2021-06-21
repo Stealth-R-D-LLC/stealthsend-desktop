@@ -1,1 +1,5 @@
 /* shame  */
+
+.qr-img {
+    padding-left: 12px; /*fix for weird qr code padding*/
+}

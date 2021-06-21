@@ -7,7 +7,12 @@
       'st-form-item--is-success': notice,
     }"
   >
-    <label for="">{{ label }}</label>
+    <div class="label">
+      <label for="">{{ label }} </label>
+      <span @click="handleActionLabelClick" class="label-right">{{
+        labelRight
+      }}</span>
+    </div>
     <slot v-bind="{ field, name }"></slot>
     <p
       class="st-form-item__message"
@@ -42,6 +47,11 @@ export default {
       required: false,
       default: 'Missing label',
     },
+    labelRight: {
+      type: String,
+      required: false,
+      default: '',
+    },
     name: {
       type: String,
       required: true,
@@ -58,9 +68,13 @@ export default {
       default: '',
     },
   },
-  setup() {
+  emits: ['rightLabelClick'],
+  setup(_, ctx) {
+    function handleActionLabelClick() {
+      ctx.emit('rightLabelClick');
+    }
     return {
-      // errorMessage
+      handleActionLabelClick,
     };
   },
 };
@@ -89,6 +103,7 @@ export default {
   font-size: 12px;
   line-height: 24px;
   letter-spacing: 0.12px;
+  margin-top: 6px;
 }
 .st-form-item__message--is-error {
   color: var(--danger);
@@ -139,5 +154,19 @@ export default {
 }
 .st-form-item--is-dark :deep .multiselect__option {
   color: var(--grey100);
+}
+
+.st-form-item :deep .label-right {
+  font-family: var(--secondary-font);
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 24px;
+  text-align: right;
+  letter-spacing: 0.12px;
+  color: var(--marine200);
+  position: absolute;
+  top: -22px;
+  right: 0;
+  cursor: pointer;
 }
 </style>
