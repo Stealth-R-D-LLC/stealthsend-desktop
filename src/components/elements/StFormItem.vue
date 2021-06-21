@@ -17,7 +17,7 @@
     <p
       class="st-form-item__message"
       :class="[
-        notice && !errorMessage
+        notice && (!errorMessage || errorMessage.length === 0)
           ? 'st-form-item__message--is-notice'
           : 'st-form-item__message--is-error',
       ]"

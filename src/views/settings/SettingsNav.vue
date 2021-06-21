@@ -25,10 +25,6 @@
           <p class="group-item__name">Password</p>
           <p class="group-item__desc">Authorise access to application</p>
         </li>
-        <li class="group-item" @click="goTo('/settings/payment-code')">
-          <p class="group-item__name">Payment Code</p>
-          <p class="group-item__desc">Authorise sending funds</p>
-        </li>
         <li class="group-item" @click="goTo('/settings/recovery-phrase')">
           <p class="group-item__name">Recovery Phrase</p>
           <p class="group-item__desc">See and backup created seed</p>
