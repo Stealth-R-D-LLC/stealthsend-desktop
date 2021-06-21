@@ -9,40 +9,46 @@
           </p>
         </div>
         <div class="right">
-          <StButton>Save</StButton>
+          <StButton @click="validatePasswords">Save</StButton>
         </div>
       </div>
       <div class="content">
         <p class="notice">
           <span class="bold">Important note:</span> Please be aware that if you
-          lose my password, the only access to your account will be through the
-          use of Recovery Phrase.
+          lose your password, the only access to your account will be through
+          the use of Recovery Phrase.
         </p>
         <StFormItem
           label="Current password"
           notice="Please enter a password you are using to access the application"
+          :error-message="form.password.$errors"
         >
           <StInput
             type="password"
             placeholder="Please enter current password"
+            v-model="password"
           ></StInput>
         </StFormItem>
         <StFormItem
           label="New password"
           notice="Please enter a unique and unused password for accessing the application"
+          :error-message="form.newPassword.$errors"
         >
           <StInput
             type="password"
             placeholder="Please enter new password"
+            v-model="newPassword"
           ></StInput>
         </StFormItem>
         <StFormItem
           label="Confirm password"
           notice="Newly set password need to match"
+          :error-message="form.confirmNewPassword.$errors"
         >
           <StInput
             type="password"
             placeholder="Please confirm new password"
+            v-model="confirmNewPassword"
           ></StInput>
         </StFormItem>
       </div>
@@ -51,10 +57,109 @@
 </template>
 
 <script>
+import { ref } from 'vue';
+import CryptoService from '@/services/crypto';
+import cryptoJs from 'crypto-js';
+import db from '../../db';
+import { useValidation } from 'vue3-form-validation';
+import router from '@/router';
+
 export default {
   name: 'StSettingsPassword',
   setup() {
-    return {};
+    const password = ref('');
+    const newPassword = ref('');
+    const confirmNewPassword = ref('');
+
+    const { form, validateFields } = useValidation({
+      password: {
+        $value: password,
+        $rules: [
+          async (password) => {
+            if (!password) {
+              return 'Password is required.';
+            }
+            let isValid = await CryptoService.validatePassword(password);
+            if (!isValid) {
+              return 'Incorrect password.';
+            }
+          },
+        ],
+      },
+      newPassword: {
+        $value: newPassword,
+        $rules: [
+          {
+            rule: () => newPassword.value.length || 'New password is required',
+          },
+          {
+            key: 'pw',
+            rule: () =>
+              newPassword.value === confirmNewPassword.value ||
+              'Passwords do not match',
+          },
+        ],
+      },
+      confirmNewPassword: {
+        $value: confirmNewPassword,
+        $rules: [
+          {
+            rule: () =>
+              confirmNewPassword.value.length || 'Confirm password is required',
+          },
+          {
+            key: 'pw',
+            rule: () =>
+              newPassword.value === confirmNewPassword.value ||
+              'Passwords do not match',
+          },
+        ],
+      },
+    });
+
+    async function validatePasswords() {
+      await validateFields();
+
+      return changePassword();
+    }
+
+    async function changePassword() {
+      // get old hash
+      let { hash } = await CryptoService.hashPassword(password.value);
+      // get old wallet data from db
+      const wallet = await CryptoService.getWalletFromDb();
+      // use old data to decrypt seed
+      const decryptedSeed = await CryptoService.AESDecrypt(wallet.seed, hash);
+      // get hash and salt based on new password
+      let { hash: newHash, salt: newSalt } = await CryptoService.hashPassword(
+        newPassword.value
+      );
+      // encrypt seed with new hash
+      const encryptedNewSeed = await CryptoService.AESEncrypt(
+        decryptedSeed,
+        newHash
+      );
+
+      // change wallet data with data based on new password
+      wallet.seed = encryptedNewSeed;
+      wallet.password = newHash.toString(cryptoJs.enc.Hex);
+      wallet.salt = newSalt;
+
+      //update wallet with new data
+      await db.setItem('wallet', wallet);
+      router.push('/lock');
+    }
+
+    return {
+      //VARIABLES
+      password,
+      newPassword,
+      confirmNewPassword,
+      form,
+      //METHODS
+      validatePasswords,
+      changePassword,
+    };
   },
 };
 </script>
