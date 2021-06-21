@@ -15,8 +15,8 @@
       <div class="content">
         <p class="notice">
           <span class="bold">Important note:</span> Please be aware that if you
-          lose your password, the only access to your account will be through the
-          use of Recovery Phrase.
+          lose your password, the only access to your account will be through
+          the use of Recovery Phrase.
         </p>
         <StFormItem
           label="Current password"
@@ -57,24 +57,21 @@
 </template>
 
 <script>
-  import { ref } from 'vue';
-  import CryptoService from '@/services/crypto';
-  import cryptoJs from 'crypto-js';
-  import db from '../../db';
-  import { useValidation } from 'vue3-form-validation';
-  import router from '@/router';
+import { ref } from 'vue';
+import CryptoService from '@/services/crypto';
+import cryptoJs from 'crypto-js';
+import db from '../../db';
+import { useValidation } from 'vue3-form-validation';
+import router from '@/router';
 
-  export default {
+export default {
   name: 'StSettingsPassword',
   setup() {
     const password = ref('');
     const newPassword = ref('');
     const confirmNewPassword = ref('');
 
-    const {
-      form,
-      validateFields,
-    } = useValidation({
+    const { form, validateFields } = useValidation({
       password: {
         $value: password,
         $rules: [
@@ -98,8 +95,8 @@
           {
             key: 'pw',
             rule: () =>
-             newPassword.value === confirmNewPassword.value ||
-             'Passwords do not match',
+              newPassword.value === confirmNewPassword.value ||
+              'Passwords do not match',
           },
         ],
       },
@@ -108,35 +105,40 @@
         $rules: [
           {
             rule: () =>
-             confirmNewPassword.value.length || 'Confirm password is required',
+              confirmNewPassword.value.length || 'Confirm password is required',
           },
           {
             key: 'pw',
             rule: () =>
-             newPassword.value === confirmNewPassword.value ||
-             'Passwords do not match',
+              newPassword.value === confirmNewPassword.value ||
+              'Passwords do not match',
           },
         ],
       },
     });
 
     async function validatePasswords() {
-      await validateFields()
+      await validateFields();
 
-      return changePassword()
+      return changePassword();
     }
 
     async function changePassword() {
       // get old hash
       let { hash } = await CryptoService.hashPassword(password.value);
       // get old wallet data from db
-      const wallet = await CryptoService.getWalletFromDb()
+      const wallet = await CryptoService.getWalletFromDb();
       // use old data to decrypt seed
-      const decryptedSeed = await CryptoService.AESDecrypt(wallet.seed, hash)
+      const decryptedSeed = await CryptoService.AESDecrypt(wallet.seed, hash);
       // get hash and salt based on new password
-      let { hash: newHash, salt: newSalt } = await CryptoService.hashPassword(newPassword.value);
+      let { hash: newHash, salt: newSalt } = await CryptoService.hashPassword(
+        newPassword.value
+      );
       // encrypt seed with new hash
-      const encryptedNewSeed = await CryptoService.AESEncrypt(decryptedSeed, newHash)
+      const encryptedNewSeed = await CryptoService.AESEncrypt(
+        decryptedSeed,
+        newHash
+      );
 
       // change wallet data with data based on new password
       wallet.seed = encryptedNewSeed;
