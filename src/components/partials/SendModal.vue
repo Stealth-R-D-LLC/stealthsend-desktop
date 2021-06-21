@@ -71,10 +71,10 @@
               :options="{
                 locale: 'en',
                 currency: 'XST',
-                distractionFree: false,
+                distractionFree: true,
                 valueAsInteger: false,
                 useGrouping: true,
-                precision: 2,
+                precision: 8,
                 allowNegative: false,
               }"
             >
@@ -113,6 +113,15 @@
               v-model="form.amount.$value"
               color="dark"
               placeholder="Amount"
+              :options="{
+                locale: 'en',
+                currency: 'USD',
+                distractionFree: false,
+                valueAsInteger: false,
+                useGrouping: true,
+                precision: 2,
+                allowNegative: false,
+              }"
             >
               <svg
                 width="19"
@@ -288,7 +297,7 @@ export default {
     });
     const inputAmountState = ref('XST');
     const account = ref(null);
-    const amount = ref(null);
+    const amount = ref(0);
     const depositAddress = ref('');
 
     const pickedAccount = computed(() => {
