@@ -216,13 +216,13 @@
             <p class="bold">Account:</p>
             <p>{{ account.label }}</p>
             <p class="bold">Amount:</p>
-            <p>{{ amount }}</p>
+            <p>{{ formatAmount(amount, false, 8, 2) }} XST</p>
             <p class="bold">Address</p>
             <p>{{ depositAddress }}</p>
             <p class="bold">Label:</p>
             <p>{{ label ? label : 'No label' }}</p>
             <p class="bold">Fee:</p>
-            <p>0.0 XST</p>
+            <p>{{aproxFee ? formatAmount(aproxFee) : '0.02'}} XST</p>
           </div>
         </div>
       </template>
@@ -283,7 +283,8 @@ import { computed, ref, watch } from 'vue';
 import CryptoService from '@/services/crypto';
 import useCoinControl from '@/composables/useCoinControl';
 import useTransactionBuilder from '@/composables/useTransactionBuilder';
-
+import useFeeEstimator from '@/composables/useFeeEstimator';
+import useHelpers from '@/composables/useHelpers';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import { useRoute } from 'vue-router';
 
@@ -291,6 +292,7 @@ export default {
   name: 'StSendModal',
   setup() {
     const mainStore = useMainStore();
+    const { formatAmount } = useHelpers();
 
     const isVisible = computed(() => {
       return mainStore.modals.send;
@@ -299,6 +301,7 @@ export default {
     const account = ref(null);
     const amount = ref(0);
     const depositAddress = ref('');
+    const aproxFee = ref(null);
 
     const pickedAccount = computed(() => {
       return mainStore.accountDetails;
@@ -417,6 +420,13 @@ export default {
       //   100,
       // ]);
 
+      // purpose of this is to calculate fee for next step
+      let outputsForTx = coinSelection()
+      let { fee } = useFeeEstimator(outputsForTx.length);
+      aproxFee.value = fee;
+
+
+
       // unspentOutputs = outputs.filter((el) => el.isspent === 'false');
       // console.log('unspent outputs: ', unspentOutputs);
     }
@@ -529,6 +539,7 @@ export default {
       amount,
       depositAddress,
       label,
+      aproxFee,
       // changeAccount,
 
       currentStep,
@@ -540,6 +551,7 @@ export default {
 
       send,
       getUnspentOutputs,
+      formatAmount,
 
       form,
       errors,
