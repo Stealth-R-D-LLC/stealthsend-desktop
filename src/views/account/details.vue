@@ -20,8 +20,12 @@
             }}%
           </StTag>
         </StLabel>
-        <StButton @click="openModal('send')">Send</StButton>
-        <StButton @click="openModal('receive')">Receive</StButton>
+        <div class="actions">
+          <StButton class="send-btn" @click="openModal('send')">Send</StButton>
+          <StButton class="receive-btn" @click="openModal('receive')"
+            >Receive</StButton
+          >
+        </div>
       </div>
     </div>
     <div class="account-details-container__body">
@@ -205,5 +209,46 @@ export default {
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(15ch, 1fr));
+}
+.send-btn,
+.receive-btn {
+  min-width: 120px !important;
+  width: 120px !important;
+  height: 36px;
+  padding: 6px 0;
+  font-family: var(--secondary-font);
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 24px;
+  letter-spacing: 0.12px;
+  color: var(--grey50);
+  border: 1px solid rgba(124, 126, 175, 0.5);
+  background: linear-gradient(
+      153.02deg,
+      rgba(124, 126, 175, 0.15) 0%,
+      rgba(124, 126, 175, 0.15) 83.23%
+    ),
+    var(--purple500);
+      align-self: flex-end;
+
+}
+.send-btn:hover,
+.receive-btn:hover {
+  border: 1px solid rgba(124, 126, 175, 0.5);
+  background: linear-gradient(
+      153.02deg,
+      rgba(124, 126, 175, 0.15) 0%,
+      rgba(124, 126, 175, 0.15) 83.23%
+    ),
+    var(--purple500);
+  cursor: pointer;
+}
+.actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+.receive-btn {
+  margin-left: 24px;
 }
 </style>
