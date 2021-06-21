@@ -44,14 +44,14 @@
                 </div>
               </template>
 
-          <template #option="{ option }">
-            <div class="flex-space-between">
-              <span>
-                {{ option.label }}
-              </span>
-              <span> {{ option.utxo }} XST </span>
-            </div>
-          </template>
+              <template #option="{ option }">
+                <div class="flex-space-between">
+                  <span>
+                    {{ option.label }}
+                  </span>
+                  <span> {{ option.utxo }} XST </span>
+                </div>
+              </template>
             </StMultiselect>
           </StFormItem>
         </div>
