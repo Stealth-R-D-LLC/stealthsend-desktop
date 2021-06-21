@@ -74,24 +74,24 @@ export default {
 }
 
 .st-filters .filter-item {
-    margin: 0 4px;
-    width: 30px;
-    height: 24px;
-    border: 1px solid var(--grey100);
-    border-radius: 6px;
-    background: var(--grey50);
-    color: var(--grey900);
-    cursor: pointer;
-    font-family: var(--secondary-font);
-    font-style: normal;
-    font-weight: normal;
-    font-size: 10px;
-    line-height: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    letter-spacing: 0.16px;
+  margin: 0 4px;
+  width: 30px;
+  height: 24px;
+  border: 1px solid var(--grey100);
+  border-radius: 6px;
+  background: var(--grey50);
+  color: var(--grey900);
+  cursor: pointer;
+  font-family: var(--secondary-font);
+  font-style: normal;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  letter-spacing: 0.16px;
 }
 
 .st-filters .filter-item:hover {
