@@ -117,7 +117,7 @@
       </div>
       <div class="item">
         <span>Address</span>
-        <p v-if="tx.vout[0]">
+        <p v-if="tx && tx.vout && tx.vout.length && tx.vout[0]">
           <StLink>{{ tx.vout[0].scriptPubKey.addresses[0] }}</StLink>
         </p>
         <p v-else>-</p>
