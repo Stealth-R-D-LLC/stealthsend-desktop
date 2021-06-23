@@ -55,21 +55,13 @@
         <path d="M19 1L5 15" stroke="#4E00F6" stroke-width="2" />
       </svg>
     </div>
-    <!-- <div class="st-switcher__steps">
-      <div
-        v-for="(s, index) in steps"
-        :key="index"
-        class="step"
-        :class="{ 'step--active': step === index }"
-        @click="changeStep(index)"
-      >
-        <span></span>
-      </div>
-    </div> -->
     <div class="sidebar-header__content">
       <h6>Total balance</h6>
       <h4>{{ isHiddenAmounts ? '***' : steps[step].amountTop }}</h4>
       <h6 class="amount-fiat">
+        <span class="amount-fiat__inner"
+          >~ {{ isHiddenAmounts ? '$***' : steps[step].amountBottom }}</span
+        >
         <StTag
           :color="Number(steps[step].percentage) > 0 ? 'success' : 'danger'"
         >
@@ -79,9 +71,6 @@
               : steps[step].percentage
           }}%
         </StTag>
-        <span class="amount-fiat__inner"
-          >~ {{ isHiddenAmounts ? '$***' : steps[step].amountBottom }}</span
-        >
       </h6>
     </div>
   </div>
@@ -127,34 +116,6 @@ export default {
             2
           ),
         },
-        {
-          asset: 'EUR',
-          amountTop: `$${formatAmount(
-            multiply(props.amount, CryptoService.constraints.XST_USD),
-            true,
-            2
-          )}`,
-          amountBottom: `${formatAmount(props.amount, true, 8)} XST`,
-          percentage: formatAmount(
-            CryptoService.constraints.changePercent24Hr,
-            false,
-            2
-          ),
-        },
-        /* {
-          asset: 'BTC',
-          amountTop: formatAmount(
-            multiply(props.amount, CryptoService.constraints.XST_BTC),
-            true,
-            8
-          ),
-          amountBottom: `${formatAmount(props.amount, true, 8)} XST`,
-          percentage: formatAmount(
-            CryptoService.constraints.changePercent24Hr,
-            false,
-            2
-          ),
-        }, */
       ];
     });
 
@@ -205,10 +166,13 @@ export default {
   margin-top: 16px;
 }
 .sidebar-header__content .amount-fiat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-top: 8px;
 }
 .sidebar-header__content .amount-fiat__inner {
-  margin-left: 18px;
+  margin-right: 18px;
   color: var(--grey500);
 }
 </style>

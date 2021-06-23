@@ -274,24 +274,21 @@ export default {
   border-bottom: 1px solid var(--grey100);
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 .header-left,
 .header-right {
   display: flex;
   align-items: center;
-  margin: 0 24px;
 }
 
-.header-left {
-  width: 300px;
+.header-left svg + svg,
+.header-right svg + svg {
+  margin-left: 24px;
 }
 
 .layout__header--is-grey {
   background: var(--background100);
-}
-
-.layout__header svg {
-  margin: 0 10px;
 }
 
 .layout__header svg:hover {
