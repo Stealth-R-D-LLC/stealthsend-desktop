@@ -659,6 +659,11 @@ export default {
 </style>
 
 <style>
+.send-modal .st-modal-container {
+  width: 480px;
+  height: 520px;
+  box-sizing: border-box;
+}
 .send-modal .st-modal__footer {
   display: flex;
   align-items: center;

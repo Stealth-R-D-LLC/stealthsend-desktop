@@ -509,6 +509,11 @@ export default {
 }
 </style>
 <style>
+.receive-modal .st-modal-container {
+  width: 480px;
+  height: 520px;
+  box-sizing: border-box;
+}
 .receive-modal .st-modal__footer {
   display: flex;
   align-items: center;
