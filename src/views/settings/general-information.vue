@@ -9,7 +9,7 @@
           We are building the Holy Grail of Crypto: a fast, feeless, private and
           scalable digital currency
         </p>
-        <p class="text">Application version: v{{version}}</p>
+        <p class="text">Application version: v{{ version }}</p>
         <p class="text">
           Github Source Repository
           <br />
@@ -32,12 +32,12 @@
 
 <script>
 import pkgjson from '@/../package.json';
-import {ref} from 'vue';
+import { ref } from 'vue';
 export default {
   setup() {
-    const version = ref(pkgjson.version)
+    const version = ref(pkgjson.version);
     return {
-      version
+      version,
     };
   },
 };
