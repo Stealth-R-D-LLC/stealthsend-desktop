@@ -37,13 +37,23 @@
         />
         <circle cx="13" cy="7" r="2" fill="#4E00F6" />
       </svg>
-      <svg v-else
-        @click="toggleHiddenAmounts" width="22" height="16" viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M11 3C7.68629 3 4.68629 4.66667 2 8C4.68629 11.3333 7.68629 13 11 13C14.3137 13 17.3137 11.3333 20 8C19.3945 7.24866 18.7731 6.58199 18.1357 6" stroke="#4E00F6" stroke-width="2"/>
-<path d="M7 8L12 8" stroke="#4E00F6" stroke-width="2"/>
-<path d="M19 1L5 15" stroke="#4E00F6" stroke-width="2"/>
-</svg>
-
+      <svg
+        v-else
+        @click="toggleHiddenAmounts"
+        width="22"
+        height="16"
+        viewBox="0 0 22 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M11 3C7.68629 3 4.68629 4.66667 2 8C4.68629 11.3333 7.68629 13 11 13C14.3137 13 17.3137 11.3333 20 8C19.3945 7.24866 18.7731 6.58199 18.1357 6"
+          stroke="#4E00F6"
+          stroke-width="2"
+        />
+        <path d="M7 8L12 8" stroke="#4E00F6" stroke-width="2" />
+        <path d="M19 1L5 15" stroke="#4E00F6" stroke-width="2" />
+      </svg>
     </div>
     <!-- <div class="st-switcher__steps">
       <div
