@@ -115,7 +115,6 @@
                     >Create a New Account</StButton
                   >
                   <StButton
-                    disabled
                     class="button-medium"
                     color="white"
                     @click="isRecovery = true"
