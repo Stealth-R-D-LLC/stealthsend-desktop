@@ -29,7 +29,6 @@
     <!-- value, errorMessage -->
     <hr />
     <h2>Switcher</h2>
-    <StSwitcher :amount="1.23"></StSwitcher>
     <h2>Buttons</h2>
     <StButton color="secondary" @click="clickHandler('aaaaa')">Dash</StButton>
     <StButton @click="clickHandler('bbbbbaaaaaaaaaaaaaaaa')">Settings</StButton>
@@ -178,12 +177,10 @@
 // import StCopyToClipboard from '@/components/kit/StClipboard.vue'
 // import StTooltip from '@/components/kit/StTooltip.vue'
 // import StLoading from '@/components/kit/StLoading.vue'
-import StSwitcher from '@/components/elements/StSwitcher.vue';
 import { ref } from 'vue';
 
 export default {
   components: {
-    StSwitcher,
     //   StModal,
     //   StTable,
     //   StStatus,

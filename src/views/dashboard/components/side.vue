@@ -1,6 +1,6 @@
 <template>
   <div class="side">
-    <StSwitcher :amount="utxo" @change="switcherChange"></StSwitcher>
+    <StCards :amount="utxo" @change="switcherChange"></StCards>
     <div class="side__accounts">
       <Card
         v-for="account in accounts"
@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import StSwitcher from '@/components/elements/StSwitcher.vue';
+import StCards from '@/components/elements/StCards.vue';
 import Card from '@/components/elements/Card';
 import CryptoService from '@/services/crypto';
 import { ref, computed, watch } from 'vue';
@@ -27,7 +27,7 @@ import router from '@/router';
 
 export default {
   components: {
-    StSwitcher,
+    StCards,
     Card,
   },
   setup() {
@@ -110,9 +110,9 @@ export default {
 
 <style scoped>
 .side {
-  min-width: 346px;
-  width: 346px;
-  padding: 29px 24px 0;
+  min-width: 392px;
+  width: 392px;
+  padding: 36px 24px 0;
   background: var(--background100);
 }
 
