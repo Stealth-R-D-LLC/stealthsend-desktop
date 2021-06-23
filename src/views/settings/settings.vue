@@ -15,7 +15,7 @@
             We are building the Holy Grail of Crypto: a fast, feeless, private
             and scalable digital currency
           </p>
-          <p class="text">Application version: v1.0.0.0.</p>
+          <p class="text">Application version: v{{ version }}</p>
           <p class="text">
             Github Source Repository
             <br />
@@ -40,14 +40,18 @@
 
 <script>
 import SettingsNav from '@/views/settings/SettingsNav.vue';
-
+import pkgjson from '@/../package.json';
+import { ref } from 'vue';
 export default {
   name: 'StSettings',
   components: {
     SettingsNav,
   },
   setup() {
-    return {};
+    const version = ref(pkgjson.version);
+    return {
+      version,
+    };
   },
 };
 </script>
