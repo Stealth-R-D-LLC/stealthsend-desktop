@@ -1772,7 +1772,9 @@ export default {
       }
       if (currentStep.value === 10) {
         // create new mnemonic
-        let generateMnemonic = await CryptoService.generateMnemonicAndSeed(Number(recoveryPhraseLength.value));
+        let generateMnemonic = await CryptoService.generateMnemonicAndSeed(
+          Number(recoveryPhraseLength.value)
+        );
         createdMnemonic.value = generateMnemonic.mnemonic.split(' ');
         reorderedMnemonic.value = _shuffle(_cloneDeep(createdMnemonic.value));
       }
