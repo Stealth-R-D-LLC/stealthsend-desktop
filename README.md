@@ -24,7 +24,17 @@ v12.18.2
 
 ### Initial configuration for running and developing
 
-After cloning the repo from our git, do the following steps
+After cloning the repo from our git, do the following steps:
+
+```bash
+# we have a separate repo (stealth-kit) for our reusable custom components, that lives on our nexus, so you have to do the following:
+npm config set registry https://nexus.barrage.net/repository/npm.barrage.net/ --global
+# username&pass are bipa credentials
+# email is your work email
+npm config set registry https://nexus.barrage.net/repository/npm.barrage.net/
+```
+
+After configuring your local machine to point on our nexus, you can do the following:
 
 Example:
 ```shell
