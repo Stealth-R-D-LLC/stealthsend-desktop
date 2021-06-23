@@ -44,7 +44,7 @@
             <p class="currency">{{ account.utxo }} XST</p>
             <p class="grey">~ ${{ account.utxo }} USD</p>
           </div>
-          <a v-if="account.utxo < 1" class="link-purple">Receive XST</a>
+          <a v-if="account.utxo === 0" @click="openReceiveModal(account)" class="link-purple">Receive XST</a>
           <a v-else class="link">
             <svg
               width="16"
@@ -254,6 +254,10 @@ export default {
     function toggleAccountOptions(name) {
       accountOptions.value = name;
     }
+    function openReceiveModal(account) {
+      mainStore.SET_MODAL_VISIBILITY('receive', true);
+      mainStore.SET_ACCOUNT_DETAILS(account);
+    }
     const archiveAccount = async (account) => {
       accounts.value = await CryptoService.archiveAccount(account);
     };
@@ -273,6 +277,7 @@ export default {
     };
     const openAccountDetails = (account) => {
       mainStore.SET_ACCOUNT_DETAILS(account);
+
       router.push('/account/details');
     };
     return {
@@ -290,6 +295,7 @@ export default {
       activateAccount,
       changeAccountName,
       openEditAccountNameModal,
+      openReceiveModal
     };
   },
 };
