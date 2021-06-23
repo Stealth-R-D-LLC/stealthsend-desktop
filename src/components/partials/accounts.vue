@@ -44,7 +44,12 @@
             <p class="currency">{{ account.utxo }} XST</p>
             <p class="grey">~ ${{ account.utxo }} USD</p>
           </div>
-          <a v-if="account.utxo === 0" @click="openReceiveModal(account)" class="link-purple">Receive XST</a>
+          <a
+            v-if="account.utxo === 0"
+            @click="openReceiveModal(account)"
+            class="link-purple"
+            >Receive XST</a
+          >
           <a v-else class="link">
             <svg
               width="16"
@@ -295,7 +300,7 @@ export default {
       activateAccount,
       changeAccountName,
       openEditAccountNameModal,
-      openReceiveModal
+      openReceiveModal,
     };
   },
 };
