@@ -216,7 +216,7 @@
             <p class="bold">Account:</p>
             <p>{{ account.label }}</p>
             <p class="bold">Amount:</p>
-            <p>{{ formatAmount(amount, false, 8, 2) }} XST</p>
+            <p>{{ amount }} XST</p>
             <p class="bold">Address</p>
             <p>{{ depositAddress }}</p>
             <p class="bold">Label:</p>
