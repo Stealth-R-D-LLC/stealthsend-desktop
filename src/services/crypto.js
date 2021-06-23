@@ -120,7 +120,7 @@ const CryptoService = {
     );
   },
   async generateMnemonicAndSeed(wordsLength = 12) {
-    let strength = wordsLength / 3 * 32;
+    let strength = (wordsLength / 3) * 32;
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve) => {
       // HD wallets are created from a single root seed, which is a 128-, 256-, or 512-bit random number.
