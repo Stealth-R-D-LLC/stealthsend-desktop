@@ -19,7 +19,7 @@ export default function useHelpers() {
     if (roundDecimals) {
       return new Intl.NumberFormat('en-IN', {
         minimumFractionDigits: minimumFractionDigits,
-        maximumFractionDigits: 8
+        maximumFractionDigits: 8,
       }).format(amount, decimals);
     }
     return new Intl.NumberFormat('en-IN', {
