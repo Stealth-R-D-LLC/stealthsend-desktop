@@ -62,8 +62,8 @@ export default {
 
 <style scoped>
 .dashboard-container {
-  padding: 24px 10px 24px 24px;
-  height: calc(100vh - 130px);
+  padding: 24px 10px 24px 12px;
+  height: calc(100vh - 145px);
 }
 .dashboard-container__overflow {
   overflow: auto;

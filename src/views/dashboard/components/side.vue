@@ -5,12 +5,10 @@
       <Card
         v-for="account in accounts"
         :key="account.address"
-        class="list-item"
+        :accounts="accounts"
         :account="account"
         :type="step"
         :rates="constraints"
-        @click="openAccountDetails"
-        @archived="archiveAccount"
       >
       </Card>
     </div>
@@ -23,7 +21,6 @@ import Card from '@/components/elements/Card';
 import CryptoService from '@/services/crypto';
 import { ref, computed, watch } from 'vue';
 import { useMainStore } from '@/store';
-import router from '@/router';
 
 export default {
   components: {
@@ -82,23 +79,13 @@ export default {
       return CryptoService.constraints;
     });
 
-    const openAccountDetails = (account) => {
-      mainStore.SET_ACCOUNT_DETAILS(account);
-      router.push('/account/details');
-    };
-    const archiveAccount = (account) => {
-      CryptoService.archiveAccount(account);
-    };
-
     const step = ref(0);
     function switcherChange(value) {
       step.value = value;
     }
 
     return {
-      openAccountDetails,
       accounts,
-      archiveAccount,
       switcherChange,
       step,
       utxo,
@@ -110,6 +97,7 @@ export default {
 
 <style scoped>
 .side {
+  box-sizing: border-box;
   min-width: 392px;
   width: 392px;
   padding: 36px 24px 0;
@@ -119,8 +107,8 @@ export default {
 .side__accounts {
   overflow: auto;
   height: calc(100vh - 210px);
-  margin: 8px 0 0;
-  width: calc(100% + 5px);
+  margin: 20px 0 0;
+  width: calc(100% + 4px);
   padding-right: 10px;
 }
 .side__accounts::-webkit-scrollbar {
