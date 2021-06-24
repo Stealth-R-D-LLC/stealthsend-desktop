@@ -1,6 +1,6 @@
 <template>
   <div class="layout">
-        <ReceiveModal />
+    <ReceiveModal />
     <QuickReceiveModal />
     <SendModal />
     <AddAccount />
@@ -43,7 +43,7 @@ export default {
     TopBar,
     Side,
 
-        ReceiveModal,
+    ReceiveModal,
     QuickReceiveModal,
     SendModal,
     AddAccount,
