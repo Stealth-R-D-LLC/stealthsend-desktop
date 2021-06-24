@@ -14,47 +14,45 @@
     </template>
     <template #body>
       <template v-if="currentStep === 1">
-        <div class="form-item account">
-          <StFormItem
-            color="dark"
-            :error-message="form.account.$errors"
-            label="Account"
+        <StFormItem
+          color="dark"
+          :error-message="form.account.$errors"
+          label="Account"
+        >
+          <StMultiselect
+            class="dark"
+            v-model="form.account.$value"
+            :class="{ 'multiselect-filled': account }"
+            :options="accounts"
+            track-by="address"
+            value-prop="address"
+            label="label"
+            :object="true"
+            :can-deselect="false"
+            placeholder="Select account"
+            @select="getUnspentOutputs"
           >
-            <StMultiselect
-              class="dark"
-              v-model="form.account.$value"
-              :class="{ 'multiselect-filled': account }"
-              :options="accounts"
-              track-by="address"
-              value-prop="address"
-              label="label"
-              :object="true"
-              :can-deselect="false"
-              placeholder="Select account"
-              @select="getUnspentOutputs"
-            >
-              <template #singleLabel>
-                <div class="multiselect-single-label">
-                  <p class="account-label">
-                    {{ account && account.label }}
-                  </p>
-                  <p class="account-utxo">
-                    {{ account && account.utxo }}
-                  </p>
-                </div>
-              </template>
+            <template #singleLabel>
+              <div class="multiselect-single-label">
+                <p class="account-label">
+                  {{ account && account.label }}
+                </p>
+                <p class="account-utxo">
+                  {{ account && account.utxo }}
+                </p>
+              </div>
+            </template>
 
-              <template #option="{ option }">
-                <div class="flex-space-between">
-                  <span>
-                    {{ option.label }}
-                  </span>
-                  <span> {{ option.utxo }} XST </span>
-                </div>
-              </template>
-            </StMultiselect>
-          </StFormItem>
-        </div>
+            <template #option="{ option }">
+              <div class="flex-space-between">
+                <span>
+                  {{ option.label }}
+                </span>
+                <span> {{ option.utxo }} XST </span>
+              </div>
+            </template>
+          </StMultiselect>
+        </StFormItem>
         <div class="form-item">
           <StFormItem
             color="dark"
@@ -559,15 +557,6 @@ export default {
 </script>
 
 <style scoped>
-.form-item {
-  margin: 44px 0;
-}
-
-.form-item.account {
-  position: relative;
-  margin-top: 64px;
-}
-
 .form-item.account label {
   position: absolute;
   top: -46px;
@@ -585,9 +574,12 @@ export default {
   margin-left: 20px;
 }
 .payment > h5 {
+  font-family: var(--secondary-font);
   font-size: 14px;
   line-height: 24px;
+  font-weight: 700;
   color: var(--white);
+  letter-spacing: 0.12px;
 }
 .payment-grid {
   margin-top: 28px;
@@ -659,9 +651,26 @@ export default {
 </style>
 
 <style>
+.send-modal .st-modal-container {
+  width: 480px;
+  height: 520px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+.send-modal .st-modal__header {
+  margin-bottom: 36px;
+}
+.send-modal .st-modal__body {
+  margin: 10px 0 0;
+}
+.send-modal .st-form-item {
+  margin: 10px 0 54px;
+}
 .send-modal .st-modal__footer {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: auto;
 }
 </style>
