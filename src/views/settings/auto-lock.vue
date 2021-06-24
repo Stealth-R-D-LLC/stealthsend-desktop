@@ -9,15 +9,16 @@
           recommended to enable Auto-lock. When enabled you will need your
           password to unlock your StealthSend app.
         </p>
+        <StCheckbox @input="toggleAutoLock" v-model="isEnabled"></StCheckbox>
         <div class="minutes-picker" v-if="isEnabled">
           <p>Select one of the following options:</p>
           <div class="options">
             <span
               class="option"
-              :class="{ 'option--is-selected': option.value === selected }"
+              :class="{ 'option--is-selected': option.value === selectedInterval }"
               v-for="option in options"
               :key="option.value"
-              @click="selected = option.value"
+              @click="changeInterval(option.value)"
               >{{ option.label }}</span
             >
           </div>
@@ -28,23 +29,63 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+
 export default {
   setup() {
     const options = ref([
-      { label: '1 minute', value: 1 },
-      { label: '5 minutes', value: 5 },
-      { label: '10 minutes', value: 10 },
-      { label: '15 minutes', value: 15 },
-      { label: '30 minutes', value: 30 },
-      { label: '1 hour', value: 60 },
+      // interval config values are in seconds
+      { label: '1 minute', value: 60 },
+      { label: '5 minutes', value: 300 },
+      { label: '10 minutes', value: 600 },
+      { label: '15 minutes', value: 900 },
+      { label: '30 minutes', value: 1800 },
+      { label: '1 hour', value: 3600 },
     ]);
-    const selected = ref(1);
-    const isEnabled = ref(TextTrackCueList);
+    const selectedInterval = ref(60);
+    const isEnabled = ref(false);
+
+    onMounted(async () => {
+      getIntervalFromStorage();
+    });
+
+    // interval config is set in local storage to avoid reading the db every second
+
+    function storeIntervalInStorage() {
+      localStorage.setItem('autolock', JSON.stringify({
+        interval: selectedInterval.value,
+        isEnabled: isEnabled.value,
+      }))
+    }
+
+    async function getIntervalFromStorage() {
+      let config = localStorage.getItem('autolock');
+      if (config) {
+        selectedInterval.value = config.interval;
+        isEnabled.value = config.isEnabled;
+      }
+    }
+
+    function changeInterval(interval) {
+      selectedInterval.value = interval;
+      setTimeout(() => {
+        storeIntervalInStorage();
+      }, 1);
+    }
+
+    function toggleAutoLock() {
+      setTimeout(() => {
+        storeIntervalInStorage();
+      }, 1);
+    }
+
     return {
-      selected,
+      selectedInterval,
       options,
       isEnabled,
+
+      changeInterval,
+      toggleAutoLock,
     };
   },
 };
