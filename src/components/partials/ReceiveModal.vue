@@ -194,10 +194,7 @@
             disabled
           ></StInput>
         </StFormItem>
-        <StTooltip
-          class="tooltip"
-          tooltip-text="Copied to clipboard!"
-        >
+        <StTooltip class="tooltip" tooltip-text="Copied to clipboard!">
           <StClipboard :content="depositAddress" @click="handleCopy"
             >Copy to Clipboard</StClipboard
           >
