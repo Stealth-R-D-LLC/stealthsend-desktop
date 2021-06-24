@@ -1,7 +1,7 @@
 <template>
   <div class="st-transaction-list">
     <div class="overflow">
-      <Filters @change="orderTransactions"></Filters>
+      <Filters @change="orderTransactions" @sort="orderTransactions"></Filters>
       <template v-for="date in txDates" :key="date">
         <p class="tx-date">
           <span
@@ -20,14 +20,65 @@
           :data="txs[date]"
           :has-header="hasTableHeader"
           :columns="[
+            {
+              key: 'status',
+              title: 'Status',
+              customCellClass:
+                $route.name === 'Dashboard' ? 'status' : 'status-text',
+            },
             { key: 'blocktime', title: 'Time', customCellClass: 'blocktime' },
             { key: 'account', title: 'Account' },
             { key: 'label', title: 'Label' },
-            { key: 'amountFiat', title: 'Amount (USD)' },
-            { key: 'amount', title: 'Amount' },
+            { key: 'amountFiat', title: 'USD Value' },
+            { key: 'amount', title: 'XST' },
             { key: 'actions', title: '', customCellClass: 'items-center' },
           ]"
         >
+          <template #status="{ item }">
+            <div class="flex-center-vertical">
+              <template v-if="item.amount > 0">
+                <svg
+                  width="24"
+                  height="24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="12" cy="12" r="12" fill="#D6F8F0" />
+                  <path d="M7 14v3h10v-3" stroke="#07AC82" stroke-width="2" />
+                  <path
+                    d="M10 11l2 2 2-2"
+                    stroke="#07AC82"
+                    stroke-width="2"
+                    stroke-linecap="square"
+                  />
+                  <path d="M12 6v7" stroke="#07AC82" stroke-width="2" />
+                </svg>
+                <template v-if="$route.name !== 'Dashboard'">Received</template>
+              </template>
+              <template v-else-if="item.amount < 0">
+                <svg
+                  width="24"
+                  height="24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="12" cy="12" r="12" fill="#E5E4E8" />
+                  <path d="M7 13v3h10v-3" stroke="#8B8A8D" stroke-width="2" />
+                  <path
+                    d="M14 8l-2-2-2 2"
+                    stroke="#8B8A8D"
+                    stroke-width="2"
+                    stroke-linecap="square"
+                  />
+                  <path d="M12 6v7" stroke="#8B8A8D" stroke-width="2" />
+                </svg>
+                <template v-if="$route.name !== 'Dashboard'">Sent</template>
+              </template>
+            </div>
+          </template>
+          <template #blocktime="{ item }">
+            {{ formatBlocktime(item.blocktime) }}
+          </template>
           <template #amount="{ item }">
             {{ item.amount > 0 ? '+' : '-' }}
             {{ formatAmount(Math.abs(item.amount, true, 8)) }} XST
@@ -40,52 +91,11 @@
           <template #amountFiat="{ item }">
             {{ item.amount > 0 ? '+' : '-' }}
             <template v-if="item.amount * XST_USD_RATE < 1">
-              {{ formatAmount(Math.abs(item.amount * XST_USD_RATE), true) }}
+              ${{ formatAmount(Math.abs(item.amount * XST_USD_RATE), true) }}
             </template>
             <template v-else>
               {{ formatAmount(Math.abs(item.amount * XST_USD_RATE), false) }}
             </template>
-          </template>
-          <template #blocktime="{ item }">
-            <div class="flex-center-vertical">
-              <svg
-                v-if="item.amount > 0"
-                width="24"
-                height="24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle cx="12" cy="12" r="12" fill="#D6F8F0" />
-                <path d="M7 14v3h10v-3" stroke="#07AC82" stroke-width="2" />
-                <path
-                  d="M10 11l2 2 2-2"
-                  stroke="#07AC82"
-                  stroke-width="2"
-                  stroke-linecap="square"
-                />
-                <path d="M12 6v7" stroke="#07AC82" stroke-width="2" />
-              </svg>
-              <svg
-                v-else-if="item.amount < 0"
-                width="24"
-                height="24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle cx="12" cy="12" r="12" fill="#E5E4E8" />
-                <path d="M7 13v3h10v-3" stroke="#8B8A8D" stroke-width="2" />
-                <path
-                  d="M14 8l-2-2-2 2"
-                  stroke="#8B8A8D"
-                  stroke-width="2"
-                  stroke-linecap="square"
-                />
-                <path d="M12 6v7" stroke="#8B8A8D" stroke-width="2" />
-              </svg>
-              <span>
-                {{ formatBlocktime(item.blocktime) }}
-              </span>
-            </div>
           </template>
           <template #actions="{ item }">
             <div class="icon-container">
@@ -291,7 +301,7 @@ export default {
       }
     }
 
-    function orderTransactions(filter) {
+    function orderTransactions(filter, filterDirection) {
       // sort transactions by blocktime
       const transactionsTmp = props.transactions
         .map((el, index) => {
@@ -305,12 +315,30 @@ export default {
         })
         .sort((a, b) => (a.blocktime < b.blocktime ? 1 : -1));
       // filter transactions based on selected filter
-      let filtered = filterTransactions(filter, transactionsTmp);
+      let filteredDirection = filterByDirection(
+        filterDirection,
+        transactionsTmp
+      );
+      let filtered = filterByPeriod(filter, filteredDirection);
       // group transactions by date
       txs.value = groupBy(filtered, 'blocktimeDate');
     }
 
-    function filterTransactions(filter, transactions) {
+    function filterByDirection(direction, transactions) {
+      if (!direction || direction === { label: 'All', value: '' })
+        return transactions;
+      return transactions.filter((el) => {
+        if (direction.value === '') {
+          return el;
+        } else if (direction.value === 'received') {
+          return el.amount > 0;
+        } else if (direction.value === 'sent') {
+          return el.amount < 0;
+        }
+      });
+    }
+
+    function filterByPeriod(filter, transactions) {
       if (!filter || filter === Infinity) return transactions;
       return transactions.filter(
         (el) =>
@@ -347,7 +375,10 @@ export default {
     }
 
     onMounted(async () => {
-      orderTransactions({ label: 'All', value: Infinity });
+      orderTransactions(
+        { label: 'All', value: Infinity },
+        { label: 'All', value: '' }
+      );
       await CryptoService.getTxWithLabels();
     });
 
@@ -365,7 +396,8 @@ export default {
       formatBlocktime,
       groupBy,
       formatAmount,
-      filterTransactions,
+      filterByDirection,
+      filterByPeriod,
       todayOrYesterday,
       XST_USD_RATE,
       txDates,
@@ -385,7 +417,7 @@ export default {
 .overflow {
   padding: 15px 14px 0 0;
   overflow: auto;
-  height: calc(100vh - 241px);
+  height: calc(100vh - 256px);
 }
 .overflow::-webkit-scrollbar {
   width: 4px;
@@ -409,6 +441,15 @@ export default {
 
 .blocktime {
   width: 160px;
+}
+:deep .status {
+  width: 24px;
+}
+:deep .status-text {
+  width: 164px;
+}
+.status-text svg {
+  margin-right: 16px;
 }
 
 .blocktime span {
@@ -452,5 +493,36 @@ export default {
 }
 .expanded__active {
   width: 105px;
+}
+.filter + .filter {
+  margin-left: 8px;
+}
+.filter {
+  cursor: pointer;
+  padding: 6px 12px;
+  background: linear-gradient(
+      153.02deg,
+      rgba(250, 249, 252, 0.15) 0%,
+      rgba(229, 228, 232, 0.15) 83.23%
+    ),
+    var(--grey50);
+  border: 1px solid rgba(229, 228, 232, 0.15);
+  border-radius: 6px;
+  font-size: 10px;
+  line-height: 16px;
+  letter-spacing: 0.16px;
+  color: var(--grey900);
+  font-family: var(--seconday-font);
+  transition: 0.3s;
+}
+.filter:hover {
+  background: linear-gradient(
+      153.43deg,
+      rgba(184, 183, 187, 0.15) 0%,
+      rgba(229, 228, 232, 0.15) 83.33%
+    ),
+    var(--grey100);
+  border: 1px solid rgba(207, 205, 209, 0.25);
+  color: var(--marine500);
 }
 </style>
