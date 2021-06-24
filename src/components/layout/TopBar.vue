@@ -289,6 +289,8 @@ export default {
 
 .layout__header--is-grey {
   background: var(--background100);
+  margin: 0;
+  padding: 45px 24px 29px;
 }
 
 .layout__header svg:hover {
