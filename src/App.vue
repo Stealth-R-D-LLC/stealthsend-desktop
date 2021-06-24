@@ -1,9 +1,5 @@
 <template>
   <div class="container">
-    <ReceiveModal />
-    <QuickReceiveModal />
-    <SendModal />
-    <AddAccount />
     <StLoading :visibility="isLoading" :opaque="true"></StLoading>
     <component :is="layout"> </component>
     <OffCanvas></OffCanvas>
@@ -20,20 +16,13 @@ import NewUserLayout from './components/layout/NewUser.vue';
 import SingleColumnLayout from './components/layout/SingleColumnLayout.vue';
 import OffCanvas from './components/elements/StOffCanvas.vue';
 import LockLayout from './components/layout/Lock.vue';
-import ReceiveModal from './components/partials/ReceiveModal.vue';
-import QuickReceiveModal from './components/partials/QuickReceiveModal.vue';
-import SendModal from './components/partials/SendModal.vue';
-import AddAccount from './components/partials/AddAccount.vue';
 import { useRoute } from 'vue-router';
+import router from '@/router';
 
 export default {
   name: 'TsDefault',
   components: {
-    ReceiveModal,
-    QuickReceiveModal,
-    SendModal,
     OffCanvas,
-    AddAccount,
   },
   setup() {
     const mainStore = useMainStore();
@@ -58,6 +47,15 @@ export default {
         return DefaultLayout;
       }
     });
+
+    document.addEventListener('keydown', function (event) {
+      if (router.name === 'Lock') return; // don't handle if already on lock screen
+      // ALT + L combo
+      if (event.altKey && event.key === 'l') {
+        router.push('/lock');
+      }
+    });
+
     return {
       isLoading,
       layout,
