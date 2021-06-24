@@ -115,7 +115,6 @@
                     >Create a New Account</StButton
                   >
                   <StButton
-                    disabled
                     class="button-medium"
                     color="white"
                     @click="isRecovery = true"
@@ -924,26 +923,24 @@
                 <p>Please select your choice of the following options:</p>
                 <div class="radio-container">
                   <StRadio
-                    v-model="recoveryPhrase"
+                    v-model="recoveryPhraseLength"
                     type="square"
-                    name="recoveryPhrase"
+                    name="recoveryPhraseLength"
                     value="12"
                     >12 Word Recovery Phrase</StRadio
                   >
                   <StRadio
-                    v-model="recoveryPhrase"
+                    v-model="recoveryPhraseLength"
                     type="square"
-                    name="recoveryPhrase"
+                    name="recoveryPhraseLength"
                     value="18"
-                    disabled
                     >18 Word Recovery Phrase</StRadio
                   >
                   <StRadio
-                    v-model="recoveryPhrase"
+                    v-model="recoveryPhraseLength"
                     type="square"
-                    name="recoveryPhrase"
+                    name="recoveryPhraseLength"
                     value="24"
-                    disabled
                     >24 Word Recovery Phrase</StRadio
                   >
                 </div>
@@ -1192,7 +1189,7 @@
             <div class="step" v-if="currentStep === 11">
               <div>
                 <h5>Recovery Phrase</h5>
-                <p>Carefully record {{ recoveryPhrase }} words</p>
+                <p>Carefully record all {{ recoveryPhraseLength }} words</p>
                 <div class="mnemonic">
                   <span
                     v-for="(mnemonic, index) in createdMnemonic"
@@ -1334,19 +1331,19 @@
                 <p>Please select:</p>
                 <StRadio
                   type="square"
-                  v-model="restoreRecoveryPhrase"
+                  v-model="restoreRecoveryPhraseLength"
                   value="12"
                   >12 Word Recovery Phrase</StRadio
                 >
                 <StRadio
                   type="square"
-                  v-model="restoreRecoveryPhrase"
+                  v-model="restoreRecoveryPhraseLength"
                   value="18"
                   >18 Word Recovery Phrase</StRadio
                 >
                 <StRadio
                   type="square"
-                  v-model="restoreRecoveryPhrase"
+                  v-model="restoreRecoveryPhraseLength"
                   value="24"
                   >24 Word Recovery Phrase</StRadio
                 >
@@ -1403,7 +1400,7 @@
             <StFormItem
               :label="`Word ${
                 selectedRecoveryWords.length + 1
-              } (of ${restoreRecoveryPhrase})`"
+              } (of ${restoreRecoveryPhraseLength})`"
             >
               <StInput
                 id="recovery-word"
@@ -1634,8 +1631,8 @@ export default {
     const paymentCode = ref('');
     /* const confirmPaymentCode = ref(''); */
     const account = ref('');
-    const recoveryPhrase = ref('12');
-    const restoreRecoveryPhrase = ref('12');
+    const recoveryPhraseLength = ref('12');
+    const restoreRecoveryPhraseLength = ref('12');
     const recoveryPhraseConfirmation = ref(false);
     const progressDuration = ref(5);
     const createdMnemonic = ref([]);
@@ -1775,7 +1772,9 @@ export default {
       }
       if (currentStep.value === 10) {
         // create new mnemonic
-        let generateMnemonic = await CryptoService.generateMnemonicAndSeed();
+        let generateMnemonic = await CryptoService.generateMnemonicAndSeed(
+          Number(recoveryPhraseLength.value)
+        );
         createdMnemonic.value = generateMnemonic.mnemonic.split(' ');
         reorderedMnemonic.value = _shuffle(_cloneDeep(createdMnemonic.value));
       }
@@ -1822,7 +1821,7 @@ export default {
       }
       if (
         selectedRecoveryWords.value.length ===
-        Number(restoreRecoveryPhrase.value)
+        Number(restoreRecoveryPhraseLength.value)
       ) {
         recoveryStepNext();
       }
@@ -2036,9 +2035,9 @@ export default {
       paymentCode,
       /* confirmPaymentCode, */
       account,
-      recoveryPhrase,
+      recoveryPhraseLength,
       recoveryPhraseConfirmation,
-      restoreRecoveryPhrase,
+      restoreRecoveryPhraseLength,
 
       importWalletFromWif,
       importWallet,

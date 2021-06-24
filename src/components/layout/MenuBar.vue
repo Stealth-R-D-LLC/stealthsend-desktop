@@ -250,8 +250,8 @@
     </nav>
     <router-link class="item__footer" to="/lock">
       <svg
-        width="24"
-        height="24"
+        width="16"
+        height="17"
         viewBox="0 0 16 17"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -328,14 +328,14 @@ export default defineComponent({
 }
 
 .layout__aside nav {
-  margin-top: 25px;
+  margin-top: 28px;
 }
 
 .layout__aside .item__footer {
   position: fixed;
   padding: 12px 0;
   text-decoration: none;
-  padding-left: 20px;
+  padding-left: 24px;
   bottom: 32px;
 }
 
@@ -351,7 +351,6 @@ export default defineComponent({
 
 .layout__aside .icon {
   display: flex;
-  width: 1.5rem;
   align-items: center;
   justify-content: center;
 }
@@ -364,7 +363,7 @@ export default defineComponent({
 .layout__aside .item {
   padding: 18px 0;
   text-decoration: none;
-  padding-left: 20px;
+  padding-left: 24px;
   display: flex;
   align-items: center;
   transition: 0.3s;
@@ -383,11 +382,11 @@ export default defineComponent({
   overflow: hidden;
   font-size: 16px;
   line-height: 24px;
-  letter-spacing: 0.12px;
+  letter-spacing: 0.32px;
   color: var(--hampton50);
   margin-left: 24px;
   opacity: 1;
-  transition: opacity 0.3s ease-in-out;
+  transition: 0.3s ease-in-out;
   white-space: nowrap;
   font-weight: 600;
 }
@@ -398,6 +397,11 @@ export default defineComponent({
 
 .layout__aside .item.router-link-exact-active span {
   color: var(--marine200);
+}
+
+.layout__aside li svg path,
+.layout__aside li svg circle {
+  transition: 0.3s;
 }
 
 .layout__aside li:hover span,

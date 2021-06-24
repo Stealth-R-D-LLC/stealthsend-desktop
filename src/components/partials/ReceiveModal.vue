@@ -55,10 +55,10 @@
             :options="{
               locale: 'en',
               currency: 'XST',
-              distractionFree: false,
+              distractionFree: true,
               valueAsInteger: false,
               useGrouping: true,
-              precision: 2,
+              precision: 8,
               allowNegative: false,
             }"
           >
@@ -202,8 +202,12 @@
         <img class="qr-img" :src="qrSrc" />
       </template>
       <template v-if="currentStep === 3">
-        <StFormItem label="Email" color="dark">
-          <StInput v-model="email" placeholder="Email"></StInput>
+        <StFormItem
+          label="Email"
+          color="dark"
+          :error-message="form.email.$errors"
+        >
+          <StInput v-model="form.email.$value" placeholder="Email"></StInput>
           <p class="email-desc">
             Using this option you will share receive details via default email
             client
@@ -238,6 +242,7 @@ import { computed, ref } from 'vue';
 import VanillaQR from 'vanillaqr';
 import CryptoService from '@/services/crypto';
 import { useRoute } from 'vue-router';
+import { useValidation, ValidationError } from 'vue3-form-validation';
 
 export default {
   name: 'StReceiveModal',
@@ -274,6 +279,8 @@ export default {
       currentStep.value = 1;
       depositAddress.value = '';
       qrSrc.value = '';
+      email.value = '';
+      resetFields();
       if (currentRoute.value !== 'AccountDetails') {
         // because we don't want to mess up the account details screen if the modal is opened there
         mainStore.SET_ACCOUNT_DETAILS(null);
@@ -281,9 +288,42 @@ export default {
     }
 
     const accounts = ref([]);
+    const email = ref('');
     const account = ref(null);
     const amount = ref(0);
     const amountFiat = ref(0);
+
+    const {
+      form,
+      errors,
+      // submitting,
+      validateFields,
+      resetFields,
+    } = useValidation({
+      account: {
+        $value: account,
+        $rules: [
+          (account) => {
+            if (!account) {
+              return 'Account is required';
+            }
+          },
+        ],
+      },
+      email: {
+        $value: email,
+        $rules: [
+          (email) => {
+            const isEmailValid = /\S+@\S+\.\S+/.test(email);
+            if (!email) {
+              return 'Required';
+            } else if (!isEmailValid) {
+              return 'Enter a valid email address';
+            }
+          },
+        ],
+      },
+    });
 
     async function scanWallet() {
       if (pickedAccount.value) {
@@ -372,10 +412,16 @@ export default {
       }
     }
 
-    function sendEmail() {
-      closeModal();
-      window.location.href = 'mailto:mail@example.org';
-      // alert('Email sent - missing design');
+    async function sendEmail() {
+      try {
+        await validateFields();
+        window.location.href = `mailto:${email.value}?body=${depositAddress.value}&subject=My XST address`;
+        closeModal();
+      } catch (e) {
+        if (e instanceof ValidationError) {
+          console.log('Email validation error: ', e);
+        }
+      }
     }
 
     return {
@@ -390,6 +436,7 @@ export default {
       depositAddress,
       changeAccount,
       qrSrc,
+      email,
 
       currentStep,
       changeStep,
@@ -403,6 +450,9 @@ export default {
 
       changeCurrency,
       fiatKeyup,
+
+      form,
+      errors,
     };
   },
 };

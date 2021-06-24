@@ -1,16 +1,14 @@
 <template>
   <div class="side">
-    <StSwitcher :amount="utxo" @change="switcherChange"></StSwitcher>
+    <StCards :amount="utxo" @change="switcherChange"></StCards>
     <div class="side__accounts">
       <Card
         v-for="account in accounts"
         :key="account.address"
-        class="list-item"
+        :accounts="accounts"
         :account="account"
         :type="step"
         :rates="constraints"
-        @click="openAccountDetails"
-        @archived="archiveAccount"
       >
       </Card>
     </div>
@@ -18,16 +16,15 @@
 </template>
 
 <script>
-import StSwitcher from '@/components/elements/StSwitcher.vue';
+import StCards from '@/components/elements/StCards.vue';
 import Card from '@/components/elements/Card';
 import CryptoService from '@/services/crypto';
 import { ref, computed, watch } from 'vue';
 import { useMainStore } from '@/store';
-import router from '@/router';
 
 export default {
   components: {
-    StSwitcher,
+    StCards,
     Card,
   },
   setup() {
@@ -82,23 +79,13 @@ export default {
       return CryptoService.constraints;
     });
 
-    const openAccountDetails = (account) => {
-      mainStore.SET_ACCOUNT_DETAILS(account);
-      router.push('/account/details');
-    };
-    const archiveAccount = (account) => {
-      CryptoService.archiveAccount(account);
-    };
-
     const step = ref(0);
     function switcherChange(value) {
       step.value = value;
     }
 
     return {
-      openAccountDetails,
       accounts,
-      archiveAccount,
       switcherChange,
       step,
       utxo,
@@ -110,17 +97,18 @@ export default {
 
 <style scoped>
 .side {
-  min-width: 346px;
-  width: 346px;
-  padding: 29px 24px 0;
+  box-sizing: border-box;
+  min-width: 392px;
+  width: 392px;
+  padding: 36px 24px 0;
   background: var(--background100);
 }
 
 .side__accounts {
   overflow: auto;
-  height: calc(100vh - 210px);
-  margin: 8px 0 0;
-  width: calc(100% + 5px);
+  height: calc(100vh - 222px);
+  margin: 20px 0 0;
+  width: calc(100% + 4px);
   padding-right: 10px;
 }
 .side__accounts::-webkit-scrollbar {
