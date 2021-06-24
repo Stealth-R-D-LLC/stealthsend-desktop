@@ -41,10 +41,26 @@
             </svg>
           </div>
           <div class="amount-container">
-            <p class="currency">{{ account.utxo }} XST</p>
-            <p class="grey">~ ${{ account.utxo }} USD</p>
+            <p class="currency">
+              {{ formatAmount(Math.abs(account.utxo, true, 8)) }} XST
+            </p>
+            <p class="grey">
+              ~
+              <template v-if="Number(account.utxo) * XST_USD_RATE < 1">
+                {{ formatAmount(Math.abs(account.utxo * XST_USD_RATE), true) }}
+              </template>
+              <template v-else>
+                {{ formatAmount(Math.abs(account.utxo * XST_USD_RATE), false) }}
+              </template>
+              USD
+            </p>
           </div>
-          <a v-if="account.utxo < 1" class="link-purple">Receive XST</a>
+          <a
+            v-if="account.utxo === 0"
+            @click="openReceiveModal(account)"
+            class="link-purple"
+            >Receive XST</a
+          >
           <a v-else class="link">
             <svg
               width="16"
@@ -175,8 +191,15 @@
               </svg>
             </div>
             <div class="amount-container">
-              <p class="currency">{{ account.utxo }} XST</p>
-              <p class="grey">~ ${{ account.utxo }} USD</p>
+              <p class="currency">
+                {{ formatAmount(Math.abs(account.utxo, true, 8)) }} XST
+              </p>
+              <p class="grey">
+                ~ ${{
+                  formatAmount(Math.abs(account.utxo * XST_USD_RATE, false, 8))
+                }}
+                USD
+              </p>
             </div>
           </div>
           <transition name="fill">
@@ -225,7 +248,7 @@
 <script>
 import { computed, ref } from 'vue';
 import { useMainStore } from '@/store';
-
+import useHelpers from '@/composables/useHelpers';
 import router from '@/router';
 import CryptoService from '../../services/crypto';
 
@@ -243,6 +266,7 @@ export default {
     const mainStore = useMainStore();
     const accountOptions = ref('');
     const accountName = ref('');
+    const { formatAmount } = useHelpers();
     let editAccountNameModal = ref(false);
     let accounts = ref(props.accounts);
     const activeAccounts = computed(() => {
@@ -251,8 +275,15 @@ export default {
     const archivedAccounts = computed(() => {
       return accounts.value.filter((obj) => obj.isArchived === true);
     });
+    const XST_USD_RATE = computed(() => {
+      return CryptoService.constraints.XST_USD || 1;
+    });
     function toggleAccountOptions(name) {
       accountOptions.value = name;
+    }
+    function openReceiveModal(account) {
+      mainStore.SET_MODAL_VISIBILITY('receive', true);
+      mainStore.SET_ACCOUNT_DETAILS(account);
     }
     const archiveAccount = async (account) => {
       accounts.value = await CryptoService.archiveAccount(account);
@@ -273,6 +304,7 @@ export default {
     };
     const openAccountDetails = (account) => {
       mainStore.SET_ACCOUNT_DETAILS(account);
+
       router.push('/account/details');
     };
     return {
@@ -290,6 +322,10 @@ export default {
       activateAccount,
       changeAccountName,
       openEditAccountNameModal,
+      openReceiveModal,
+
+      formatAmount,
+      XST_USD_RATE,
     };
   },
 };

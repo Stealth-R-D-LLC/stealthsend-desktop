@@ -212,7 +212,6 @@ export default {
   width: 370px;
   max-width: 100%;
   height: 0;
-  overflow: hidden;
   transition: 0.7s;
 }
 .lock-container .box-animated {
@@ -224,7 +223,7 @@ h4 {
   color: var(--white);
 }
 h5 {
-  margin-bottom: 86px;
+  margin-bottom: 36px;
   color: var(--white);
 }
 .st-button {
@@ -236,7 +235,7 @@ h5 {
   background-position: 92% 49% !important;
 }
 .form {
-  height: calc(100% - 270px);
+  height: calc(100% - 220px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;

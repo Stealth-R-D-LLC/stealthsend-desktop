@@ -30,7 +30,7 @@
         >
           <template #amount="{ item }">
             {{ item.amount > 0 ? '+' : '-' }}
-            {{ formatAmount(Math.abs(item.amount)) }} XST
+            {{ formatAmount(Math.abs(item.amount, true, 8)) }} XST
           </template>
           <template #label="{ item }">
             {{
@@ -39,7 +39,12 @@
           </template>
           <template #amountFiat="{ item }">
             {{ item.amount > 0 ? '+' : '-' }}
-            {{ formatAmount(Math.abs(item.amount * XST_USD_RATE), true) }} USD
+            <template v-if="item.amount * XST_USD_RATE < 1">
+              {{ formatAmount(Math.abs(item.amount * XST_USD_RATE), true) }}
+            </template>
+            <template v-else>
+              {{ formatAmount(Math.abs(item.amount * XST_USD_RATE), false) }}
+            </template>
           </template>
           <template #blocktime="{ item }">
             <div class="flex-center-vertical">
