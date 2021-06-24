@@ -1,5 +1,9 @@
 <template>
   <div class="layout">
+    <ReceiveModal />
+    <QuickReceiveModal />
+    <SendModal />
+    <AddAccount />
     <MenuBar></MenuBar>
     <main class="layout__main">
       <Side v-if="$route.path === '/dashboard'"></Side>
@@ -27,6 +31,10 @@ import MenuBar from '@/components/layout/MenuBar.vue';
 import TopBar from '@/components/layout/TopBar.vue';
 import CryptoService from '@/services/crypto';
 import Side from '@/views/dashboard/components/side.vue';
+import ReceiveModal from '@/components/partials/ReceiveModal.vue';
+import QuickReceiveModal from '@/components/partials/QuickReceiveModal.vue';
+import SendModal from '@/components/partials/SendModal.vue';
+import AddAccount from '@/components/partials/AddAccount.vue';
 
 export default {
   name: 'TsDefault',
@@ -34,6 +42,11 @@ export default {
     MenuBar,
     TopBar,
     Side,
+
+    ReceiveModal,
+    QuickReceiveModal,
+    SendModal,
+    AddAccount,
   },
   setup() {
     CryptoService.init();
