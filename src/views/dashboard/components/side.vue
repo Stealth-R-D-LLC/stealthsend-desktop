@@ -106,7 +106,7 @@ export default {
 
 .side__accounts {
   overflow: auto;
-  height: calc(100vh - 210px);
+  height: calc(100vh - 222px);
   margin: 20px 0 0;
   width: calc(100% + 4px);
   padding-right: 10px;
