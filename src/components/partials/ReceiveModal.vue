@@ -135,9 +135,7 @@
           <StInput v-model="depositAddress" placeholder="Loading..." disabled>
             <StTooltip
               v-if="depositAddress"
-              :tooltip-text="
-                copyPending ? 'Copied to clipboard!' : 'Click to copy'
-              "
+              tooltip-text="Copied to clipboard!"
             >
               <StClipboard :content="depositAddress" @click="handleCopy">
                 <svg
@@ -198,7 +196,7 @@
         </StFormItem>
         <StTooltip
           class="tooltip"
-          :tooltip-text="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
+          tooltip-text="Copied to clipboard!"
         >
           <StClipboard :content="depositAddress" @click="handleCopy"
             >Copy to Clipboard</StClipboard
@@ -414,15 +412,6 @@ export default {
 </script>
 
 <style scoped>
-.form-item {
-  margin: 44px 0;
-}
-
-.form-item.account {
-  position: relative;
-  margin-top: 92px;
-}
-
 .form-item.account label {
   position: absolute;
   top: -46px;
@@ -440,6 +429,14 @@ export default {
   display: block;
   width: 100%;
   text-align: center;
+}
+.tooltip .st-clipboard {
+  font-family: var(--secondary-font);
+  font-size: 12px;
+  line-height: 24px;
+  font-weight: 700;
+  letter-spacing: 0.12px;
+  color: var(--grey50);
 }
 .qr-img {
   margin: 46px auto 0;
@@ -506,17 +503,36 @@ export default {
 .receiving-address :deep label {
   right: 0;
   text-align: center;
+  line-height: 24px;
 }
 </style>
 <style>
 .receive-modal .st-modal-container {
+  display: flex;
+  flex-direction: column;
   width: 480px;
   height: 520px;
   box-sizing: border-box;
+}
+.receive-modal .st-modal__header {
+  margin-bottom: 36px;
+}
+.receive-modal .st-modal__body {
+  margin: 10px 0 0;
+}
+.receive-modal .st-form-item {
+  margin: 10px 0 54px;
+}
+.receive-modal .st-form-item.receiving-address {
+  margin: 0;
+}
+.receive-modal .st-input {
+  margin-bottom: 20;
 }
 .receive-modal .st-modal__footer {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: auto;
 }
 </style>
