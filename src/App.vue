@@ -59,7 +59,6 @@ export default {
 
     // calculate idle time for auto lock
     async function calculateIdleTime() {
-      
       let idleTime = 0;
 
       setInterval(timerIncrement, 1000);
@@ -75,7 +74,11 @@ export default {
         let config = localStorage.getItem('autolock');
         config = JSON.parse(config);
         idleTime = idleTime + 1;
-        if (idleTime > config.interval && config.isEnabled && route.name !== 'Lock') {
+        if (
+          idleTime > config.interval &&
+          config.isEnabled &&
+          route.name !== 'Lock'
+        ) {
           router.push('/lock');
         }
       }
