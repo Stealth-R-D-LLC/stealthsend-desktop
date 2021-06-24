@@ -14,46 +14,45 @@
     </template>
     <template #body>
       <template v-if="currentStep === 1">
-        
-          <StFormItem
-            color="dark"
-            :error-message="form.account.$errors"
-            label="Account"
+        <StFormItem
+          color="dark"
+          :error-message="form.account.$errors"
+          label="Account"
+        >
+          <StMultiselect
+            class="dark"
+            v-model="form.account.$value"
+            :class="{ 'multiselect-filled': account }"
+            :options="accounts"
+            track-by="address"
+            value-prop="address"
+            label="label"
+            :object="true"
+            :can-deselect="false"
+            placeholder="Select account"
+            @select="getUnspentOutputs"
           >
-            <StMultiselect
-              class="dark"
-              v-model="form.account.$value"
-              :class="{ 'multiselect-filled': account }"
-              :options="accounts"
-              track-by="address"
-              value-prop="address"
-              label="label"
-              :object="true"
-              :can-deselect="false"
-              placeholder="Select account"
-              @select="getUnspentOutputs"
-            >
-              <template #singleLabel>
-                <div class="multiselect-single-label">
-                  <p class="account-label">
-                    {{ account && account.label }}
-                  </p>
-                  <p class="account-utxo">
-                    {{ account && account.utxo }}
-                  </p>
-                </div>
-              </template>
+            <template #singleLabel>
+              <div class="multiselect-single-label">
+                <p class="account-label">
+                  {{ account && account.label }}
+                </p>
+                <p class="account-utxo">
+                  {{ account && account.utxo }}
+                </p>
+              </div>
+            </template>
 
-              <template #option="{ option }">
-                <div class="flex-space-between">
-                  <span>
-                    {{ option.label }}
-                  </span>
-                  <span> {{ option.utxo }} XST </span>
-                </div>
-              </template>
-            </StMultiselect>
-          </StFormItem>
+            <template #option="{ option }">
+              <div class="flex-space-between">
+                <span>
+                  {{ option.label }}
+                </span>
+                <span> {{ option.utxo }} XST </span>
+              </div>
+            </template>
+          </StMultiselect>
+        </StFormItem>
         <div class="form-item">
           <StFormItem
             color="dark"
