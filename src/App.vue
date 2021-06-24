@@ -72,7 +72,6 @@ export default {
       });
 
       function timerIncrement() {
-        console.log('incrementing: ', idleTime);
         let config = localStorage.getItem('autolock');
         config = JSON.parse(config);
         idleTime = idleTime + 1;

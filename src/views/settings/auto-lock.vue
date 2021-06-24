@@ -15,7 +15,9 @@
           <div class="options">
             <span
               class="option"
-              :class="{ 'option--is-selected': option.value === selectedInterval }"
+              :class="{
+                'option--is-selected': option.value === selectedInterval,
+              }"
               v-for="option in options"
               :key="option.value"
               @click="changeInterval(option.value)"
@@ -52,10 +54,13 @@ export default {
     // interval config is set in local storage to avoid reading the db every second
 
     function storeIntervalInStorage() {
-      localStorage.setItem('autolock', JSON.stringify({
-        interval: selectedInterval.value,
-        isEnabled: isEnabled.value,
-      }))
+      localStorage.setItem(
+        'autolock',
+        JSON.stringify({
+          interval: selectedInterval.value,
+          isEnabled: isEnabled.value,
+        })
+      );
     }
 
     async function getIntervalFromStorage() {
