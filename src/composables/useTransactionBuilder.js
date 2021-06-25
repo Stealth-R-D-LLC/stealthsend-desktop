@@ -6,7 +6,6 @@ import { Buffer } from 'buffer';
 import { add, format, subtract } from 'mathjs';
 
 export default async function useTransactionBuilder(utxo, sendForm) {
-  console.log('UTXOs: ', utxo);
   const mainStore = useMainStore();
 
   const { fee } = useFeeEstimator(utxo.length);
@@ -27,6 +26,22 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     return change;
   }
 
+  function findPathForAddress(address) {
+    const path = sendForm.account.path;
+    const {account: accountIndex} = CryptoService.breakAccountPath(path)
+    // find address index on this particular account
+    // iterate over account addresses until passed address is found and return its index
+    for(let i = 0; i < Infinity; i++) {
+      // similar logic like in accountDiscovery
+      const acc = CryptoService.getChildFromRoot(accountIndex, 0, i);
+      if (acc.address === address) {
+        let {address} =  CryptoService.breakAccountPath(`${accountIndex}'/0/${i}`);
+        return address;
+      }
+
+    }
+  }
+
   async function buildTransaction() {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve) => {
@@ -41,12 +56,6 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         const txDetails = await mainStore.rpc('gettransaction', [tx.txid]);
 
         let vout = txDetails.vout.find((el) => el.value === tx.amount);
-
-        console.log('adding input: ', {
-          txid: txDetails.txid,
-          vout: vout.n,
-          pubkey: Buffer.from(vout.scriptPubKey.hex, 'hex'),
-        });
 
         rawTransaction.addInput(
           txDetails.txid,
@@ -71,12 +80,10 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
       // add the output for recipient
       rawTransaction.addOutput(recipient.address, recipient.amount);
-      console.log('output 1: ', recipient.address, recipient.amount);
 
       // add the output for the change, send the change back to yourself.
       // Outputs - inputs = transaction fee, so always double-check your math!
       if (change.amount > 0) {
-        console.log('output 2: ', change.address, change.amount);
         rawTransaction.addOutput(change.address, change.amount);
       }
 
@@ -84,18 +91,11 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       let { account: accountIndex } = CryptoService.breakAccountPath(
         sendForm.account.path
       );
-      console.log('account for signing: ', sendForm.account, accountIndex);
-      console.log(
-        'jebemti',
-        CryptoService.getChildFromRoot(accountIndex, 0, 0)
-      );
       const child = CryptoService.master.derivePath(
         `m/44'/${
           process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
-        }'/${accountIndex}'/0/0` // TODO CHANGE 1 (TESTNET) TO 125 (XST)
+        }'/${accountIndex}'/0/${findPathForAddress(utxo[0].address)}` // TODO CHANGE 1 (TESTNET) TO 125 (XST)
       );
-
-      console.log('wif: ', child.toWIF());
 
       const keyPair = bitcoin.ECPair.fromWIF(
         child.toWIF(),
