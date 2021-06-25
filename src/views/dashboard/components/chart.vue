@@ -63,7 +63,9 @@ export default {
                 show: false,
               },
               width: '100%',
-              height: '400px',
+              height: mainStore.componentVisibility.txDashboard
+                ? '400px'
+                : '100%',
               offsetX: -5,
               zoom: {
                 enabled: false,
@@ -180,6 +182,9 @@ export default {
 </script>
 
 <style scoped>
+.full-height .st-dashboard-chart {
+  height: calc(100vh - 220px);
+}
 .st-dashboard-chart {
   height: 400px;
 }
