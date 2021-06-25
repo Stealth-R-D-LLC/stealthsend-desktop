@@ -1,7 +1,12 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-container__overflow">
-      <Chart v-if="componentVisibility.chart"></Chart>
+      <template v-if="!refreshChart">
+        <Chart
+          v-if="componentVisibility.chart"
+          :class="{ 'full-height': !componentVisibility.txDashboard }"
+        ></Chart>
+      </template>
       <TransactionList
         v-if="componentVisibility.txDashboard"
         :has-table-header="false"
@@ -33,6 +38,10 @@ export default {
     const utxo = ref(0);
     const transactions = ref([]);
 
+    const refreshChart = computed(() => {
+      return mainStore.resetChart;
+    });
+
     const componentVisibility = computed(() => {
       return mainStore.componentVisibility;
     });
@@ -52,6 +61,7 @@ export default {
 
     return {
       archiveAccount,
+      refreshChart,
       componentVisibility,
       transactions,
       utxo,
