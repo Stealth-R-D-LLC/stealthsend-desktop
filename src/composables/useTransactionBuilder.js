@@ -85,13 +85,14 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         sendForm.account.path
       );
       console.log('account for signing: ', sendForm.account, accountIndex);
+      console.log('jebemti', CryptoService.getChildFromRoot(accountIndex, 0, 0));
       const child = CryptoService.master.derivePath(
         `m/44'/${
           process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
         }'/${accountIndex}'/0/0` // TODO CHANGE 1 (TESTNET) TO 125 (XST)
       );
 
-      console.log('network: ', CryptoService.network);
+      console.log('wif: ', child.toWIF());
 
       const keyPair = bitcoin.ECPair.fromWIF(
         child.toWIF(),
