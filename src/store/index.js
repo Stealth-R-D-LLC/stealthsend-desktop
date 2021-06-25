@@ -21,6 +21,7 @@ export const useMainStore = defineStore({
       account: false,
       quickReceive: false,
     },
+    resetChart: false,
     componentVisibility: {
       chart: true, // chart on dashboard,
       txDashboard: true, // tx list on dashboard
@@ -35,6 +36,9 @@ export const useMainStore = defineStore({
   actions: {
     SET_ADDRESS_ACTIVE_TAB(payload) {
       this.addressActiveTab = payload;
+    },
+    REFRESH_CHART(payload) {
+      this.resetChart = payload;
     },
     SET_COMPONENT_VISIBILITY(component, visibility = false) {
       this.componentVisibility[component] = visibility;
