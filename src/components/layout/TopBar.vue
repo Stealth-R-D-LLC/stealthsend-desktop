@@ -5,16 +5,20 @@
   >
     <div class="header-left">
       <template v-if="checkVisibilityForRoute(['Dashboard'])">
-        <StIcon
-          :class="{ inactive: !componentVisibility.chart }"
-          name="chart"
-          @click="toggleComponentVisibility('chart')"
-        ></StIcon>
-        <StIcon
-          :class="{ inactive: !componentVisibility.txDashboard }"
-          name="tx-list"
-          @click="toggleComponentVisibility('txDashboard')"
-        ></StIcon>
+        <div :class="{ nonclickable: !componentVisibility.txDashboard }">
+          <StIcon
+            :class="{ inactive: !componentVisibility.chart }"
+            name="chart"
+            @click="toggleComponentVisibility('chart')"
+          ></StIcon>
+        </div>
+        <div :class="{ nonclickable: !componentVisibility.chart }">
+          <StIcon
+            :class="{ inactive: !componentVisibility.txDashboard }"
+            name="tx-list"
+            @click="toggleComponentVisibility('txDashboard')"
+          ></StIcon>
+        </div>
       </template>
       <template v-if="checkVisibilityForRoute(['AccountDetails'])">
         <StMultiselect
@@ -221,6 +225,10 @@ export default {
         component,
         !componentVisibility.value[component]
       );
+      if (component === 'txDashboard') {
+        mainStore.REFRESH_CHART(true);
+        setTimeout(() => mainStore.REFRESH_CHART(false), 1);
+      }
     }
 
     function openQuickDeposit() {
@@ -282,7 +290,7 @@ export default {
   align-items: center;
 }
 
-.header-left svg + svg,
+.header-left div + div,
 .header-right svg + svg {
   margin-left: 24px;
 }
@@ -298,6 +306,19 @@ export default {
 }
 :deep path {
   transition: 0.3s;
+}
+.nonclickable {
+  position: relative;
+}
+.nonclickable::before {
+  content: '';
+  cursor: not-allowed;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
 }
 :deep .inactive path {
   stroke: var(--marine100);

@@ -1,10 +1,10 @@
 <template>
-  <div class="card" :class="{ 'card-purple': account.utxo === 0 }">
+  <div class="card">
     <div class="card__inner">
       <div class="card-header">
         <h6 class="semi-bold">{{ account.label }}</h6>
         <svg
-          :class="[account.utxo === 0 ? 'info-purple' : 'info']"
+          class="info"
           @click="toggleAccountOptions(account.label)"
           width="12"
           height="10"
@@ -270,19 +270,8 @@ export default {
   box-shadow: 0px 8px 24px -8px rgba(34, 3, 101, 0.1);
   border-radius: 2px;
 }
-.card-purple {
-  background: var(--marine300) !important;
-  border: 1px solid var(--marine400) !important;
-}
 .archived {
   margin-top: 64px;
-}
-.info-purple path {
-  stroke: var(--marine700);
-  transition: 0.3s;
-}
-.info-purple:hover path {
-  stroke: var(--white);
 }
 .info path {
   transition: 0.3s;
@@ -295,15 +284,6 @@ export default {
 }
 .info-grey:hover path {
   stroke: var(--marine700);
-}
-.card-purple h6 {
-  color: var(--grey50) !important;
-}
-.card-purple .grey {
-  color: var(--grey50) !important;
-}
-.card-purple .currency {
-  color: var(--grey50) !important;
 }
 .card__inner {
   padding: 16px 20px 24px;
