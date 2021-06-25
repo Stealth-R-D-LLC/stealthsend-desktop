@@ -1,7 +1,7 @@
 <template>
   <div class="transaction-details">
     <div class="top">
-      <span class="title">Transaction details</span>
+      <h6>Transaction details</h6>
       <div class="icons">
         <svg
           width="20"
@@ -68,8 +68,8 @@
         </StFormItem>
       </div>
       <div class="item">
-        <span> Amount </span>
-        <p>
+        <p class="bold">Amount</p>
+        <p class="amount">
           <svg
             v-if="tx.amount > 0"
             width="24"
@@ -108,38 +108,39 @@
         </p>
       </div>
       <div class="item">
-        <span>Account</span>
-        <p>{{ tx.account }}</p>
+        <p class="bold">Account</p>
+        <p class="amount">{{ tx.account }}</p>
       </div>
       <div class="item">
-        <span>Label</span>
-        <p>{{ txWithLabels[tx.txid] || 'No label' }}</p>
+        <p class="bold">Label</p>
+        <p class="amount">{{ txWithLabels[tx.txid] || 'No label' }}</p>
       </div>
       <div class="item">
-        <span>Address</span>
-        <p v-if="tx && tx.vout && tx.vout.length && tx.vout[0]">
-          <StLink>{{ tx.vout[0].scriptPubKey.addresses[0] }}</StLink>
+        <p class="bold">Receiving Address</p>
+        <p
+          v-if="tx && tx.vout && tx.vout.length && tx.vout[0]"
+          class="item-link"
+        >
+          {{ tx.vout[0].scriptPubKey.addresses[0] }}
         </p>
         <p v-else>-</p>
       </div>
       <div class="item">
-        <span>Transaction ID</span>
-        <p>
-          <StLink>{{ tx.txid }}</StLink>
+        <p class="bold">Transaction ID</p>
+        <p class="item-link">
+          {{ tx.txid }}
         </p>
       </div>
       <div class="item">
-        <span>Confirmations</span>
+        <p>Confirmations</p>
         <p>{{ tx.confirmations }}</p>
       </div>
       <div class="item">
-        <span>Date</span>
+        <p>Date</p>
         <p>{{ formatBlocktime(tx.blocktime, 'd MMM, y, h:mm:ss a') }}</p>
       </div>
-      <p class="more-info">
-        <StLink :to="undefined" @click="openBlockExplorer(tx.txid)"
-          >More Information</StLink
-        >
+      <p class="more-info bold" @click="openBlockExplorer(tx.txid)">
+        View on StealthMonitor.org
       </p>
     </div>
   </div>
@@ -237,12 +238,13 @@ export default {
 </script>
 
 <style scoped>
-.title {
-  font-family: var(--primary-font);
-  font-size: 16px;
-  line-height: 24px;
-  letter-spacing: 0.32px;
-  color: var(--grey1000);
+.top .icons {
+  display: flex;
+  align-items: center;
+}
+.top .icons svg {
+  margin-left: 24px;
+  cursor: pointer;
 }
 .item {
   font-family: var(--secondary-font);
@@ -250,48 +252,42 @@ export default {
   padding: 16px 0;
   font-size: 12px;
 }
-.item span {
-  font-weight: 700;
-  line-height: 24px;
-  letter-spacing: 0.12px;
-  color: var(--grey1000);
-}
-.item p {
-  line-height: 24px;
-  letter-spacing: 0.12px;
+.item .amount {
   color: var(--grey1000);
   word-break: break-all;
   margin-top: 8px;
   display: flex;
+  align-items: center;
+}
+.item .item-link {
+  word-break: break-all;
+  font-weight: 700;
+  color: var(--marine500);
 }
 .item p svg {
   margin-right: 12px;
 }
-.item p .st-link {
-  font-weight: 700;
-}
 .body {
   display: flex;
   flex-direction: column;
+  overflow: auto;
+  width: calc(100% + 4px);
+  height: calc(100vh - 85px);
+}
+.body::-webkit-scrollbar {
+  width: 4px;
+}
+.body::-webkit-scrollbar-thumb {
+  background: var(--grey100);
 }
 .more-info {
-  align-self: center;
-  font-family: var(--secondary-font);
-  font-weight: bold;
-  font-size: 12px;
-  line-height: 24px;
-  letter-spacing: 0.12px;
+  margin: 22px auto;
+  width: fit-content;
   color: var(--marine500);
-  padding: 16px 0;
 }
 .top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.top .icons svg {
-  margin-left: 24px;
-  cursor: pointer;
 }
 </style>
