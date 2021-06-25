@@ -85,7 +85,10 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         sendForm.account.path
       );
       console.log('account for signing: ', sendForm.account, accountIndex);
-      console.log('jebemti', CryptoService.getChildFromRoot(accountIndex, 0, 0));
+      console.log(
+        'jebemti',
+        CryptoService.getChildFromRoot(accountIndex, 0, 0)
+      );
       const child = CryptoService.master.derivePath(
         `m/44'/${
           process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1

@@ -168,8 +168,8 @@ const CryptoService = {
       }'/${account}'`
     ); // TODO CHANGE 1 (TESTNET) TO 125 (XST)
     // this.WIFtoPK(child.toWIF()) // decrypt
-    console.log('1: ',  acc.toWIF());
-    console.log('2: ',  keypair.toWIF());
+    console.log('1: ', acc.toWIF());
+    console.log('2: ', keypair.toWIF());
     return {
       address: bitcoin.payments.p2pkh({
         pubkey: keypair.publicKey,
