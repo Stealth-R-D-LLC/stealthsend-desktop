@@ -6,6 +6,7 @@ import { Buffer } from 'buffer';
 import { add, format, subtract } from 'mathjs';
 
 export default async function useTransactionBuilder(utxo, sendForm) {
+  console.log('UTXOs: ', utxo);
   const mainStore = useMainStore();
 
   const { fee } = useFeeEstimator(utxo.length);
@@ -70,10 +71,12 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
       // add the output for recipient
       rawTransaction.addOutput(recipient.address, recipient.amount);
-
+      console.log('output 1: ', recipient.address, recipient.amount);
+      
       // add the output for the change, send the change back to yourself.
       // Outputs - inputs = transaction fee, so always double-check your math!
       if (change.amount > 0) {
+        console.log('output 2: ', change.address, change.amount);
         rawTransaction.addOutput(change.address, change.amount);
       }
 
@@ -81,18 +84,21 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       let { account: accountIndex } = CryptoService.breakAccountPath(
         sendForm.account.path
       );
+      console.log('account for signing: ', sendForm.account, accountIndex);
       const child = CryptoService.master.derivePath(
         `m/44'/${
           process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
         }'/${accountIndex}'/0/0` // TODO CHANGE 1 (TESTNET) TO 125 (XST)
       );
 
+      console.log('network: ', CryptoService.network);
+
       const keyPair = bitcoin.ECPair.fromWIF(
         child.toWIF(),
         CryptoService.network
       );
 
-      console.log('keypair', keyPair);
+      // console.log('keypair', keyPair);
 
       for (let i = 0; i < utxo.length; i++) {
         try {
