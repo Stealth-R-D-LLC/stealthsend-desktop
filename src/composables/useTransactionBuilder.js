@@ -72,7 +72,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       // add the output for recipient
       rawTransaction.addOutput(recipient.address, recipient.amount);
       console.log('output 1: ', recipient.address, recipient.amount);
-      
+
       // add the output for the change, send the change back to yourself.
       // Outputs - inputs = transaction fee, so always double-check your math!
       if (change.amount > 0) {

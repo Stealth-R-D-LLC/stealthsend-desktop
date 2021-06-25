@@ -9,7 +9,11 @@
           recommended to enable Auto-lock. When enabled you will need your
           password to unlock your StealthSend app.
         </p>
-        <StSwitch type="simple" @update:modelValue="toggleAutoLock" v-model="isEnabled">
+        <StSwitch
+          type="simple"
+          @update:modelValue="toggleAutoLock"
+          v-model="isEnabled"
+        >
           Enable Auto-lock
         </StSwitch>
         <div class="minutes-picker" v-if="isEnabled">
