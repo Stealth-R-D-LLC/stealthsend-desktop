@@ -6,11 +6,13 @@
     :visible="isVisible"
     class="send-modal"
     @close="closeModal"
-    @back="goBack"
+    @back="changeStep"
   >
     <template #header>
       <template v-if="currentStep < 4">Send XST</template>
       <template v-if="currentStep === 4">Sending XST</template>
+      <template v-if="currentStep === 5">Success</template>
+      <template v-if="currentStep === 6">Warning</template>
     </template>
     <template #body>
       <template v-if="currentStep === 1">
@@ -259,6 +261,49 @@
           </svg>
           <div class="overlay"></div>
         </div>
+        <p class="progress-note">
+          Your transactions has been assambled, <br />please be patient
+        </p>
+      </template>
+      <template v-if="currentStep === 5">
+        <div class="progress no-background">
+          <svg
+            width="102"
+            height="102"
+            viewBox="0 0 102 102"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle opacity=".3" cx="51" cy="51" r="50" stroke="#E0D3FC" />
+            <circle cx="51" cy="51" r="50" stroke="#E0D3FC" />
+            <path
+              d="M63.456 44.515l-16.97 16.97L38 53"
+              stroke="#FAF9FC"
+              stroke-width="2"
+            />
+          </svg>
+        </div>
+        <p class="progress-note">Transaction sent</p>
+      </template>
+      <template v-if="currentStep === 6">
+        <div class="progress no-background">
+          <svg
+            width="102"
+            height="102"
+            viewBox="0 0 102 102"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle opacity=".3" cx="51" cy="51" r="50" stroke="#E0D3FC" />
+            <circle cx="51" cy="51" r="50" stroke="#E0D3FC" />
+            <path
+              d="M60.97 44.03L44 61M44.03 44.03L61 61"
+              stroke="#FAF9FC"
+              stroke-width="2"
+            />
+          </svg>
+        </div>
+        <p class="progress-note">Transaction failed</p>
       </template>
     </template>
     <template #footer class="flex-center-all">
@@ -411,7 +456,6 @@ export default {
         })
         .filter((el) => el.length > 0)
         .reduce((a, b) => a.concat(b), []);
-      console.log('res', unspentOutputs);
       //       const outputs = await mainStore.rpc('getaddressoutputs', [
       //   account.address,
       //   1,
@@ -434,10 +478,12 @@ export default {
 
     async function send() {
       try {
+        changeStep(4);
         await validateFields();
         const utxo = coinSelection();
 
         if (utxo.length === 0) {
+          changeStep(6);
           return;
         }
 
@@ -446,32 +492,19 @@ export default {
           amount: amount.value,
           account: account.value,
         });
-        CryptoService.storeTxAndLabel(txid, label.value);
-        // console.log('TXID: ', txid);
-        changeStep(4);
-        setTimeout(() => closeModal(), 2000);
+        if (txid) {
+          CryptoService.storeTxAndLabel(txid, label.value);
+          changeStep(5);
+        } else {
+          changeStep(6);
+        }
+        // setTimeout(() => closeModal(), 2000);
       } catch (e) {
-        console.log('ERRORČE', e);
         if (e instanceof ValidationError) {
           console.log(e);
         }
       }
     }
-    // async function changeAccount(acc) {
-    //   const { account, change } = CryptoService.breakAccountPath(acc.path);
-    //   const discoveredAddresses = await CryptoService.accountDiscovery(account);
-    //   let nextFreeAddress = CryptoService.nextToUse(
-    //     discoveredAddresses.freeAddresses
-    //   );
-    //   const next = CryptoService.breakAccountPath(nextFreeAddress);
-
-    //   const child = CryptoService.getChildFromRoot(
-    //     account,
-    //     change,
-    //     next.address
-    //   );
-    //   depositAddress.value = child.address;
-    // }
 
     let copyPending = ref(false);
     function handleCopy() {
@@ -510,9 +543,6 @@ export default {
     function changeStep(step) {
       currentStep.value = step;
     }
-    function goBack(step) {
-      currentStep.value = step;
-    }
 
     function greet(item) {
       form.amount.$value = item;
@@ -540,7 +570,6 @@ export default {
 
       currentStep,
       changeStep,
-      goBack,
 
       handleCopy,
       copyPending,
@@ -632,12 +661,22 @@ export default {
   height: 104px;
 }
 .progress {
-  margin: 96px auto 44px;
+  margin: 38px auto 44px;
   position: relative;
   width: 100px;
   height: 100px;
   background: rgba(224, 211, 252, 0.3);
   border-radius: 100px;
+}
+.no-background {
+  background: none;
+}
+.progress-note {
+  font-family: var(--secondary-font);
+  font-size: 12px;
+  line-height: 24px;
+  letter-spacing: 0.12px;
+  text-align: center;
 }
 .overlay {
   background-color: var(--marine900);
