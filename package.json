@@ -4,7 +4,7 @@
   "license": "UNLICENSED",
   "description": "Stealth Desktop",
   "homepage": "https://stealth.org",
-  "version": "0.1.10",
+  "version": "0.1.12",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -40,7 +40,7 @@
     "mitt": "^2.1.0",
     "nedb-promise": "^2.0.1",
     "pinia": "^2.0.0-alpha.13",
-    "stealth-kit": "0.1.72",
+    "stealth-kit": "0.1.73",
     "vanillaqr": "^1.0.0",
     "vue": "3.0.0",
     "vue-multiselect": "^3.0.0-alpha.2",

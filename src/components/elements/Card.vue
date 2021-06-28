@@ -34,10 +34,10 @@
       </div>
       <div class="amount-container">
         <h6 class="currency">
-          {{ isHiddenAmounts ? '***' : steps[type].amountLeft }}
+          {{ isHiddenAmounts ? '••• XST' : steps[type].amountLeft }}
         </h6>
         <p class="medium grey">
-          ~ {{ isHiddenAmounts ? '$***' : steps[type].amountRight }}
+          ~ {{ isHiddenAmounts ? '$•••' : steps[type].amountRight }}
           <svg
             class="star"
             width="16"
@@ -179,7 +179,7 @@ export default {
       return [
         {
           asset: 'XST',
-          amountLeft: `${formatAmount(props.account.utxo, true, 2)}`,
+          amountLeft: `${formatAmount(props.account.utxo, true, 2)} XST`,
           amountRight: `$${formatAmount(
             multiply(props.account.utxo, CryptoService.constraints.XST_USD),
             true,

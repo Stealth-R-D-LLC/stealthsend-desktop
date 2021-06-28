@@ -171,7 +171,7 @@
             >
               <StTooltip
                 v-if="depositAddress"
-                :tooltip-text="
+                :tooltip="
                   copyPending ? 'Copied to clipboard!' : 'Click to copy'
                 "
               >
