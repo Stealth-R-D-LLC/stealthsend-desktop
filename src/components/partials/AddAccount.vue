@@ -79,7 +79,7 @@
             >
               <StTooltip
                 class="tooltip"
-                :tooltip-text="
+                :tooltip="
                   copyPending ? 'Copied to clipboard!' : 'Click to copy'
                 "
               >

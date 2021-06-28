@@ -99,16 +99,17 @@
           </template>
           <template #actions="{ item }">
             <div class="icon-container">
-              <svg
-                class="icon"
-                width="8"
-                height="12"
-                viewBox="0 0 8 12"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M5 5L6 0L0 7H3L2 12L8 5H5Z" fill="#4E00F6" />
-              </svg>
+              <StTooltip tooltip="Feeless transaction" position="top-left">
+                <svg
+                  width="8"
+                  height="12"
+                  viewBox="0 0 8 12"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M5 5L6 0L0 7H3L2 12L8 5H5Z" fill="#4E00F6" />
+                </svg>
+              </StTooltip>
               <svg
                 v-if="isExpanded !== item.index"
                 class="icon"
@@ -470,6 +471,10 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.icon-container :deep .tooltip {
+  margin-right: 24px;
 }
 
 .icon {

@@ -141,23 +141,23 @@
     <br /><br />
     <h2>Copy to clipboard</h2>
     <StTooltip
-      :tooltip-text="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
+      :tooltip="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
     >
       <StClipboard content="kopirani string" @click="handleCopy"></StClipboard>
     </StTooltip>
     <br />
     <br />
     <h2>Tooltip</h2>
-    <StTooltip position="left" tooltip-text="aaaaa">
+    <StTooltip position="left" tooltip="aaaaa">
       <button>left</button>
     </StTooltip>
-    <StTooltip tooltip-text="aaaaa">
+    <StTooltip tooltip="aaaaa">
       <button>top</button>
     </StTooltip>
-    <StTooltip position="bottom" tooltip-text="aaaaa">
+    <StTooltip position="bottom" tooltip="aaaaa">
       <button>bottom</button>
     </StTooltip>
-    <StTooltip position="right" tooltip-text="aaaaa">
+    <StTooltip position="right" tooltip="aaaaa">
       <button>right</button>
     </StTooltip>
     <br />

@@ -135,7 +135,7 @@
           <StInput v-model="depositAddress" placeholder="Loading..." disabled>
             <StTooltip
               v-if="depositAddress"
-              tooltip-text="Copied to clipboard!"
+              :tooltip="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
             >
               <StClipboard :content="depositAddress" @click="handleCopy">
                 <svg
@@ -194,7 +194,10 @@
             disabled
           ></StInput>
         </StFormItem>
-        <StTooltip class="tooltip" tooltip-text="Copied to clipboard!">
+        <StTooltip
+          class="tooltip"
+          :tooltip="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
+        >
           <StClipboard :content="depositAddress" @click="handleCopy"
             >Copy to Clipboard</StClipboard
           >
