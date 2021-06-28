@@ -1603,7 +1603,7 @@
 <script>
 import { ref, onMounted, watchEffect, computed } from 'vue';
 import * as bip39 from 'bip39';
-import * as bip32 from 'bip32';
+// import * as bip32 from 'bip32';
 import { useMainStore } from '@/store';
 import router from '../router';
 import CryptoService from '../services/crypto';
@@ -1823,6 +1823,10 @@ export default {
         selectedRecoveryWords.value.length ===
         Number(restoreRecoveryPhraseLength.value)
       ) {
+        // TODO validate recovered mnemonic before going further
+        // show error screen if mnemonic not valid
+        console.log('------>', CryptoService.isMnemonicValid(selectedRecoveryWords.value.join(' ')));
+
         recoveryStepNext();
       }
     }
@@ -1891,33 +1895,33 @@ export default {
       recoveryStep.value += 1;
     }
 
-    async function recover() {
-      // recover an existing wallet via mnemonic
-      // password is asked because we have to lock the seed in the database
-      // user is createing a new password in this step
-      try {
-        await validateFields();
-        let mnemonic = selectedRecoveryWords.value.join(' ');
-        console.log(mnemonic);
-        let bytes = await bip39.mnemonicToSeedSync(mnemonic);
-        const master = await bip32.fromSeed(bytes, CryptoService.network); // root
-        recovered.value = {
-          seed: bytes.toString('hex'),
-          master: master,
-        };
+    // async function recover() {
+    //   // recover an existing wallet via mnemonic
+    //   // password is asked because we have to lock the seed in the database
+    //   // user is createing a new password in this step
+    //   try {
+    //     await validateFields();
+    //     let mnemonic = selectedRecoveryWords.value.join(' ');
+    //     console.log(mnemonic);
+    //     let bytes = await bip39.mnemonicToSeedSync(mnemonic);
+    //     const master = await bip32.fromSeed(bytes, CryptoService.network); // root
+    //     recovered.value = {
+    //       seed: bytes.toString('hex'),
+    //       master: master,
+    //     };
 
-        CryptoService.seed = bytes.toString('hex');
-        CryptoService.master = master;
-        await CryptoService.storeWalletInDb(password.value);
+    //     CryptoService.seed = bytes.toString('hex');
+    //     CryptoService.master = master;
+    //     await CryptoService.storeWalletInDb(password.value);
 
-        await restoreAccounts();
-        goToDashboard();
-      } catch (e) {
-        if (e instanceof ValidationError) {
-          console.log(e.message);
-        }
-      }
-    }
+    //     await restoreAccounts();
+    //     goToDashboard();
+    //   } catch (e) {
+    //     if (e instanceof ValidationError) {
+    //       console.log(e.message);
+    //     }
+    //   }
+    // }
 
     async function restoreAccounts() {
       mainStore.START_GLOBAL_LOADING();
@@ -2030,7 +2034,7 @@ export default {
 
       recoverWallet,
       mnemonic,
-      recover,
+      // recover,
       recovered,
       paymentCode,
       /* confirmPaymentCode, */
