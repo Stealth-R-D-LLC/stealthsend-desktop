@@ -1825,7 +1825,10 @@ export default {
       ) {
         // TODO validate recovered mnemonic before going further
         // show error screen if mnemonic not valid
-        console.log('------>', CryptoService.isMnemonicValid(selectedRecoveryWords.value.join(' ')));
+        console.log(
+          '------>',
+          CryptoService.isMnemonicValid(selectedRecoveryWords.value.join(' '))
+        );
 
         recoveryStepNext();
       }
