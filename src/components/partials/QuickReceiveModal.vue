@@ -45,7 +45,7 @@
       </StFormItem>
       <StTooltip
         class="tooltip"
-        :tooltip-text="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
+        :tooltip="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
       >
         <StClipboard :content="depositAddress" @click="handleCopy"
           >Copy to Clipboard</StClipboard
