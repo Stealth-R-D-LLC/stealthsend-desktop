@@ -38,20 +38,25 @@
                 <svg
                   v-if="!showPassword"
                   @click="showPassword = true"
-                  width="26"
-                  height="14"
-                  viewBox="0 0 26 14"
+                  width="44"
+                  height="24"
+                  viewBox="0 0 44 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    fill-rule="evenodd"
                     clip-rule="evenodd"
-                    d="M13 13C17.0501 13 20.7168 11 24 7C20.7168 3 17.0501 1 13 1C8.94991 1 5.28325 3 2 7C5.28325 11 8.94991 13 13 13Z"
-                    stroke="#FEFEFE"
+                    d="M33 18c3.314 0 6.314-1.667 9-5-2.686-3.333-5.686-5-9-5s-6.314 1.667-9 5c2.686 3.333 5.686 5 9 5z"
+                    stroke="#FAF9FC"
                     stroke-width="2"
                   />
-                  <circle cx="13" cy="7" r="2" fill="#4E00F6" />
+                  <circle
+                    r="1"
+                    transform="matrix(-1 0 0 1 33 13)"
+                    fill="#FAF9FC"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                  />
                 </svg>
                 <svg
                   v-else
