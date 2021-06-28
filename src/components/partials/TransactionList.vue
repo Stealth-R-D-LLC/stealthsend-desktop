@@ -81,7 +81,11 @@
           </template>
           <template #amount="{ item }">
             {{ item.amount > 0 ? '+' : '-' }}
-            {{ formatAmount(Math.abs(item.amount, true, 8)) }} XST
+            {{
+              isHiddenAmounts
+                ? '••• XST'
+                : `${formatAmount(Math.abs(item.amount, true, 8))} XST`
+            }}
           </template>
           <template #label="{ item }">
             {{
@@ -91,10 +95,24 @@
           <template #amountFiat="{ item }">
             {{ item.amount > 0 ? '+' : '-' }}
             <template v-if="item.amount * XST_USD_RATE < 1">
-              ${{ formatAmount(Math.abs(item.amount * XST_USD_RATE), true) }}
+              {{
+                isHiddenAmounts
+                  ? '$•••'
+                  : `$${formatAmount(
+                      Math.abs(item.amount * XST_USD_RATE),
+                      true
+                    )}`
+              }}
             </template>
             <template v-else>
-              {{ formatAmount(Math.abs(item.amount * XST_USD_RATE), false) }}
+              {{
+                isHiddenAmounts
+                  ? '$•••'
+                  : `$${formatAmount(
+                      Math.abs(item.amount * XST_USD_RATE),
+                      false
+                    )}`
+              }}
             </template>
           </template>
           <template #actions="{ item }">
@@ -167,85 +185,88 @@
               class="expanded"
               :class="{ expanded__active: isExpanded === item.index }"
             >
-              <svg
-                class="icon"
-                width="8"
-                height="12"
-                viewBox="0 0 8 12"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M5 5L6 0L0 7H3L2 12L8 5H5Z" fill="#4E00F6" />
-              </svg>
-              <svg
-                @click="openTransaction(item)"
-                class="icon"
-                width="19"
-                height="20"
-                viewBox="0 0 19 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M13 14L18 19"
-                  stroke="#6B2AF7"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M0 5H6"
-                  stroke="#6B2AF7"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M0 9H9"
-                  stroke="#6B2AF7"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M0 13H9"
-                  stroke="#6B2AF7"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M5 16.4185C5.92643 16.7935 6.9391 17 8 17C12.4183 17 16 13.4183 16 9C16 4.58172 12.4183 1 8 1C6.9391 1 5.92643 1.20651 5 1.58152"
-                  stroke="#6B2AF7"
-                  stroke-width="2"
-                />
-              </svg>
-              <svg
-                class="icon"
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M0 6.5H6"
-                  stroke="#6B2AF7"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M0 2.5H9"
-                  stroke="#6B2AF7"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M18 4.5L7 16.5L3 18.5L2 17.5L4 13.5L15 1.5L18 4.5Z"
-                  stroke="#6B2AF7"
-                  stroke-width="2"
-                />
-                <path d="M5 12.5L8 15.5" stroke="#6B2AF7" stroke-width="2" />
-                <path d="M13 4.5L15 6.5" stroke="#6B2AF7" stroke-width="2" />
-              </svg>
+              <div class="expanded__inner">
+                <StTooltip tooltip="Feeless transaction" position="top-left">
+                  <svg
+                    width="8"
+                    height="12"
+                    viewBox="0 0 8 12"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M5 5L6 0L0 7H3L2 12L8 5H5Z" fill="#4E00F6" />
+                  </svg>
+                </StTooltip>
+                <svg
+                  @click="openTransaction(item)"
+                  class="icon"
+                  width="19"
+                  height="20"
+                  viewBox="0 0 19 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M13 14L18 19"
+                    stroke="#6B2AF7"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M0 5H6"
+                    stroke="#6B2AF7"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M0 9H9"
+                    stroke="#6B2AF7"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M0 13H9"
+                    stroke="#6B2AF7"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M5 16.4185C5.92643 16.7935 6.9391 17 8 17C12.4183 17 16 13.4183 16 9C16 4.58172 12.4183 1 8 1C6.9391 1 5.92643 1.20651 5 1.58152"
+                    stroke="#6B2AF7"
+                    stroke-width="2"
+                  />
+                </svg>
+                <svg
+                  class="icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 6.5H6"
+                    stroke="#6B2AF7"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M0 2.5H9"
+                    stroke="#6B2AF7"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M18 4.5L7 16.5L3 18.5L2 17.5L4 13.5L15 1.5L18 4.5Z"
+                    stroke="#6B2AF7"
+                    stroke-width="2"
+                  />
+                  <path d="M5 12.5L8 15.5" stroke="#6B2AF7" stroke-width="2" />
+                  <path d="M13 4.5L15 6.5" stroke="#6B2AF7" stroke-width="2" />
+                </svg>
+              </div>
             </div>
           </template>
         </StTable>
@@ -405,6 +426,7 @@ export default {
       orderTransactions,
       txs,
       findLabelForTx,
+      isHiddenAmounts: computed(() => mainStore.isAmountsHidden),
     };
   },
 };
@@ -473,7 +495,9 @@ export default {
   justify-content: center;
 }
 
-.icon-container :deep .tooltip {
+:deep .tooltip {
+  display: flex;
+  align-items: center;
   margin-right: 24px;
 }
 
@@ -488,16 +512,19 @@ export default {
   overflow: hidden;
   width: 0;
   position: absolute;
-  display: flex;
-  align-items: center;
   top: calc(50% - 15px);
   right: 50px;
   background-color: #ffffff;
-  padding: 5px;
   transition: 0.3s;
 }
 .expanded__active {
+  overflow: initial;
   width: 105px;
+}
+.expanded__inner {
+  padding: 5px;
+  display: flex;
+  align-items: center;
 }
 .filter + .filter {
   margin-left: 8px;
