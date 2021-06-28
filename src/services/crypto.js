@@ -119,13 +119,14 @@ const CryptoService = {
       hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16))
     );
   },
-  async generateMnemonicAndSeed() {
+  async generateMnemonicAndSeed(wordsLength = 12) {
+    let strength = (wordsLength / 3) * 32;
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve) => {
       // HD wallets are created from a single root seed, which is a 128-, 256-, or 512-bit random number.
       // Everything else in the HD wallet is deterministically derived from this root seed,
       // which makes it possible to re-create the entire HD wallet from that seed in any compatible HD wallet
-      const mnemonic = await bip39.generateMnemonic();
+      const mnemonic = await bip39.generateMnemonic(strength);
       const seed = await bip39.mnemonicToSeedSync(mnemonic); // recovery seed of the master bip32 seed.?
       const master = await bip32.fromSeed(seed, this.network); // aka. root
       this.master = master;

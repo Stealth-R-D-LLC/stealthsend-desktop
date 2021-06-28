@@ -243,4 +243,10 @@ export default {
   width: 480px;
   height: 520px;
 }
+.quick-receive-modal .st-modal-container--dark .st-modal__header {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.32px;
+}
 </style>
