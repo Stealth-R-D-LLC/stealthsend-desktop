@@ -71,9 +71,10 @@ export default {
       });
 
       function timerIncrement() {
-        let config = localStorage.getItem('autolock');
+        let config = localStorage.getItem('autolock') || null;
         config = JSON.parse(config);
         idleTime = idleTime + 1;
+        if (!config) return;
         if (
           idleTime > config.interval &&
           config.isEnabled &&

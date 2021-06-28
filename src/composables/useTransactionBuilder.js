@@ -26,6 +26,23 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     return change;
   }
 
+  function findPathForAddress(address) {
+    const path = sendForm.account.path;
+    const { account: accountIndex } = CryptoService.breakAccountPath(path);
+    // find address index on this particular account
+    // iterate over account addresses until passed address is found and return its index
+    for (let i = 0; i < Infinity; i++) {
+      // similar logic like in accountDiscovery
+      const acc = CryptoService.getChildFromRoot(accountIndex, 0, i);
+      if (acc.address === address) {
+        let { address } = CryptoService.breakAccountPath(
+          `${accountIndex}'/0/${i}`
+        );
+        return address;
+      }
+    }
+  }
+
   async function buildTransaction() {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve) => {
@@ -40,12 +57,6 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         const txDetails = await mainStore.rpc('gettransaction', [tx.txid]);
 
         let vout = txDetails.vout.find((el) => el.value === tx.amount);
-
-        console.log('adding input: ', {
-          txid: txDetails.txid,
-          vout: vout.n,
-          pubkey: Buffer.from(vout.scriptPubKey.hex, 'hex'),
-        });
 
         rawTransaction.addInput(
           txDetails.txid,
@@ -84,7 +95,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       const child = CryptoService.master.derivePath(
         `m/44'/${
           process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
-        }'/${accountIndex}'/0/0` // TODO CHANGE 1 (TESTNET) TO 125 (XST)
+        }'/${accountIndex}'/0/${findPathForAddress(utxo[0].address)}` // TODO CHANGE 1 (TESTNET) TO 125 (XST)
       );
 
       const keyPair = bitcoin.ECPair.fromWIF(
@@ -92,7 +103,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         CryptoService.network
       );
 
-      console.log('keypair', keyPair);
+      // console.log('keypair', keyPair);
 
       for (let i = 0; i < utxo.length; i++) {
         try {
