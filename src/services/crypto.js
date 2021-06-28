@@ -119,14 +119,13 @@ const CryptoService = {
       hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16))
     );
   },
-  async generateMnemonicAndSeed(wordsLength = 12) {
-    let strength = (wordsLength / 3) * 32;
+  async generateMnemonicAndSeed() {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve) => {
       // HD wallets are created from a single root seed, which is a 128-, 256-, or 512-bit random number.
       // Everything else in the HD wallet is deterministically derived from this root seed,
       // which makes it possible to re-create the entire HD wallet from that seed in any compatible HD wallet
-      const mnemonic = await bip39.generateMnemonic(strength);
+      const mnemonic = await bip39.generateMnemonic();
       const seed = await bip39.mnemonicToSeedSync(mnemonic); // recovery seed of the master bip32 seed.?
       const master = await bip32.fromSeed(seed, this.network); // aka. root
       this.master = master;
@@ -169,6 +168,8 @@ const CryptoService = {
       }'/${account}'`
     ); // TODO CHANGE 1 (TESTNET) TO 125 (XST)
     // this.WIFtoPK(child.toWIF()) // decrypt
+    // console.log('1: ', acc.toWIF());
+    // console.log('2: ', keypair.toWIF());
     return {
       address: bitcoin.payments.p2pkh({
         pubkey: keypair.publicKey,
