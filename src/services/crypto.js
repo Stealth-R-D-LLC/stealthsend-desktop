@@ -171,9 +171,16 @@ const CryptoService = {
     // this.WIFtoPK(child.toWIF()) // decrypt
     // console.log('1: ', acc.toWIF());
     // console.log('2: ', keypair.toWIF());
-    console.log('public key: ', keypair);
-    console.log('public key1: ', Buffer.from(keypair.d));
-    console.log('---');
+    // console.log('public key: ', acc);
+    // console.log('a', acc.neutered());
+    // console.log('---', String(acc.neutered().toBase58()),);
+    // console.log('keypair: ', keypair.publicKey.toString('hex'));
+    // console.log('keypair: ', keypair.privateKey.toString('hex'));
+    // console.log('keypair towif: ', keypair.toWIF());
+    // console.log('addr ', bitcoin.payments.p2pkh({
+    //   pubkey: keypair.publicKey.toString('hex'),
+    //   network: this.network,
+    // }).address);
     return {
       address: bitcoin.payments.p2pkh({
         pubkey: keypair.publicKey,
