@@ -237,6 +237,7 @@
                   />
                 </svg>
                 <svg
+                  @click="openTransaction(item, true)"
                   class="icon"
                   width="20"
                   height="20"
@@ -385,7 +386,8 @@ export default {
       return Object.keys(txs.value);
     });
 
-    function openTransaction(trx) {
+    function openTransaction(trx, isEditMode = false) {
+      trx['isEditMode'] = isEditMode;
       mainStore.SET_OFF_CANVAS_DATA(trx);
       mainStore.SET_CURRENT_CANVAS('transaction-details');
       mainStore.TOGGLE_DRAWER(true);
