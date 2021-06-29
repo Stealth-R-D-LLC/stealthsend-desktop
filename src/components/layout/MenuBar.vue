@@ -336,7 +336,7 @@ export default defineComponent({
   padding: 12px 0;
   text-decoration: none;
   padding-left: 24px;
-  bottom: 32px;
+  bottom: 24px;
 }
 
 .layout__aside li {
@@ -361,9 +361,9 @@ export default defineComponent({
 } */
 
 .layout__aside .item {
-  padding: 18px 0;
+  line-height: 24px;
+  padding: 14px 0 14px 24px;
   text-decoration: none;
-  padding-left: 24px;
   display: flex;
   align-items: center;
   transition: 0.3s;
