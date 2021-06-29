@@ -1,0 +1,10 @@
+.transactions-container .st-input input {
+  font-size: 12px;
+  letter-spacing: 0.12px;
+  color: var(--grey900);
+  padding: 12px 0 9px;
+}
+
+.transactions-container .st-input__inner::-webkit-input-placeholder {
+  color: var(--grey900);
+}
