@@ -161,9 +161,9 @@ export default {
   border-radius: 6px;
   font-size: 10px;
   line-height: 16px;
-  letter-spacing: 0.16px;
+  letter-spacing: 0.12px;
   color: var(--grey900);
-  font-family: var(--seconday-font);
+  font-family: var(--secondary-font);
   transition: 0.3s;
 }
 
@@ -186,7 +186,7 @@ export default {
     ),
     var(--grey100);
   border: 1px solid rgba(207, 205, 209, 0.25);
-  font-weight: 600;
+  font-weight: 700;
   color: var(--marine500);
   /* padding: 19px; */
 }

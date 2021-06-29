@@ -12,6 +12,7 @@
 /* @import '../node_modules/@vueform/multiselect/themes/default.css'; */
 @import 'css/components/multiselect.css';
 @import 'css/components/datepicker.css';
+@import 'css/components/inputs.css';
 @import 'css/skeleton/layout.css';
 
 @import 'css/utilities/modifiers.css';
