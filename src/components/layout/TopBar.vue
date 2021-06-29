@@ -50,66 +50,81 @@
             </div>
           </template>
         </StMultiselect>
-        <svg
-          v-if="!isHiddenAmounts"
-          @click="toggleHiddenAmounts"
-          width="26"
-          height="14"
-          viewBox="0 0 26 14"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          class="hide-amounts"
-        >
-          <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M13 13C17.0501 13 20.7168 11 24 7C20.7168 3 17.0501 1 13 1C8.94991 1 5.28325 3 2 7C5.28325 11 8.94991 13 13 13Z"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
-          <circle cx="13" cy="7" r="2" fill="#4E00F6" />
-        </svg>
-        <svg
-          v-else
-          @click="toggleHiddenAmounts"
-          width="26"
-          height="19"
-          viewBox="0 0 26 19"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          class="hide-amounts"
-        >
-          <path
-            d="M13 3C8.94991 3 5.28325 5.03704 2 9.11111C5.28325 13.1852 8.94991 15.2222 13 15.2222C17.0501 15.2222 20.7168 13.1852 24 9.11111C23.2599 8.1928 22.5004 7.37799 21.7214 6.66667"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
-          <path d="M9 9L15.1111 9" stroke="#4E00F6" stroke-width="2" />
-          <path
-            d="M23.1113 1L6.00022 18.1111"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
-        </svg>
-        <svg
-          width="20"
-          height="22"
-          viewBox="0 0 20 22"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          class="hide-amounts"
-        >
-          <path
-            d="M10.611 10.253v2M7.611 10.253v3M14.611 10.253h-8M16.111 12.753a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
-          <path
-            d="M14.611 15.253c-2.4 3-5 5-5 5s-2.5-2-5-5-3-6-3-6l8-7 4 3.5"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
-        </svg>
+        <div class="icons-flex">
+          <svg
+            v-if="!isHiddenAmounts"
+            @click="toggleHiddenAmounts"
+            width="26"
+            height="14"
+            viewBox="0 0 26 14"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M13 13C17.0501 13 20.7168 11 24 7C20.7168 3 17.0501 1 13 1C8.94991 1 5.28325 3 2 7C5.28325 11 8.94991 13 13 13Z"
+              stroke="#4E00F6"
+              stroke-width="2"
+            />
+            <circle cx="13" cy="7" r="2" fill="#4E00F6" />
+          </svg>
+          <svg
+            v-else
+            @click="toggleHiddenAmounts"
+            width="26"
+            height="19"
+            viewBox="0 0 26 19"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M13 3C8.94991 3 5.28325 5.03704 2 9.11111C5.28325 13.1852 8.94991 15.2222 13 15.2222C17.0501 15.2222 20.7168 13.1852 24 9.11111C23.2599 8.1928 22.5004 7.37799 21.7214 6.66667"
+              stroke="#4E00F6"
+              stroke-width="2"
+            />
+            <path d="M9 9L15.1111 9" stroke="#4E00F6" stroke-width="2" />
+            <path
+              d="M23.1113 1L6.00022 18.1111"
+              stroke="#4E00F6"
+              stroke-width="2"
+            />
+          </svg>
+          <svg
+            @click="isVisible = true"
+            width="23"
+            height="22"
+            viewBox="0 0 23 22"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12.6111 10.2529V12.2529"
+              stroke="#4E00F6"
+              stroke-width="2"
+            />
+            <path
+              d="M9.61108 10.2529V13.2529"
+              stroke="#4E00F6"
+              stroke-width="2"
+            />
+            <path
+              d="M16.6111 10.2529L8.61108 10.2529"
+              stroke="#4E00F6"
+              stroke-width="2"
+            />
+            <path
+              d="M18.1111 12.7529C19.4918 12.7529 20.6111 11.6336 20.6111 10.2529C20.6111 8.87222 19.4918 7.75293 18.1111 7.75293C16.7304 7.75293 15.6111 8.87222 15.6111 10.2529C15.6111 11.6336 16.7304 12.7529 18.1111 12.7529Z"
+              stroke="#4E00F6"
+              stroke-width="2"
+            />
+            <path
+              d="M16.6111 15.2532C14.2112 18.2532 11.6111 20.2532 11.6111 20.2532C11.6111 20.2532 9.11112 18.2532 6.61113 15.2532C4.11113 12.2532 3.61112 9.25314 3.61112 9.25314L11.6111 2.25315L15.6111 5.75315"
+              stroke="#4E00F6"
+              stroke-width="2"
+            />
+          </svg>
+        </div>
       </template>
       <template v-if="checkVisibilityForRoute(['ArchivedAccounts'])">
         <svg
@@ -174,6 +189,295 @@
       <StIcon @click="openQuickDeposit" name="qr"></StIcon>
       <StIcon @click="goto('/settings')" name="settings"></StIcon>
     </div>
+    <StModal
+      light
+      :visible="isVisible"
+      @close="closeModal"
+      class="account-modal"
+    >
+      <template #header>{{
+        checkPassword ? 'Password Required' : 'Account Keys'
+      }}</template>
+      <template #body>
+        <div v-if="!checkPassword" class="account-tabs">
+          <a
+            :class="{ active: activeStep === 'public-key' }"
+            @click="changeStep('public-key')"
+            >Public Key</a
+          >
+          <a
+            :class="{ active: activeStep === 'private-key' }"
+            @click="changeStep('private-key')"
+            >Private Key</a
+          >
+        </div>
+        <div v-if="activeStep === 'public-key'">
+          <template v-if="!publicQrCode">
+            <div class="desc">
+              <p>
+                The Public Key provides access to transactions records and
+                balances, but does not allow sending of funds.
+              </p>
+            </div>
+            <p class="bold">xpub</p>
+            <p class="key">{{ publicKey }}</p>
+            <div class="copy-key">
+              <p>Copy xpub to clipboard or show QR code</p>
+              <div>
+                <StTooltip
+                  :tooltip="
+                    copyPending ? 'Copied to clipboard!' : 'Click to copy'
+                  "
+                  position="bottom-left"
+                >
+                  <StClipboard :content="publicKey" @click="handleCopy">
+                    <svg
+                      width="18"
+                      height="22"
+                      viewBox="0 0 18 22"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M13 6H1V21H13V6Z"
+                        stroke="#4E00F6"
+                        stroke-width="2"
+                      />
+                      <line
+                        x1="17"
+                        y1="18"
+                        x2="17"
+                        stroke="#4E00F6"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M3 1L18 1"
+                        stroke="#4E00F6"
+                        stroke-width="2"
+                      /></svg
+                  ></StClipboard>
+                </StTooltip>
+                <StTooltip
+                  tooltip="Click to show QR code"
+                  position="bottom-left"
+                >
+                  <svg
+                    @click="publicQrCode = true"
+                    width="22"
+                    height="22"
+                    viewBox="0 0 22 22"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M9 9H1V1H9V9Z"
+                      stroke="#4E00F6"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M13 0V4H17V1H21V6"
+                      stroke="#4E00F6"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M9 22V19H5V21H1V17"
+                      stroke="#4E00F6"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M13 22V18H17V21H21V18"
+                      stroke="#4E00F6"
+                      stroke-width="2"
+                    />
+                    <path d="M11 15H8V13H4" stroke="#4E00F6" stroke-width="2" />
+                    <path d="M12 9H22" stroke="#4E00F6" stroke-width="2" />
+                    <path
+                      d="M17 11V14H21V11"
+                      stroke="#4E00F6"
+                      stroke-width="2"
+                    />
+                    <path d="M1 12V15" stroke="#4E00F6" stroke-width="2" />
+                    <path d="M13 11V13" stroke="#4E00F6" stroke-width="2" />
+                  </svg>
+                </StTooltip>
+              </div>
+            </div>
+            <p class="view-more bold">View on StealthMonitor</p>
+          </template>
+          <template v-else>
+            <img class="qr-code" src="../../../static/qrcode.png" />
+            <p @click="publicQrCode = false" class="view-more bold">
+              Hide QR code
+            </p>
+          </template>
+        </div>
+        <div v-if="activeStep === 'private-key'">
+          <template v-if="checkPassword">
+            <p class="password-desc">
+              Enter your password to authorize this action
+            </p>
+            <StFormItem class="custom-form-item" label="Password">
+              <StInput
+                v-model="password"
+                placeholder="Please enter your password"
+                :type="showPassword ? 'text' : 'password'"
+              ></StInput>
+              <svg
+                v-if="!showPassword"
+                @click="showPassword = true"
+                width="44"
+                height="24"
+                viewBox="0 0 44 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  clip-rule="evenodd"
+                  d="M33 18c3.314 0 6.314-1.667 9-5-2.686-3.333-5.686-5-9-5s-6.314 1.667-9 5c2.686 3.333 5.686 5 9 5z"
+                  stroke="#FAF9FC"
+                  stroke-width="2"
+                />
+                <circle
+                  r="1"
+                  transform="matrix(-1 0 0 1 33 13)"
+                  fill="#FAF9FC"
+                  stroke="#FAF9FC"
+                  stroke-width="2"
+                />
+              </svg>
+              <svg
+                v-else
+                @click="showPassword = false"
+                width="26"
+                height="19"
+                viewBox="0 0 26 19"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M13 3C8.94991 3 5.28325 5.03704 2 9.11111C5.28325 13.1852 8.94991 15.2222 13 15.2222C17.0501 15.2222 20.7168 13.1852 24 9.11111C23.2599 8.1928 22.5004 7.37799 21.7214 6.66667"
+                  stroke="#FEFEFE"
+                  stroke-width="2"
+                />
+                <path d="M9 9L15.1111 9" stroke="#4E00F6" stroke-width="2" />
+                <path
+                  d="M23.1113 1L6.00022 18.1111"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                />
+              </svg>
+            </StFormItem>
+          </template>
+          <template v-else>
+            <template v-if="!privateQrCode">
+              <div class="desc">
+                <p>
+                  The Private Key provides control over current and future
+                  balances of XST on this device.
+                </p>
+              </div>
+              <p class="bold">Private Key</p>
+              <p class="key">{{ privateKey }}</p>
+              <div class="copy-key copy-key__private">
+                <p>Copy privkey to clipboard or show QR code</p>
+                <div>
+                  <StTooltip
+                    :tooltip="
+                      copyPending ? 'Copied to clipboard!' : 'Click to copy'
+                    "
+                    position="bottom-left"
+                  >
+                    <StClipboard :content="privateKey" @click="handleCopy">
+                      <svg
+                        width="18"
+                        height="22"
+                        viewBox="0 0 18 22"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M13 6H1V21H13V6Z"
+                          stroke="#4E00F6"
+                          stroke-width="2"
+                        />
+                        <line
+                          x1="17"
+                          y1="18"
+                          x2="17"
+                          stroke="#4E00F6"
+                          stroke-width="2"
+                        />
+                        <path
+                          d="M3 1L18 1"
+                          stroke="#4E00F6"
+                          stroke-width="2"
+                        /></svg
+                    ></StClipboard>
+                  </StTooltip>
+                  <StTooltip
+                    tooltip="Click to show QR code"
+                    position="bottom-left"
+                  >
+                    <svg
+                      @click="privateQrCode = true"
+                      width="22"
+                      height="22"
+                      viewBox="0 0 22 22"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M9 9H1V1H9V9Z"
+                        stroke="#4E00F6"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M13 0V4H17V1H21V6"
+                        stroke="#4E00F6"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M9 22V19H5V21H1V17"
+                        stroke="#4E00F6"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M13 22V18H17V21H21V18"
+                        stroke="#4E00F6"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M11 15H8V13H4"
+                        stroke="#4E00F6"
+                        stroke-width="2"
+                      />
+                      <path d="M12 9H22" stroke="#4E00F6" stroke-width="2" />
+                      <path
+                        d="M17 11V14H21V11"
+                        stroke="#4E00F6"
+                        stroke-width="2"
+                      />
+                      <path d="M1 12V15" stroke="#4E00F6" stroke-width="2" />
+                      <path d="M13 11V13" stroke="#4E00F6" stroke-width="2" />
+                    </svg>
+                  </StTooltip>
+                </div>
+              </div>
+            </template>
+            <template v-else>
+              <img class="qr-code" src="../../../static/qrcode.png" />
+              <p @click="privateQrCode = false" class="view-more bold">
+                Hide QR code
+              </p>
+            </template>
+          </template>
+        </div>
+      </template>
+    </StModal>
   </header>
 </template>
 
@@ -193,6 +497,19 @@ export default {
     const route = useRoute();
     const account = ref(null);
     const accounts = ref([]);
+    const isVisible = ref(false);
+    const activeStep = ref('public-key');
+    const publicKey = ref(
+      'xpub6CUGRUonZSQ4TWtTMmzXdrXDtypWKiKrhko4egpiMZbpiaQL2jkwSB1icqYh2cfDfVxdx4df189oLKnC5fSwqPfgyP3hooxujYzAu3fDVmz'
+    );
+    const privateKey = ref(
+      'Xpub6CUGRUonZSQ4TWtTMzXdrXDtypWKiKrhko4egpiMZbpiaQL2jkwSB1icqYh2cfDfVxdx4df189oLKnC5fswqPfgyP3hooxujYzAu3fDVmz'
+    );
+    const publicQrCode = ref(false);
+    const privateQrCode = ref(false);
+    const checkPassword = ref(false);
+    const showPassword = ref(false);
+    const password = ref('');
 
     const currentRoute = computed(() => {
       return route.name;
@@ -205,6 +522,24 @@ export default {
     const isHiddenAmounts = computed(() => {
       return mainStore.isAmountsHidden;
     });
+
+    function changeStep(step) {
+      activeStep.value = step;
+      publicQrCode.value = false;
+      privateQrCode.value = false;
+      if (step === 'private-key') {
+        // TODO: Set checkPassword value to false if password is correct
+        checkPassword.value = true;
+      }
+    }
+
+    function closeModal() {
+      isVisible.value = false;
+      activeStep.value = 'public-key';
+      publicQrCode.value = false;
+      checkPassword.value = false;
+      privateQrCode.value = false;
+    }
 
     function toggleDrawer(canvas) {
       mainStore.SET_CURRENT_CANVAS(canvas);
@@ -245,6 +580,14 @@ export default {
       }, 1);
     }
 
+    let copyPending = ref(false);
+    function handleCopy() {
+      copyPending.value = true;
+      setTimeout(() => {
+        copyPending.value = false;
+      }, 2000);
+    }
+
     async function scanWallet() {
       const hdWallet = await CryptoService.scanWallet();
       accounts.value = hdWallet.accounts;
@@ -265,6 +608,19 @@ export default {
       goto,
       openQuickDeposit,
       headerStyle: computed(() => mainStore.headerStyle),
+      isVisible,
+      changeStep,
+      activeStep,
+      publicKey,
+      privateKey,
+      copyPending,
+      handleCopy,
+      publicQrCode,
+      privateQrCode,
+      checkPassword,
+      showPassword,
+      password,
+      closeModal,
 
       scanWallet,
       account,
@@ -286,8 +642,15 @@ export default {
 }
 .header-left,
 .header-right {
+  width: 100%;
   display: flex;
   align-items: center;
+}
+:deep .multiselect {
+  max-width: 170px;
+}
+.header-right {
+  justify-content: flex-end;
 }
 
 .header-left div + div,
@@ -332,8 +695,119 @@ export default {
 :deep .multiselect__tags {
   border-bottom: none;
 }
-
-.hide-amounts {
-  margin: 0 0 0 24px !important;
+.icons-flex {
+  display: flex;
+  align-items: center;
+}
+.icons-flex svg + svg {
+  margin-left: 24px;
+}
+:deep .st-modal-container {
+  width: 416px;
+}
+:deep .st-modal__body {
+  margin: 30px 0 6px 0 !important;
+}
+.account-modal__hide-header :deep .st-modal__header {
+  display: none;
+}
+.account-modal__hide-header :deep .st-modal__body {
+  margin-top: 0;
+  text-align: center;
+}
+.account-modal__hide-header h5 {
+  margin-bottom: 36px;
+}
+.account-tabs {
+  margin-bottom: 36px;
+  display: flex;
+  align-items: center;
+}
+.account-tabs a {
+  position: relative;
+  cursor: pointer;
+  min-width: 160px;
+  font-size: 12px;
+  line-height: 24px;
+  letter-spacing: 0.32px;
+  color: var(--grey900);
+  padding-bottom: 12px;
+  padding-right: 20px;
+  border-bottom: 3px solid var(--grey200);
+  font-family: var(--secondary-font);
+  transition: 0.3s;
+}
+.account-tabs a + a {
+  margin-left: 24px;
+}
+.account-tabs a:hover {
+  text-shadow: 0.5px 0 var(--grey900);
+}
+.account-tabs a:hover:after {
+  width: 100%;
+}
+.account-tabs a:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 3px;
+  width: 0;
+  background-color: var(--marine500);
+  transition: 0.3s;
+}
+.account-tabs a.active {
+  text-shadow: 0.5px 0 var(--grey900);
+}
+.account-tabs a.active:after {
+  background-color: var(--marine500);
+  width: 100%;
+}
+.desc {
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: var(--background100);
+  border-radius: 4px;
+}
+.key {
+  word-break: break-all;
+  margin-top: 8px;
+  color: var(--marine500);
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--grey100);
+}
+.copy-key {
+  margin-top: 17px;
+  margin-bottom: 51px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.copy-key__private {
+  margin-bottom: 81px;
+}
+.copy-key div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 64px;
+}
+.view-more {
+  text-align: center;
+  cursor: pointer;
+  color: var(--marine500);
+}
+.qr-code {
+  display: block;
+  width: 100%;
+  max-width: 160px;
+  margin: 81px auto 88px;
+}
+.password-desc {
+  margin-top: -23px;
+}
+.custom-form-item {
+  margin: 163px 0 162px;
 }
 </style>
