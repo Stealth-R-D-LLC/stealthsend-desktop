@@ -24,7 +24,7 @@ async function createWindow() {
     fullscreenable: false,
     title: 'StealthSend',
     webPreferences: {
-      devTools: false,
+      // devTools: false,
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
@@ -32,7 +32,7 @@ async function createWindow() {
     },
   });
 
-  win.setMenu(null); // remove menu bar
+  // win.setMenu(null); // remove menu bar
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
