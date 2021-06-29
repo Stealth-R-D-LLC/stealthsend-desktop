@@ -115,8 +115,8 @@ export default {
                 format: 'dd MMM',
                 showDuplicates: false,
                 style: {
-                  fontSize: "12px",
-                  fontFamily: "'Noto Sans', sans-serif"
+                  fontSize: '12px',
+                  fontFamily: "'Noto Sans', sans-serif",
                 },
               },
               tooltip: {
@@ -130,14 +130,14 @@ export default {
               },
             },
             yaxis: {
-              type: "numeric",
+              type: 'numeric',
               /* forceNiceScale: true, */
               labels: {
                 show: true,
                 style: {
-                  colors: ["#CFCDD1"],
-                  fontSize: "12px",
-                  fontFamily: "'Noto Sans', sans-serif"
+                  colors: ['#CFCDD1'],
+                  fontSize: '12px',
+                  fontFamily: "'Noto Sans', sans-serif",
                 },
                 /* formatter: function (value) {
                 return formatAmount(value, false, 4);
@@ -202,7 +202,7 @@ export default {
   height: 400px;
 }
 .st-dashboard-chart .apexcharts-xaxis-label:before {
-  content: "";
+  content: '';
   display: block;
   width: 10px;
   height: 10px;
