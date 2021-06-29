@@ -164,9 +164,13 @@ export default {
 
     watch(
       () => mainStore.offCanvasData,
-      () => {
-        if (mainStore.offCanvasData && mainStore.offCanvasData.txid)
-          getTx(mainStore.offCanvasData.txid);
+      async () => {
+        if (mainStore.offCanvasData && mainStore.offCanvasData.txid) {
+          await getTx(mainStore.offCanvasData.txid);
+          if (mainStore.offCanvasData.isEditMode) {
+            openEditMode();
+          }
+        }
       },
       { deep: true }
     );
@@ -203,9 +207,10 @@ export default {
     }
 
     function openBlockExplorer(txid) {
+      const chain = process.env.VUE_APP_NETWORK === 'mainnet' ? '' : '?chain=test';
       window
         .open(
-          'https://stealthmonitor.org/transactions/' + txid + '?chain=test',
+          'https://stealthmonitor.org/transactions/' + txid + chain,
           '_blank'
         )
         .focus();
@@ -284,6 +289,7 @@ export default {
   margin: 22px auto;
   width: fit-content;
   color: var(--marine500);
+  cursor: pointer;
 }
 .top {
   display: flex;
