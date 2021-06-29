@@ -43,16 +43,27 @@
             }
           "
         ></date-picker>
-        <svg class="calendar" width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M11 2H7M3 3H1V15H17V3H15" stroke="#4E00F6" stroke-width="2"/>
-          <path d="M4 7H6" stroke="#4E00F6" stroke-width="2"/>
-          <path d="M5 4V0" stroke="#4E00F6" stroke-width="2"/>
-          <path d="M13 4V0" stroke="#4E00F6" stroke-width="2"/>
-          <path d="M4 11H6" stroke="#4E00F6" stroke-width="2"/>
-          <path d="M8 7L10 7" stroke="#4E00F6" stroke-width="2"/>
-          <path d="M12 7L14 7" stroke="#4E00F6" stroke-width="2"/>
-          <path d="M8 11H10" stroke="#4E00F6" stroke-width="2"/>
-          <path d="M12 11H14" stroke="#4E00F6" stroke-width="2"/>
+        <svg
+          class="calendar"
+          width="18"
+          height="16"
+          viewBox="0 0 18 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M11 2H7M3 3H1V15H17V3H15"
+            stroke="#4E00F6"
+            stroke-width="2"
+          />
+          <path d="M4 7H6" stroke="#4E00F6" stroke-width="2" />
+          <path d="M5 4V0" stroke="#4E00F6" stroke-width="2" />
+          <path d="M13 4V0" stroke="#4E00F6" stroke-width="2" />
+          <path d="M4 11H6" stroke="#4E00F6" stroke-width="2" />
+          <path d="M8 7L10 7" stroke="#4E00F6" stroke-width="2" />
+          <path d="M12 7L14 7" stroke="#4E00F6" stroke-width="2" />
+          <path d="M8 11H10" stroke="#4E00F6" stroke-width="2" />
+          <path d="M12 11H14" stroke="#4E00F6" stroke-width="2" />
         </svg>
         <!-- <svg
           class="calendar"
