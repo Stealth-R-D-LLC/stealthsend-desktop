@@ -1473,10 +1473,19 @@
           </div>
           <div v-if="recoveryStep === 3" class="step">
             <div>
-              <h5>Congratulations</h5>
-              <p>Recovery Phrase successfully verified</p>
+              <h5>{{ isValidMnemonic ? 'Congratulations' : 'Error' }}</h5>
+              <p>
+                {{
+                  isValidMnemonic
+                    ? 'Recovery Phrase successfully verified'
+                    : 'Recovery Phrase is not valid'
+                }}
+              </p>
             </div>
-            <StButton @click="recoveryStepNext">Proceed</StButton>
+            <StButton v-if="isValidMnemonic" @click="recoveryStepNext"
+              >Proceed</StButton
+            >
+            <StButton v-else @click="recoveryStep = 0">Back</StButton>
           </div>
           <div class="step" v-if="recoveryStep === 4">
             <div>
@@ -1603,7 +1612,7 @@
 <script>
 import { ref, onMounted, watchEffect, computed } from 'vue';
 import * as bip39 from 'bip39';
-// import * as bip32 from 'bip32';
+import * as bip32 from 'bip32';
 import { useMainStore } from '@/store';
 import router from '../router';
 import CryptoService from '../services/crypto';
@@ -1638,6 +1647,7 @@ export default {
     const createdMnemonic = ref([]);
     const reorderedMnemonic = ref([]);
     const mnemonicError = ref('');
+    const isValidMnemonic = ref(false);
 
     const showPassword = ref(false);
     const showConfirmPassword = ref(false);
@@ -1771,7 +1781,7 @@ export default {
         }, progressDuration.value * 1000);
       }
       if (currentStep.value === 10) {
-        // create new mnemonic
+        // generate new mnemonic
         let generateMnemonic = await CryptoService.generateMnemonicAndSeed(
           Number(recoveryPhraseLength.value)
         );
@@ -1779,6 +1789,7 @@ export default {
         reorderedMnemonic.value = _shuffle(_cloneDeep(createdMnemonic.value));
       }
       if (recoveryStep.value === 1) {
+        // Fill array with wordlist
         wordlist.value = await bip39.wordlists.EN;
         setTimeout(
           () =>
@@ -1792,10 +1803,17 @@ export default {
       if (recoveryStep.value === 2) {
         setTimeout(() => recoveryStepNext(), 4200);
       }
+      if (recoveryStep.value === 3) {
+        // Clear selected words if mnemonic is not valid
+        if (!isValidMnemonic.value) {
+          selectedRecoveryWords.value = [];
+        }
+      }
     });
 
     const selectedWords = ref([]);
 
+    // Search word in wordlist
     const searchWordlist = computed(() => {
       if (recoveryWord.value.length < 2) return;
       return wordlist.value
@@ -1812,33 +1830,43 @@ export default {
     const isError = ref(false);
 
     function selectRecoveryPhraseWord(word) {
+      // Clear input
       recoveryWord.value = '';
       if (wordlist.value.includes(word)) {
+        // Push mnemonic in array
         selectedRecoveryWords.value.push(word);
       } else {
+        // Error if selected word is not in wordlist
         isError.value = true;
         setTimeout(() => (isError.value = false), 3000);
       }
+      // Check mnemonic length and go to next step
       if (
         selectedRecoveryWords.value.length ===
         Number(restoreRecoveryPhraseLength.value)
       ) {
-        // TODO validate recovered mnemonic before going further
-        // show error screen if mnemonic not valid
-        console.log(
-          '------>',
-          CryptoService.isMnemonicValid(selectedRecoveryWords.value.join(' '))
+        // check if mnemonic is valid
+        isValidMnemonic.value = CryptoService.isMnemonicValid(
+          selectedRecoveryWords.value.join(' ')
         );
 
         recoveryStepNext();
       }
     }
 
+    // Remove word from selected words
     function removeSelectedWord(word) {
       selectedRecoveryWords.value.splice(
         selectedRecoveryWords.value.indexOf(word),
         1
       );
+    }
+
+    // Undo all words on recovery phrase
+    async function clearRecoveryWords() {
+      wordlist.value = await bip39.wordlists.EN;
+      recoveryWord.value = '';
+      selectedRecoveryWords.value = [];
     }
 
     function selectWordsInOrder(item) {
@@ -1870,11 +1898,6 @@ export default {
         }, 4200);
       }
     }
-    async function clearRecoveryWords() {
-      wordlist.value = await bip39.wordlists.EN;
-      recoveryWord.value = '';
-      selectedRecoveryWords.value = [];
-    }
 
     function clearAndRedoWords() {
       reorderedMnemonic.value = _shuffle(_cloneDeep(createdMnemonic.value));
@@ -1898,33 +1921,32 @@ export default {
       recoveryStep.value += 1;
     }
 
-    // async function recover() {
-    //   // recover an existing wallet via mnemonic
-    //   // password is asked because we have to lock the seed in the database
-    //   // user is createing a new password in this step
-    //   try {
-    //     await validateFields();
-    //     let mnemonic = selectedRecoveryWords.value.join(' ');
-    //     console.log(mnemonic);
-    //     let bytes = await bip39.mnemonicToSeedSync(mnemonic);
-    //     const master = await bip32.fromSeed(bytes, CryptoService.network); // root
-    //     recovered.value = {
-    //       seed: bytes.toString('hex'),
-    //       master: master,
-    //     };
+    async function recover() {
+      // recover an existing wallet via mnemonic
+      // password is asked because we have to lock the seed in the database
+      // user is createing a new password in this step
+      try {
+        await validateFields();
+        let mnemonic = selectedRecoveryWords.value.join(' ');
+        let bytes = await bip39.mnemonicToSeedSync(mnemonic);
+        const master = await bip32.fromSeed(bytes, CryptoService.network); // root
+        recovered.value = {
+          seed: bytes.toString('hex'),
+          master: master,
+        };
 
-    //     CryptoService.seed = bytes.toString('hex');
-    //     CryptoService.master = master;
-    //     await CryptoService.storeWalletInDb(password.value);
+        CryptoService.seed = bytes.toString('hex');
+        CryptoService.master = master;
+        await CryptoService.storeWalletInDb(password.value);
 
-    //     await restoreAccounts();
-    //     goToDashboard();
-    //   } catch (e) {
-    //     if (e instanceof ValidationError) {
-    //       console.log(e.message);
-    //     }
-    //   }
-    // }
+        await restoreAccounts();
+        goToDashboard();
+      } catch (e) {
+        if (e instanceof ValidationError) {
+          console.log(e.message);
+        }
+      }
+    }
 
     async function restoreAccounts() {
       mainStore.START_GLOBAL_LOADING();
@@ -2031,13 +2053,14 @@ export default {
       recoveryWord,
       selectedRecoveryWords,
       isError,
+      isValidMnemonic,
 
       reorderedMnemonic,
       selectedWords,
 
       recoverWallet,
       mnemonic,
-      // recover,
+      recover,
       recovered,
       paymentCode,
       /* confirmPaymentCode, */
