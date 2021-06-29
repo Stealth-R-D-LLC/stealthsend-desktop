@@ -1,21 +1,27 @@
 .mx-datepicker {
-    margin: 20px 0 0;
+    margin: 15px 0 0;
     width: 100%;
 }
 .mx-input {
     display: inline-block;
     box-sizing: border-box;
     width: 100%;
-    padding: 8px 30px 8px;
+    height: 40px;
+    padding: 12px 30px 9px;
     padding-left: 0;
+    font-family: var(--secondary-font);
     font-size: 12px;
     line-height: 24px;
+    letter-spacing: 0.12px;
     color: var(--grey900);
     background-color: transparent;
     border: none;
     border-bottom: 2px solid var(--grey100);
     border-radius: 0;
     box-shadow: none;
+}
+.mx-input::placeholder {
+    color: var(--grey900);
 }
 .mx-input-wrapper {
     position: relative;
