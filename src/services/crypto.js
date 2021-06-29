@@ -171,6 +171,9 @@ const CryptoService = {
     // this.WIFtoPK(child.toWIF()) // decrypt
     // console.log('1: ', acc.toWIF());
     // console.log('2: ', keypair.toWIF());
+    console.log('public key: ', keypair);
+    console.log('public key1: ', Buffer.from(keypair.d));
+    console.log('---');
     return {
       address: bitcoin.payments.p2pkh({
         pubkey: keypair.publicKey,
