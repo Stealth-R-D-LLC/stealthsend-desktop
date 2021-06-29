@@ -45,7 +45,7 @@ export default {
     label: {
       type: String,
       required: false,
-      default: 'Missing label',
+      default: '',
     },
     labelRight: {
       type: String,
