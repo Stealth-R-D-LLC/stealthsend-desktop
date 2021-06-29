@@ -170,15 +170,19 @@ const CryptoService = {
     ); // TODO CHANGE 1 (TESTNET) TO 125 (XST)
     // this.WIFtoPK(child.toWIF()) // decrypt
     // console.log('1: ', acc.toWIF());
-    // console.log('2: ', keypair.toWIF());
-    // console.log('public key: ', acc);
-    // console.log('a', acc.neutered());
-    // console.log('---', String(acc.neutered().toBase58()),);
+    // console.log('acc: ', acc);
+    // // console.log('a', acc.neutered());
+    // // console.log('---', String(acc.neutered().toBase58()),);
     // console.log('keypair: ', keypair.publicKey.toString('hex'));
     // console.log('keypair: ', keypair.privateKey.toString('hex'));
     // console.log('keypair towif: ', keypair.toWIF());
+    // console.log('----------');
+    // console.log('haha: ', bitcoin.ECPair.fromWIF('V7ZNZ67eXaq1je59K99KxfeMDDH7cic7yRc8BTuXqoq3FvNTwh9J', this.network));
+    // let testkeypair = bitcoin.ECPair.fromWIF('V7ZNZ67eXaq1je59K99KxfeMDDH7cic7yRc8BTuXqoq3FvNTwh9J', this.network);
+    // console.log('ima li pk', testkeypair.publicKey);
+    //   console.log('11', keypair.publicKey);
     // console.log('addr ', bitcoin.payments.p2pkh({
-    //   pubkey: keypair.publicKey.toString('hex'),
+    //   pubkey: testkeypair.publicKey.toString('hex'),
     //   network: this.network,
     // }).address);
     return {
