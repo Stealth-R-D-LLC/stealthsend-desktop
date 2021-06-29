@@ -70,7 +70,7 @@ export default {
     }
 
     async function getIntervalFromStorage() {
-      let config = localStorage.getItem('autolock');
+      let config = JSON.parse(localStorage.getItem('autolock'));
       if (config) {
         selectedInterval.value = config.interval;
         isEnabled.value = config.isEnabled;
