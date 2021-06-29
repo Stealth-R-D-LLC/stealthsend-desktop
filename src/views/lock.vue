@@ -22,7 +22,6 @@
       <div class="box" :class="{ 'box-animated': isAnimated }">
         <template v-if="isAnimated">
           <h4>Welcome back</h4>
-          <h5>Enter your password to continue</h5>
           <form class="form" @submit.prevent>
             <StFormItem
               color="dark"
@@ -32,7 +31,7 @@
               <StInput
                 id="password"
                 v-model="password"
-                placeholder="··········"
+                placeholder="Please enter your Password"
                 :type="showPassword ? 'text' : 'password'"
               >
                 <svg
@@ -81,6 +80,9 @@
                   />
                 </svg>
               </StInput>
+              <a class="forgot" @click="forgotPassword = true"
+                >Forgot Password</a
+              >
             </StFormItem>
             <StButton color="white" @click="validatePassword"
               >Continue</StButton
@@ -89,6 +91,76 @@
         </template>
       </div>
     </div>
+    <StModal light :visible="forgotPassword" @close="cancelClearData">
+      <template #header>Reset StealthSend</template>
+      <template #body>
+        <template v-if="!isCleared">
+          <p>
+            All of your accounts and your private keys are backed up by your
+            Recovery Phrase. If you can't remember your password, the only way
+            to regain access to your StealthSend application is to clear all
+            application data and restore from Recovery Phrase. After you restore
+            your backup you will be able to choose a new password.
+          </p>
+          <div class="info">
+            <p>
+              Locally stored data such as account names, transaction labels and
+              contacts will not be recovered.
+            </p>
+            <p class="bold">
+              Are you sure you want to proceed and delete all app data?
+            </p>
+          </div>
+        </template>
+        <template v-else>
+          <div class="progress">
+            <svg
+              class="progress-animated"
+              version="1.1"
+              id="circle"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              viewBox="0 0 100 100"
+              xml:space="preserve"
+            >
+              <circle
+                fill="none"
+                stroke="#A67FFA"
+                stroke-width="1"
+                stroke-mitterlimit="0"
+                cx="50"
+                cy="50"
+                r="48"
+                stroke-dasharray="360"
+                stroke-linecap="round"
+                transform="rotate(-90 ) translate(-100 0)"
+              >
+                <animate
+                  attributeName="stroke-dashoffset"
+                  values="50;430"
+                  dur="3.2s"
+                ></animate>
+              </circle>
+            </svg>
+            <div class="overlay-progress">{{ counter }}s</div>
+          </div>
+          <p class="reset">Resetting in...</p>
+        </template>
+      </template>
+      <template #footer>
+        <template v-if="!isCleared">
+          <StButton color="secondary" @click="forgotPassword = false"
+            >Cancel</StButton
+          >
+          <StButton @click="clearData">Clear App Data</StButton>
+        </template>
+        <StButton class="cancel-button" v-else @click="cancelClearData"
+          >Cancel</StButton
+        >
+      </template>
+    </StModal>
   </div>
 </template>
 
@@ -105,6 +177,11 @@ export default {
     const isAnimated = ref(false);
     const password = ref('');
     const showPassword = ref(false);
+    const forgotPassword = ref(false);
+    const isCleared = ref(false);
+    const timeout = ref(null);
+    const counterTimeout = ref(null);
+    const counter = ref(4);
 
     const {
       form,
@@ -152,7 +229,38 @@ export default {
       }
     }
 
+    function countdown() {
+      counter.value -= 1;
+      counterTimeout.value = setTimeout(() => countdown(), 950);
+    }
+
+    function clearData() {
+      isCleared.value = true;
+      countdown();
+      timeout.value = setTimeout(() => {
+        // TODO: Clear App Data
+        console.log('DELETE');
+        forgotPassword.value = false;
+        isCleared.value = false;
+        clearTimeout(counterTimeout.value);
+        counter.value = 4;
+      }, 3000);
+    }
+
+    function cancelClearData() {
+      clearTimeout(timeout.value);
+      clearTimeout(counterTimeout.value);
+      counter.value = 4;
+      isCleared.value = false;
+      forgotPassword.value = false;
+    }
+
     return {
+      counter,
+      isCleared,
+      clearData,
+      cancelClearData,
+      forgotPassword,
       showPassword,
       isAnimated,
       password,
@@ -240,7 +348,7 @@ h5 {
   background-position: 92% 49% !important;
 }
 .form {
-  height: calc(100% - 220px);
+  height: calc(100% - 157px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -254,5 +362,87 @@ svg circle {
 }
 :deep .st-input .st-icon {
   cursor: pointer;
+}
+:deep .st-form-item__message {
+  top: 100% !important;
+  margin-top: 0 !important;
+}
+.forgot {
+  cursor: pointer;
+  margin-right: auto;
+  display: block;
+  width: fit-content;
+  color: var(--grey400);
+  font-family: var(--secondary-font);
+  font-size: 12px;
+  line-height: 24px;
+  letter-spacing: 0.12px;
+  transition: 0.3s;
+}
+.forgot:hover {
+  color: var(--white);
+}
+:deep .st-modal-container {
+  width: 416px !important;
+}
+:deep .st-modal__body {
+  margin-bottom: 75px !important;
+}
+:deep .st-modal__footer {
+  display: flex;
+  align-content: center;
+  justify-content: space-between;
+}
+.st-button {
+  padding: 5px 64px;
+}
+.st-button--primary {
+  min-width: 219px;
+}
+.cancel-button {
+  min-width: 169px !important;
+}
+.info {
+  margin-top: 24px;
+  padding: 16px;
+  background-color: var(--background100);
+}
+.info p + p {
+  margin-top: 24px;
+}
+.progress-animated {
+  position: relative;
+  top: -2px;
+  left: -2px;
+  width: 104px;
+  height: 104px;
+}
+.progress {
+  margin: 96px auto 44px;
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background: rgba(195, 169, 251, 0.3);
+  border-radius: 100px;
+}
+.overlay-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: 0.12px;
+  font-family: var(--secondary-font);
+  background-color: var(--white);
+  border-radius: 100%;
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  bottom: 1px;
+  left: 1px;
+}
+.reset {
+  text-align: center;
+  margin-bottom: 128px;
 }
 </style>
