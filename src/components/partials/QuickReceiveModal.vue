@@ -240,7 +240,7 @@ export default {
 
 <style>
 .quick-receive-modal .st-modal-container {
-  width: 480px;
+  width: 416px;
   height: 520px;
 }
 .quick-receive-modal .st-modal-container--dark .st-modal__header {
