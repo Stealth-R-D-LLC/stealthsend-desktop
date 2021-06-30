@@ -159,9 +159,6 @@ const CryptoService = {
       }'/${account}'`
     );
 
-    console.log('acc sk', acc.toWIF());
-    console.log('kp sk', keypair.toWIF());
-
     return {
       xpub: String(acc.neutered().toBase58()),
       publicKey: keypair.publicKey.toString('hex'),
@@ -451,12 +448,18 @@ const CryptoService = {
   },
 
   isAddressValid(address) {
-    try {
-      bitcoin.address.fromBase58Check(address);
+    const { version } = bitcoin.address.fromBase58Check(address);
+    const isMainnet = process.env.VUE_APP_NETWORK === 'mainnet';
+    // https://en.bitcoin.it/wiki/Base58Check_encoding
+    if (isMainnet && version === 62) {
+      // 62 is for mainnet
       return true;
-    } catch (error) {
-      return false;
-    }
+    } else if (!isMainnet && version === 111) {
+      // 111 is for testnet
+      return true
+    } else {
+      return false
+    } 
   },
 
   AESEncrypt(payload, key = '123456789') {
