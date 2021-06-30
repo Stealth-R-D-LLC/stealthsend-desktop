@@ -37,7 +37,8 @@
           {{ isHiddenAmounts ? '••• XST' : steps[type].amountLeft }}
         </h6>
         <p class="medium grey">
-          ~ {{ isHiddenAmounts ? '$••• USD' : steps[type].amountRight + ' USD' }}
+          ~
+          {{ isHiddenAmounts ? '$••• USD' : steps[type].amountRight + ' USD' }}
           <svg
             class="star"
             width="16"
