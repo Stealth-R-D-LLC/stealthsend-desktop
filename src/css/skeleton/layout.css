@@ -1,10 +1,10 @@
 :root {
   --zApp: 1;
   --zDropdown: 2;
-  --zModal: 3;
-  --zTooltip: 4;
-  --zGlobalLoading: 5;
-  --zAside: 6;
+  --zTooltip: 3;
+  --zGlobalLoading: 4;
+  --zAside: 5;
+  --zModal: 6;
 }
 
 #app {
