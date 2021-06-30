@@ -6,7 +6,9 @@
           isHiddenAmounts ? '•••' : formatAmount(account.utxo, false, 2)
         }}</StLabel>
         <StLabel label="USD Value"
-          >${{ isHiddenAmounts ? '•••' : formatAmount(usdAmount, false, 2) }}</StLabel
+          >${{
+            isHiddenAmounts ? '•••' : formatAmount(usdAmount, false, 2)
+          }}</StLabel
         >
         <StLabel label="BTC Value">{{
           isHiddenAmounts ? '•••' : formatAmount(btcAmount, false, 8, 8)
