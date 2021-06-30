@@ -168,6 +168,9 @@ export default {
             if (existingAccounts.some((el) => el.label === accountName)) {
               return 'Account name already exists.';
             }
+            if (accountName.length > 50) {
+              return 'Name too long';
+            }
           },
         ],
       },
@@ -247,7 +250,7 @@ export default {
       let next = await CryptoService.getNextAccountPath();
 
       // get current last existing account
-      const { pk: lastAccountPk } = CryptoService.getChildFromRoot(
+      const { xpub: lastAccountPk } = CryptoService.getChildFromRoot(
         next - 1 >= 0 ? next - 1 : 0,
         0,
         0
@@ -267,13 +270,13 @@ export default {
 
       await validateFields();
 
-      const { address, path, pk, wif } = CryptoService.getChildFromRoot(
+      const { address, path, xpub, wif } = CryptoService.getChildFromRoot(
         next,
         0,
         0
       );
       account = {
-        pk: pk,
+        xpub: xpub,
         address: address,
         label: accountName.value,
         utxo: 0,
