@@ -304,10 +304,12 @@
                 </StTooltip>
               </div>
             </div>
-            <p @click="openBlockExplorer" class="view-more bold">View on StealthMonitor</p>
+            <p @click="openBlockExplorer" class="view-more bold">
+              View on StealthMonitor
+            </p>
           </template>
           <template v-else>
-              <img class="qr-code" :src="publicQrCode" />
+            <img class="qr-code" :src="publicQrCode" />
             <p @click="publicQrCode = ''" class="view-more bold">
               Hide QR code
             </p>
@@ -636,7 +638,9 @@ export default {
 
     function openBlockExplorer() {
       const chain =
-        process.env.VUE_APP_NETWORK === 'mainnet' ? '?chain=main' : '?chain=test';
+        process.env.VUE_APP_NETWORK === 'mainnet'
+          ? '?chain=main'
+          : '?chain=test';
       window
         .open(
           'https://stealthmonitor.org/xPub/' + publicKey.value + chain,
