@@ -570,12 +570,12 @@ export default {
     );
 
     async function validatePassword() {
-      if(await validateFields()) {
-          // privateQrCode.value = '123'
-          getPrivateKey();
-          activeStep.value = 'private-key';
-          checkPassword.value = false;
-          password.value = '';
+      if (await validateFields()) {
+        // privateQrCode.value = '123'
+        getPrivateKey();
+        activeStep.value = 'private-key';
+        checkPassword.value = false;
+        password.value = '';
       }
     }
 
@@ -596,7 +596,6 @@ export default {
         path.change,
         path.address
       );
-      console.log('--', secretKey);
       privateKey.value = secretKey;
     }
 
@@ -605,7 +604,6 @@ export default {
       publicQrCode.value = '';
       privateQrCode.value = '';
       if (step === 'private-key') {
-        // TODO: Set checkPassword value to false if password is correct
         checkPassword.value = true;
       }
       privateKey.value = '';
@@ -678,7 +676,6 @@ export default {
         accounts.value = hdWallet.accounts;
         // select first option
         account.value = hdWallet.accounts[0];
-        console.log('kojik', account.value);
         resolve();
       });
     }
@@ -717,7 +714,7 @@ export default {
     }
 
     // manually trigger retrieving keys
-    changeStep(activeStep);
+    changeStep('public-key');
 
     return {
       version,
