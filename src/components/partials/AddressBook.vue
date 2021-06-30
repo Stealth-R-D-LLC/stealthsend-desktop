@@ -538,7 +538,7 @@ export default {
           {
             rule: () =>
               CryptoService.isAddressValid(addContactForm.value.address) ||
-              'Address invalid',
+              'Please enter a valid XST address',
           },
         ],
       },
@@ -581,7 +581,7 @@ export default {
           {
             rule: () =>
               CryptoService.isAddressValid(editContactForm.value.address) ||
-              'Address invalid',
+              'Please enter a valid XST address',
           },
         ],
       },

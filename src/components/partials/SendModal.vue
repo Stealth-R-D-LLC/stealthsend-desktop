@@ -529,7 +529,10 @@ export default {
         add(['depositAddress'], {
           $value: depositAddress,
           $rules: [
-            (depositAddress) => (!depositAddress || !CryptoService.isAddressValid(depositAddress)) && 'Please enter a valid XST address',
+            (depositAddress) =>
+              (!depositAddress ||
+                !CryptoService.isAddressValid(depositAddress)) &&
+              'Please enter a valid XST address',
           ],
         });
         changeStep(2);
