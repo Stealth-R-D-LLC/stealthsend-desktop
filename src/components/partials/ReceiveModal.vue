@@ -334,7 +334,7 @@ export default {
         account.value = { ...pickedAccount.value };
       }
       const hdWallet = await CryptoService.scanWallet();
-      accounts.value = hdWallet.accounts.filter(el => !el.isArchived);
+      accounts.value = hdWallet.accounts.filter((el) => !el.isArchived);
       // select first account so that we can immediately start finding the first available address
       if (!pickedAccount.value) {
         account.value = hdWallet.accounts[0];
