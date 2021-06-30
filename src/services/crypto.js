@@ -456,10 +456,10 @@ const CryptoService = {
       return true;
     } else if (!isMainnet && version === 111) {
       // 111 is for testnet
-      return true
+      return true;
     } else {
-      return false
-    } 
+      return false;
+    }
   },
 
   AESEncrypt(payload, key = '123456789') {
