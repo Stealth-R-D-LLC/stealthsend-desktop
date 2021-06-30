@@ -443,7 +443,7 @@ export default {
 
     async function getUnspentOutputs(account) {
       if (!account) return;
-      const res = await mainStore.rpc('gethdaccount', [account.pk]);
+      const res = await mainStore.rpc('gethdaccount', [account.xpub]);
 
       // map only unspent outputs, put txid in each one of them and flatten the array
       unspentOutputs = res

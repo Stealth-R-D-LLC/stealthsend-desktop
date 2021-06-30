@@ -124,7 +124,7 @@ export default {
     }
 
     function generateQR() {
-      var qr = new VanillaQR({
+      let qr = new VanillaQR({
         url: depositAddress.value,
         noBorder: false,
         colorDark: '#140435',
