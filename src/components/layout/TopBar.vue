@@ -262,7 +262,7 @@
                   position="bottom-left"
                 >
                   <svg
-                    @click="publicQrCode = true"
+                    @click="generateQr"
                     width="22"
                     height="22"
                     viewBox="0 0 22 22"
@@ -304,11 +304,11 @@
                 </StTooltip>
               </div>
             </div>
-            <p class="view-more bold">View on StealthMonitor</p>
+            <p @click="openBlockExplorer" class="view-more bold">View on StealthMonitor</p>
           </template>
           <template v-else>
-            <img class="qr-code" src="../../../static/qrcode.png" />
-            <p @click="publicQrCode = false" class="view-more bold">
+              <img class="qr-code" :src="publicQrCode" />
+            <p @click="publicQrCode = ''" class="view-more bold">
               Hide QR code
             </p>
           </template>
@@ -469,7 +469,7 @@
               </div>
             </template>
             <template v-else>
-              <img class="qr-code" src="../../../static/qrcode.png" />
+              <img class="qr-code" :src="publicQrCode" />
               <p @click="privateQrCode = false" class="view-more bold">
                 Hide QR code
               </p>
@@ -484,11 +484,12 @@
 <script>
 import pkgjson from '../../../package.json';
 import { useMainStore } from '@/store';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import router from '@/router';
 import CryptoService from '@/services/crypto';
 import emitter from '@/services/emitter';
+import VanillaQR from 'vanillaqr';
 
 export default {
   setup() {
@@ -499,13 +500,9 @@ export default {
     const accounts = ref([]);
     const isVisible = ref(false);
     const activeStep = ref('public-key');
-    const publicKey = ref(
-      'xpub6CUGRUonZSQ4TWtTMmzXdrXDtypWKiKrhko4egpiMZbpiaQL2jkwSB1icqYh2cfDfVxdx4df189oLKnC5fSwqPfgyP3hooxujYzAu3fDVmz'
-    );
-    const privateKey = ref(
-      'Xpub6CUGRUonZSQ4TWtTMzXdrXDtypWKiKrhko4egpiMZbpiaQL2jkwSB1icqYh2cfDfVxdx4df189oLKnC5fswqPfgyP3hooxujYzAu3fDVmz'
-    );
-    const publicQrCode = ref(false);
+    const publicKey = ref('');
+    const privateKey = ref('');
+    const publicQrCode = ref('');
     const privateQrCode = ref(false);
     const checkPassword = ref(false);
     const showPassword = ref(false);
@@ -523,22 +520,49 @@ export default {
       return mainStore.isAmountsHidden;
     });
 
-    function changeStep(step) {
+    watch(
+      () => isVisible.value,
+      async () => {
+        if (isVisible.value) {
+          console.log('sta');
+          await scanWallet();
+          getKeys();
+        }
+      }
+    );
+
+    function getKeys() {
+      const path = CryptoService.breakAccountPath(account.value.path);
+      const { xpub, secretKey } = CryptoService.getKeysForAccount(
+        path.account,
+        path.change,
+        path.address
+      );
+      publicKey.value = xpub;
+      privateKey.value = secretKey;
+    }
+
+    async function changeStep(step) {
       activeStep.value = step;
-      publicQrCode.value = false;
+      publicQrCode.value = '';
       privateQrCode.value = false;
       if (step === 'private-key') {
         // TODO: Set checkPassword value to false if password is correct
         checkPassword.value = true;
       }
+      await scanWallet();
+      console.log('jel');
+      getKeys();
     }
 
     function closeModal() {
       isVisible.value = false;
       activeStep.value = 'public-key';
-      publicQrCode.value = false;
+      publicQrCode.value = '';
       checkPassword.value = false;
       privateQrCode.value = false;
+      publicKey.value = '';
+      privateKey.value = '';
     }
 
     function toggleDrawer(canvas) {
@@ -589,14 +613,40 @@ export default {
     }
 
     async function scanWallet() {
-      const hdWallet = await CryptoService.scanWallet();
-      accounts.value = hdWallet.accounts;
-      // select first option
-      account.value = hdWallet.accounts[0];
-      // // manually start finding address for preselected account
-      // changeAccount(account.value)
+      // eslint-disable-next-line no-async-promise-executor
+      return new Promise(async (resolve) => {
+        const hdWallet = await CryptoService.scanWallet();
+        accounts.value = hdWallet.accounts;
+        // select first option
+        account.value = hdWallet.accounts[0];
+        console.log('kojik', account.value);
+        resolve();
+      });
     }
-    scanWallet();
+
+    function generateQr() {
+      let qr = new VanillaQR({
+        url: publicKey.value,
+        noBorder: false,
+        colorDark: '#140435',
+        colorLight: '#FAF9FC',
+      });
+      publicQrCode.value = qr.toImage('png').src;
+    }
+
+    function openBlockExplorer() {
+      const chain =
+        process.env.VUE_APP_NETWORK === 'mainnet' ? '?chain=main' : '?chain=test';
+      window
+        .open(
+          'https://stealthmonitor.org/xPub/' + publicKey.value + chain,
+          '_blank'
+        )
+        .focus();
+    }
+
+    // manually trigger retrieving keys
+    changeStep(activeStep);
 
     return {
       version,
@@ -621,6 +671,8 @@ export default {
       showPassword,
       password,
       closeModal,
+      generateQr,
+      openBlockExplorer,
 
       scanWallet,
       account,

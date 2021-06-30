@@ -208,7 +208,7 @@ export default {
 
     function openBlockExplorer(txid) {
       const chain =
-        process.env.VUE_APP_NETWORK === 'mainnet' ? '' : '?chain=test';
+        process.env.VUE_APP_NETWORK === 'mainnet' ? '?chain=main' : '?chain=test';
       window
         .open(
           'https://stealthmonitor.org/transactions/' + txid + chain,
