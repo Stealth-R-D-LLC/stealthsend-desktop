@@ -159,6 +159,9 @@ const CryptoService = {
       }'/${account}'`
     );
 
+    console.log('acc sk', acc.toWIF());
+    console.log('kp sk', keypair.toWIF());
+
     return {
       xpub: String(acc.neutered().toBase58()),
       publicKey: keypair.publicKey.toString('hex'),
