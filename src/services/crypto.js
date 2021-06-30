@@ -152,6 +152,24 @@ const CryptoService = {
       address,
     };
   },
+  getKeysForAccount(account = 0, change = 0, address = 0) {
+    const keypair = this.master.derivePath(
+      `m/44'/${
+        process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
+      }'/${account}'/${change}/${address}`
+    );
+    let acc = this.master.derivePath(
+      `m/44'/${
+        process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
+      }'/${account}'`
+    );
+
+    return {
+      xpub: String(acc.neutered().toBase58()),
+      publicKey: keypair.publicKey.toString('hex'),
+      secretKey: keypair.toWIF()
+    }
+  },
   getChildFromRoot(account, change, address) {
     // With non-hardened keys, you can prove a child public key is linked to a parent public key
     // using just the public keys.
@@ -161,27 +179,23 @@ const CryptoService = {
     const keypair = this.master.derivePath(
       `m/44'/${
         process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
-      }'/${account}'/${change}/${address}` // TODO CHANGE 1 (TESTNET) TO 125 (XST)
+      }'/${account}'/${change}/${address}`
     );
     let acc = this.master.derivePath(
       `m/44'/${
         process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
       }'/${account}'`
-    ); // TODO CHANGE 1 (TESTNET) TO 125 (XST)
+    );
     // this.WIFtoPK(child.toWIF()) // decrypt
-    // console.log('1: ', acc.toWIF());
-    // console.log('acc: ', acc);
-    // // console.log('a', acc.neutered());
-    // // console.log('---', String(acc.neutered().toBase58()),);
-    // console.log('keypair: ', keypair.publicKey.toString('hex'));
-    // console.log('keypair: ', keypair.privateKey.toString('hex'));
-    // console.log('keypair towif: ', keypair.toWIF());
-    // console.log('----------');
+    // console.log('xpub', String(acc.neutered().toBase58())); // xpub Account Extended Public Key
+    // console.log('public key: ', keypair.publicKey.toString('hex')); // public key
+    // // console.log('keypair: ', keypair.privateKey.toString('hex'));
+    // console.log('secret key: ', keypair.toWIF()); // private key
     // console.log('haha: ', bitcoin.ECPair.fromWIF('V7ZNZ67eXaq1je59K99KxfeMDDH7cic7yRc8BTuXqoq3FvNTwh9J', this.network));
     // let testkeypair = bitcoin.ECPair.fromWIF('V7ZNZ67eXaq1je59K99KxfeMDDH7cic7yRc8BTuXqoq3FvNTwh9J', this.network);
     // console.log('ima li pk', testkeypair.publicKey);
-    //   console.log('11', keypair.publicKey);
-    // console.log('addr ', bitcoin.payments.p2pkh({
+    // console.log('11', keypair.publicKey);
+    // console.log('addr ', bitcoin.payments.p2pkh({ // netje
     //   pubkey: testkeypair.publicKey.toString('hex'),
     //   network: this.network,
     // }).address);
@@ -191,7 +205,7 @@ const CryptoService = {
         network: this.network,
       }).address,
       keyPair: keypair,
-      pk: String(acc.neutered().toBase58()),
+      xpub: String(acc.neutered().toBase58()),
       wif: keypair.toWIF(),
       // sk: child.privateKey,
       path: `${account}'/${change}/${address}`,
@@ -255,7 +269,7 @@ const CryptoService = {
       isArchived: account.isArchived,
       utxo: account.utxo,
       path: account.path,
-      pk: account.pk,
+      xpub: account.xpub,
       asset: account.asset,
     });
 
@@ -535,9 +549,10 @@ const CryptoService = {
       let txs = [];
       let newAccounts = [];
       for (let account of accounts) {
+        console.log('akauntić', account);
         let accUtxo = 0;
-        if (account.pk.length > 0) {
-          const hdAccount = await mainStore.rpc('gethdaccount', [account.pk]);
+        if (account.xpub.length > 0) {
+          const hdAccount = await mainStore.rpc('gethdaccount', [account.xpub]);
           for (let tx of hdAccount) {
             accUtxo = add(accUtxo, tx.account_balance_change);
             accUtxo = format(accUtxo, { precision: 14 });
@@ -547,7 +562,7 @@ const CryptoService = {
               txid: tx.txid,
               blocktime: tx.txinfo.blocktime,
               account: account.label,
-              pk: account.pk,
+              xpub: account.xpub,
             });
           }
           newAccounts.push({
