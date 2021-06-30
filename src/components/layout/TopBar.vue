@@ -262,7 +262,7 @@
                   position="bottom-left"
                 >
                   <svg
-                    @click="publicQrCode = true"
+                    @click="generatePublicQr"
                     width="22"
                     height="22"
                     viewBox="0 0 22 22"
@@ -304,11 +304,13 @@
                 </StTooltip>
               </div>
             </div>
-            <p class="view-more bold">View on StealthMonitor</p>
+            <p @click="openBlockExplorer" class="view-more bold">
+              View on StealthMonitor
+            </p>
           </template>
           <template v-else>
-            <img class="qr-code" src="../../../static/qrcode.png" />
-            <p @click="publicQrCode = false" class="view-more bold">
+            <img class="qr-code" :src="publicQrCode" />
+            <p @click="publicQrCode = ''" class="view-more bold">
               Hide QR code
             </p>
           </template>
@@ -318,57 +320,69 @@
             <p class="password-desc">
               Enter your password to authorize this action
             </p>
-            <StFormItem class="custom-form-item" label="Password">
-              <StInput
-                v-model="password"
-                placeholder="Please enter your password"
-                :type="showPassword ? 'text' : 'password'"
-              ></StInput>
-              <svg
-                v-if="!showPassword"
-                @click="showPassword = true"
-                width="44"
-                height="24"
-                viewBox="0 0 44 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+            <form class="form" @submit.prevent>
+              <StFormItem
+                class="custom-form-item"
+                label="Password"
+                :error-message="form.password.$errors"
               >
-                <path
-                  clip-rule="evenodd"
-                  d="M33 18c3.314 0 6.314-1.667 9-5-2.686-3.333-5.686-5-9-5s-6.314 1.667-9 5c2.686 3.333 5.686 5 9 5z"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                />
-                <circle
-                  r="1"
-                  transform="matrix(-1 0 0 1 33 13)"
-                  fill="#FAF9FC"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                />
-              </svg>
-              <svg
-                v-else
-                @click="showPassword = false"
-                width="26"
-                height="19"
-                viewBox="0 0 26 19"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+                <StInput
+                  v-model="password"
+                  placeholder="Please enter your password"
+                  :type="showPassword ? 'text' : 'password'"
+                ></StInput>
+                <svg
+                  v-if="!showPassword"
+                  @click="showPassword = true"
+                  width="44"
+                  height="24"
+                  viewBox="0 0 44 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    clip-rule="evenodd"
+                    d="M33 18c3.314 0 6.314-1.667 9-5-2.686-3.333-5.686-5-9-5s-6.314 1.667-9 5c2.686 3.333 5.686 5 9 5z"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                  />
+                  <circle
+                    r="1"
+                    transform="matrix(-1 0 0 1 33 13)"
+                    fill="#FAF9FC"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                  />
+                </svg>
+                <svg
+                  v-else
+                  @click="showPassword = false"
+                  width="26"
+                  height="19"
+                  viewBox="0 0 26 19"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M13 3C8.94991 3 5.28325 5.03704 2 9.11111C5.28325 13.1852 8.94991 15.2222 13 15.2222C17.0501 15.2222 20.7168 13.1852 24 9.11111C23.2599 8.1928 22.5004 7.37799 21.7214 6.66667"
+                    stroke="#FEFEFE"
+                    stroke-width="2"
+                  />
+                  <path d="M9 9L15.1111 9" stroke="#4E00F6" stroke-width="2" />
+                  <path
+                    d="M23.1113 1L6.00022 18.1111"
+                    stroke="#4E00F6"
+                    stroke-width="2"
+                  />
+                </svg>
+              </StFormItem>
+              <StButton
+                v-show="Boolean(false)"
+                color="white"
+                @click="validatePassword"
+                >Continue</StButton
               >
-                <path
-                  d="M13 3C8.94991 3 5.28325 5.03704 2 9.11111C5.28325 13.1852 8.94991 15.2222 13 15.2222C17.0501 15.2222 20.7168 13.1852 24 9.11111C23.2599 8.1928 22.5004 7.37799 21.7214 6.66667"
-                  stroke="#FEFEFE"
-                  stroke-width="2"
-                />
-                <path d="M9 9L15.1111 9" stroke="#4E00F6" stroke-width="2" />
-                <path
-                  d="M23.1113 1L6.00022 18.1111"
-                  stroke="#4E00F6"
-                  stroke-width="2"
-                />
-              </svg>
-            </StFormItem>
+            </form>
           </template>
           <template v-else>
             <template v-if="!privateQrCode">
@@ -421,7 +435,7 @@
                     position="bottom-left"
                   >
                     <svg
-                      @click="privateQrCode = true"
+                      @click="generatePrivateQr"
                       width="22"
                       height="22"
                       viewBox="0 0 22 22"
@@ -469,8 +483,8 @@
               </div>
             </template>
             <template v-else>
-              <img class="qr-code" src="../../../static/qrcode.png" />
-              <p @click="privateQrCode = false" class="view-more bold">
+              <img class="qr-code" :src="privateQrCode" />
+              <p @click="privateQrCode = ''" class="view-more bold">
                 Hide QR code
               </p>
             </template>
@@ -484,11 +498,13 @@
 <script>
 import pkgjson from '../../../package.json';
 import { useMainStore } from '@/store';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import router from '@/router';
 import CryptoService from '@/services/crypto';
 import emitter from '@/services/emitter';
+import VanillaQR from 'vanillaqr';
+import { useValidation } from 'vue3-form-validation';
 
 export default {
   setup() {
@@ -499,17 +515,37 @@ export default {
     const accounts = ref([]);
     const isVisible = ref(false);
     const activeStep = ref('public-key');
-    const publicKey = ref(
-      'xpub6CUGRUonZSQ4TWtTMmzXdrXDtypWKiKrhko4egpiMZbpiaQL2jkwSB1icqYh2cfDfVxdx4df189oLKnC5fSwqPfgyP3hooxujYzAu3fDVmz'
-    );
-    const privateKey = ref(
-      'Xpub6CUGRUonZSQ4TWtTMzXdrXDtypWKiKrhko4egpiMZbpiaQL2jkwSB1icqYh2cfDfVxdx4df189oLKnC5fswqPfgyP3hooxujYzAu3fDVmz'
-    );
-    const publicQrCode = ref(false);
-    const privateQrCode = ref(false);
+    const publicKey = ref('');
+    const privateKey = ref('');
+    const publicQrCode = ref('');
+    const privateQrCode = ref('');
     const checkPassword = ref(false);
     const showPassword = ref(false);
     const password = ref('');
+
+    const {
+      form,
+      // errors,
+      // add,
+      // submitting,
+      validateFields,
+      resetFields,
+    } = useValidation({
+      password: {
+        $value: password,
+        $rules: [
+          async (password) => {
+            if (!password) {
+              return 'Password is required.';
+            }
+            let isValid = await CryptoService.validatePassword(password);
+            if (!isValid) {
+              return 'Incorrect password.';
+            }
+          },
+        ],
+      },
+    });
 
     const currentRoute = computed(() => {
       return route.name;
@@ -523,22 +559,67 @@ export default {
       return mainStore.isAmountsHidden;
     });
 
-    function changeStep(step) {
+    watch(
+      () => isVisible.value,
+      async () => {
+        if (isVisible.value) {
+          await scanWallet();
+          getPublicKey();
+        }
+      }
+    );
+
+    async function validatePassword() {
+      if (await validateFields()) {
+        // privateQrCode.value = '123'
+        getPrivateKey();
+        activeStep.value = 'private-key';
+        checkPassword.value = false;
+        password.value = '';
+      }
+    }
+
+    function getPublicKey() {
+      const path = CryptoService.breakAccountPath(account.value.path);
+      const { xpub } = CryptoService.getKeysForAccount(
+        path.account,
+        path.change,
+        path.address
+      );
+      publicKey.value = xpub;
+    }
+
+    function getPrivateKey() {
+      const path = CryptoService.breakAccountPath(account.value.path);
+      const { secretKey } = CryptoService.getKeysForAccount(
+        path.account,
+        path.change,
+        path.address
+      );
+      privateKey.value = secretKey;
+    }
+
+    async function changeStep(step) {
       activeStep.value = step;
-      publicQrCode.value = false;
-      privateQrCode.value = false;
+      publicQrCode.value = '';
+      privateQrCode.value = '';
       if (step === 'private-key') {
-        // TODO: Set checkPassword value to false if password is correct
         checkPassword.value = true;
       }
+      privateKey.value = '';
+      resetFields();
+      await scanWallet();
+      getPublicKey();
     }
 
     function closeModal() {
       isVisible.value = false;
       activeStep.value = 'public-key';
-      publicQrCode.value = false;
+      publicQrCode.value = '';
       checkPassword.value = false;
-      privateQrCode.value = false;
+      privateQrCode.value = '';
+      publicKey.value = '';
+      privateKey.value = '';
     }
 
     function toggleDrawer(canvas) {
@@ -589,14 +670,51 @@ export default {
     }
 
     async function scanWallet() {
-      const hdWallet = await CryptoService.scanWallet();
-      accounts.value = hdWallet.accounts;
-      // select first option
-      account.value = hdWallet.accounts[0];
-      // // manually start finding address for preselected account
-      // changeAccount(account.value)
+      // eslint-disable-next-line no-async-promise-executor
+      return new Promise(async (resolve) => {
+        const hdWallet = await CryptoService.scanWallet();
+        accounts.value = hdWallet.accounts;
+        // select first option
+        account.value = hdWallet.accounts[0];
+        resolve();
+      });
     }
-    scanWallet();
+
+    function generatePublicQr() {
+      let qr = new VanillaQR({
+        url: publicKey.value,
+        noBorder: false,
+        colorDark: '#140435',
+        colorLight: '#FAF9FC',
+      });
+      publicQrCode.value = qr.toImage('png').src;
+    }
+
+    function generatePrivateQr() {
+      let qr = new VanillaQR({
+        url: privateKey.value,
+        noBorder: false,
+        colorDark: '#140435',
+        colorLight: '#FAF9FC',
+      });
+      privateQrCode.value = qr.toImage('png').src;
+    }
+
+    function openBlockExplorer() {
+      const chain =
+        process.env.VUE_APP_NETWORK === 'mainnet'
+          ? '?chain=main'
+          : '?chain=test';
+      window
+        .open(
+          'https://stealthmonitor.org/xPub/' + publicKey.value + chain,
+          '_blank'
+        )
+        .focus();
+    }
+
+    // manually trigger retrieving keys
+    changeStep('public-key');
 
     return {
       version,
@@ -621,6 +739,9 @@ export default {
       showPassword,
       password,
       closeModal,
+      generatePublicQr,
+      openBlockExplorer,
+      validatePassword,
 
       scanWallet,
       account,
@@ -628,6 +749,11 @@ export default {
       toggleHiddenAmounts,
       isHiddenAmounts,
       accountChanged,
+      generatePrivateQr,
+
+      form,
+      validateFields,
+      resetFields,
     };
   },
 };

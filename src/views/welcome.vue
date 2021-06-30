@@ -1952,13 +1952,13 @@ export default {
       mainStore.START_GLOBAL_LOADING();
 
       let next = await CryptoService.getNextAccountPath();
-      const { address, path, pk, wif } = CryptoService.getChildFromRoot(
+      const { address, path, xpub, wif } = CryptoService.getChildFromRoot(
         next,
         0,
         0
       );
 
-      const hdAccount = await mainStore.rpc('gethdaccount', [pk]);
+      const hdAccount = await mainStore.rpc('gethdaccount', [xpub]);
 
       let accUtxo = 0;
 
@@ -1968,7 +1968,7 @@ export default {
       }
 
       let acc = {
-        pk: pk,
+        xpub: xpub,
         address: address,
         label: account.value || `Account ${next}`,
         utxo: accUtxo,
