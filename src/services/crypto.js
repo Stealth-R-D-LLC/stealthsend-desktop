@@ -142,11 +142,12 @@ const CryptoService = {
     };
   },
   getKeysForAccount(account = 0, change = 0, address = 0) {
-    if (!this.master) return {
-      xpub: '',
-      publicKey: '',
-      secretKey: ''
-    };
+    if (!this.master)
+      return {
+        xpub: '',
+        publicKey: '',
+        secretKey: '',
+      };
     const keypair = this.master.derivePath(
       `m/44'/${
         process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
