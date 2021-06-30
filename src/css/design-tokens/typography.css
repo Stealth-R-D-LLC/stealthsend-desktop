@@ -7,10 +7,6 @@ p {
   font-family: var(--secondary-font);
 }
 
-.semi-bold {
-  font-weight: 600;
-}
-
 h1 {
   color: var(--grey1000);
   font-size: 60px;
@@ -65,4 +61,7 @@ p.medium {
 }
 .bold {
   font-weight: 700;
+}
+.semi-bold {
+  font-weight: 600;
 }
