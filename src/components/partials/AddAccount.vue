@@ -169,7 +169,7 @@ export default {
               return 'Account name already exists.';
             }
             if (accountName.length > 50) {
-              return 'Name too long'
+              return 'Name too long';
             }
           },
         ],

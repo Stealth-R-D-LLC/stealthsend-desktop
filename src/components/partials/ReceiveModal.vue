@@ -311,7 +311,7 @@ export default {
               return 'Account is required';
             }
             if (account.length > 50) {
-              return 'Name too long'
+              return 'Name too long';
             }
           },
         ],
