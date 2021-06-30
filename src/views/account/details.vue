@@ -1,15 +1,17 @@
 <template>
-  <div class="account-details-container">
+  <div class="account-details-container" v-if="account">
     <div class="account-details-container__top">
       <div class="left">
         <StLabel label="XST Balance" bold>{{
-          formatAmount(account.utxo, false, 2)
+          isHiddenAmounts ? '•••' : formatAmount(account.utxo, false, 2)
         }}</StLabel>
         <StLabel label="USD Value"
-          >${{ formatAmount(usdAmount, false, 2) }}</StLabel
+          >${{
+            isHiddenAmounts ? '•••' : formatAmount(usdAmount, false, 2)
+          }}</StLabel
         >
         <StLabel label="BTC Value">{{
-          formatAmount(btcAmount, false, 8, 8)
+          isHiddenAmounts ? '•••' : formatAmount(btcAmount, false, 8, 8)
         }}</StLabel>
         <StLabel label="24h %"
           ><StTag :color="Number(changePercent24Hr) > 0 ? 'success' : 'danger'">
@@ -187,6 +189,7 @@ export default {
       openModal,
       formatAmount,
       changePercent24Hr,
+      isHiddenAmounts: computed(() => mainStore.isAmountsHidden),
     };
   },
 };
