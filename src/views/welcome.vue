@@ -1740,6 +1740,9 @@ export default {
                 if (currentStep.value === 6) {
                   return !account.value && 'Account name is required';
                 }
+                                        if (account.value.length > 50) {
+              return 'Name too long'
+            }
               },
             },
           ],

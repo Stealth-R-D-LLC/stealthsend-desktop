@@ -310,6 +310,9 @@ export default {
             if (!account) {
               return 'Account is required';
             }
+            if (account.length > 50) {
+              return 'Name too long'
+            }
           },
         ],
       },
