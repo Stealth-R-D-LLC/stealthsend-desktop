@@ -211,11 +211,12 @@ export default {
       setTimeout(() => {
         isAnimated.value = true;
         setTimeout(
-          () =>
-            document
-              .getElementById('password')
-              .getElementsByClassName('st-input__inner')[0]
-              .focus(),
+          () => {
+            let password = document.getElementById('password');
+            if (password) {
+              password.getElementsByClassName('st-input__inner')[0].focus();
+            }
+          },
           500
         );
       }, 2000);
