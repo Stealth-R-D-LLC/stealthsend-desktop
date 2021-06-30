@@ -168,6 +168,9 @@ export default {
             if (existingAccounts.some((el) => el.label === accountName)) {
               return 'Account name already exists.';
             }
+            if (accountName.length > 50) {
+              return 'Name too long';
+            }
           },
         ],
       },
