@@ -1469,7 +1469,7 @@
               Please be patient and don’t turn off the computer or exit the
               application
             </p>
-            <img src="../../static/xstloader.gif" alt="Test gif" />
+            <img src="../../static/xstloader.gif" alt="checkPhrase" />
           </div>
           <div v-if="recoveryStep === 3" class="step">
             <div>
