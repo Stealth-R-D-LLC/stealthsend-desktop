@@ -42,15 +42,28 @@
           </div>
           <div class="amount-container">
             <p class="currency">
-              {{ formatAmount(Math.abs(account.utxo, true, 8)) }} XST
+              {{
+                isHiddenAmounts
+                  ? '•••'
+                  : formatAmount(Math.abs(account.utxo, true, 8))
+              }}
+              XST
             </p>
             <p class="grey">
               ~
               <template v-if="Number(account.utxo) * XST_USD_RATE < 1">
-                {{ formatAmount(Math.abs(account.utxo * XST_USD_RATE), true) }}
+                {{
+                  isHiddenAmounts
+                    ? '•••'
+                    : formatAmount(Math.abs(account.utxo * XST_USD_RATE), true)
+                }}
               </template>
               <template v-else>
-                {{ formatAmount(Math.abs(account.utxo * XST_USD_RATE), false) }}
+                {{
+                  isHiddenAmounts
+                    ? '•••'
+                    : formatAmount(Math.abs(account.utxo * XST_USD_RATE), false)
+                }}
               </template>
               USD
             </p>
@@ -192,11 +205,20 @@
             </div>
             <div class="amount-container">
               <p class="currency">
-                {{ formatAmount(Math.abs(account.utxo, true, 8)) }} XST
+                {{
+                  isHiddenAmounts
+                    ? '•••'
+                    : formatAmount(Math.abs(account.utxo, true, 8))
+                }}
+                XST
               </p>
               <p class="grey">
                 ~ ${{
-                  formatAmount(Math.abs(account.utxo * XST_USD_RATE, false, 8))
+                  isHiddenAmounts
+                    ? '•••'
+                    : formatAmount(
+                        Math.abs(account.utxo * XST_USD_RATE, false, 8)
+                      )
                 }}
                 USD
               </p>
@@ -326,6 +348,7 @@ export default {
 
       formatAmount,
       XST_USD_RATE,
+      isHiddenAmounts: computed(() => mainStore.isAmountsHidden),
     };
   },
 };
