@@ -13,8 +13,8 @@ protocol.registerSchemesAsPrivileged([
 async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
-    // width: 1152,
-    // height: 700,
+    width: 1152,
+    height: 700,
     minWidth: 1152,
     minHeight: 700,
     maxWidth: 1600,
@@ -31,7 +31,7 @@ async function createWindow() {
     },
   });
 
-  win.setMenu(null); // remove menu bar
+  // win.setMenu(null); // remove menu bar
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
