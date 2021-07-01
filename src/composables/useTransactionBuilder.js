@@ -68,11 +68,11 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
       console.log('amount: ', Number(sumOf(sendForm.amount, fee * -1)) * 1e6);
       console.log('sendForm.amount', sendForm.amount);
-      console.log('aaaaa', multiply(
-        bignumber(sendForm.amount),
-        bignumber(-Math.abs(0.01)),
-        1e6
-      ).d[0]);
+      console.log(
+        'aaaaa',
+        multiply(bignumber(sendForm.amount), bignumber(-Math.abs(0.01)), 1e6)
+          .d[0]
+      );
 
       let recipient = {
         address: sendForm.address,
@@ -99,7 +99,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
       let { account: accountIndex } = CryptoService.breakAccountPath(
         sendForm.account.path
-        );
+      );
 
       for (let i = 0; i < utxo.length; i++) {
         // careful how to derive the path. depends on the account of the address
@@ -108,7 +108,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
             process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
           }'/${accountIndex}'/0/${findPathForAddress(utxo[i].address)}` // TODO CHANGE 1 (TESTNET) TO 125 (XST)
         );
-    
+
         const keyPair = bitcoin.ECPair.fromWIF(
           child.toWIF(),
           CryptoService.network
