@@ -11,7 +11,7 @@
         @click="changeChartPeriod('3d')"
         >3d</a
       >
-       <a
+      <a
         :class="{ active: currentPeriod === '2w' }"
         @click="changeChartPeriod('2w')"
         >2w</a
@@ -45,7 +45,6 @@ import { ref, onMounted } from '@vue/runtime-core';
 import { useMainStore } from '@/store';
 import format from 'date-fns/format';
 
-
 export default {
   name: 'StDashboardChart',
   setup() {
@@ -58,7 +57,7 @@ export default {
       changeChartPeriod();
     });
     function formatDate(date) {
-      return format(date, "dd MMM")
+      return format(date, 'dd MMM');
     }
     function changeChartPeriod(period = '1w') {
       currentPeriod.value = period;
@@ -131,8 +130,8 @@ export default {
               },
               tooltip: {
                 enabled: true,
-                formatter: function(val) {
-                  return formatDate(val)
+                formatter: function (val) {
+                  return formatDate(val);
                 },
                 marker: {
                   show: true,
@@ -140,7 +139,7 @@ export default {
                 offsetY: 55,
                 style: {
                   fontSize: '12px',
-                }
+                },
               },
               axisBorder: {
                 show: false,
@@ -199,7 +198,7 @@ export default {
                 fontFamily: 'noto-sans, Helvetica Neue, Arial, sans-serif',
               },
               x: {
-                format: "dd MMM, yyyy, HH:mm:ss"
+                format: 'dd MMM, yyyy, HH:mm:ss',
               },
               y: {
                 formatter: function (value) {
@@ -208,10 +207,10 @@ export default {
               },
               fixed: {
                 enabled: true,
-                position: "topLeft",
+                position: 'topLeft',
                 offsetX: 13,
-                offsetY: -27
-              }
+                offsetY: -27,
+              },
             },
             noData: {
               text: 'Loading...',
@@ -234,7 +233,7 @@ export default {
       refreshChart,
       changeChartPeriod,
       currentPeriod,
-      formatDate
+      formatDate,
     };
   },
 };
@@ -275,7 +274,7 @@ export default {
 }
 :deep .apexcharts-svg text.apexcharts-xaxis-label::before {
   display: block;
-  content: "";
+  content: '';
   width: 4px;
   height: 4px;
   background: var(--grey50);
@@ -300,7 +299,7 @@ export default {
 }
 :deep .apexcharts-xaxistooltip::before {
   display: block;
-  content: "";
+  content: '';
   width: 4px;
   height: 4px;
   background: var(--marine500);
@@ -311,7 +310,7 @@ export default {
 }
 :deep .apexcharts-yaxistooltip::before {
   display: block;
-  content: "";
+  content: '';
   border: none;
   margin: 0;
 }
