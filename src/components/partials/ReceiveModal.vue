@@ -558,6 +558,13 @@ export default {
   text-align: center;
   line-height: 24px;
 }
+:deep .multiselect--active .multiselect__tags {
+  padding-top: 25px;
+}
+:deep .multiselect__content-wrapper {
+  top: 4px;
+  padding-top: 65px;
+}
 </style>
 <style>
 .receive-modal .st-modal-container {

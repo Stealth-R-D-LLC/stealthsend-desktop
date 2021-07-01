@@ -690,6 +690,13 @@ export default {
   bottom: 1px;
   left: 1px;
 }
+:deep .multiselect--active .multiselect__tags {
+  padding-top: 25px;
+}
+:deep .multiselect__content-wrapper {
+  top: 4px;
+  padding-top: 65px;
+}
 </style>
 
 <style>
