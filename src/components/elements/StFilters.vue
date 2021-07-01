@@ -1,18 +1,20 @@
 <template>
   <div class="st-filters">
     <div class="st-filters__left">
-      <p v-if="$route.name === 'Dashboard'">Transactions</p>
-      <a
-        v-else
-        class="filter-item"
-        v-for="direction in directions"
-        :key="direction.label"
-        :class="{
-          'filter-item--active': currentDirection.value === direction.value,
-        }"
-        @click="sortByDirection(direction)"
-        >{{ direction.label }}</a
-      >
+      <template v-if="$route.name !== 'AccountDetails'">
+        <p v-if="$route.name === 'Dashboard'">Transactions</p>
+        <a
+          v-else
+          class="filter-item"
+          v-for="direction in directions"
+          :key="direction.label"
+          :class="{
+            'filter-item--active': currentDirection.value === direction.value,
+          }"
+          @click="sortByDirection(direction)"
+          >{{ direction.label }}</a
+        >
+      </template>
     </div>
     <div class="st-filters__right">
       <p
