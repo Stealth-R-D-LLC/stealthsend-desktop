@@ -427,7 +427,7 @@ export default {
         account.value = { ...pickedAccount.value };
       }
       const hdWallet = await CryptoService.scanWallet();
-      accounts.value = hdWallet.accounts;
+      accounts.value = hdWallet.accounts.filter((el) => !el.isArchived);
 
       // select first option
       if (!pickedAccount.value) {
@@ -443,7 +443,7 @@ export default {
 
     async function getUnspentOutputs(account) {
       if (!account) return;
-      const res = await mainStore.rpc('gethdaccount', [account.pk]);
+      const res = await mainStore.rpc('gethdaccount', [account.xpub]);
 
       // map only unspent outputs, put txid in each one of them and flatten the array
       unspentOutputs = res
@@ -529,7 +529,10 @@ export default {
         add(['depositAddress'], {
           $value: depositAddress,
           $rules: [
-            (depositAddress) => !depositAddress && 'Address is required',
+            (depositAddress) =>
+              (!depositAddress ||
+                !CryptoService.isAddressValid(depositAddress)) &&
+              'Please enter a valid XST address',
           ],
         });
         changeStep(2);

@@ -87,7 +87,7 @@
               >
                 <p>
                   <span class="bold medium">{{ item.name }}</span
-                  >, {{ item.description }}
+                  ><span v-if="item.description">, {{ item.description }}</span>
                 </p>
                 <p class="medium">{{ item.address }}</p>
               </div>
@@ -263,27 +263,27 @@
     </div>
     <div class="edit-contact" v-if="activeTab === 'edit-contact'">
       <div>
-        <div class="input-container">
+        <StFormItem :error-message="editForm.editName.$errors">
           <StInput
             v-model="editContactForm.name"
             label="Name"
             placeholder="Please enter a contact name"
           />
-        </div>
-        <div class="input-container">
+        </StFormItem>
+        <StFormItem :error-message="editForm.editDescription.$errors">
           <StInput
             v-model="editContactForm.description"
             label="Description"
             placeholder="Please enter a description"
           />
-        </div>
-        <div class="input-container">
+        </StFormItem>
+        <StFormItem :error-message="editForm.editAddress.$errors">
           <StInput
             v-model="editContactForm.address"
             label="Address"
             placeholder="Please enter a valid XST address"
           />
-        </div>
+        </StFormItem>
         <StCheckbox class="custom-checkbox" v-model="editContactForm.favorite"
           >Favorite list</StCheckbox
         >
@@ -318,27 +318,27 @@
     <!-- ADD CONTACT -->
     <div class="add-contact" v-if="activeTab === 'add-contact'">
       <div>
-        <div class="input-container">
+        <StFormItem :error-message="addForm.newName.$errors">
           <StInput
             v-model="addContactForm.name"
             label="Name"
             placeholder="Please enter a contact name"
           />
-        </div>
-        <div class="input-container">
+        </StFormItem>
+        <StFormItem :error-message="addForm.newDescription.$errors">
           <StInput
             v-model="addContactForm.description"
             label="Description"
             placeholder="Please enter a description"
           />
-        </div>
-        <div class="input-container">
+        </StFormItem>
+        <StFormItem :error-message="addForm.newAddress.$errors">
           <StInput
             v-model="addContactForm.address"
             label="Address"
             placeholder="Please enter a valid XST address"
           />
-        </div>
+        </StFormItem>
         <StCheckbox class="custom-checkbox" v-model="addContactForm.favorite"
           >Favorite list</StCheckbox
         >
@@ -379,6 +379,7 @@ import useHelpers from '@/composables/useHelpers';
 import { useMainStore } from '@/store';
 import CryptoService from '../../services/crypto';
 import router from '@/router';
+import { useValidation } from 'vue3-form-validation';
 
 export default {
   name: 'AddressBook',
@@ -498,6 +499,93 @@ export default {
     let addressList = ref([]);
     const isActive = ref('');
     let addContactForm = ref({});
+    let editContactForm = ref({});
+
+    const {
+      form: addForm,
+      validateFields: validateAddFields,
+      resetFields: resetAddFields,
+    } = useValidation({
+      newName: {
+        $value: addContactForm.value.name,
+        $rules: [
+          {
+            rule: () => addContactForm.value.name.length || 'Name required',
+          },
+          {
+            rule: () =>
+              addContactForm.value.name.length <= 50 || 'Name too long',
+          },
+        ],
+      },
+      newDescription: {
+        $value: addContactForm.value.description,
+        $rules: [
+          {
+            rule: () =>
+              addContactForm.value.description.length <= 50 ||
+              'Description too long',
+          },
+        ],
+      },
+      newAddress: {
+        $value: addContactForm.value.address,
+        $rules: [
+          {
+            rule: () =>
+              addContactForm.value.address.length || 'Address is required',
+          },
+          {
+            rule: () =>
+              CryptoService.isAddressValid(addContactForm.value.address) ||
+              'Please enter a valid XST address',
+          },
+        ],
+      },
+    });
+
+    const {
+      form: editForm,
+      validateFields: validateEditFields,
+      resetFields: resetEditFields,
+    } = useValidation({
+      editName: {
+        $value: editContactForm.value.name,
+        $rules: [
+          {
+            rule: () => editContactForm.value.name.length || 'Name required',
+          },
+          {
+            rule: () =>
+              editContactForm.value.name.length <= 50 || 'Name too long',
+          },
+        ],
+      },
+      editDescription: {
+        $value: editContactForm.value.description,
+        $rules: [
+          {
+            rule: () =>
+              editContactForm.value.description.length <= 50 ||
+              'Description too long',
+          },
+        ],
+      },
+      editAddress: {
+        $value: editContactForm.value.address,
+        $rules: [
+          {
+            rule: () =>
+              editContactForm.value.address.length || 'Address is required',
+          },
+          {
+            rule: () =>
+              CryptoService.isAddressValid(editContactForm.value.address) ||
+              'Please enter a valid XST address',
+          },
+        ],
+      },
+    });
 
     addContactForm.value = {
       name: '',
@@ -506,7 +594,6 @@ export default {
       favorite: false,
     };
 
-    let editContactForm = ref({});
     editContactForm.value = {
       id: '',
       name: '',
@@ -516,7 +603,10 @@ export default {
     };
 
     onMounted(async () => {
-      addressList.value = await CryptoService.getAddressBook();
+      const addresses = await CryptoService.getAddressBook();
+      addressList.value = addresses.sort((a, b) =>
+        a.name > b.name ? 1 : b.name > a.name ? -1 : 0
+      );
     });
 
     const activeTab = computed(() => {
@@ -552,14 +642,13 @@ export default {
         activeTab.value !== 'contact-details'
       ) {
         resetForm();
+        resetAddFields();
+        resetEditFields();
       }
     }
 
     async function addContact() {
-      if (!CryptoService.isAddressValid(addContactForm.value.address)) {
-        console.error('Address invalid');
-        return;
-      }
+      await validateAddFields();
 
       addressList.value = await CryptoService.addToAddressBook(
         addContactForm.value
@@ -583,19 +672,26 @@ export default {
       changeTab('address-book');
     }
 
-    function prePopulateForm(item) {
+    async function prePopulateForm(item) {
       changeTab('contact-details');
+
+      const addressBook = await CryptoService.getAddressBook();
+
+      const currentContact = addressBook.find(
+        (contact) => contact.id === item.id
+      );
+
       addContactForm.value = {
-        name: item.name,
-        description: item.description,
-        address: item.address,
-        favorite: item.favorite,
+        name: currentContact.name,
+        description: currentContact.description,
+        address: currentContact.address,
+        favorite: currentContact.favorite,
       };
-      editContactForm.value = item;
+      editContactForm.value = currentContact;
     }
 
     function scrollToElement(id) {
-      var element = document.getElementById(id);
+      const element = document.getElementById(id.toLowerCase());
       if (element) {
         isActive.value = id;
         element.scrollIntoView({
@@ -622,10 +718,7 @@ export default {
     }
 
     async function confirmEdit() {
-      if (!CryptoService.isAddressValid(editContactForm.value.address)) {
-        console.error('Address invalid');
-        return;
-      }
+      await validateEditFields();
 
       addressList.value = await CryptoService.updateAddressBook(
         editContactForm.value
@@ -641,6 +734,8 @@ export default {
       editContactForm,
       isActive,
       addressList,
+      addForm,
+      editForm,
 
       // Computed
       orderByName,

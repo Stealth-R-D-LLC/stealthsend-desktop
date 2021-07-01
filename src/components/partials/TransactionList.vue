@@ -102,11 +102,11 @@
             <template v-if="item.amount * XST_USD_RATE < 1">
               {{
                 isHiddenAmounts
-                  ? '$•••'
+                  ? '$••• USD'
                   : `$${formatAmount(
                       Math.abs(item.amount * XST_USD_RATE),
                       true
-                    )}`
+                    )} USD`
               }}
             </template>
             <template v-else>

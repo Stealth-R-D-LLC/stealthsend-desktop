@@ -124,7 +124,7 @@ export default {
     }
 
     function generateQR() {
-      var qr = new VanillaQR({
+      let qr = new VanillaQR({
         url: depositAddress.value,
         noBorder: false,
         colorDark: '#140435',
@@ -240,7 +240,7 @@ export default {
 
 <style>
 .quick-receive-modal .st-modal-container {
-  width: 480px;
+  width: 416px;
   height: 520px;
 }
 .quick-receive-modal .st-modal-container--dark .st-modal__header {
