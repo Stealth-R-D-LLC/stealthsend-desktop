@@ -3,17 +3,16 @@
     <div class="overflow">
       <Filters @change="orderTransactions" @sort="orderTransactions"></Filters>
       <template v-for="date in txDates" :key="date">
-        <p class="tx-date">
-          <span
-            v-if="
-              ['TODAY', 'YESTERDAY'].includes(
-                todayOrYesterday(date).toUpperCase()
-              )
-            "
-            class="relative"
-          >
-            {{ todayOrYesterday(date) }},
-          </span>
+        <p
+          v-if="
+            ['TODAY', 'YESTERDAY'].includes(
+              todayOrYesterday(date).toUpperCase()
+            )
+          "
+          class="tx-date"
+        >
+          <span class="relative"> {{ todayOrYesterday(date) }}, </span>
+          {{ date }}
         </p>
 
         <StTable
