@@ -35,7 +35,11 @@ has_hook_script pre-commit || exit 0
 export PATH="$PATH:/usr/local/bin:/usr/local"
 
 # Try to load nvm using path of standard installation
+<<<<<<< HEAD
 load_nvm /home/mlazarevic/.nvm
+=======
+load_nvm /Users/isop/.nvm
+>>>>>>> 3381c0c01acb4b0a3fb8942066a43e6efb8f26a2
 run_nvm
 
 # Export Git hook params
