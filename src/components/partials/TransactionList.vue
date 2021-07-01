@@ -14,7 +14,6 @@
           >
             {{ todayOrYesterday(date) }},
           </span>
-          {{ date }}
         </p>
 
         <StTable
@@ -275,6 +274,7 @@
           </template>
         </StTable>
       </template>
+      <h6 class="no-results" v-if="txDates.length === 0">No transactions</h6>
     </div>
   </div>
 </template>
@@ -561,5 +561,8 @@ export default {
     var(--grey100);
   border: 1px solid rgba(207, 205, 209, 0.25);
   color: var(--marine500);
+}
+.no-results {
+  text-align: center;
 }
 </style>
