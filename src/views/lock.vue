@@ -169,6 +169,7 @@ import { ref, onMounted } from 'vue';
 import router from '@/router';
 import CryptoService from '@/services/crypto';
 import { useValidation } from 'vue3-form-validation';
+import db from '@/db';
 
 export default {
   name: 'StLock',
@@ -235,13 +236,14 @@ export default {
     function clearData() {
       isCleared.value = true;
       countdown();
-      timeout.value = setTimeout(() => {
-        // TODO: Clear App Data
-        console.log('DELETE');
+      timeout.value = setTimeout(async () => {
+        await db.dropInstance();
+        localStorage.clear();
         forgotPassword.value = false;
         isCleared.value = false;
         clearTimeout(counterTimeout.value);
         counter.value = 4;
+        location.reload();
       }, 3000);
     }
 
