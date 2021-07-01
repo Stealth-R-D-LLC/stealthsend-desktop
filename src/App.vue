@@ -52,7 +52,7 @@ export default {
     document.addEventListener('keydown', function (event) {
       if (route.name === 'Lock') return; // don't handle if already on lock screen
       // ALT + L combo
-      if (event.altKey && event.key === 'l') {
+      if (event.altKey && (event.key === 'l' || event.key === '¬')) {
         router.push('/lock');
       }
     });
