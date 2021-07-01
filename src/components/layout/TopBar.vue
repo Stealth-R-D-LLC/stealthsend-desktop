@@ -34,11 +34,9 @@
           @select="accountChanged"
         >
           <template #singleLabel>
-            <div class="multiselect-single-label">
-              <p class="account-label">
-                {{ account && account.label }}
-              </p>
-            </div>
+            <h6>
+              {{ account && account.label }}
+            </h6>
           </template>
 
           <template #option="{ option }">
