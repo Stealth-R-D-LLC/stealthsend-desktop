@@ -17,8 +17,6 @@
           {{ date }}
         </p>
 
-        <div>There is no data!!!</div>
-
         <StTable
           :data="txs[date]"
           :has-header="hasTableHeader"
