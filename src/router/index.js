@@ -3,21 +3,22 @@ import AccountDetails from '@/views/account/details.vue';
 import AddressBook from '@/views/address-book.vue';
 import Dashboard from '@/views/dashboard/dashboard.vue';
 import Lock from '@/views/lock.vue';
-import Settings from '@/views/settings/settings.vue';
-import SettingsPassword from '@/views/settings/password.vue';
-import SettingsRecoveryPhrase from '@/views/settings/recovery-phrase.vue';
+import SettingsAppNotifications from '@/views/settings/app-notifications.vue';
 import SettingsAutoLock from '@/views/settings/auto-lock.vue';
+import SettingsDeleteAppData from '@/views/settings/delete-app-data.vue';
+import SettingsDesktopNotifications from '@/views/settings/desktop-notifications.vue';
+import SettingsEmailNotifications from '@/views/settings/email-notifications.vue';
 import SettingsFaq from '@/views/settings/faq.vue';
+import SettingsGeneralInformation from '@/views/settings/general-information.vue';
 import SettingsMyTickets from '@/views/settings/my-tickets.vue';
 import SettingsNewTicket from '@/views/settings/new-ticket.vue';
-import SettingsReportABug from '@/views/settings/report-a-bug.vue';
-import SettingsDesktopNotifications from '@/views/settings/desktop-notifications.vue';
-import SettingsAppNotifications from '@/views/settings/app-notifications.vue';
-import SettingsEmailNotifications from '@/views/settings/email-notifications.vue';
-import SettingsGeneralInformation from '@/views/settings/general-information.vue';
-import SettingsWebsite from '@/views/settings/website.vue';
+import SettingsPassword from '@/views/settings/password.vue';
 import SettingsPrivacyPolicy from '@/views/settings/privacy-policy.vue';
+import SettingsRecoveryPhrase from '@/views/settings/recovery-phrase.vue';
+import SettingsReportABug from '@/views/settings/report-a-bug.vue';
+import Settings from '@/views/settings/settings.vue';
 import SettingsTermsOfUse from '@/views/settings/terms-of-use.vue';
+import SettingsWebsite from '@/views/settings/website.vue';
 import Transactions from '@/views/transactions.vue';
 import UIKit from '@/views/uikit.vue';
 import Welcome from '@/views/welcome.vue';
@@ -109,6 +110,10 @@ const routes = [
       {
         path: 'report-a-bug',
         component: SettingsReportABug,
+      },
+      {
+        path: 'delete-app-data',
+        component: SettingsDeleteAppData,
       },
       {
         path: 'desktop-notifications',
