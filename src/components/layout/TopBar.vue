@@ -580,6 +580,7 @@ export default {
     }
 
     function getPublicKey() {
+      if (!account.value) return;
       const path = CryptoService.breakAccountPath(account.value.path);
       const { xpub } = CryptoService.getKeysForAccount(
         path.account,
