@@ -1501,6 +1501,7 @@
                   id="password"
                   :type="showPassword ? 'text' : 'password'"
                   v-model="form.password.$value"
+                  placeholder="Please enter password"
                 >
                   <svg
                     v-if="!showPassword"
@@ -1554,6 +1555,8 @@
                 <StInput
                   :type="showConfirmPassword ? 'text' : 'password'"
                   v-model="form.confirmPassword.$value"
+                  placeholder="Please repeat the Password to confirm"
+
                 >
                   <svg
                     v-if="!showConfirmPassword"
