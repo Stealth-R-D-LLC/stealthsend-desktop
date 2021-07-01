@@ -182,6 +182,23 @@ const CryptoService = {
       }'/${account}'`
     );
     // this.WIFtoPK(child.toWIF()) // decrypt
+    // console.log('1: ', acc.toWIF());
+    // console.log('2: ', keypair.toWIF());
+    // console.log('public key: ', keypair);
+    // console.log('public key1: ', Buffer.from(keypair.d));
+    // console.log('---');
+    // console.log('xpub', String(acc.neutered().toBase58())); // xpub Account Extended Public Key
+    // console.log('public key: ', keypair.publicKey.toString('hex')); // public key
+    // // console.log('keypair: ', keypair.privateKey.toString('hex'));
+    // console.log('secret key: ', keypair.toWIF()); // private key
+    // console.log('haha: ', bitcoin.ECPair.fromWIF('V7ZNZ67eXaq1je59K99KxfeMDDH7cic7yRc8BTuXqoq3FvNTwh9J', this.network));
+    // let testkeypair = bitcoin.ECPair.fromWIF('V7ZNZ67eXaq1je59K99KxfeMDDH7cic7yRc8BTuXqoq3FvNTwh9J', this.network);
+    // console.log('ima li pk', testkeypair.publicKey);
+    // console.log('11', keypair.publicKey);
+    // console.log('addr ', bitcoin.payments.p2pkh({ // netje
+    //   pubkey: testkeypair.publicKey.toString('hex'),
+    //   network: this.network,
+    // }).address);
     // let testkeypair = bitcoin.ECPair.fromWIF('privatekey', this.network);
     return {
       address: bitcoin.payments.p2pkh({
