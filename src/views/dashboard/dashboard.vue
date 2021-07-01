@@ -19,7 +19,7 @@
 <script>
 import { ref, computed } from 'vue';
 import TransactionList from '@/components/partials/TransactionList.vue';
-import Chart from './components/chart.vue';
+import Chart from '@/views/dashboard/components/chart';
 import CryptoService from '@/services/crypto';
 import { useMainStore } from '@/store';
 
