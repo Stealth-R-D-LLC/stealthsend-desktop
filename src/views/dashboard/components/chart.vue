@@ -11,6 +11,11 @@
         @click="changeChartPeriod('3d')"
         >3d</a
       >
+       <a
+        :class="{ active: currentPeriod === '2w' }"
+        @click="changeChartPeriod('2w')"
+        >2w</a
+      >
       <a
         :class="{ active: currentPeriod === '1w' }"
         @click="changeChartPeriod('1w')"
@@ -38,6 +43,8 @@ import ApexCharts from 'apexcharts';
 import { ref, onMounted } from '@vue/runtime-core';
 /* import useHelpers from '@/composables/useHelpers'; */
 import { useMainStore } from '@/store';
+import format from 'date-fns/format';
+
 
 export default {
   name: 'StDashboardChart',
@@ -50,6 +57,9 @@ export default {
     onMounted(() => {
       changeChartPeriod();
     });
+    function formatDate(date) {
+      return format(date, "dd MMM")
+    }
     function changeChartPeriod(period = '1w') {
       currentPeriod.value = period;
       refreshChart.value = true;
@@ -64,12 +74,13 @@ export default {
               },
               width: '100%',
               height: mainStore.componentVisibility.txDashboard
-                ? '400px'
+                ? '350px'
                 : '100%',
-              offsetX: -5,
+              offsetY: 50,
               zoom: {
                 enabled: false,
               },
+              fontFamily: "'Noto Sans', sans-serif",
               selection: {
                 enabled: false,
               },
@@ -109,18 +120,27 @@ export default {
             },
             xaxis: {
               forceNiceScale: true,
-              categories: [],
               type: 'datetime',
               labels: {
+                show: true,
                 format: 'dd MMM',
                 showDuplicates: false,
                 style: {
                   fontSize: '12px',
-                  fontFamily: "'Noto Sans', sans-serif",
                 },
               },
               tooltip: {
-                enabled: false,
+                enabled: true,
+                formatter: function(val) {
+                  return formatDate(val)
+                },
+                marker: {
+                  show: true,
+                },
+                offsetY: 55,
+                style: {
+                  fontSize: '12px',
+                }
               },
               axisBorder: {
                 show: false,
@@ -130,8 +150,17 @@ export default {
               },
             },
             yaxis: {
-              type: 'numeric',
-              /* forceNiceScale: true, */
+              crosshairs: {
+                show: true,
+                width: 1,
+                position: 'back',
+                opacity: 0.9,
+                stroke: {
+                  color: '#b6b6b6',
+                  width: 1,
+                  dashArray: 3,
+                },
+              },
               labels: {
                 show: true,
                 style: {
@@ -139,41 +168,57 @@ export default {
                   fontSize: '12px',
                   fontFamily: "'Noto Sans', sans-serif",
                 },
-                /* formatter: function (value) {
-                return formatAmount(value, false, 4);
-              }, */
                 formatter: function (value) {
                   return value.toFixed(2);
                 },
               },
+              tooltip: {
+                enabled: true,
+                marker: {
+                  show: true,
+                },
+                style: {
+                  fontSize: '12px',
+                },
+                offsetX: -9,
+                offsetY: -55,
+              },
             },
             legend: {
-              show: true,
+              show: false,
             },
             grid: {
               show: false,
             },
             tooltip: {
               enabled: true,
-              fillSeriesColor: false,
               marker: {
                 show: true,
               },
               style: {
                 fontFamily: 'noto-sans, Helvetica Neue, Arial, sans-serif',
               },
+              x: {
+                format: "dd MMM, yyyy, HH:mm:ss"
+              },
               y: {
                 formatter: function (value) {
                   return parseFloat(value.toFixed(8));
                 },
               },
+              fixed: {
+                enabled: true,
+                position: "topLeft",
+                offsetX: 13,
+                offsetY: -27
+              }
             },
             noData: {
               text: 'Loading...',
               align: 'center',
               verticalAlign: 'middle',
             },
-            series: [],
+            series: {},
           };
           options.series = res.series;
           options.xaxis.categories = res.options.xaxis.categories;
@@ -189,6 +234,7 @@ export default {
       refreshChart,
       changeChartPeriod,
       currentPeriod,
+      formatDate
     };
   },
 };
@@ -199,14 +245,79 @@ export default {
   height: calc(100vh - 220px);
 }
 .st-dashboard-chart {
-  height: 400px;
+  height: 450px;
 }
-.st-dashboard-chart .apexcharts-xaxis-label:before {
-  content: '';
+:deep .apexcharts-tooltip {
+  min-width: 150px;
+  flex-direction: column-reverse;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+:deep .apexcharts-tooltip .apexcharts-tooltip-title {
+  padding: 0;
+  background: none;
+  border: none;
+  margin: 0;
+}
+:deep .apexcharts-tooltip-series-group {
+  color: var(--marine500);
+  padding: 3px 0 0;
+  margin-bottom: 5px;
+}
+:deep .apexcharts-tooltip-marker {
+  display: none;
+}
+:deep .apexcharts-svg text.apexcharts-xaxis-label,
+:deep .apexcharts-svg text.apexcharts-yaxis-label {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+:deep .apexcharts-svg text.apexcharts-xaxis-label::before {
   display: block;
-  width: 10px;
-  height: 10px;
-  background-color: red;
+  content: "";
+  width: 4px;
+  height: 4px;
+  background: var(--grey50);
+  border: 0 none;
+  border-radius: 100%;
+  margin: 0;
+}
+:deep .apexcharts-svg:hover text.apexcharts-xaxis-label,
+:deep .apexcharts-svg:hover text.apexcharts-yaxis-label {
+  opacity: 0.2;
+}
+:deep .apexcharts-xaxistooltip,
+:deep .apexcharts-yaxistooltip {
+  font-weight: 700;
+  border: none;
+  border-radius: 0;
+  background-color: transparent;
+  padding: 8px;
+}
+:deep .apexcharts-yaxistooltip {
+  transform: translateY(50px);
+}
+:deep .apexcharts-xaxistooltip::before {
+  display: block;
+  content: "";
+  width: 4px;
+  height: 4px;
+  background: var(--marine500);
+  border: 0 none;
+  border-radius: 100%;
+  margin: 0;
+  transform: translateX(-50%);
+}
+:deep .apexcharts-yaxistooltip::before {
+  display: block;
+  content: "";
+  border: none;
+  margin: 0;
+}
+:deep .apexcharts-xaxistooltip::after,
+:deep .apexcharts-yaxistooltip::after {
+  display: none;
 }
 .filter-period {
   box-sizing: border-box;

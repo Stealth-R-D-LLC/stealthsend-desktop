@@ -29,6 +29,7 @@
       </div>
     </div>
     <div class="account-details-container__body">
+      <!-- <div>transaction list</div> -->
       <TransactionList
         has-table-header
         :transactions="transactions"
