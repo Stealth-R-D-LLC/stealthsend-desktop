@@ -2350,6 +2350,7 @@ export default {
   line-height: 20px;
   padding-left: 32px;
   margin-bottom: 0;
+  font-family: var(--secondary-font);
 }
 :deep .st-checkbox__checkmark {
   width: 16px;
