@@ -22,7 +22,6 @@ async function createWindow() {
     center: true,
     maximizable: false,
     fullscreenable: false,
-    title: 'StealthSend',
     webPreferences: {
       // devTools: false,
       // Use pluginOptions.nodeIntegration, leave this alone
