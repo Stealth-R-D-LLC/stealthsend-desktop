@@ -33,7 +33,9 @@
       >
     </div>
     <template v-if="!refreshChart">
+      <div class="chart-max">{{ maxValue }}</div>
       <div class="st-dashboard-chart"></div>
+      <div class="chart-min">{{ minValue }}</div>
     </template>
   </div>
 </template>
@@ -41,17 +43,19 @@
 <script>
 import ApexCharts from 'apexcharts';
 import { ref, onMounted } from '@vue/runtime-core';
-/* import useHelpers from '@/composables/useHelpers'; */
+import useHelpers from '@/composables/useHelpers';
 import { useMainStore } from '@/store';
 import format from 'date-fns/format';
 
 export default {
   name: 'StDashboardChart',
   setup() {
-    /* const { formatAmount } = useHelpers(); */
+    const { formatAmount } = useHelpers();
     const mainStore = useMainStore();
     const currentPeriod = ref('1w');
     const refreshChart = ref(false);
+    const minValue = ref(0);
+    const maxValue = ref(0);
 
     onMounted(() => {
       changeChartPeriod();
@@ -75,7 +79,7 @@ export default {
               height: mainStore.componentVisibility.txDashboard
                 ? '350px'
                 : '100%',
-              offsetY: 50,
+              offsetY: 70,
               zoom: {
                 enabled: false,
               },
@@ -123,6 +127,8 @@ export default {
               labels: {
                 show: true,
                 format: 'dd MMM',
+                minHeight: 120,
+                offsetY: 40,
                 showDuplicates: false,
                 style: {
                   fontSize: '12px',
@@ -136,7 +142,7 @@ export default {
                 marker: {
                   show: true,
                 },
-                offsetY: 55,
+                offsetY: 155,
                 style: {
                   fontSize: '12px',
                 },
@@ -145,7 +151,10 @@ export default {
                 show: false,
               },
               axisTicks: {
-                show: false,
+                show: true,
+                height: 0.5,
+                color: '#E5E4E8',
+                offsetY: 76,
               },
             },
             yaxis: {
@@ -161,9 +170,8 @@ export default {
                 },
               },
               labels: {
-                show: true,
+                show: false,
                 style: {
-                  colors: ['#CFCDD1'],
                   fontSize: '12px',
                   fontFamily: "'Noto Sans', sans-serif",
                 },
@@ -172,14 +180,14 @@ export default {
                 },
               },
               tooltip: {
-                enabled: true,
+                enabled: false,
                 marker: {
                   show: true,
                 },
                 style: {
                   fontSize: '12px',
                 },
-                offsetX: -9,
+                offsetX: -10,
                 offsetY: -55,
               },
             },
@@ -221,6 +229,17 @@ export default {
           };
           options.series = res.series;
           options.xaxis.categories = res.options.xaxis.categories;
+          let data = [...res.series[0].data];
+          minValue.value = data.sort((a, b) => {
+            return a - b;
+          })[0];
+          maxValue.value = data.sort((a, b) => {
+            return b - a;
+          })[0];
+          minValue.value =
+            'Low $' + formatAmount(minValue.value, false, 2, 2) + ' USD';
+          maxValue.value =
+            'High $' + formatAmount(maxValue.value, false, 2, 2) + ' USD';
           var chart = new ApexCharts(
             document.querySelector('.st-dashboard-chart'),
             options
@@ -234,6 +253,8 @@ export default {
       changeChartPeriod,
       currentPeriod,
       formatDate,
+      minValue,
+      maxValue,
     };
   },
 };
@@ -245,6 +266,22 @@ export default {
 }
 .st-dashboard-chart {
   height: 450px;
+}
+.chart-max,
+.chart-min {
+  position: absolute;
+  left: 12px;
+  font-family: var(--secondary-font);
+  font-size: 10px;
+  line-height: 16px;
+  letter-spacing: 0.12px;
+  color: var(--grey500);
+}
+.chart-max {
+  top: 63px;
+}
+.chart-min {
+  bottom: 100px;
 }
 :deep .apexcharts-tooltip {
   min-width: 150px;
@@ -272,6 +309,10 @@ export default {
   opacity: 1;
   transition: opacity 0.3s ease-in-out;
 }
+:deep .apexcharts-svg line.apexcharts-xaxis-tick {
+  stroke-width: 4px;
+  stroke-linecap: round;
+}
 :deep .apexcharts-svg text.apexcharts-xaxis-label::before {
   display: block;
   content: '';
@@ -295,7 +336,7 @@ export default {
   padding: 8px;
 }
 :deep .apexcharts-yaxistooltip {
-  transform: translateY(50px);
+  transform: translateY(70px);
 }
 :deep .apexcharts-xaxistooltip::before {
   display: block;
@@ -306,7 +347,7 @@ export default {
   border: 0 none;
   border-radius: 100%;
   margin: 0;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(-8px);
 }
 :deep .apexcharts-yaxistooltip::before {
   display: block;
