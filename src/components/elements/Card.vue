@@ -33,11 +33,12 @@
         </svg>
       </div>
       <div class="amount-container">
-        <h6 class="currency">
+        <h6 class="currency" v-if="steps">
           {{ isHiddenAmounts ? '••• XST' : steps[type].amountLeft }}
         </h6>
-        <p class="medium grey">
-          ~ {{ isHiddenAmounts ? '$•••' : steps[type].amountRight }}
+        <p class="medium grey" v-if="steps">
+          ~
+          {{ isHiddenAmounts ? '$••• USD' : steps[type].amountRight + ' USD' }}
           <svg
             class="star"
             width="16"
@@ -175,7 +176,6 @@ export default {
 
     const steps = computed(() => {
       if (!props.rates) return [];
-      // TODO: hardcoded stuff
       return [
         {
           asset: 'XST',
