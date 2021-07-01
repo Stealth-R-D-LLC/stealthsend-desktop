@@ -139,6 +139,7 @@
           :class="{ 'letter-active': isActive === item.id }"
           v-for="item in alphabet"
           :key="item.id"
+          :id="item.id"
           @click="scrollToElement(item.id)"
           >{{ item.letter }}</a
         >
@@ -147,30 +148,27 @@
     <!-- CONTACT DETAILS -->
     <div class="contact-details" v-if="activeTab === 'contact-details'">
       <div>
-        <div class="input-container">
+        <StFormItem label="Name">
           <StInput
             readonly
             v-model="addContactForm.name"
-            label="Name"
             placeholder="Please enter a contact name"
           />
-        </div>
-        <div class="input-container">
+        </StFormItem>
+        <StFormItem label="Description">
           <StInput
             readonly
             v-model="addContactForm.description"
-            label="Description"
             placeholder="Please enter a description"
           />
-        </div>
-        <div class="input-container">
+        </StFormItem>
+        <StFormItem label="Address">
           <StInput
             readonly
             v-model="addContactForm.address"
-            label="Address"
             placeholder="Please enter a valid XST address"
           />
-        </div>
+        </StFormItem>
         <StCheckbox
           class="custom-checkbox disabled-checkbox"
           v-model="addContactForm.favorite"
@@ -318,24 +316,24 @@
     <!-- ADD CONTACT -->
     <div class="add-contact" v-if="activeTab === 'add-contact'">
       <div>
-        <StFormItem :error-message="addForm.newName.$errors">
+        <StFormItem label="Name" :error-message="addForm.newName.$errors">
           <StInput
             v-model="addContactForm.name"
-            label="Name"
             placeholder="Please enter a contact name"
           />
         </StFormItem>
-        <StFormItem :error-message="addForm.newDescription.$errors">
+        <StFormItem
+          label="Description"
+          :error-message="addForm.newDescription.$errors"
+        >
           <StInput
             v-model="addContactForm.description"
-            label="Description"
             placeholder="Please enter a description"
           />
         </StFormItem>
-        <StFormItem :error-message="addForm.newAddress.$errors">
+        <StFormItem label="Address" :error-message="addForm.newAddress.$errors">
           <StInput
             v-model="addContactForm.address"
-            label="Address"
             placeholder="Please enter a valid XST address"
           />
         </StFormItem>
@@ -497,7 +495,7 @@ export default {
       },
     ]);
     let addressList = ref([]);
-    const isActive = ref('');
+    const isActive = ref('A');
     let addContactForm = ref({});
     let editContactForm = ref({});
 
@@ -603,10 +601,7 @@ export default {
     };
 
     onMounted(async () => {
-      const addresses = await CryptoService.getAddressBook();
-      addressList.value = addresses.sort((a, b) =>
-        a.name > b.name ? 1 : b.name > a.name ? -1 : 0
-      );
+      await filterAlphabetically();
     });
 
     const activeTab = computed(() => {
@@ -625,6 +620,13 @@ export default {
         }
       );
     });
+
+    async function filterAlphabetically() {
+      const addresses = await CryptoService.getAddressBook();
+      addressList.value = addresses.sort((a, b) =>
+        a.name > b.name ? 1 : b.name > a.name ? -1 : 0
+      );
+    }
 
     function closeCanvas() {
       mainStore.TOGGLE_DRAWER(false);
@@ -653,6 +655,7 @@ export default {
       addressList.value = await CryptoService.addToAddressBook(
         addContactForm.value
       );
+      await filterAlphabetically();
       changeTab('address-book');
     }
 
@@ -660,6 +663,7 @@ export default {
       addressList.value = await CryptoService.deleteFromAddressBook(
         editContactForm.value
       );
+      await filterAlphabetically();
       changeTab('address-book');
     }
 
@@ -691,7 +695,7 @@ export default {
     }
 
     function scrollToElement(id) {
-      const element = document.getElementById(id.toLowerCase());
+      const element = document.getElementById(id);
       if (element) {
         isActive.value = id;
         element.scrollIntoView({
@@ -766,7 +770,7 @@ export default {
 }
 .icons {
   display: flex;
-  align-items: c;
+  align-items: center;
 }
 .icons svg + svg {
   margin-left: 25px;
@@ -859,6 +863,7 @@ svg:hover circle {
   cursor: pointer;
   display: flex;
   align-items: center;
+  width: fit-content;
 }
 .transactions svg path {
   transition: 0.3s;
@@ -890,7 +895,7 @@ svg:hover circle {
   align-items: center;
 }
 .add-contact__bottom p svg {
-  margin-right: 23px;
+  margin-right: 20px;
 }
 .add-contact__bottom p svg path {
   transition: 0.3s;
@@ -898,7 +903,12 @@ svg:hover circle {
 .add-contact__bottom p:hover svg path {
   stroke: var(--marine200);
 }
-.input-container + .input-container {
+/* .input-container + .input-container {
   margin-top: 48px;
+} */
+.st-button {
+  padding: 5px 64px;
+  min-width: 157px;
+  font-family: var(--secondary-font);
 }
 </style>
