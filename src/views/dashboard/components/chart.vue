@@ -153,8 +153,8 @@ export default {
               axisTicks: {
                 show: true,
                 height: 0.5,
-                color: "#E5E4E8",
-                offsetY: 76
+                color: '#E5E4E8',
+                offsetY: 76,
               },
             },
             yaxis: {
@@ -229,15 +229,17 @@ export default {
           };
           options.series = res.series;
           options.xaxis.categories = res.options.xaxis.categories;
-          let data = [...res.series[0].data]
+          let data = [...res.series[0].data];
           minValue.value = data.sort((a, b) => {
-            return a - b
-          })[0]
+            return a - b;
+          })[0];
           maxValue.value = data.sort((a, b) => {
-            return b - a
-          })[0]
-          minValue.value = "Low $" + formatAmount(minValue.value, false, 2, 2) + " USD" 
-          maxValue.value = "High $" + formatAmount(maxValue.value, false, 2, 2) + " USD" 
+            return b - a;
+          })[0];
+          minValue.value =
+            'Low $' + formatAmount(minValue.value, false, 2, 2) + ' USD';
+          maxValue.value =
+            'High $' + formatAmount(maxValue.value, false, 2, 2) + ' USD';
           var chart = new ApexCharts(
             document.querySelector('.st-dashboard-chart'),
             options
@@ -252,7 +254,7 @@ export default {
       currentPeriod,
       formatDate,
       minValue,
-      maxValue
+      maxValue,
     };
   },
 };
