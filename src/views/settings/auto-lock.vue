@@ -48,7 +48,7 @@ export default {
       { label: '10 minutes', value: 600 },
       { label: '15 minutes', value: 900 },
       { label: '30 minutes', value: 1800 },
-      { label: '1 hour', value: 3600 },
+      // { label: '1 hour', value: 3600 },
     ]);
     const selectedInterval = ref(60);
     const isEnabled = ref(false);
@@ -124,9 +124,9 @@ export default {
 .option {
   padding: 6px 12px;
   font-family: var(--secondary-font);
-  font-size: 10px;
-  line-height: 16px;
-  letter-spacing: 0.16px;
+  font-size: 12px;
+  line-height: 24px;
+  letter-spacing: 0.12px;
   color: var(--grey900);
 
   background: linear-gradient(
