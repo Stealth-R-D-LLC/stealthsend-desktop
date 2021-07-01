@@ -11,11 +11,11 @@
         @click="changeChartPeriod('3d')"
         >3d</a
       >
-      <a
+      <!-- <a
         :class="{ active: currentPeriod === '2w' }"
         @click="changeChartPeriod('2w')"
         >2w</a
-      >
+      > -->
       <a
         :class="{ active: currentPeriod === '1w' }"
         @click="changeChartPeriod('1w')"
