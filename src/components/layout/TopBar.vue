@@ -496,7 +496,7 @@
 <script>
 import pkgjson from '../../../package.json';
 import { useMainStore } from '@/store';
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import router from '@/router';
 import CryptoService from '@/services/crypto';
@@ -555,6 +555,15 @@ export default {
 
     const isHiddenAmounts = computed(() => {
       return mainStore.isAmountsHidden;
+    });
+
+    onMounted(() => {
+      if (!componentVisibility.value.chart) {
+        toggleComponentVisibility('chart');
+      }
+      if (!componentVisibility.value.txDashboard) {
+        toggleComponentVisibility('txDashboard');
+      }
     });
 
     watch(
