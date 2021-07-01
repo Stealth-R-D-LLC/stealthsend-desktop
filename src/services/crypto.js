@@ -199,6 +199,7 @@ const CryptoService = {
     //   pubkey: testkeypair.publicKey.toString('hex'),
     //   network: this.network,
     // }).address);
+    // let testkeypair = bitcoin.ECPair.fromWIF('privatekey', this.network);
     return {
       address: bitcoin.payments.p2pkh({
         pubkey: keypair.publicKey,

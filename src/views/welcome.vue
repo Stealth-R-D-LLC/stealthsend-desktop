@@ -1501,6 +1501,7 @@
                   id="password"
                   :type="showPassword ? 'text' : 'password'"
                   v-model="form.password.$value"
+                  placeholder="Please enter password"
                 >
                   <svg
                     v-if="!showPassword"
@@ -1554,6 +1555,7 @@
                 <StInput
                   :type="showConfirmPassword ? 'text' : 'password'"
                   v-model="form.confirmPassword.$value"
+                  placeholder="Please repeat the Password to confirm"
                 >
                   <svg
                     v-if="!showConfirmPassword"
@@ -1941,9 +1943,11 @@ export default {
         CryptoService.seed = bytes.toString('hex');
         CryptoService.master = master;
         await CryptoService.storeWalletInDb(password.value);
-
         await restoreAccounts();
-        goToDashboard();
+        CryptoService.isFirstArrival = false;
+        await CryptoService.unlock(password.value);
+        // goToDashboard();
+        resetFields();
       } catch (e) {
         if (e instanceof ValidationError) {
           console.log(e.message);
