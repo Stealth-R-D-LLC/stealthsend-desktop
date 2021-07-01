@@ -1943,9 +1943,11 @@ export default {
         CryptoService.seed = bytes.toString('hex');
         CryptoService.master = master;
         await CryptoService.storeWalletInDb(password.value);
-
         await restoreAccounts();
-        goToDashboard();
+        CryptoService.isFirstArrival = false;
+        await CryptoService.unlock(password.value);
+        // goToDashboard();
+        resetFields();
       } catch (e) {
         if (e instanceof ValidationError) {
           console.log(e.message);
