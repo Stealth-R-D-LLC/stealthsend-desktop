@@ -1997,16 +1997,6 @@ export default {
       mainStore.STOP_GLOBAL_LOADING();
     }
 
-    const importWallet = ref(false);
-    // 800000000000000000000000000000000000000000000000000000000000000001014671FC3F
-    const wif = ref('KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU73sVHnoWn');
-    const imported = ref({});
-    async function importWalletFromWif() {
-      // wallet is simply imported via wif
-      // user should be also prompted here to create a new password
-      imported.value = CryptoService.WIFtoPK(wif.value);
-    }
-
     const createWallet = ref(false);
     async function createNewWallet() {
       // new wallet is created
@@ -2075,11 +2065,6 @@ export default {
       recoveryPhraseLength,
       recoveryPhraseConfirmation,
       restoreRecoveryPhraseLength,
-
-      importWalletFromWif,
-      importWallet,
-      wif,
-      imported,
 
       clearAndRedoWords,
       clearRecoveryWords,
