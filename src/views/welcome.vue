@@ -1556,7 +1556,6 @@
                   :type="showConfirmPassword ? 'text' : 'password'"
                   v-model="form.confirmPassword.$value"
                   placeholder="Please repeat the Password to confirm"
-
                 >
                   <svg
                     v-if="!showConfirmPassword"
