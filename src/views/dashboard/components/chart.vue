@@ -12,17 +12,12 @@
         >3d</a
       >
       <a
-        :class="{ active: currentPeriod === '2w' }"
-        @click="changeChartPeriod('2w')"
-        >2w</a
-      >
-      <a
         :class="{ active: currentPeriod === '1w' }"
         @click="changeChartPeriod('1w')"
         >1w</a
       >
       <a
-        :class="{ active: currentPeriod === '1m' }"
+        :class="{ active: currentPeriod === '1M' }"
         @click="changeChartPeriod('1M')"
         >1m</a
       >
@@ -52,7 +47,7 @@ export default {
   setup() {
     const { formatAmount } = useHelpers();
     const mainStore = useMainStore();
-    const currentPeriod = ref('1w');
+    const currentPeriod = ref('1M');
     const refreshChart = ref(false);
     const minValue = ref(0);
     const maxValue = ref(0);
@@ -63,7 +58,7 @@ export default {
     function formatDate(date) {
       return format(date, 'dd MMM');
     }
-    function changeChartPeriod(period = '1w') {
+    function changeChartPeriod(period = '1M') {
       currentPeriod.value = period;
       refreshChart.value = true;
       mainStore.getChartData(currentPeriod.value).then((res) => {
