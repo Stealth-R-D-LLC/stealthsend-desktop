@@ -15,6 +15,7 @@
             {{ todayOrYesterday(date) }},
           </span>
         </p>
+
         <StTable
           :data="txs[date]"
           :has-header="hasTableHeader"
@@ -52,7 +53,9 @@
                   />
                   <path d="M12 6v7" stroke="#07AC82" stroke-width="2" />
                 </svg>
-                <template v-if="$route.name !== 'Dashboard'">Received</template>
+                <template v-if="$route.name !== 'Dashboard'"
+                  >Received test</template
+                >
               </template>
               <template v-else-if="item.amount < 0">
                 <svg
