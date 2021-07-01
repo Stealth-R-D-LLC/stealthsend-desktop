@@ -136,6 +136,7 @@
             <StTooltip
               v-if="depositAddress"
               :tooltip="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
+              position="bottom-right"
             >
               <StClipboard :content="depositAddress" @click="handleCopy">
                 <svg
@@ -197,6 +198,7 @@
         <StTooltip
           class="tooltip"
           :tooltip="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
+          position="bottom-right"
         >
           <StClipboard :content="depositAddress" @click="handleCopy"
             >Copy to Clipboard</StClipboard
@@ -478,10 +480,12 @@ export default {
   text-align: center;
 }
 .tooltip {
-  margin-top: 40px;
   display: block;
   width: 100%;
   text-align: center;
+}
+.tooltip svg {
+  display: block;
 }
 .tooltip .st-clipboard {
   font-family: var(--secondary-font);

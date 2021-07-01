@@ -6,3 +6,8 @@ html, body {
     text-rendering: optimizeLegibility;
     overflow: hidden;
 }
+
+.st-button--primary {
+    font-family: var(--secondary-font);
+    padding: 5px 64px;
+}
