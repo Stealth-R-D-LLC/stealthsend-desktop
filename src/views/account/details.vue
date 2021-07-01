@@ -344,4 +344,7 @@ export default {
   overflow: initial;
   height: auto;
 }
+:deep .st-dashboard-chart {
+  margin-top: 24px;
+}
 </style>
