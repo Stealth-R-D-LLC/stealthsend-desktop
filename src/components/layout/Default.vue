@@ -49,7 +49,7 @@ export default {
     QuickReceiveModal,
     SendModal,
     AddAccount,
-    OffCanvas
+    OffCanvas,
   },
   setup() {
     CryptoService.init();
