@@ -172,6 +172,7 @@ import { useValidation } from 'vue3-form-validation';
 import db from '@/db';
 import Lottie from 'vue-lottie/src/lottie.vue';
 import * as animationData from '@/assets/animation/logo.json';
+import { useMainStore } from '@/store';
 
 export default {
   name: 'StLock',
@@ -194,6 +195,8 @@ export default {
       loop: false,
       autoplay: true,
     });
+
+    const mainStore = useMainStore();
 
     const {
       form,
@@ -220,6 +223,8 @@ export default {
     });
 
     onMounted(() => {
+      mainStore.TOGGLE_DRAWER(false);
+      mainStore.SET_OFF_CANVAS_DATA(null);
       document.getElementById('bgAnimation').play();
       setTimeout(() => {
         isAnimated.value = true;
