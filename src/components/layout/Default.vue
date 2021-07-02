@@ -4,6 +4,7 @@
     <QuickReceiveModal />
     <SendModal />
     <AddAccount />
+    <OffCanvas></OffCanvas>
     <MenuBar></MenuBar>
     <main class="layout__main">
       <Side v-if="$route.path === '/dashboard'"></Side>
@@ -35,6 +36,7 @@ import ReceiveModal from '@/components/partials/ReceiveModal.vue';
 import QuickReceiveModal from '@/components/partials/QuickReceiveModal.vue';
 import SendModal from '@/components/partials/SendModal.vue';
 import AddAccount from '@/components/partials/AddAccount.vue';
+import OffCanvas from '@/components/elements/StOffCanvas.vue';
 
 export default {
   name: 'TsDefault',
@@ -47,6 +49,7 @@ export default {
     QuickReceiveModal,
     SendModal,
     AddAccount,
+    OffCanvas
   },
   setup() {
     CryptoService.init();
