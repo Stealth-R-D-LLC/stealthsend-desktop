@@ -266,7 +266,9 @@ export default {
 }
 
 .account-details-container__body :deep .apexcharts-tooltip,
-.account-details-container__body :deep .apexcharts-tooltip.apexcharts-theme-light {
+.account-details-container__body
+  :deep
+  .apexcharts-tooltip.apexcharts-theme-light {
   left: initial !important;
   right: -15px;
   top: 5px !important;
