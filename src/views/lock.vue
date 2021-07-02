@@ -191,8 +191,7 @@ export default {
       autoplay: true,
     });
 
-        const mainStore = useMainStore();
-
+    const mainStore = useMainStore();
 
     const {
       form,
