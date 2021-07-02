@@ -189,6 +189,8 @@ export default {
       }
       if (currentStep.value === 4) {
         setTimeout(() => {
+          currentStep.value = 1;
+          activeStep.value = 'add-account';
           closeModal();
         }, 2000);
       }
@@ -232,7 +234,10 @@ export default {
       privateKey.value = '';
       activeStep.value = name;
     }
-    function nextStep() {
+    async function nextStep() {
+      if (currentStep.value === 2) {
+        await CryptoService.importAccount(accountName.value, privateKey.value);
+      }
       if (understand.value) {
         currentStep.value += 1;
       }
@@ -285,6 +290,8 @@ export default {
         label: accountName.value,
         utxo: 0,
         isArchived: false,
+        isFavourite: false,
+        isImported: false,
         asset: 'XST',
         wif: wif,
         path: path,
