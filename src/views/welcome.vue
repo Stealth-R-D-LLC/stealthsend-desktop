@@ -2452,6 +2452,8 @@ export default {
         label: account.value || `Account ${next}`,
         utxo: accUtxo,
         isArchived: false,
+        isFavourite: false,
+        isImported: false,
         asset: 'XST',
         wif: wif,
         path: path,
