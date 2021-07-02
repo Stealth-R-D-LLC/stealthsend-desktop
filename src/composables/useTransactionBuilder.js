@@ -7,7 +7,7 @@ import { add, format, subtract } from 'mathjs';
 
 export default async function useTransactionBuilder(utxo, sendForm) {
   const mainStore = useMainStore();
-  
+
   const { fee } = useFeeEstimator(utxo.length);
 
   const sumOf = (x = 0, y = 0) => {
@@ -109,7 +109,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
           rawTransaction.sign(i, keyPair);
         } catch (e) {
           console.info('TRANSACTION BUILDER: cannot sign tx', e);
-          reject(e)
+          reject(e);
         }
       }
 
