@@ -256,7 +256,7 @@
 
           Edit contact
         </p>
-        <StButton>Send</StButton>
+        <StButton @click="openModal('send')">Send</StButton>
       </div>
     </div>
     <div class="edit-contact" v-if="activeTab === 'edit-contact'">
@@ -717,6 +717,12 @@ export default {
       };
     }
 
+    function openModal(modal) {
+      mainStore.SET_MODAL_VISIBILITY(modal, true);
+      mainStore.SET_SEND_ADDRESS(addContactForm.value.address);
+      closeCanvas();
+    }
+
     function editContact() {
       changeTab('edit-contact');
     }
@@ -755,6 +761,7 @@ export default {
       confirmEdit,
       scrollToElement,
       viewTransactions,
+      openModal,
       /* toggleFavorite */
     };
   },
