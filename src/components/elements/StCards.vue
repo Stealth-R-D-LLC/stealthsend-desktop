@@ -60,7 +60,7 @@
       <h4>{{ isHiddenAmounts ? '•••' : steps[step].amountTop }}</h4>
       <h6 class="amount-fiat">
         <span class="amount-fiat__inner"
-          >~ {{ isHiddenAmounts ? '$•••' : steps[step].amountBottom }}</span
+          >~ {{ isHiddenAmounts ? '$•••' : steps[step].amountBottom }} USD</span
         >
         <StTag
           :color="Number(steps[step].percentage) > 0 ? 'success' : 'danger'"
