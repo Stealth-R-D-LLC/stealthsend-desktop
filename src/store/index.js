@@ -31,9 +31,13 @@ export const useMainStore = defineStore({
     currentOffCanvas: 'transaction-details', // transaction-details, recent-notifications, favourite-list, address-book, edit-contact, add-contact
     offCanvasData: null,
     addressActiveTab: 'address-book', // address-book, add-contact, edit-contact, contact-details
+    sendAddress: '',
   }),
   getters: {},
   actions: {
+    SET_SEND_ADDRESS(payload) {
+      this.sendAddress = payload;
+    },
     SET_ADDRESS_ACTIVE_TAB(payload) {
       this.addressActiveTab = payload;
     },

@@ -40,6 +40,7 @@
           ~
           {{ isHiddenAmounts ? '$••• USD' : steps[type].amountRight + ' USD' }}
           <svg
+            v-if="account.isFavourite"
             class="star"
             width="16"
             height="14"
@@ -91,29 +92,6 @@
           <li>
             <a @click="openAccountDetails(account)">View Account</a>
           </li>
-          <li>
-            <a @click="openEditAccountNameModal(account)">Edit Account Name</a>
-          </li>
-          <StModal
-            light
-            :visible="editAccountNameModal"
-            @close="editAccountNameModal = false"
-          >
-            <template #header> Account Wizard </template>
-            <template #body>
-              <StInput
-                v-model="accountName"
-                label="Account name"
-                placeholder="Account name"
-              ></StInput>
-            </template>
-            <template #footer>
-              <StButton color="secondary" @click="editAccountNameModal = false"
-                >Cancel</StButton
-              >
-              <StButton @click="changeAccountName(account)">Submit</StButton>
-            </template>
-          </StModal>
         </ul>
       </div>
     </transition>
@@ -170,9 +148,6 @@ export default {
     const mainStore = useMainStore();
     const { formatAmount } = useHelpers();
     const accountOptions = ref('');
-    const accountName = ref('');
-    let editAccountNameModal = ref(false);
-    let accounts = ref(props.accounts);
 
     const steps = computed(() => {
       if (!props.rates) return [];
@@ -204,18 +179,6 @@ export default {
         accountOptions.value = name;
       }
     }
-    const changeAccountName = async (account) => {
-      accounts.value = await CryptoService.changeAccountName(
-        account,
-        accountName.value
-      );
-      accountOptions.value = '';
-      editAccountNameModal.value = false;
-    };
-    const openEditAccountNameModal = (account) => {
-      accountName.value = account.label;
-      editAccountNameModal.value = true;
-    };
     const openAccountDetails = (account) => {
       mainStore.SET_ACCOUNT_DETAILS(account);
       router.push('/account/details');
@@ -225,13 +188,9 @@ export default {
     }
     return {
       accountOptions,
-      changeAccountName,
       toggleAccountOptions,
-      openEditAccountNameModal,
       openAccountDetails,
       openModal,
-      accountName,
-      editAccountNameModal,
       handleClick,
       steps,
       isHiddenAmounts: computed(() => mainStore.isAmountsHidden),
@@ -306,7 +265,7 @@ export default {
   top: 18px;
 }
 .account-options ul > li + li {
-  margin-top: 4px;
+  margin-top: 12px;
 }
 .account-options ul > li > a {
   cursor: pointer;

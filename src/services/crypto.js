@@ -59,6 +59,7 @@ const CryptoService = {
     XST_BTC: 0.00000364,
     changePercent24Hr: 0,
     MINIMAL_CHANGE: 0,
+    FEE: 0.02,
   },
   isFirstArrival: true,
   network: networkConfig,
@@ -182,6 +183,11 @@ const CryptoService = {
       }'/${account}'`
     );
     // this.WIFtoPK(child.toWIF()) // decrypt
+    // console.log('1: ', acc.toWIF());
+    // console.log('2: ', keypair.toWIF());
+    // console.log('public key: ', keypair);
+    // console.log('public key1: ', Buffer.from(keypair.d));
+    // console.log('---');
     // console.log('xpub', String(acc.neutered().toBase58())); // xpub Account Extended Public Key
     // console.log('public key: ', keypair.publicKey.toString('hex')); // public key
     // // console.log('keypair: ', keypair.privateKey.toString('hex'));
@@ -194,6 +200,7 @@ const CryptoService = {
     //   pubkey: testkeypair.publicKey.toString('hex'),
     //   network: this.network,
     // }).address);
+    // let testkeypair = bitcoin.ECPair.fromWIF('privatekey', this.network);
     return {
       address: bitcoin.payments.p2pkh({
         pubkey: keypair.publicKey,
@@ -252,6 +259,8 @@ const CryptoService = {
       address: account.address,
       label: account.label,
       isArchived: account.isArchived,
+      isFavourite: account.isFavourite,
+      isImported: account.isImported,
       utxo: account.utxo,
       path: account.path,
       xpub: account.xpub,
@@ -264,7 +273,7 @@ const CryptoService = {
     let accounts = await db.getItem('accounts');
     if (accounts.length < 1) {
       console.error('Accounts do not exist');
-      return this.getAccounts();
+      return this.scanWallet();
     }
 
     const wantedIndex = accounts.findIndex(
@@ -273,14 +282,48 @@ const CryptoService = {
 
     if (accounts[wantedIndex].utxo > 0) {
       console.error('Cannot archive account with balance > 0');
-      return this.getAccounts();
+      return this.scanWallet();
     }
 
     accounts[wantedIndex].isArchived = true;
 
     await db.setItem('accounts', accounts);
 
-    return this.getAccounts();
+    return this.scanWallet();
+  },
+
+  async favouriteAccount(account) {
+    let accounts = await db.getItem('accounts');
+    if (accounts.length < 1) {
+      console.error('Accounts do not exist');
+      return this.scanWallet();
+    }
+
+    const wantedIndex = accounts.findIndex(
+      (item) => item.address === account.address
+    );
+
+    accounts[wantedIndex].isFavourite = true;
+    await db.setItem('accounts', accounts);
+
+    return this.scanWallet();
+  },
+
+  async unfavouriteAccount(account) {
+    let accounts = await db.getItem('accounts');
+    if (accounts.length < 1) {
+      console.error('Accounts do not exist');
+      return this.scanWallet();
+    }
+
+    const wantedIndex = accounts.findIndex(
+      (item) => item.address === account.address
+    );
+
+    accounts[wantedIndex].isFavourite = false;
+    await db.setItem('accounts', accounts);
+
+    return this.scanWallet();
   },
 
   async activateAccount(account) {
@@ -296,7 +339,7 @@ const CryptoService = {
 
     await db.setItem('accounts', accounts);
 
-    return this.getAccounts();
+    return this.scanWallet();
   },
 
   async changeAccountName(account, accountName) {
@@ -312,7 +355,7 @@ const CryptoService = {
 
     await db.setItem('accounts', accounts);
 
-    return this.getAccounts();
+    return this.scanWallet();
   },
 
   async addToAddressBook(addressBookItem) {
@@ -488,7 +531,7 @@ const CryptoService = {
       let newAccounts = [];
       for (let account of accounts) {
         let accUtxo = 0;
-        if (account.xpub.length > 0) {
+        if (account.xpub?.length > 0) {
           const hdAccount = await mainStore.rpc('gethdaccount', [account.xpub]);
           for (let tx of hdAccount) {
             accUtxo = add(accUtxo, tx.account_balance_change);
@@ -507,9 +550,16 @@ const CryptoService = {
             utxo: Number(accUtxo),
           });
         } else {
+          const importedAccountBalance = await mainStore.rpc(
+            'getaddressbalance',
+            [account.address]
+          );
+          accUtxo = add(accUtxo, importedAccountBalance);
+          accUtxo = format(accUtxo, { precision: 14 });
+
           newAccounts.push({
             ...account,
-            utxo: Number(account.utxo),
+            utxo: accUtxo,
           });
         }
         // When a user looks at their wallet, the software aggregates the sum of value of all their
@@ -554,6 +604,40 @@ const CryptoService = {
       }
     }
     return largest + 1;
+  },
+
+  async importAccount(accountName, accountPrivateKey) {
+    const keypair = bitcoin.ECPair.fromWIF(accountPrivateKey, this.network);
+
+    const payment = bitcoin.payments.p2pkh({
+      pubkey: keypair.publicKey,
+      network: this.network,
+    });
+
+    const address = payment.address;
+    const mainStore = useMainStore();
+    const balance = await mainStore.rpc('getaddressbalance', [address]);
+
+    let accounts = await this.getAccounts();
+    const foundAccount = accounts.some((account) => {
+      return account.address === address;
+    });
+    if (foundAccount) return foundAccount;
+
+    accounts.push({
+      address,
+      label: accountName,
+      isArchived: false,
+      isFavourite: false,
+      isImported: true,
+      utxo: balance,
+      asset: 'XST',
+      wif: accountPrivateKey,
+    });
+
+    await db.setItem('accounts', accounts);
+
+    return accounts;
   },
 };
 

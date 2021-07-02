@@ -6,7 +6,6 @@ import CryptoService from '@/services/crypto';
 import { add, format, subtract } from 'mathjs';
 
 export default function useCoinControl(outputs, target) {
-  console.log('use coin control outputs: ', outputs, target);
   const orderBy = (arr, props, orders) =>
     [...arr].sort((a, b) =>
       props.reduce((acc, prop, i) => {
@@ -207,17 +206,7 @@ export default function useCoinControl(outputs, target) {
     // output. Finally, it will pick the smaller out of the knapsack result or the minimal
     // larger UTXO.
 
-    let adjustedTarget = sumOf(target, 0); // CryptoService.constraints.FEE
-    // const sortedUtxo = orderBy(outputs, ['amount'], ['desc'])
-    // const sumOfAll = sortedUtxo.map(el => el.amount).reduce((a, b) => sumOf(a, b), 0)
-    // if (sumOfAll < adjustedTarget) {
-    //     // if the sum of all utxos is less than the target, it won't be possible to find the combination
-    //     // and it doesn't make any sense to start any algorithm
-    //     return []
-    // } else if (sumOfAll === adjustedTarget) {
-    //     // if the sum of all is equal to the target, then it's the result and neither algorithm doesn't have to start
-    //     return sortedUtxo
-    // }
+    let adjustedTarget = sumOf(target, 0); // no need to add fee here because we are already increasing the target amount before sending it to coinControl
 
     let bestSet = [...outputs]; // fallback
     let result = null;
@@ -267,7 +256,6 @@ export default function useCoinControl(outputs, target) {
   }
 
   let best = coinSelection(); // run coin selection on init
-  console.log('use coin control result: ', best);
 
   return {
     best,

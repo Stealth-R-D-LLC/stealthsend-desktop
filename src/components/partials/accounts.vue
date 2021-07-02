@@ -74,7 +74,7 @@
             class="link-purple"
             >Receive XST</a
           >
-          <a v-else class="link">
+          <a v-else-if="account.isFavourite" class="link">
             <svg
               width="16"
               height="16"
@@ -89,7 +89,7 @@
                 stroke-linejoin="round"
               />
             </svg>
-            Short listed
+            Favorite
           </a>
         </div>
         <transition name="fill">
@@ -121,7 +121,14 @@
             </svg>
             <ul>
               <li>
-                <a>Add to Favourites</a>
+                <a
+                  v-if="!account.isFavourite"
+                  @click="favouriteAccount(account)"
+                  >Add to Favourites</a
+                >
+                <a v-else @click="unfavouriteAccount(account)"
+                  >Remove from Favourites</a
+                >
               </li>
               <li>
                 <a @click="archiveAccount(account)">Archive Account</a>
@@ -256,8 +263,34 @@
                   <a @click="activateAccount(account)">Activate Account</a>
                 </li>
                 <li>
-                  <a>Edit Account Name</a>
+                  <a @click="openEditAccountNameModal(account)"
+                    >Edit Account Name</a
+                  >
                 </li>
+                <StModal
+                  light
+                  :visible="editAccountNameModal"
+                  @close="editAccountNameModal = false"
+                >
+                  <template #header> Account Wizard </template>
+                  <template #body>
+                    <StInput
+                      v-model="accountName"
+                      label="Account name"
+                      placeholder="Account name"
+                    ></StInput>
+                  </template>
+                  <template #footer>
+                    <StButton
+                      color="secondary"
+                      @click="editAccountNameModal = false"
+                      >Cancel</StButton
+                    >
+                    <StButton @click="changeAccountName(account)"
+                      >Submit</StButton
+                    >
+                  </template>
+                </StModal>
               </ul>
             </div>
           </transition>
@@ -307,23 +340,38 @@ export default {
       mainStore.SET_MODAL_VISIBILITY('receive', true);
       mainStore.SET_ACCOUNT_DETAILS(account);
     }
-    const archiveAccount = async (account) => {
-      accounts.value = await CryptoService.archiveAccount(account);
-    };
-    const activateAccount = async (account) => {
-      accounts.value = await CryptoService.activateAccount(account);
-    };
-    const changeAccountName = async (account) => {
-      accounts.value = await CryptoService.changeAccountName(
+    async function favouriteAccount(account) {
+      const scannedAccounts = await CryptoService.favouriteAccount(account);
+      accounts.value = scannedAccounts.accounts;
+      accountOptions.value = '';
+    }
+    async function unfavouriteAccount(account) {
+      const scannedAccounts = await CryptoService.unfavouriteAccount(account);
+      accounts.value = scannedAccounts.accounts;
+      accountOptions.value = '';
+    }
+    async function archiveAccount(account) {
+      const scannedAccounts = await CryptoService.archiveAccount(account);
+      accounts.value = scannedAccounts.accounts;
+      accountOptions.value = '';
+    }
+    async function activateAccount(account) {
+      const scannedAccounts = await CryptoService.activateAccount(account);
+      accounts.value = scannedAccounts.accounts;
+      accountOptions.value = '';
+    }
+    async function changeAccountName(account) {
+      const scannedAccounts = await CryptoService.changeAccountName(
         account,
         accountName.value
       );
+      accounts.value = scannedAccounts.accounts;
       editAccountNameModal.value = false;
-    };
-    const openEditAccountNameModal = (account) => {
+    }
+    function openEditAccountNameModal(account) {
       accountName.value = account.label;
       editAccountNameModal.value = true;
-    };
+    }
     const openAccountDetails = (account) => {
       mainStore.SET_ACCOUNT_DETAILS(account);
 
@@ -345,6 +393,8 @@ export default {
       changeAccountName,
       openEditAccountNameModal,
       openReceiveModal,
+      favouriteAccount,
+      unfavouriteAccount,
 
       formatAmount,
       XST_USD_RATE,

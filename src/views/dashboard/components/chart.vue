@@ -2,33 +2,17 @@
   <div>
     <div class="filter-period">
       <a
-        :class="{ active: currentPeriod === '1d' }"
-        @click="changeChartPeriod('1d')"
-        >1d</a
-      >
-      <a
-        :class="{ active: currentPeriod === '3d' }"
-        @click="changeChartPeriod('3d')"
-        >3d</a
-      >
-      <a
-        :class="{ active: currentPeriod === '1w' }"
-        @click="changeChartPeriod('1w')"
-        >1w</a
-      >
-      <a
-        :class="{ active: currentPeriod === '1m' }"
-        @click="changeChartPeriod('1M')"
-        >1m</a
-      >
-      <a
-        :class="{ active: currentPeriod === 'all' }"
-        @click="changeChartPeriod('all')"
-        >All</a
+        v-for="filter in $route.name === 'Dashboard' ? filters : complexFilters"
+        :key="filter.id"
+        :class="{ active: currentPeriod === filter.id }"
+        @click="changeChartPeriod(filter.id)"
+        >{{ filter.period }}</a
       >
     </div>
     <template v-if="!refreshChart">
+      <div class="chart-max">{{ maxValue }}</div>
       <div class="st-dashboard-chart"></div>
+      <div class="chart-min">{{ minValue }}</div>
     </template>
   </div>
 </template>
@@ -36,21 +20,83 @@
 <script>
 import ApexCharts from 'apexcharts';
 import { ref, onMounted } from '@vue/runtime-core';
-/* import useHelpers from '@/composables/useHelpers'; */
+import useHelpers from '@/composables/useHelpers';
 import { useMainStore } from '@/store';
+import format from 'date-fns/format';
 
 export default {
   name: 'StDashboardChart',
   setup() {
-    /* const { formatAmount } = useHelpers(); */
+    const { formatAmount } = useHelpers();
     const mainStore = useMainStore();
-    const currentPeriod = ref('1w');
+    const currentPeriod = ref('1M');
     const refreshChart = ref(false);
+    const minValue = ref(0);
+    const maxValue = ref(0);
+    const filters = ref([
+      {
+        id: '1d',
+        period: '1d',
+      },
+      {
+        id: '3d',
+        period: '3d',
+      },
+      {
+        id: '1w',
+        period: '1w',
+      },
+      {
+        id: '1M',
+        period: '1m',
+      },
+      {
+        id: 'all',
+        period: 'All',
+      },
+    ]);
+    const complexFilters = ref([
+      {
+        id: '1d',
+        period: '1d',
+      },
+      {
+        id: '3d',
+        period: '3d',
+      },
+      {
+        id: '1w',
+        period: '1w',
+      },
+      {
+        id: '1M',
+        period: '1m',
+      },
+      {
+        id: '3M',
+        period: '3m',
+      },
+      {
+        id: '6M',
+        period: '6m',
+      },
+      {
+        id: '1Y',
+        period: '1y',
+      },
+      {
+        id: 'all',
+        period: 'All',
+      },
+    ]);
 
     onMounted(() => {
       changeChartPeriod();
     });
-    function changeChartPeriod(period = '1w') {
+    function formatDate(date) {
+      return format(date, 'dd MMM');
+    }
+    function changeChartPeriod(period = '1M') {
       currentPeriod.value = period;
       refreshChart.value = true;
       mainStore.getChartData(currentPeriod.value).then((res) => {
@@ -64,12 +110,13 @@ export default {
               },
               width: '100%',
               height: mainStore.componentVisibility.txDashboard
-                ? '400px'
+                ? '350px'
                 : '100%',
-              offsetX: -5,
+              offsetY: 70,
               zoom: {
                 enabled: false,
               },
+              fontFamily: "'Noto Sans', sans-serif",
               selection: {
                 enabled: false,
               },
@@ -109,63 +156,101 @@ export default {
             },
             xaxis: {
               forceNiceScale: true,
-              categories: [],
               type: 'datetime',
               labels: {
+                show: true,
                 format: 'dd MMM',
+                minHeight: 120,
+                offsetY: 40,
                 showDuplicates: false,
                 style: {
                   fontSize: '12px',
-                  fontFamily: "'Noto Sans', sans-serif",
                 },
               },
               tooltip: {
-                enabled: false,
+                enabled: true,
+                formatter: function (val) {
+                  return formatDate(val);
+                },
+                marker: {
+                  show: true,
+                },
+                offsetY: 155,
+                style: {
+                  fontSize: '12px',
+                },
               },
               axisBorder: {
                 show: false,
               },
               axisTicks: {
-                show: false,
+                show: true,
+                height: 0.5,
+                color: '#E5E4E8',
+                offsetY: 76,
               },
             },
             yaxis: {
-              type: 'numeric',
-              /* forceNiceScale: true, */
-              labels: {
+              crosshairs: {
                 show: true,
+                width: 1,
+                position: 'back',
+                opacity: 0.9,
+                stroke: {
+                  color: '#b6b6b6',
+                  width: 1,
+                  dashArray: 3,
+                },
+              },
+              labels: {
+                show: false,
                 style: {
-                  colors: ['#CFCDD1'],
                   fontSize: '12px',
                   fontFamily: "'Noto Sans', sans-serif",
                 },
-                /* formatter: function (value) {
-                return formatAmount(value, false, 4);
-              }, */
                 formatter: function (value) {
                   return value.toFixed(2);
                 },
               },
+              tooltip: {
+                enabled: false,
+                marker: {
+                  show: true,
+                },
+                style: {
+                  fontSize: '12px',
+                },
+                offsetX: -10,
+                offsetY: -55,
+              },
             },
             legend: {
-              show: true,
+              show: false,
             },
             grid: {
               show: false,
             },
             tooltip: {
               enabled: true,
-              fillSeriesColor: false,
               marker: {
                 show: true,
               },
               style: {
                 fontFamily: 'noto-sans, Helvetica Neue, Arial, sans-serif',
               },
+              x: {
+                format: 'dd MMM, yyyy, HH:mm:ss',
+              },
               y: {
                 formatter: function (value) {
                   return parseFloat(value.toFixed(8));
                 },
+              },
+              fixed: {
+                enabled: true,
+                position: 'topLeft',
+                offsetX: 13,
+                offsetY: -27,
               },
             },
             noData: {
@@ -173,10 +258,21 @@ export default {
               align: 'center',
               verticalAlign: 'middle',
             },
-            series: [],
+            series: {},
           };
           options.series = res.series;
           options.xaxis.categories = res.options.xaxis.categories;
+          let data = [...res.series[0].data];
+          minValue.value = data.sort((a, b) => {
+            return a - b;
+          })[0];
+          maxValue.value = data.sort((a, b) => {
+            return b - a;
+          })[0];
+          minValue.value =
+            'Low $' + formatAmount(minValue.value, false, 2, 2) + ' USD';
+          maxValue.value =
+            'High $' + formatAmount(maxValue.value, false, 2, 2) + ' USD';
           var chart = new ApexCharts(
             document.querySelector('.st-dashboard-chart'),
             options
@@ -189,6 +285,11 @@ export default {
       refreshChart,
       changeChartPeriod,
       currentPeriod,
+      formatDate,
+      minValue,
+      maxValue,
+      filters,
+      complexFilters,
     };
   },
 };
@@ -199,14 +300,101 @@ export default {
   height: calc(100vh - 220px);
 }
 .st-dashboard-chart {
-  height: 400px;
+  height: 450px;
 }
-.st-dashboard-chart .apexcharts-xaxis-label:before {
-  content: '';
+.chart-max,
+.chart-min {
+  position: absolute;
+  left: 12px;
+  font-family: var(--secondary-font);
+  font-size: 10px;
+  line-height: 16px;
+  letter-spacing: 0.12px;
+  color: var(--grey500);
+}
+.chart-max {
+  top: 63px;
+}
+.chart-min {
+  bottom: 100px;
+}
+:deep .apexcharts-tooltip,
+:deep .apexcharts-tooltip.apexcharts-theme-light {
+  min-width: 150px;
+  flex-direction: column-reverse;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+:deep .apexcharts-tooltip .apexcharts-tooltip-title,
+:deep .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
+  padding: 0;
+  background: none;
+  border: none;
+  margin: 0;
+}
+:deep .apexcharts-tooltip-series-group {
+  color: var(--marine500);
+  padding: 3px 0 0;
+  margin-bottom: 5px;
+}
+:deep .apexcharts-tooltip-marker {
+  display: none;
+}
+:deep .apexcharts-svg text.apexcharts-xaxis-label,
+:deep .apexcharts-svg text.apexcharts-yaxis-label {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+:deep .apexcharts-svg line.apexcharts-xaxis-tick {
+  stroke-width: 4px;
+  stroke-linecap: round;
+}
+:deep .apexcharts-svg text.apexcharts-xaxis-label::before {
   display: block;
-  width: 10px;
-  height: 10px;
-  background-color: red;
+  content: '';
+  width: 4px;
+  height: 4px;
+  background: var(--grey50);
+  border: 0 none;
+  border-radius: 100%;
+  margin: 0;
+}
+:deep .apexcharts-svg:hover text.apexcharts-xaxis-label,
+:deep .apexcharts-svg:hover text.apexcharts-yaxis-label {
+  opacity: 0.2;
+}
+:deep .apexcharts-xaxistooltip,
+:deep .apexcharts-yaxistooltip {
+  font-weight: 700;
+  border: none;
+  border-radius: 0;
+  background-color: transparent;
+  padding: 8px;
+}
+:deep .apexcharts-yaxistooltip {
+  transform: translateY(70px);
+}
+:deep .apexcharts-xaxistooltip::before {
+  display: block;
+  content: '';
+  width: 4px;
+  height: 4px;
+  background: var(--marine500);
+  border: 0 none;
+  border-radius: 100%;
+  margin: 0;
+  transform: translateX(-50%) translateY(-8px);
+}
+:deep .apexcharts-yaxistooltip::before {
+  display: block;
+  content: '';
+  border: none;
+  margin: 0;
+}
+:deep .apexcharts-xaxistooltip::after,
+:deep .apexcharts-yaxistooltip::after {
+  display: none;
 }
 .filter-period {
   box-sizing: border-box;
