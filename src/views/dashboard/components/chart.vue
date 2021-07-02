@@ -1,9 +1,13 @@
 <template>
   <div>
     <div class="filter-period">
-      <a v-for="filter in $route.name === 'Dashboard' ? filters : complexFilters" :key="filter.id" 
-      :class="{ active: currentPeriod === filter.id }" 
-      @click="changeChartPeriod(filter.id)">{{ filter.period }}</a>
+      <a
+        v-for="filter in $route.name === 'Dashboard' ? filters : complexFilters"
+        :key="filter.id"
+        :class="{ active: currentPeriod === filter.id }"
+        @click="changeChartPeriod(filter.id)"
+        >{{ filter.period }}</a
+      >
     </div>
     <template v-if="!refreshChart">
       <div class="chart-max">{{ maxValue }}</div>
@@ -32,59 +36,59 @@ export default {
     const filters = ref([
       {
         id: '1d',
-        period: '1d'
+        period: '1d',
       },
       {
         id: '3d',
-        period: '3d'
+        period: '3d',
       },
       {
         id: '1w',
-        period: '1w'
+        period: '1w',
       },
       {
         id: '1M',
-        period: '1m'
+        period: '1m',
       },
       {
         id: 'all',
-        period: 'All'
+        period: 'All',
       },
-    ])
+    ]);
     const complexFilters = ref([
       {
         id: '1d',
-        period: '1d'
+        period: '1d',
       },
       {
         id: '3d',
-        period: '3d'
+        period: '3d',
       },
       {
         id: '1w',
-        period: '1w'
+        period: '1w',
       },
       {
         id: '1M',
-        period: '1m'
+        period: '1m',
       },
       {
         id: '3M',
-        period: '3m'
+        period: '3m',
       },
       {
         id: '6M',
-        period: '6m'
+        period: '6m',
       },
       {
         id: '1Y',
-        period: '1y'
+        period: '1y',
       },
       {
         id: 'all',
-        period: 'All'
+        period: 'All',
       },
-    ])
+    ]);
 
     onMounted(() => {
       changeChartPeriod();
@@ -285,7 +289,7 @@ export default {
       minValue,
       maxValue,
       filters,
-      complexFilters
+      complexFilters,
     };
   },
 };
