@@ -25,27 +25,9 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     let change = subtractOf(accountAmount, sumOf(sendAmount, fee));
     return change;
   }
-
-  function findPathForAddress(address) {
-    const path = sendForm.account.path;
-    const { account: accountIndex } = CryptoService.breakAccountPath(path);
-    // find address index on this particular account
-    // iterate over account addresses until passed address is found and return its index
-    for (let i = 0; i < Infinity; i++) {
-      // similar logic like in accountDiscovery
-      const acc = CryptoService.getChildFromRoot(accountIndex, 0, i);
-      if (acc.address === address) {
-        let { address } = CryptoService.breakAccountPath(
-          `${accountIndex}'/0/${i}`
-        );
-        return address;
-      }
-    }
-  }
-
   async function buildTransaction() {
     // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
       let rawTransaction = new bitcoin.TransactionBuilder(
         CryptoService.network,
         3000000
@@ -69,7 +51,6 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       let recipient = {
         address: sendForm.address,
         amount: Number(sumOf(sendForm.amount, fee * -1)) * 1e6,
-        // amount: multiply(bignumber(sendForm.amount), bignumber(-Math.abs(0.01)), 1e6).d[0]
       };
 
       let sumUtxo = utxo
@@ -89,31 +70,14 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         rawTransaction.addOutput(change.address, change.amount);
       }
 
-      let { account: accountIndex } = CryptoService.breakAccountPath(
-        sendForm.account.path
+      const keyPair = bitcoin.ECPair.fromWIF(
+        sendForm.account.wif,
+        CryptoService.network
       );
 
       for (let i = 0; i < utxo.length; i++) {
-        // careful how to derive the path. depends on the account of the address
-        const child = CryptoService.master.derivePath(
-          `m/44'/${
-            process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
-          }'/${accountIndex}'/0/${findPathForAddress(utxo[i].address)}` // TODO CHANGE 1 (TESTNET) TO 125 (XST)
-        );
-
-        const keyPair = bitcoin.ECPair.fromWIF(
-          child.toWIF(),
-          CryptoService.network
-        );
-        try {
-          rawTransaction.sign(i, keyPair);
-        } catch (e) {
-          console.info('TRANSACTION BUILDER: cannot sign tx', e);
-          reject(e);
-        }
+        rawTransaction.sign(i, keyPair);
       }
-
-      console.dir(rawTransaction);
 
       const rawTransactionToHex = rawTransaction.build().toHex();
 
@@ -126,7 +90,6 @@ export default async function useTransactionBuilder(utxo, sendForm) {
   }
 
   const txid = await buildTransaction(utxo, sendForm);
-
   return {
     buildTransaction,
     txid,

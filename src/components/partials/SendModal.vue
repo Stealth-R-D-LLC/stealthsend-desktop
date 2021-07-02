@@ -376,11 +376,18 @@ import { computed, ref, watch, watchEffect } from 'vue';
 import CryptoService from '@/services/crypto';
 import useCoinControl from '@/composables/useCoinControl';
 import useTransactionBuilder from '@/composables/useTransactionBuilder';
+import useTransactionBuilderForImportedAccount from '@/composables/useTransactionBuilderForImportedAccount';
 import useFeeEstimator from '@/composables/useFeeEstimator';
 import useHelpers from '@/composables/useHelpers';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import { useRoute } from 'vue-router';
+import { format, add } from 'mathjs';
 
+const sumOf = (x = 0, y = 0) => {
+  let sum = add(x, y);
+  sum = format(sum, { precision: 14 });
+  return Number(sum);
+};
 export default {
   name: 'StSendModal',
   setup() {
@@ -512,36 +519,51 @@ export default {
 
     async function getUnspentOutputs(account) {
       if (!account) return;
-      const res = await mainStore.rpc('gethdaccount', [account.xpub]);
+      let res = [];
+      if (account.xpub) {
+        res = await mainStore.rpc('gethdaccount', [account.xpub]);
 
-      // map only unspent outputs, put txid in each one of them and flatten the array
-      unspentOutputs = res
-        .map((el) => {
-          let tmp = el.outputs.filter((el) => el.isspent === 'false');
-          for (let o of tmp) {
-            o['txid'] = el.txid;
-          }
-          return tmp;
-        })
-        .filter((el) => el.length > 0)
-        .reduce((a, b) => a.concat(b), []);
+        // map only unspent outputs, put txid in each one of them and flatten the array
+        unspentOutputs = res
+          .map((el) => {
+            let tmp = el.outputs.filter((el) => el.isspent === 'false');
+            for (let o of tmp) {
+              o['txid'] = el.txid;
+            }
+            return tmp;
+          })
+          .filter((el) => el.length > 0)
+          .reduce((a, b) => a.concat(b), []);
+      } else {
+        res = await mainStore.rpc('getaddressoutputs', [account.address]);
+        unspentOutputs = res.filter((el) => el.isspent === 'false');
+      }
       //       const outputs = await mainStore.rpc('getaddressoutputs', [
       //   account.address,
       //   1,
       //   100,
       // ]);
-
-      // purpose of this is to calculate fee for next step
-      let outputsForTx = coinSelection();
-      let { fee } = useFeeEstimator(outputsForTx.length);
-      aproxFee.value = fee;
-
-      // unspentOutputs = outputs.filter((el) => el.isspent === 'false');
-      // console.log('unspent outputs: ', unspentOutputs);
     }
 
-    function coinSelection() {
-      const { best } = useCoinControl(unspentOutputs, amount.value);
+    function findFee(fee = 0.01) {
+      // steps:
+      // 1. find unspentOutputs for selected account
+      // 2. start with fee = 0.01
+      // 3. target = sendForm.amount + fee
+      let target = sumOf(amount.value, fee);
+      // 4. bestOutputs = coinControl(target, unspentOutputs)
+      let bestOutputs = coinSelection(target);
+      // 5. newFee = feeEstimator(bestOutputs.length)
+      let newFee = useFeeEstimator(bestOutputs.length);
+      // 5. if fee !== newFee, goTo step 1
+      if (newFee.fee > fee) {
+        return findFee(newFee.fee);
+      }
+      aproxFee.value = newFee.fee;
+    }
+
+    function coinSelection(targetAmount) {
+      const { best } = useCoinControl(unspentOutputs, targetAmount);
       return best;
     }
 
@@ -571,21 +593,41 @@ export default {
       try {
         changeStep(5);
         await validateFields();
-        const utxo = coinSelection();
+        let target = sumOf(amount.value, aproxFee.value);
+        const utxo = coinSelection(target);
 
         if (utxo.length === 0) {
           setTimeout(() => changeStep(7), 4000);
           return;
         }
+        console.info('TRANSACTION BUILDER: candidates: ', unspentOutputs);
+        console.info('TRANSACTION BUILDER: coin control: ', utxo);
+        console.info('TRANSACTION BUILDER: entered amount: ', amount.value);
+        console.info('TRANSACTION BUILDER: fee: ', aproxFee.value);
+        console.info('TRANSACTION BUILDER: target amount: ', target);
 
-        let { txid } = await useTransactionBuilder(utxo, {
-          address: depositAddress.value,
-          amount: amount.value,
-          account: account.value,
-        });
-        if (txid) {
-          CryptoService.storeTxAndLabel(txid, label.value);
-          setTimeout(() => changeStep(6), 4000);
+        let transactionResponse = '';
+        if (account.value.wif && account.value.isImported) {
+          // BUILD TRANSACTION FOR IMPORTED ACCOUNT
+          transactionResponse = await useTransactionBuilderForImportedAccount(
+            utxo,
+            {
+              address: depositAddress.value,
+              amount: target,
+              account: account.value,
+            }
+          );
+        } else {
+          // BUILD TRANSACTION FOR NATIVE ACCOUNT
+          transactionResponse = await useTransactionBuilder(utxo, {
+            address: depositAddress.value,
+            amount: target,
+            account: account.value,
+          });
+        }
+        if (transactionResponse.txid) {
+          CryptoService.storeTxAndLabel(transactionResponse.txid, label.value);
+          setTimeout(() => changeStep(6), 4000)
         } else {
           setTimeout(() => changeStep(7), 4000);
         }
@@ -609,7 +651,6 @@ export default {
         await validateFields();
         changeStep(3);
       } catch (e) {
-        console.log('eee', e);
         if (e instanceof ValidationError) {
           console.log(e);
         }
@@ -628,8 +669,8 @@ export default {
           ],
         });
         changeStep(2);
+        findFee();
       } catch (e) {
-        console.log('e', e);
         if (e instanceof ValidationError) {
           console.log(e);
         }
@@ -638,6 +679,11 @@ export default {
 
     function changeStep(step) {
       currentStep.value = step;
+      if (step === 1) {
+        // if going back from step 2 to step 1
+        // remove address from validation
+        remove(['depositAddress']);
+      }
     }
 
     function greet(item) {
