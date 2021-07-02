@@ -6,14 +6,22 @@
     :current-step="currentStep"
     :visible="isVisible"
     class="send-modal"
-    @close="closeModal"
+    @close="cancelSend"
     @back="changeStep"
+    :class="{
+      'no-step':
+        currentStep === 4 ||
+        currentStep === 5 ||
+        currentStep === 6 ||
+        currentStep === 7,
+    }"
   >
     <template #header>
       <template v-if="currentStep < 4">Send XST</template>
       <template v-if="currentStep === 4">Sending XST</template>
-      <template v-if="currentStep === 5">Success</template>
-      <template v-if="currentStep === 6">Warning</template>
+      <template v-if="currentStep === 5">Sending XST</template>
+      <template v-if="currentStep === 6">Success</template>
+      <template v-if="currentStep === 7">Warning</template>
     </template>
     <template #body>
       <template v-if="currentStep === 1">
@@ -175,6 +183,7 @@
                 :tooltip="
                   copyPending ? 'Copied to clipboard!' : 'Click to copy'
                 "
+                position="bottom-right"
               >
                 <StClipboard :content="depositAddress" @click="handleCopy">
                   <svg
@@ -255,7 +264,44 @@
               <animate
                 attributeName="stroke-dashoffset"
                 values="360;0"
-                dur="4s"
+                dur="5s"
+                repeatCount="indefinite"
+              ></animate>
+            </circle>
+          </svg>
+          <div class="overlay">{{ counter }}s</div>
+        </div>
+        <p class="progress-note">Your transactions is being prepared</p>
+      </template>
+      <template v-if="currentStep === 5">
+        <div class="progress">
+          <svg
+            class="progress-animated"
+            version="1.1"
+            id="circle"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            viewBox="0 0 100 100"
+            xml:space="preserve"
+          >
+            <circle
+              fill="none"
+              stroke="#E0D3FC"
+              stroke-width="1"
+              stroke-mitterlimit="0"
+              cx="50"
+              cy="50"
+              r="48"
+              stroke-dasharray="360"
+              stroke-linecap="round"
+              transform="rotate(-90 ) translate(-100 0)"
+            >
+              <animate
+                attributeName="stroke-dashoffset"
+                values="360;0"
+                dur="3.8s"
                 repeatCount="indefinite"
               ></animate>
             </circle>
@@ -263,10 +309,10 @@
           <div class="overlay"></div>
         </div>
         <p class="progress-note">
-          Your transactions has been assambled, <br />please be patient
+          Your transaction is being processed, <br />please be patient.
         </p>
       </template>
-      <template v-if="currentStep === 5">
+      <template v-if="currentStep === 6">
         <div class="progress no-background">
           <svg
             width="102"
@@ -286,7 +332,7 @@
         </div>
         <p class="progress-note">Transaction sent</p>
       </template>
-      <template v-if="currentStep === 6">
+      <template v-if="currentStep === 7">
         <div class="progress no-background">
           <svg
             width="102"
@@ -315,7 +361,10 @@
         <StButton @click="validateSecondStep" color="white">Proceed</StButton>
       </template>
       <template v-if="currentStep === 3">
-        <StButton color="white" @click="send">Confirm payment</StButton>
+        <StButton color="white" @click="prepareSend">Confirm payment</StButton>
+      </template>
+      <template v-if="currentStep === 4">
+        <StButton color="white" @click="cancelSend">Cancel</StButton>
       </template>
     </template>
   </StModal>
@@ -323,7 +372,7 @@
 
 <script>
 import { useMainStore } from '@/store';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, watchEffect } from 'vue';
 import CryptoService from '@/services/crypto';
 import useCoinControl from '@/composables/useCoinControl';
 import useTransactionBuilder from '@/composables/useTransactionBuilder';
@@ -353,9 +402,27 @@ export default {
     const amount = ref(0);
     const depositAddress = ref('');
     const aproxFee = ref(null);
+    const currentStep = ref(1);
+    const counter = ref(5);
+    const counterTimeout = ref(null);
+    const sendTimeout = ref(null);
 
     const pickedAccount = computed(() => {
       return mainStore.accountDetails;
+    });
+
+    watchEffect(() => {
+      if (currentStep.value === 2) {
+        if (mainStore.sendAddress) {
+          depositAddress.value = mainStore.sendAddress;
+        }
+      }
+      if (currentStep.value === 4) {
+        sendTimeout.value = setTimeout(() => send(), 4900);
+      }
+      /* if(currentStep.value === 5) {
+        setTimeout(() => send(), 4000)
+      } */
     });
 
     const route = useRoute();
@@ -407,10 +474,9 @@ export default {
       }
     );
 
-    const currentStep = ref(1);
-
     function closeModal() {
       mainStore.SET_MODAL_VISIBILITY('send', false);
+      mainStore.SET_SEND_ADDRESS('');
       // reset all variables
       // account.value = null;
       accounts.value = [];
@@ -418,6 +484,8 @@ export default {
       currentStep.value = 1;
       depositAddress.value = '';
       label.value = '';
+      clearTimeout(counterTimeout.value);
+      counter.value = 5;
       remove(['depositAddress']);
       resetFields();
       if (currentRoute.value !== 'AccountDetails') {
@@ -499,15 +567,37 @@ export default {
       return best;
     }
 
+    async function prepareSend() {
+      try {
+        await validateFields();
+        changeStep(4);
+        countdown();
+      } catch (e) {
+        if (e instanceof ValidationError) {
+          console.log(e);
+        }
+      }
+    }
+
+    function countdown() {
+      counter.value -= 1;
+      counterTimeout.value = setTimeout(() => countdown(), 1000);
+    }
+
+    function cancelSend() {
+      closeModal();
+      clearTimeout(sendTimeout.value);
+    }
+
     async function send() {
       try {
-        let target = sumOf(amount.value, aproxFee.value);
-        changeStep(4);
+        changeStep(5);
         await validateFields();
+        let target = sumOf(amount.value, aproxFee.value);
         const utxo = coinSelection(target);
 
         if (utxo.length === 0) {
-          changeStep(6);
+          setTimeout(() => changeStep(7), 4000);
           return;
         }
         console.info('TRANSACTION BUILDER: candidates: ', unspentOutputs);
@@ -537,9 +627,9 @@ export default {
         }
         if (transactionResponse.txid) {
           CryptoService.storeTxAndLabel(transactionResponse.txid, label.value);
-          changeStep(5);
+          setTimeout(() => changeStep(6), 4000);
         } else {
-          changeStep(6);
+          setTimeout(() => changeStep(7), 4000);
         }
         // setTimeout(() => closeModal(), 2000);
       } catch (e) {
@@ -625,10 +715,13 @@ export default {
 
       handleCopy,
       copyPending,
+      prepareSend,
+      cancelSend,
 
       send,
       getUnspentOutputs,
       formatAmount,
+      counter,
 
       form,
       errors,
@@ -643,10 +736,7 @@ export default {
   top: -46px;
 }
 .tooltip {
-  margin-top: 40px;
-  display: block;
-  width: 100%;
-  text-align: center;
+  margin-top: 10px;
 }
 :deep .st-amount > .st-icon {
   cursor: pointer;
@@ -738,6 +828,13 @@ export default {
   right: 1px;
   bottom: 1px;
   left: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: 0.12px;
+  font-family: var(--secondary-font);
 }
 :deep .multiselect--active .multiselect__tags {
   padding-top: 25px;
@@ -745,6 +842,13 @@ export default {
 :deep .multiselect__content-wrapper {
   top: 4px;
   padding-top: 65px;
+}
+.tooltip svg {
+  display: block;
+}
+
+.no-step :deep .st-modal__stepper {
+  display: none;
 }
 </style>
 

@@ -9,5 +9,5 @@ html, body {
 
 .st-button--primary {
     font-family: var(--secondary-font);
-    padding: 5px 64px;
+    padding: 5px 30px !important;
 }
