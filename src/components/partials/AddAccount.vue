@@ -22,28 +22,32 @@
           >Import Account</a
         >
       </div>
-      <div v-if="activeStep === 'add-account'">
-        <div class="desc">
-          <p>
-            You can create an unlimited number of accounts; they are all derived
-            from the same Recovery Phrase. Your previously created Recovery
-            Phrase protects all of your accounts.
-          </p>
-        </div>
-        <StFormItem
-          label="Account Name"
-          :error-message="form.accountName.$errors"
-        >
-          <StInput
-            v-model="form.accountName.$value"
-            placeholder="Please add Unique Account Name"
-          ></StInput>
-        </StFormItem>
-        <div class="buttons">
-          <StButton color="secondary" @click="closeModal">Cancel</StButton>
-          <StButton @click="generateAccount" :disabled="!accountName.length"
-            >Add</StButton
+      <div class="add-account" v-if="activeStep === 'add-account'">
+        <div class="add-account__content">
+          <div class="desc">
+            <p>
+              You can create an unlimited number of accounts; they are all derived
+              from the same Recovery Phrase. Your previously created Recovery
+              Phrase protects all of your accounts.
+            </p>
+          </div>
+          <StFormItem
+            label="Account Name"
+            :error-message="form.accountName.$errors"
           >
+            <StInput
+              v-model="form.accountName.$value"
+              placeholder="Please add Unique Account Name"
+            ></StInput>
+          </StFormItem>
+        </div>
+        <div class="add-account__actions">
+          <div class="buttons">
+            <StButton color="secondary" @click="closeModal">Cancel</StButton>
+            <StButton @click="generateAccount" :disabled="!accountName.length"
+              >Add</StButton
+            >
+          </div>
         </div>
       </div>
       <div v-if="activeStep === 'import-account'">
@@ -322,10 +326,12 @@ export default {
 
 <style scoped>
 :deep .st-modal-container {
-  width: 416px;
-  min-height: 512px;
+  width: 480px;
+  min-height: 520px;
+  box-sizing: border-box;
 }
 :deep .st-modal__body {
+  margin-top: 36px;
   margin-bottom: 0;
 }
 .account-modal__hide-header :deep .st-modal__header {
@@ -393,7 +399,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 54px;
+  margin-top: 62px;
 }
 :deep .custom-checkbox.st-checkbox {
   margin-top: 24px;
@@ -425,5 +431,9 @@ export default {
   left: 0;
   right: 0;
   bottom: 32px;
+}
+
+:deep .st-form-item__message--is-error {
+  line-height: 18px;
 }
 </style>
