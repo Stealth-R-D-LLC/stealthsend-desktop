@@ -125,7 +125,7 @@
         </div>
       </template>
       <template v-if="checkVisibilityForRoute(['Transactions'])">
-                <div class="icons-flex">
+        <div class="icons-flex">
           <svg
             v-if="!isHiddenAmounts"
             @click="toggleHiddenAmounts"
