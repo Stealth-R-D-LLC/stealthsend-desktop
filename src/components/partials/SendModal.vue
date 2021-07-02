@@ -332,7 +332,13 @@ import useFeeEstimator from '@/composables/useFeeEstimator';
 import useHelpers from '@/composables/useHelpers';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import { useRoute } from 'vue-router';
+import { format, add } from 'mathjs';
 
+const sumOf = (x = 0, y = 0) => {
+  let sum = add(x, y);
+  sum = format(sum, { precision: 14 });
+  return Number(sum);
+};
 export default {
   name: 'StSendModal',
   setup() {
@@ -469,31 +475,46 @@ export default {
       //   1,
       //   100,
       // ]);
-
-      // purpose of this is to calculate fee for next step
-      let outputsForTx = coinSelection();
-      let { fee } = useFeeEstimator(outputsForTx.length);
-      aproxFee.value = fee;
-
-      // unspentOutputs = outputs.filter((el) => el.isspent === 'false');
-      // console.log('unspent outputs: ', unspentOutputs);
     }
 
-    function coinSelection() {
-      const { best } = useCoinControl(unspentOutputs, amount.value);
+    function findFee(fee = 0.01) {
+      // steps:
+      // 1. find unspentOutputs for selected account
+      // 2. start with fee = 0.01
+      // 3. target = sendForm.amount + fee
+      let target = sumOf(amount.value, fee);
+      // 4. bestOutputs = coinControl(target, unspentOutputs)
+      let bestOutputs = coinSelection(target);
+      // 5. newFee = feeEstimator(bestOutputs.length)
+      let newFee = useFeeEstimator(bestOutputs.length);
+      // 5. if fee !== newFee, goTo step 1
+      if (newFee.fee > fee) {
+        return findFee(newFee.fee);
+      }
+      aproxFee.value = newFee.fee;
+    }
+
+    function coinSelection(targetAmount) {
+      const { best } = useCoinControl(unspentOutputs, targetAmount);
       return best;
     }
 
     async function send() {
       try {
+        let target = sumOf(amount.value, aproxFee.value);
         changeStep(4);
         await validateFields();
-        const utxo = coinSelection();
+        const utxo = coinSelection(target);
 
         if (utxo.length === 0) {
           changeStep(6);
           return;
         }
+        console.info('TRANSACTION BUILDER: candidates: ', unspentOutputs);
+        console.info('TRANSACTION BUILDER: coin control: ', utxo);
+        console.info('TRANSACTION BUILDER: entered amount: ', amount.value);
+        console.info('TRANSACTION BUILDER: fee: ', aproxFee.value);
+        console.info('TRANSACTION BUILDER: target amount: ', target);
 
         let transactionResponse = '';
         if (account.value.wif && account.value.isImported) {
@@ -502,7 +523,7 @@ export default {
             utxo,
             {
               address: depositAddress.value,
-              amount: amount.value,
+              amount: target,
               account: account.value,
             }
           );
@@ -510,7 +531,7 @@ export default {
           // BUILD TRANSACTION FOR NATIVE ACCOUNT
           transactionResponse = await useTransactionBuilder(utxo, {
             address: depositAddress.value,
-            amount: amount.value,
+            amount: target,
             account: account.value,
           });
         }
@@ -540,7 +561,6 @@ export default {
         await validateFields();
         changeStep(3);
       } catch (e) {
-        console.log('eee', e);
         if (e instanceof ValidationError) {
           console.log(e);
         }
@@ -559,8 +579,8 @@ export default {
           ],
         });
         changeStep(2);
+        findFee();
       } catch (e) {
-        console.log('e', e);
         if (e instanceof ValidationError) {
           console.log(e);
         }
@@ -569,6 +589,11 @@ export default {
 
     function changeStep(step) {
       currentStep.value = step;
+      if (step === 1) {
+        // if going back from step 2 to step 1
+        // remove address from validation
+        remove(['depositAddress']);
+      }
     }
 
     function greet(item) {
