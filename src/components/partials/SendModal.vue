@@ -327,6 +327,7 @@ import { computed, ref, watch } from 'vue';
 import CryptoService from '@/services/crypto';
 import useCoinControl from '@/composables/useCoinControl';
 import useTransactionBuilder from '@/composables/useTransactionBuilder';
+import useTransactionBuilderForImportedAccount from '@/composables/useTransactionBuilderForImportedAccount';
 import useFeeEstimator from '@/composables/useFeeEstimator';
 import useHelpers from '@/composables/useHelpers';
 import { useValidation, ValidationError } from 'vue3-form-validation';
@@ -444,19 +445,25 @@ export default {
 
     async function getUnspentOutputs(account) {
       if (!account) return;
-      const res = await mainStore.rpc('gethdaccount', [account.xpub]);
+      let res = [];
+      if (account.xpub) {
+        res = await mainStore.rpc('gethdaccount', [account.xpub]);
 
-      // map only unspent outputs, put txid in each one of them and flatten the array
-      unspentOutputs = res
-        .map((el) => {
-          let tmp = el.outputs.filter((el) => el.isspent === 'false');
-          for (let o of tmp) {
-            o['txid'] = el.txid;
-          }
-          return tmp;
-        })
-        .filter((el) => el.length > 0)
-        .reduce((a, b) => a.concat(b), []);
+        // map only unspent outputs, put txid in each one of them and flatten the array
+        unspentOutputs = res
+          .map((el) => {
+            let tmp = el.outputs.filter((el) => el.isspent === 'false');
+            for (let o of tmp) {
+              o['txid'] = el.txid;
+            }
+            return tmp;
+          })
+          .filter((el) => el.length > 0)
+          .reduce((a, b) => a.concat(b), []);
+      } else {
+        res = await mainStore.rpc('getaddressoutputs', [account.address]);
+        unspentOutputs = res.filter((el) => el.isspent === 'false');
+      }
       //       const outputs = await mainStore.rpc('getaddressoutputs', [
       //   account.address,
       //   1,
@@ -488,13 +495,27 @@ export default {
           return;
         }
 
-        let { txid } = await useTransactionBuilder(utxo, {
-          address: depositAddress.value,
-          amount: amount.value,
-          account: account.value,
-        });
-        if (txid) {
-          CryptoService.storeTxAndLabel(txid, label.value);
+        let transactionResponse = '';
+        if (account.value.wif && account.value.isImported) {
+          // BUILD TRANSACTION FOR IMPORTED ACCOUNT
+          transactionResponse = await useTransactionBuilderForImportedAccount(
+            utxo,
+            {
+              address: depositAddress.value,
+              amount: amount.value,
+              account: account.value,
+            }
+          );
+        } else {
+          // BUILD TRANSACTION FOR NATIVE ACCOUNT
+          transactionResponse = await useTransactionBuilder(utxo, {
+            address: depositAddress.value,
+            amount: amount.value,
+            account: account.value,
+          });
+        }
+        if (transactionResponse.txid) {
+          CryptoService.storeTxAndLabel(transactionResponse.txid, label.value);
           changeStep(5);
         } else {
           changeStep(6);
