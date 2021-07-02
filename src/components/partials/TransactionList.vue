@@ -14,6 +14,7 @@
           <span class="relative"> {{ todayOrYesterday(date) }}, </span>
           {{ date }}
         </p>
+        <p v-else class="tx-date">{{ date }}</p>
 
         <StTable
           :data="txs[date]"
@@ -52,9 +53,7 @@
                   />
                   <path d="M12 6v7" stroke="#07AC82" stroke-width="2" />
                 </svg>
-                <template v-if="$route.name !== 'Dashboard'"
-                  >Received test</template
-                >
+                <template v-if="$route.name !== 'Dashboard'">Received</template>
               </template>
               <template v-else-if="item.amount < 0">
                 <svg
@@ -118,7 +117,11 @@
           </template>
           <template #actions="{ item }">
             <div class="icon-container">
-              <StTooltip tooltip="Feeless transaction" position="top-left">
+              <StTooltip
+                v-if="item.isFeeles"
+                tooltip="Feeless transaction"
+                position="top-left"
+              >
                 <svg
                   width="8"
                   height="12"
@@ -162,6 +165,7 @@
                 @click="expandIcons(item.index)"
                 v-else
                 class="icon"
+                :class="{ 'icon-active': isExpanded === item.index }"
                 width="18"
                 height="18"
                 viewBox="0 0 18 18"
@@ -187,7 +191,11 @@
               :class="{ expanded__active: isExpanded === item.index }"
             >
               <div class="expanded__inner">
-                <StTooltip tooltip="Feeless transaction" position="top-left">
+                <StTooltip
+                  v-if="item.isFeeles"
+                  tooltip="Feeless transaction"
+                  position="top-left"
+                >
                   <svg
                     width="8"
                     height="12"
@@ -200,7 +208,7 @@
                 </StTooltip>
                 <svg
                   @click="openTransaction(item)"
-                  class="icon"
+                  class="icon-expanded"
                   width="19"
                   height="20"
                   viewBox="0 0 19 20"
@@ -239,7 +247,7 @@
                 </svg>
                 <svg
                   @click="openTransaction(item, true)"
-                  class="icon"
+                  class="icon-expanded"
                   width="20"
                   height="20"
                   viewBox="0 0 20 20"
@@ -496,7 +504,7 @@ export default {
 .icon-container {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 :deep .tooltip {
@@ -510,6 +518,16 @@ export default {
   margin-right: 24px;
 }
 .icon:last-child {
+  margin-right: 28px;
+}
+.icon-active {
+  margin-right: 26px !important;
+}
+.icon-expanded {
+  cursor: pointer;
+  margin-right: 24px;
+}
+.icon-expanded:last-child {
   margin-right: 0;
 }
 .expanded {
@@ -517,7 +535,7 @@ export default {
   width: 0;
   position: absolute;
   top: calc(50% - 15px);
-  right: 50px;
+  right: 70px;
   background-color: #ffffff;
   transition: 0.3s;
 }
@@ -529,6 +547,7 @@ export default {
   padding: 5px;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
 }
 .filter + .filter {
   margin-left: 8px;

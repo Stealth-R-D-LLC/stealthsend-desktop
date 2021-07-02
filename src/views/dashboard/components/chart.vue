@@ -2,29 +2,11 @@
   <div>
     <div class="filter-period">
       <a
-        :class="{ active: currentPeriod === '1d' }"
-        @click="changeChartPeriod('1d')"
-        >1d</a
-      >
-      <a
-        :class="{ active: currentPeriod === '3d' }"
-        @click="changeChartPeriod('3d')"
-        >3d</a
-      >
-      <a
-        :class="{ active: currentPeriod === '1w' }"
-        @click="changeChartPeriod('1w')"
-        >1w</a
-      >
-      <a
-        :class="{ active: currentPeriod === '1M' }"
-        @click="changeChartPeriod('1M')"
-        >1m</a
-      >
-      <a
-        :class="{ active: currentPeriod === 'all' }"
-        @click="changeChartPeriod('all')"
-        >All</a
+        v-for="filter in $route.name === 'Dashboard' ? filters : complexFilters"
+        :key="filter.id"
+        :class="{ active: currentPeriod === filter.id }"
+        @click="changeChartPeriod(filter.id)"
+        >{{ filter.period }}</a
       >
     </div>
     <template v-if="!refreshChart">
@@ -51,6 +33,62 @@ export default {
     const refreshChart = ref(false);
     const minValue = ref(0);
     const maxValue = ref(0);
+    const filters = ref([
+      {
+        id: '1d',
+        period: '1d',
+      },
+      {
+        id: '3d',
+        period: '3d',
+      },
+      {
+        id: '1w',
+        period: '1w',
+      },
+      {
+        id: '1M',
+        period: '1m',
+      },
+      {
+        id: 'all',
+        period: 'All',
+      },
+    ]);
+    const complexFilters = ref([
+      {
+        id: '1d',
+        period: '1d',
+      },
+      {
+        id: '3d',
+        period: '3d',
+      },
+      {
+        id: '1w',
+        period: '1w',
+      },
+      {
+        id: '1M',
+        period: '1m',
+      },
+      {
+        id: '3M',
+        period: '3m',
+      },
+      {
+        id: '6M',
+        period: '6m',
+      },
+      {
+        id: '1Y',
+        period: '1y',
+      },
+      {
+        id: 'all',
+        period: 'All',
+      },
+    ]);
 
     onMounted(() => {
       changeChartPeriod();
@@ -250,6 +288,8 @@ export default {
       formatDate,
       minValue,
       maxValue,
+      filters,
+      complexFilters,
     };
   },
 };

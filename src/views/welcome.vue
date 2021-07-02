@@ -1,7 +1,8 @@
 <template>
   <div class="welcome">
     <div class="left" :class="{ 'left-active': isAccount || isRecovery }">
-      <video id="bgAnimation" width="320" height="240" autplay muted>
+      <img src="@/assets/welcome.png" alt="welcome" />
+      <!-- <video id="bgAnimation" width="320" height="240" autplay muted>
         <source
           src="@/assets/animation/backgroundAnimation.mp4"
           type="video/mp4"
@@ -11,7 +12,8 @@
           type="video/ogg"
         />
         Not supported
-      </video>
+      </video> -->
+
       <div class="overlay"></div>
       <div
         class="left__inner"
@@ -2297,7 +2299,6 @@ export default {
     });
 
     onMounted(() => {
-      document.getElementById('bgAnimation').play();
       setTimeout(() => {
         isWelcome.value = true;
       }, 3500);
@@ -2617,7 +2618,8 @@ export default {
   max-width: 197px;
   margin: 0 !important;
 }
-.left video {
+.left video,
+.left img {
   position: absolute;
   top: 0;
   left: 0;
@@ -2705,7 +2707,7 @@ export default {
   transition: 0.3s ease-in;
 }
 .right-opened {
-  width: 100%;
+  width: calc(100% + 170px);
 }
 .right__inner {
   padding: 80px 12px 64px 70px;
