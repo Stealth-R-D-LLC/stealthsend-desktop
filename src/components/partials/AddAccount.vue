@@ -1,7 +1,7 @@
 <template>
   <StModal
     light
-    :steps="steps"
+    :steps="activeStep === 'add-account' ? 0 : step"
     :current-step="currentStep"
     :visible="isVisible"
     @close="closeModal"
@@ -24,14 +24,16 @@
       </div>
       <div class="add-account" v-if="activeStep === 'add-account'">
         <div class="add-account__content">
-          <div class="desc">
-            <p>
+          <div class="desc" :class="{ 'desc-red': isLastAccountEmpty }">
+            <p v-if="isLastAccountEmpty">You can only have one account with a zero balance. Please add XST to your previous account prior to opening a new one.</p>
+            <p v-else>
               You can create an unlimited number of accounts; they are all
               derived from the same Recovery Phrase. Your previously created
               Recovery Phrase protects all of your accounts.
             </p>
           </div>
           <StFormItem
+            :is-disabled="isLastAccountEmpty"
             label="Account Name"
             :error-message="form.accountName.$errors"
           >
@@ -44,7 +46,7 @@
         <div class="add-account__actions">
           <div class="buttons">
             <StButton color="secondary" @click="closeModal">Cancel</StButton>
-            <StButton @click="generateAccount" :disabled="!accountName.length"
+            <StButton @click="generateAccount" :disabled="!accountName.length || isLastAccountEmpty"
               >Add</StButton
             >
           </div>
@@ -166,9 +168,6 @@ export default {
         $value: accountName,
         $rules: [
           (accountName) => {
-            if (isLastAccountEmpty) {
-              return 'You can only have one account with zero balance. Please add XST to your previous account prior to opening a new one.';
-            }
             if (existingAccounts.some((el) => el.label === accountName)) {
               return 'Account name already exists.';
             }
@@ -211,12 +210,26 @@ export default {
     });
 
     let existingAccounts = [];
+    let isLastAccountEmpty = ref(false);
     watch(
       () => isVisible.value,
       async () => {
         if (isVisible.value) {
           existingAccounts = await CryptoService.getAccounts();
           console.log('eeee', existingAccounts);
+          let next = await CryptoService.getNextAccountPath();
+      // get current last existing account
+      const { xpub: lastAccountPk } = CryptoService.getChildFromRoot(
+        next - 1 >= 0 ? next - 1 : 0,
+        0,
+        0
+      );
+      let lastHdAccount = await mainStore.rpc('gethdaccount', [
+        lastAccountPk,
+      ])
+      if (lastHdAccount.length === 0) {
+        isLastAccountEmpty.value = true;
+      }
         }
       }
     );
@@ -249,12 +262,10 @@ export default {
       }, 2000);
     }
 
-    let isLastAccountEmpty = false;
     async function generateAccount() {
-      isLastAccountEmpty = false;
       let account = {};
-      // mainStore.SET_MODAL_VISIBILITY('account', false);
-      // mainStore.START_GLOBAL_LOADING();
+
+      await validateFields();
 
       let next = await CryptoService.getNextAccountPath();
 
@@ -265,19 +276,9 @@ export default {
         0
       );
 
-      // check if last existing account has transactions
-      const lastHdAccount = await mainStore.rpc('gethdaccount', [
+      await mainStore.rpc('gethdaccount', [
         lastAccountPk,
       ]);
-
-      // if does have transactions, don't create new account
-      if (lastHdAccount.length === 0) {
-        isLastAccountEmpty = true;
-        await validateFields();
-        return;
-      }
-
-      await validateFields();
 
       const { address, path, xpub, wif } = CryptoService.getChildFromRoot(
         next,
@@ -302,6 +303,7 @@ export default {
       // mainStore.STOP_GLOBAL_LOADING();
       closeModal();
     }
+
 
     return {
       // VARIABLES
@@ -366,6 +368,7 @@ export default {
   color: var(--grey900);
   padding-bottom: 12px;
   padding-right: 20px;
+  font-family: var(--secondary-font);
   border-bottom: 3px solid var(--grey200);
   transition: 0.3s;
 }
@@ -402,6 +405,12 @@ export default {
   background-color: var(--background100);
   border-radius: 4px;
 }
+.desc-red {
+  background-color: var(--red50) !important;
+}
+.desc-red p {
+  color: var(--red600);
+}
 .buttons {
   display: flex;
   align-items: center;
@@ -413,6 +422,7 @@ export default {
   padding-left: 36px;
   font-size: 12px;
   line-height: 20px;
+  font-family: var(--secondary-font);
 }
 :deep .custom-checkbox .st-checkbox__checkmark {
   border-radius: 4px;
@@ -438,6 +448,14 @@ export default {
   left: 0;
   right: 0;
   bottom: 32px;
+}
+:deep .disabled {
+  opacity: 1;
+  background: linear-gradient(
+153.43deg
+, rgba(184, 183, 187, 0.15) 0%, rgba(229, 228, 232, 0.15) 83.33%), var(--grey100);
+    border: 1px solid rgba(207, 205, 209, 0.25);
+    color: var(--grey300);
 }
 
 :deep .st-form-item__message--is-error {
