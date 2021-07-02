@@ -5,13 +5,18 @@
         src="@/assets/animation/backgroundAnimation.mp4"
         type="video/mp4"
       />
+      <source
+        src="@/assets/animation/backgroundAnimation.ogg"
+        type="video/ogg"
+      />
+      Not supported
     </video>
     <div class="overlay"></div>
     <div class="lock-container__inner">
       <lottie
         :options="lottieOptions"
         :height="158"
-        style="min-height: 158px"
+        class="logo"
         @animCreated="handleAnimation"
       />
       <div class="box" :class="{ 'box-animated': isAnimated }">
@@ -329,9 +334,9 @@ export default {
   background-color: rgba(20, 4, 53, 0.6);
 }
 .lock-container .lock-container__inner {
-  padding: 80px 20px 60px 20px;
+  padding: 20px 20px 60px 20px;
   width: 100%;
-  height: calc(100% - 140px);
+  height: calc(100% - 80px);
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -345,11 +350,16 @@ export default {
   height: 0;
   transition: 0.7s;
 }
+.logo {
+  min-height: 158px;
+  max-width: 197px;
+  margin: 0 !important;
+}
 .lock-container .box-animated {
   height: 100%;
 }
 h4 {
-  margin-top: 79px;
+  margin-top: 20px;
   margin-bottom: 40px;
   color: var(--white);
 }
@@ -366,7 +376,7 @@ h5 {
   background-position: 92% 49% !important;
 }
 .form {
-  height: calc(100% - 157px);
+  height: calc(100% - 97px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
