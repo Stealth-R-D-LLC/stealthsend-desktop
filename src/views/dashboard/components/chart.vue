@@ -278,14 +278,16 @@ export default {
 .chart-min {
   bottom: 100px;
 }
-:deep .apexcharts-tooltip {
+:deep .apexcharts-tooltip,
+:deep .apexcharts-tooltip.apexcharts-theme-light {
   min-width: 150px;
   flex-direction: column-reverse;
   border: none;
   border-radius: 0;
   box-shadow: none;
 }
-:deep .apexcharts-tooltip .apexcharts-tooltip-title {
+:deep .apexcharts-tooltip .apexcharts-tooltip-title,
+:deep .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
   padding: 0;
   background: none;
   border: none;
