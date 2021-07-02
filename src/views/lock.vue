@@ -1,6 +1,6 @@
 <template>
   <div class="lock-container">
-    <img src="@/assets/welcome.png" alt="welcome">
+    <img src="@/assets/welcome.png" alt="welcome" />
     <!-- <video id="bgAnimation" width="320" height="240" autplay muted>
       <source
         src="@/assets/animation/backgroundAnimation.mp4"
@@ -309,7 +309,8 @@ export default {
   height: 100vh;
   width: 100%;
 }
-.lock-container video, .lock-container img {
+.lock-container video,
+.lock-container img {
   position: absolute;
   top: 0;
   left: 0;

@@ -1,7 +1,7 @@
 <template>
   <div class="welcome">
     <div class="left" :class="{ 'left-active': isAccount || isRecovery }">
-      <img src="@/assets/welcome.png" alt="welcome">
+      <img src="@/assets/welcome.png" alt="welcome" />
       <!-- <video id="bgAnimation" width="320" height="240" autplay muted>
         <source
           src="@/assets/animation/backgroundAnimation.mp4"
@@ -2615,7 +2615,8 @@ export default {
   max-width: 197px;
   margin: 0 !important;
 }
-.left video, .left img {
+.left video,
+.left img {
   position: absolute;
   top: 0;
   left: 0;
