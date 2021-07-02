@@ -6,6 +6,11 @@
           src="@/assets/animation/backgroundAnimation.mp4"
           type="video/mp4"
         />
+        <source
+          src="@/assets/animation/backgroundAnimation.ogg"
+          type="video/ogg"
+        />
+        Not supported
       </video>
       <div class="overlay"></div>
       <div
@@ -15,7 +20,7 @@
         <lottie
           :options="lottieOptions"
           :height="158"
-          style="min-height: 158px"
+          class="logo"
           @animCreated="handleAnimation"
         />
         <div
@@ -2446,6 +2451,8 @@ export default {
         label: account.value || `Account ${next}`,
         utxo: accUtxo,
         isArchived: false,
+        isFavourite: false,
+        isImported: false,
         asset: 'XST',
         wif: wif,
         path: path,
@@ -2602,6 +2609,14 @@ export default {
 .left__inner--active {
   align-items: baseline;
 }
+.left__inner--active .logo {
+  margin-left: -12px !important;
+}
+.logo {
+  min-height: 158px;
+  max-width: 197px;
+  margin: 0 !important;
+}
 .left video {
   position: absolute;
   top: 0;
@@ -2641,8 +2656,7 @@ export default {
 }
 .left .box .box__inner {
   text-align: center;
-  margin-top: 20px;
-  height: calc(100% - 20px);
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
