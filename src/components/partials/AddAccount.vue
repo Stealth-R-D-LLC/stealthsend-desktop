@@ -26,9 +26,9 @@
         <div class="add-account__content">
           <div class="desc">
             <p>
-              You can create an unlimited number of accounts; they are all derived
-              from the same Recovery Phrase. Your previously created Recovery
-              Phrase protects all of your accounts.
+              You can create an unlimited number of accounts; they are all
+              derived from the same Recovery Phrase. Your previously created
+              Recovery Phrase protects all of your accounts.
             </p>
           </div>
           <StFormItem
