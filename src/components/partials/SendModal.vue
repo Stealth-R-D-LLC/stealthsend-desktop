@@ -175,6 +175,7 @@
                 :tooltip="
                   copyPending ? 'Copied to clipboard!' : 'Click to copy'
                 "
+                position="bottom-right"
               >
                 <StClipboard :content="depositAddress" @click="handleCopy">
                   <svg
@@ -597,10 +598,7 @@ export default {
   top: -46px;
 }
 .tooltip {
-  margin-top: 40px;
-  display: block;
-  width: 100%;
-  text-align: center;
+  margin-top: 10px;
 }
 :deep .st-amount > .st-icon {
   cursor: pointer;
@@ -699,6 +697,9 @@ export default {
 :deep .multiselect__content-wrapper {
   top: 4px;
   padding-top: 65px;
+}
+.tooltip svg {
+  display: block;
 }
 </style>
 
