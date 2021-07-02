@@ -333,11 +333,11 @@ import { useValidation, ValidationError } from 'vue3-form-validation';
 import { useRoute } from 'vue-router';
 import { format, add } from 'mathjs';
 
-    const sumOf = (x = 0, y = 0) => {
-      let sum = add(x, y);
-      sum = format(sum, { precision: 14 });
-      return Number(sum);
-    };
+const sumOf = (x = 0, y = 0) => {
+  let sum = add(x, y);
+  sum = format(sum, { precision: 14 });
+  return Number(sum);
+};
 export default {
   name: 'StSendModal',
   setup() {
@@ -362,7 +362,6 @@ export default {
     const currentRoute = computed(() => {
       return route.name;
     });
-
 
     const {
       form,
@@ -469,7 +468,6 @@ export default {
       //   1,
       //   100,
       // ]);
-
     }
 
     function findFee(fee = 0.01) {
@@ -484,9 +482,9 @@ export default {
       let newFee = useFeeEstimator(bestOutputs.length);
       // 5. if fee !== newFee, goTo step 1
       if (newFee.fee > fee) {
-        return findFee(newFee.fee)
+        return findFee(newFee.fee);
       }
-      aproxFee.value = newFee.fee
+      aproxFee.value = newFee.fee;
     }
 
     function coinSelection(targetAmount) {
@@ -496,7 +494,7 @@ export default {
 
     async function send() {
       try {
-        let target = sumOf(amount.value, aproxFee.value)
+        let target = sumOf(amount.value, aproxFee.value);
         changeStep(4);
         await validateFields();
         const utxo = coinSelection(target);
@@ -505,8 +503,8 @@ export default {
           changeStep(6);
           return;
         }
-        console.info('TRANSACTION BUILDER: candidates: ', unspentOutputs)
-        console.info('TRANSACTION BUILDER: coin control: ', utxo)
+        console.info('TRANSACTION BUILDER: candidates: ', unspentOutputs);
+        console.info('TRANSACTION BUILDER: coin control: ', utxo);
         console.info('TRANSACTION BUILDER: entered amount: ', amount.value);
         console.info('TRANSACTION BUILDER: fee: ', aproxFee.value);
         console.info('TRANSACTION BUILDER: target amount: ', target);
@@ -571,10 +569,10 @@ export default {
 
     function changeStep(step) {
       currentStep.value = step;
-      if(step === 1) {
+      if (step === 1) {
         // if going back from step 2 to step 1
         // remove address from validation
-        remove(['depositAddress'])
+        remove(['depositAddress']);
       }
     }
 
