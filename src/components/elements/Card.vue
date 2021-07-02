@@ -40,6 +40,7 @@
           ~
           {{ isHiddenAmounts ? '$••• USD' : steps[type].amountRight + ' USD' }}
           <svg
+            v-if="account.isFavourite"
             class="star"
             width="16"
             height="14"
