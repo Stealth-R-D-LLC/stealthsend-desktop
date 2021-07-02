@@ -13,8 +13,8 @@ protocol.registerSchemesAsPrivileged([
 async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
-    // width: 1152,
-    // height: 700,
+    width: 1152,
+    height: 700,
     minWidth: 1152,
     minHeight: 700,
     maxWidth: 1600,
@@ -22,7 +22,6 @@ async function createWindow() {
     center: true,
     maximizable: false,
     fullscreenable: false,
-    title: 'StealthSend',
     webPreferences: {
       // devTools: false,
       // Use pluginOptions.nodeIntegration, leave this alone

@@ -60,18 +60,26 @@
       </template>
     </StMultiselect>
     <div class="accounts-list">
-      <div
-        class="account-grid"
-        v-for="(accounsList, index) in 100"
-        :key="index"
-      >
+      <div class="account-grid" v-for="(acc, index) in accounts" :key="index">
         <p class="bold">{{ index + 1 }}.</p>
         <div>
           <p class="flex-paragraph">
-            <span class="bold">Oh, yeah I have it all</span>
-            <span><span class="bold">XST</span>/USD</span>
+            <span class="bold">{{ acc.label }}</span>
+            <span
+              ><span class="bold">{{ acc.asset }}</span
+              >/USD</span
+            >
           </p>
-          <p>3,874,266,900.00000000 ~ $27,119,868,300.00 USD</p>
+          <p>
+            {{ formatAmount(Math.abs(acc.utxo, true, 8)) }} ~
+            <template v-if="Number(acc.utxo) * XST_USD_RATE < 1">
+              {{ formatAmount(Math.abs(acc.utxo * XST_USD_RATE), true) }}
+            </template>
+            <template v-else>
+              {{ formatAmount(Math.abs(acc.utxo * XST_USD_RATE), false) }}
+            </template>
+            USD
+          </p>
         </div>
         <svg
           v-if="index + 1 > 1"
@@ -91,8 +99,9 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import CryptoService from '@/services/crypto';
+import useHelpers from '@/composables/useHelpers';
 import { useMainStore } from '@/store';
 export default {
   name: 'FavouriteList',
@@ -100,6 +109,10 @@ export default {
     const mainStore = useMainStore();
     const account = ref(null);
     const accounts = ref([]);
+    const { formatAmount } = useHelpers();
+    const XST_USD_RATE = computed(() => {
+      return CryptoService.constraints.XST_USD || 1;
+    });
 
     async function scanWallet() {
       const hdWallet = await CryptoService.scanWallet();
@@ -122,6 +135,8 @@ export default {
 
       // functions
       closeCanvas,
+      formatAmount,
+      XST_USD_RATE,
     };
   },
 };

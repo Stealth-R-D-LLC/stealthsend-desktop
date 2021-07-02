@@ -136,6 +136,7 @@
             <StTooltip
               v-if="depositAddress"
               :tooltip="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
+              position="bottom-right"
             >
               <StClipboard :content="depositAddress" @click="handleCopy">
                 <svg
@@ -197,6 +198,7 @@
         <StTooltip
           class="tooltip"
           :tooltip="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
+          position="bottom-right"
         >
           <StClipboard :content="depositAddress" @click="handleCopy"
             >Copy to Clipboard</StClipboard
@@ -353,6 +355,7 @@ export default {
     const depositAddress = ref('');
     const qrSrc = ref('');
     async function changeAccount(acc = accounts.value[0]) {
+      depositAddress.value = '';
       const { account, change } = CryptoService.breakAccountPath(acc.path);
       const discoveredAddresses = await CryptoService.accountDiscovery(account);
       let nextFreeAddress = CryptoService.nextToUse(
@@ -478,10 +481,13 @@ export default {
   text-align: center;
 }
 .tooltip {
-  margin-top: 40px;
+  margin-top: 10px;
   display: block;
   width: 100%;
   text-align: center;
+}
+.tooltip svg {
+  display: block;
 }
 .tooltip .st-clipboard {
   font-family: var(--secondary-font);
@@ -557,6 +563,13 @@ export default {
   right: 0;
   text-align: center;
   line-height: 24px;
+}
+:deep .multiselect--active .multiselect__tags {
+  padding-top: 25px;
+}
+:deep .multiselect__content-wrapper {
+  top: 4px;
+  padding-top: 65px;
 }
 </style>
 <style>

@@ -2,7 +2,6 @@
   <div class="container">
     <StLoading :visibility="isLoading" :opaque="true"></StLoading>
     <component :is="layout"> </component>
-    <OffCanvas></OffCanvas>
   </div>
 </template>
 
@@ -14,7 +13,6 @@ import { computed } from 'vue';
 import DefaultLayout from './components/layout/Default.vue';
 import NewUserLayout from './components/layout/NewUser.vue';
 import SingleColumnLayout from './components/layout/SingleColumnLayout.vue';
-import OffCanvas from './components/elements/StOffCanvas.vue';
 import LockLayout from './components/layout/Lock.vue';
 import { useRoute } from 'vue-router';
 import router from '@/router';
@@ -22,9 +20,6 @@ import router from '@/router';
 
 export default {
   name: 'TsDefault',
-  components: {
-    OffCanvas,
-  },
   setup() {
     const mainStore = useMainStore();
 
@@ -52,7 +47,7 @@ export default {
     document.addEventListener('keydown', function (event) {
       if (route.name === 'Lock') return; // don't handle if already on lock screen
       // ALT + L combo
-      if (event.altKey && event.key === 'l') {
+      if (event.altKey && (event.key === 'l' || event.key === '¬')) {
         router.push('/lock');
       }
     });

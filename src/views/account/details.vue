@@ -31,10 +31,30 @@
       </div>
     </div>
     <div class="account-details-container__body">
-      <TransactionList
-        has-table-header
-        :transactions="transactions"
-      ></TransactionList>
+      <div class="account-details-container__body--overflow">
+        <div class="icons">
+          <div :class="{ nonclickable: !componentVisibility.txDashboard }">
+            <StIcon
+              :class="{ inactive: !componentVisibility.chart }"
+              name="chart"
+              @click="toggleComponentVisibility('chart')"
+            ></StIcon>
+          </div>
+          <div :class="{ nonclickable: !componentVisibility.chart }">
+            <StIcon
+              :class="{ inactive: !componentVisibility.txDashboard }"
+              name="tx-list"
+              @click="toggleComponentVisibility('txDashboard')"
+            ></StIcon>
+          </div>
+        </div>
+        <Chart v-if="componentVisibility.chart"></Chart>
+        <TransactionList
+          v-if="componentVisibility.txDashboard"
+          has-table-header
+          :transactions="transactions"
+        ></TransactionList>
+      </div>
     </div>
     <Card
       class="list-item"
@@ -54,9 +74,10 @@
 
 <script>
 import { useMainStore } from '@/store';
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import StLabel from '@/components/elements/StLabel';
 import Card from '@/components/elements/Card';
+import Chart from '@/views/dashboard/components/chart';
 import TransactionList from '@/components/partials/TransactionList';
 import CryptoService from '@/services/crypto';
 import router from '@/router';
@@ -68,6 +89,7 @@ export default {
   name: 'StAccountDetails',
   components: {
     Card,
+    Chart,
     TransactionList,
     StLabel,
   },
@@ -101,9 +123,22 @@ export default {
       }, 2000);
     }
 
-    function openModal(name) {
-      mainStore.SET_MODAL_VISIBILITY(name, true);
+    onMounted(() => {
+      if (!componentVisibility.value.chart) {
+        toggleComponentVisibility('chart');
+      }
+      if (!componentVisibility.value.txDashboard) {
+        toggleComponentVisibility('txDashboard');
+      }
+    });
+
+    function openModal(modal) {
+      mainStore.SET_MODAL_VISIBILITY(modal, true);
     }
+
+    const componentVisibility = computed(() => {
+      return mainStore.componentVisibility;
+    });
 
     const usdAmount = computed(() => {
       console.log(
@@ -126,6 +161,13 @@ export default {
         2
       );
     });
+
+    function toggleComponentVisibility(component) {
+      mainStore.SET_COMPONENT_VISIBILITY(
+        component,
+        !componentVisibility.value[component]
+      );
+    }
 
     async function getData() {
       addressInfo.value = {};
@@ -190,6 +232,8 @@ export default {
       formatAmount,
       changePercent24Hr,
       isHiddenAmounts: computed(() => mainStore.isAmountsHidden),
+      componentVisibility,
+      toggleComponentVisibility,
     };
   },
 };
@@ -202,12 +246,34 @@ export default {
 }
 
 .account-details-container__top {
-  padding: 24px 24px 24px 24px;
+  padding: 24px;
 }
 .account-details-container__body {
-  padding: 24px 24px 24px 24px;
+  padding: 24px 10px 24px 24px;
   background: #ffffff;
 }
+.account-details-container__body--overflow {
+  overflow: auto;
+  height: calc(100vh - 252px);
+  width: calc(100% - 14px);
+  padding-right: 14px;
+}
+.account-details-container__body--overflow::-webkit-scrollbar {
+  width: 4px;
+}
+.account-details-container__body--overflow::-webkit-scrollbar-thumb {
+  background: var(--grey100);
+}
+
+.account-details-container__body :deep .apexcharts-tooltip,
+.account-details-container__body
+  :deep
+  .apexcharts-tooltip.apexcharts-theme-light {
+  left: initial !important;
+  right: -15px;
+  top: 5px !important;
+}
+
 .account-details-container__top .left {
   display: grid;
   grid-gap: 1rem;
@@ -252,5 +318,44 @@ export default {
 }
 .receive-btn {
   margin-left: 24px;
+}
+.icons {
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  position: relative;
+  top: 22px;
+  z-index: 1;
+}
+.icons svg {
+  cursor: pointer;
+  margin-right: 24px;
+}
+.nonclickable {
+  position: relative;
+}
+.nonclickable::before {
+  content: '';
+  cursor: not-allowed;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+}
+:deep .inactive path {
+  stroke: var(--marine100);
+}
+.st-transaction-list {
+  padding: 0;
+}
+.st-transaction-list :deep .overflow {
+  padding: 0 0 20px 0;
+  overflow: initial;
+  height: auto;
+}
+:deep .st-dashboard-chart {
+  margin-top: 24px;
 }
 </style>

@@ -146,6 +146,57 @@
           <p class="group-item__desc">Lorem ipsum</p>
         </router-link>
       </ul>
+      <p class="group-title">
+        <span>Help</span>
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 18 18"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M10 16V17H6V16H10Z"
+            stroke="#4E00F6"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M17 13H14V8H17V13Z"
+            stroke="#4E00F6"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M4 13H1L1 8H4V13Z"
+            stroke="#4E00F6"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+          <path
+            d="M2 7C2 4 4.00015 1 9 1C13.9998 1 16 4 16 7"
+            stroke="#4E00F6"
+            stroke-width="2"
+          />
+          <path
+            d="M5 17H3C1.99993 17 2.00009 17 2 16V14"
+            stroke="#4E00F6"
+            stroke-width="2"
+          />
+        </svg>
+      </p>
+      <ul class="group">
+        <li class="group-item" @click="goTo('/settings/delete-app-data')">
+          <p class="group-item__name">Delete App Data</p>
+          <p class="group-item__desc">Reset StealthSend</p>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
