@@ -70,8 +70,8 @@ export default {
     },
     isDisabled: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   emits: ['rightLabelClick'],
   setup(_, ctx) {
@@ -180,7 +180,8 @@ export default {
 .st-form-item--disabled {
   pointer-events: none;
 }
-.st-form-item--disabled :deep label, :deep .label-right {
+.st-form-item--disabled :deep label,
+:deep .label-right {
   color: var(--grey400);
 }
 .st-form-item--disabled :deep input::placeholder {

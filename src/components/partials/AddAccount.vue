@@ -25,7 +25,10 @@
       <div class="add-account" v-if="activeStep === 'add-account'">
         <div class="add-account__content">
           <div class="desc" :class="{ 'desc-red': isLastAccountEmpty }">
-            <p v-if="isLastAccountEmpty">You can only have one account with a zero balance. Please add XST to your previous account prior to opening a new one.</p>
+            <p v-if="isLastAccountEmpty">
+              You can only have one account with a zero balance. Please add XST
+              to your previous account prior to opening a new one.
+            </p>
             <p v-else>
               You can create an unlimited number of accounts; they are all
               derived from the same Recovery Phrase. Your previously created
@@ -46,7 +49,9 @@
         <div class="add-account__actions">
           <div class="buttons">
             <StButton color="secondary" @click="closeModal">Cancel</StButton>
-            <StButton @click="generateAccount" :disabled="!accountName.length || isLastAccountEmpty"
+            <StButton
+              @click="generateAccount"
+              :disabled="!accountName.length || isLastAccountEmpty"
               >Add</StButton
             >
           </div>
@@ -218,18 +223,18 @@ export default {
           existingAccounts = await CryptoService.getAccounts();
           console.log('eeee', existingAccounts);
           let next = await CryptoService.getNextAccountPath();
-      // get current last existing account
-      const { xpub: lastAccountPk } = CryptoService.getChildFromRoot(
-        next - 1 >= 0 ? next - 1 : 0,
-        0,
-        0
-      );
-      let lastHdAccount = await mainStore.rpc('gethdaccount', [
-        lastAccountPk,
-      ])
-      if (lastHdAccount.length === 0) {
-        isLastAccountEmpty.value = true;
-      }
+          // get current last existing account
+          const { xpub: lastAccountPk } = CryptoService.getChildFromRoot(
+            next - 1 >= 0 ? next - 1 : 0,
+            0,
+            0
+          );
+          let lastHdAccount = await mainStore.rpc('gethdaccount', [
+            lastAccountPk,
+          ]);
+          if (lastHdAccount.length === 0) {
+            isLastAccountEmpty.value = true;
+          }
         }
       }
     );
@@ -276,9 +281,7 @@ export default {
         0
       );
 
-      await mainStore.rpc('gethdaccount', [
-        lastAccountPk,
-      ]);
+      await mainStore.rpc('gethdaccount', [lastAccountPk]);
 
       const { address, path, xpub, wif } = CryptoService.getChildFromRoot(
         next,
@@ -303,7 +306,6 @@ export default {
       // mainStore.STOP_GLOBAL_LOADING();
       closeModal();
     }
-
 
     return {
       // VARIABLES
@@ -452,10 +454,13 @@ export default {
 :deep .disabled {
   opacity: 1;
   background: linear-gradient(
-153.43deg
-, rgba(184, 183, 187, 0.15) 0%, rgba(229, 228, 232, 0.15) 83.33%), var(--grey100);
-    border: 1px solid rgba(207, 205, 209, 0.25);
-    color: var(--grey300);
+      153.43deg,
+      rgba(184, 183, 187, 0.15) 0%,
+      rgba(229, 228, 232, 0.15) 83.33%
+    ),
+    var(--grey100);
+  border: 1px solid rgba(207, 205, 209, 0.25);
+  color: var(--grey300);
 }
 
 :deep .st-form-item__message--is-error {
