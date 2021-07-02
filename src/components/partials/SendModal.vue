@@ -1,5 +1,6 @@
 <template>
   <StModal
+    :has-click-outside="false"
     :show-back-button="currentStep < 4"
     :steps="3"
     :current-step="currentStep"
@@ -165,7 +166,7 @@
             :error-message="form.depositAddress.$errors"
           >
             <StInput
-              v-model="depositAddress"
+              v-model="form.depositAddress.$value"
               placeholder="Deposit address"
               color="dark"
             >
@@ -518,6 +519,7 @@ export default {
         await validateFields();
         changeStep(3);
       } catch (e) {
+        console.log('eee', e);
         if (e instanceof ValidationError) {
           console.log(e);
         }
@@ -529,14 +531,12 @@ export default {
         add(['depositAddress'], {
           $value: depositAddress,
           $rules: [
-            (depositAddress) =>
-              (!depositAddress ||
-                !CryptoService.isAddressValid(depositAddress)) &&
-              'Please enter a valid XST address',
+           (depositAddress) => (!depositAddress || !CryptoService.isAddressValid(depositAddress)) && 'Please enter a valid XST address',
           ],
         });
         changeStep(2);
       } catch (e) {
+        console.log('e', e);
         if (e instanceof ValidationError) {
           console.log(e);
         }
