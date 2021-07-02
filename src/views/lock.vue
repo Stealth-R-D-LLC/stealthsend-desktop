@@ -141,7 +141,7 @@
                 <animate
                   attributeName="stroke-dashoffset"
                   values="50;430"
-                  dur="3.2s"
+                  dur="5.2s"
                 ></animate>
               </circle>
             </svg>
@@ -188,7 +188,7 @@ export default {
     const isCleared = ref(false);
     const timeout = ref(null);
     const counterTimeout = ref(null);
-    const counter = ref(4);
+    const counter = ref(6);
     const animation = ref(null); // for saving the reference to the animation
     const lottieOptions = ref({
       animationData: animationData.default,
@@ -261,7 +261,7 @@ export default {
         clearTimeout(counterTimeout.value);
         counter.value = 4;
         location.reload();
-      }, 3000);
+      }, 5000);
     }
 
     function cancelClearData() {
