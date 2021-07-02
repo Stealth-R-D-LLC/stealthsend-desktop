@@ -185,7 +185,7 @@ export default {
   color: var(--grey400);
 }
 .st-form-item--disabled :deep input::placeholder {
-  color: var(--grey400);
+  color: var(--grey400) !important;
 }
 .st-form-item--disabled :deep fieldset:after {
   display: none;
