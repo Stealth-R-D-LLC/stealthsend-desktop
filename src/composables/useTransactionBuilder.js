@@ -3,11 +3,11 @@ import CryptoService from '@/services/crypto';
 import { useMainStore } from '@/store';
 import * as bitcoin from 'bitcoinjs-lib';
 import { Buffer } from 'buffer';
-import { add, format, subtract, bignumber, multiply } from 'mathjs';
+import { add, format, subtract } from 'mathjs';
 
 export default async function useTransactionBuilder(utxo, sendForm) {
   const mainStore = useMainStore();
-
+  
   const { fee } = useFeeEstimator(utxo.length);
 
   const sumOf = (x = 0, y = 0) => {
@@ -45,7 +45,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
   async function buildTransaction() {
     // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, reject) => {
       let rawTransaction = new bitcoin.TransactionBuilder(
         CryptoService.network,
         3000000
@@ -65,14 +65,6 @@ export default async function useTransactionBuilder(utxo, sendForm) {
           Buffer.from(vout.scriptPubKey.hex, 'hex')
         );
       }
-
-      console.log('amount: ', Number(sumOf(sendForm.amount, fee * -1)) * 1e6);
-      console.log('sendForm.amount', sendForm.amount);
-      console.log(
-        'aaaaa',
-        multiply(bignumber(sendForm.amount), bignumber(-Math.abs(0.01)), 1e6)
-          .d[0]
-      );
 
       let recipient = {
         address: sendForm.address,
@@ -116,7 +108,8 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         try {
           rawTransaction.sign(i, keyPair);
         } catch (e) {
-          console.log('cannot sign tx', e);
+          console.info('TRANSACTION BUILDER: cannot sign tx', e);
+          reject(e)
         }
       }
 
@@ -124,13 +117,10 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
       const rawTransactionToHex = rawTransaction.build().toHex();
 
-      console.dir('r', rawTransactionToHex);
-
       const res = await mainStore.rpc('sendrawtransaction', [
         rawTransactionToHex,
       ]);
 
-      console.log('res', res);
       resolve(res);
     });
   }

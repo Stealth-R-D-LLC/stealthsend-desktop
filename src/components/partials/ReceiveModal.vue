@@ -355,6 +355,7 @@ export default {
     const depositAddress = ref('');
     const qrSrc = ref('');
     async function changeAccount(acc = accounts.value[0]) {
+      depositAddress.value = '';
       const { account, change } = CryptoService.breakAccountPath(acc.path);
       const discoveredAddresses = await CryptoService.accountDiscovery(account);
       let nextFreeAddress = CryptoService.nextToUse(
