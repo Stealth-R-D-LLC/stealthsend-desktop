@@ -132,8 +132,8 @@ export default {
       }
     });
 
-    function openModal(name) {
-      mainStore.SET_MODAL_VISIBILITY(name, true);
+    function openModal(modal) {
+      mainStore.SET_MODAL_VISIBILITY(modal, true);
     }
 
     const componentVisibility = computed(() => {
@@ -310,6 +310,7 @@ export default {
   margin-left: 24px;
 }
 .icons {
+  width: fit-content;
   display: flex;
   align-items: center;
   position: relative;

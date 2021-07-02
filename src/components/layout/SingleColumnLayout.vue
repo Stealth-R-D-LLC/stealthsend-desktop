@@ -1,5 +1,10 @@
 <template>
   <div class="layout">
+    <ReceiveModal />
+    <QuickReceiveModal />
+    <SendModal />
+    <AddAccount />
+    <OffCanvas></OffCanvas>
     <MenuBar></MenuBar>
     <main class="layout__single">
       <router-view v-slot="{ Component }">
@@ -15,6 +20,11 @@
 </template>
 
 <script>
+import ReceiveModal from '@/components/partials/ReceiveModal.vue';
+import QuickReceiveModal from '@/components/partials/QuickReceiveModal.vue';
+import SendModal from '@/components/partials/SendModal.vue';
+import AddAccount from '@/components/partials/AddAccount.vue';
+import OffCanvas from '@/components/elements/StOffCanvas.vue';
 import MenuBar from '@/components/layout/MenuBar.vue';
 import TopBar from '@/components/layout/TopBar.vue';
 import CryptoService from '../../services/crypto';
@@ -22,6 +32,11 @@ import CryptoService from '../../services/crypto';
 export default {
   name: 'TsDefault',
   components: {
+    ReceiveModal,
+    QuickReceiveModal,
+    SendModal,
+    AddAccount,
+    OffCanvas,
     MenuBar,
     TopBar,
   },
