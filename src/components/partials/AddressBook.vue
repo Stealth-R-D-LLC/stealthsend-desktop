@@ -720,7 +720,7 @@ export default {
     function openModal(modal) {
       mainStore.SET_MODAL_VISIBILITY(modal, true);
       mainStore.SET_SEND_ADDRESS(addContactForm.value.address);
-      closeCanvas()
+      closeCanvas();
     }
 
     function editContact() {
