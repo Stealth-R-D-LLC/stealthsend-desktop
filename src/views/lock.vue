@@ -1,6 +1,7 @@
 <template>
   <div class="lock-container">
-    <video id="bgAnimation" width="320" height="240" autplay muted>
+    <img src="@/assets/welcome.png" alt="welcome" />
+    <!-- <video id="bgAnimation" width="320" height="240" autplay muted>
       <source
         src="@/assets/animation/backgroundAnimation.mp4"
         type="video/mp4"
@@ -10,7 +11,7 @@
         type="video/ogg"
       />
       Not supported
-    </video>
+    </video> -->
     <div class="overlay"></div>
     <div class="lock-container__inner">
       <lottie
@@ -140,7 +141,7 @@
                 <animate
                   attributeName="stroke-dashoffset"
                   values="50;430"
-                  dur="3.2s"
+                  dur="5.2s"
                 ></animate>
               </circle>
             </svg>
@@ -187,7 +188,7 @@ export default {
     const isCleared = ref(false);
     const timeout = ref(null);
     const counterTimeout = ref(null);
-    const counter = ref(4);
+    const counter = ref(6);
     const animation = ref(null); // for saving the reference to the animation
     const lottieOptions = ref({
       animationData: animationData.default,
@@ -225,7 +226,6 @@ export default {
     onMounted(() => {
       mainStore.TOGGLE_DRAWER(false);
       mainStore.SET_OFF_CANVAS_DATA(null);
-      document.getElementById('bgAnimation').play();
       setTimeout(() => {
         isAnimated.value = true;
         setTimeout(() => {
@@ -261,7 +261,7 @@ export default {
         clearTimeout(counterTimeout.value);
         counter.value = 4;
         location.reload();
-      }, 3000);
+      }, 5000);
     }
 
     function cancelClearData() {
@@ -309,7 +309,8 @@ export default {
   height: 100vh;
   width: 100%;
 }
-.lock-container video {
+.lock-container video,
+.lock-container img {
   position: absolute;
   top: 0;
   left: 0;

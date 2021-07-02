@@ -481,6 +481,7 @@ export default {
   text-align: center;
 }
 .tooltip {
+  margin-top: 10px;
   display: block;
   width: 100%;
   text-align: center;
