@@ -1,6 +1,7 @@
 <template>
   <div class="lock-container">
-    <video id="bgAnimation" width="320" height="240" autplay muted>
+    <img src="@/assets/welcome.png" alt="welcome">
+    <!-- <video id="bgAnimation" width="320" height="240" autplay muted>
       <source
         src="@/assets/animation/backgroundAnimation.mp4"
         type="video/mp4"
@@ -10,7 +11,7 @@
         type="video/ogg"
       />
       Not supported
-    </video>
+    </video> -->
     <div class="overlay"></div>
     <div class="lock-container__inner">
       <lottie
@@ -225,7 +226,6 @@ export default {
     onMounted(() => {
       mainStore.TOGGLE_DRAWER(false);
       mainStore.SET_OFF_CANVAS_DATA(null);
-      document.getElementById('bgAnimation').play();
       setTimeout(() => {
         isAnimated.value = true;
         setTimeout(() => {
@@ -309,7 +309,7 @@ export default {
   height: 100vh;
   width: 100%;
 }
-.lock-container video {
+.lock-container video, .lock-container img {
   position: absolute;
   top: 0;
   left: 0;
