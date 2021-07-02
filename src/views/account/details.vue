@@ -133,7 +133,6 @@ export default {
     });
 
     function openModal(modal) {
-      console.log(modal);
       mainStore.SET_MODAL_VISIBILITY(modal, true);
     }
 
