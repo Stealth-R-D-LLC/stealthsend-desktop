@@ -264,6 +264,14 @@ export default {
 .account-details-container__body--overflow::-webkit-scrollbar-thumb {
   background: var(--grey100);
 }
+
+.account-details-container__body :deep .apexcharts-tooltip,
+.account-details-container__body :deep .apexcharts-tooltip.apexcharts-theme-light {
+  left: initial !important;
+  right: -15px;
+  top: 5px !important;
+}
+
 .account-details-container__top .left {
   display: grid;
   grid-gap: 1rem;
