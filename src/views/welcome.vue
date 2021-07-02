@@ -2704,7 +2704,7 @@ export default {
   transition: 0.3s ease-in;
 }
 .right-opened {
-  width: 100%;
+  width: calc(100% + 170px);
 }
 .right__inner {
   padding: 80px 12px 64px 70px;
