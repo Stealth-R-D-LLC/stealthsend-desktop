@@ -627,7 +627,7 @@ export default {
         }
         if (transactionResponse.txid) {
           CryptoService.storeTxAndLabel(transactionResponse.txid, label.value);
-          setTimeout(() => changeStep(6), 4000)
+          setTimeout(() => changeStep(6), 4000);
         } else {
           setTimeout(() => changeStep(7), 4000);
         }
