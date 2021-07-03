@@ -570,7 +570,6 @@ const CryptoService = {
           balance = add(balance, accUtxo);
           balance = format(balance, { precision: 14 });
         }
-
       }
       resolve({
         utxo: balance, // sum of all utxo (except archived accounts)
