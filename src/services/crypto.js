@@ -274,6 +274,9 @@ const CryptoService = {
     if (accounts.length < 1) {
       console.error('Accounts do not exist');
       return this.scanWallet();
+    } else if (accounts.filter(acc => !acc.isArchived).length === 1) {
+      console.error('Cannot archive all accounts');
+      return this.scanWallet();
     }
 
     const wantedIndex = accounts.findIndex(
