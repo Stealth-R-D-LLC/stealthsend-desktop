@@ -2399,13 +2399,15 @@ export default {
     }
 
     async function recover() {
+      mainStore.START_GLOBAL_LOADING();
       // recover an existing wallet via mnemonic
       // password is asked because we have to lock the seed in the database
       // user is createing a new password in this step
       try {
         await validateFields();
         let mnemonic = selectedRecoveryWords.value.join(' ');
-        let bytes = await bip39.mnemonicToSeedSync(mnemonic);
+        // let bytes = bip39.mnemonicToSeedSync(mnemonic);
+        let bytes = await bip39.mnemonicToSeed(mnemonic);
         const master = await bip32.fromSeed(bytes, CryptoService.network); // root
         recovered.value = {
           seed: bytes.toString('hex'),
@@ -2463,12 +2465,12 @@ export default {
 
       // break out of recursion after saving first account that doesn't have transactions
       if (hdAccount.length === 0) {
+        mainStore.STOP_GLOBAL_LOADING();
         return;
       }
 
       await restoreAccounts();
 
-      mainStore.STOP_GLOBAL_LOADING();
     }
 
     const createWallet = ref(false);

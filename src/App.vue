@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <StLoading :visibility="isLoading" :opaque="true"></StLoading>
+    <StLoading :visibility="isLoading"></StLoading>
     <component :is="layout"> </component>
   </div>
 </template>
