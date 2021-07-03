@@ -2470,7 +2470,6 @@ export default {
       }
 
       await restoreAccounts();
-
     }
 
     const createWallet = ref(false);
