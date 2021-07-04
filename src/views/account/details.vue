@@ -141,10 +141,6 @@ export default {
     });
 
     const usdAmount = computed(() => {
-      console.log(
-        'CryptoService.constraints.XST_USD',
-        CryptoService.constraints.XST_USD
-      );
       return (
         Number(account.value.utxo) * CryptoService.constraints.XST_USD || 0
       );
@@ -193,7 +189,7 @@ export default {
       });
     }
 
-    if (account.value) {
+    if (Object.keys(account.value).length > 0) {
       getData();
     }
     emitter.on('header:account-changed', (account) => {

@@ -50,7 +50,7 @@
                   {{ account && account.label }}
                 </p>
                 <p class="account-utxo">
-                  {{ account && account.utxo }}
+                  {{ account && formatAmount(account.utxo) }}
                 </p>
               </div>
             </template>
