@@ -142,7 +142,7 @@ export default {
   },
   setup() {
     const transactions = ref([]);
-    let query = ref('');
+    const query = ref('');
     const date = ref([]);
 
     const route = useRoute();
@@ -175,7 +175,7 @@ export default {
       let filtered = [...transactions.value];
       if (filtered.length === 0) return [];
 
-      if (query && query.value.length > 0) {
+      if (query.value.length > 0) {
         filtered = filtered.filter((el) => {
           return (
             el.account === query.value ||

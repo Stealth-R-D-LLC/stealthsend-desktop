@@ -94,7 +94,7 @@ export const useMainStore = defineStore({
           })
           .catch((err) => {
             console.error('RPC error: ', err);
-            reject(err.response.data.error.message);
+            reject('RPC error: ', err);
           });
       });
     },
