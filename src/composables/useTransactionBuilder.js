@@ -45,7 +45,6 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
   async function buildTransaction() {
     // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve, reject) => {
       let rawTransaction = new bitcoin.TransactionBuilder(
         CryptoService.network,
         3000000
@@ -105,11 +104,11 @@ export default async function useTransactionBuilder(utxo, sendForm) {
           child.toWIF(),
           CryptoService.network
         );
+
         try {
           rawTransaction.sign(i, keyPair);
         } catch (e) {
-          console.info('TRANSACTION BUILDER: cannot sign tx', e);
-          reject(e);
+          throw new Error('TRANSACTION BUILDER: cannot sign tx: ', e)
         }
       }
 
@@ -117,12 +116,12 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
       const rawTransactionToHex = rawTransaction.build().toHex();
 
-      const res = await mainStore.rpc('sendrawtransaction', [
+      const txid = await mainStore.rpc('sendrawtransaction', [
         rawTransactionToHex,
       ]);
 
-      resolve(res);
-    });
+      return txid;
+
   }
 
   const txid = await buildTransaction(utxo, sendForm);
