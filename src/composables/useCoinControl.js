@@ -38,10 +38,7 @@ export default function useCoinControl(outputs, target) {
   function getMinSingle(utxo, target) {
     // get min(u ∈ U; u > t + mc)
     if (utxo.length < 0) return [];
-    let filteredUtxo = utxo.filter(
-      (el) =>
-        el.amount > target
-    );
+    let filteredUtxo = utxo.filter((el) => el.amount > target);
     filteredUtxo = orderBy(filteredUtxo, ['amount'], ['asc']);
     return filteredUtxo[0];
   }
@@ -68,8 +65,8 @@ export default function useCoinControl(outputs, target) {
     // The UTXO pool is reduced to only the UTXOs that are smaller than (adjustedTarget + minimalChange).
     // This subset will be referred to as smallerCoins henceforth. If the sum of smallerCoins matches adjustedTarget,
     // smallerCoins is returned as the candidate input set.
-    //  No other selection steps will be performed unless a new cycle is started.    
-    
+    //  No other selection steps will be performed unless a new cycle is started.
+
     let smallerCoins = sortedUtxo.filter((el) => el.amount < adjustedTarget);
     let bestSet = [];
 

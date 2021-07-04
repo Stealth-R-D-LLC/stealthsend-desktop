@@ -186,11 +186,11 @@ export default {
             ...el,
             account: account.value.label,
             blocktime: el.txinfo.blocktime,
-            amount: el.account_balance_change
+            amount: el.account_balance_change,
           };
         });
         transactions.value = mappedAmounts;
-      })
+      });
     }
 
     if (account.value) {
