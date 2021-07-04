@@ -40,7 +40,7 @@ export default function useCoinControl(outputs, target) {
     if (utxo.length < 0) return [];
     let filteredUtxo = utxo.filter(
       (el) =>
-        el.amount > sumOf(target, CryptoService.constraints.MINIMAL_CHANGE)
+        el.amount > target
     );
     filteredUtxo = orderBy(filteredUtxo, ['amount'], ['asc']);
     return filteredUtxo[0];
@@ -67,16 +67,10 @@ export default function useCoinControl(outputs, target) {
 
     // The UTXO pool is reduced to only the UTXOs that are smaller than (adjustedTarget + minimalChange).
     // This subset will be referred to as smallerCoins henceforth. If the sum of smallerCoins matches adjustedTarget,
-    // smallerCoins is returned as the candidate input set. No
-    // other selection steps will be performed unless a new cycle is started.
-
-    // The UTXO pool is reduced to only the UTXOs that are smaller than (adjustedTarget + minimalChange).
-    let targetAndChange = sumOf(
-      adjustedTarget,
-      CryptoService.constraints.MINIMAL_CHANGE
-    );
-
-    let smallerCoins = sortedUtxo.filter((el) => el.amount < targetAndChange);
+    // smallerCoins is returned as the candidate input set.
+    //  No other selection steps will be performed unless a new cycle is started.    
+    
+    let smallerCoins = sortedUtxo.filter((el) => el.amount < adjustedTarget);
     let bestSet = [];
 
     //  If the sum of smallerCoins matches adjustedTarget, smallerCoins is returned as the candidate input set
@@ -134,15 +128,10 @@ export default function useCoinControl(outputs, target) {
     // candidate input set. No other selection steps will be performed unless a new
     // cycle is started. Otherwise, no exact match was found and the algorithm will
     // fallback to creating a transaction with a change output.
-    // The UTXO pool is reduced to only the UTXOs that are smaller than (adjustedTarget + minimalChange).
-    let targetAndChange = sumOf(
-      adjustedTarget,
-      CryptoService.constraints.MINIMAL_CHANGE
-    );
 
     // actual input of utxos, smaller coins sorted desc
     let sortedUtxo = orderBy(utxo, ['amount'], ['desc']);
-    let smallerCoins = sortedUtxo.filter((el) => el.amount < targetAndChange);
+    let smallerCoins = sortedUtxo.filter((el) => el.amount < adjustedTarget);
 
     let bestSet = [];
     let bestSetValue = sortedUtxo[0].amount; // largest
@@ -212,24 +201,28 @@ export default function useCoinControl(outputs, target) {
     let result = null;
 
     result = exactMatch(outputs, adjustedTarget);
+    console.info('COIN CONTROL: exactMatch() ', result);
     if (result.length > 0) {
       bestSet = [...result];
       return bestSet;
     }
 
     result = sumOfSmaller(outputs, adjustedTarget);
+    console.info('COIN CONTROL: sumOfSmaller() ', result);
     if (result.length > 0) {
       bestSet = [...result];
       return bestSet;
     }
 
     result = subsetSum(outputs, adjustedTarget);
+    console.info('COIN CONTROL: subsetSum() ', result);
     if (result.length > 0) {
       bestSet = [...result];
       return bestSet;
     }
 
     result = knapsackSelection(outputs, target);
+    console.info('COIN CONTROL: knapsackSelection() ', result);
     if (result.length > 0) {
       bestSet = [...result];
       let coinControlSum = bestSet
@@ -245,6 +238,8 @@ export default function useCoinControl(outputs, target) {
     }
 
     let minSingleUtxo = getMinSingle(outputs, target);
+    console.info('COIN CONTROL: getMinSingle() ', minSingleUtxo);
+
     if (
       minSingleUtxo &&
       minSingleUtxo.amount <
