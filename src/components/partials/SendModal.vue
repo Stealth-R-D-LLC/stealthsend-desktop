@@ -3,6 +3,7 @@
     :has-click-outside="false"
     :show-back-button="currentStep < 4"
     :steps="3"
+    :show-close-button="currentStep <= 4 || currentStep === 6"
     :current-step="currentStep"
     :visible="isVisible"
     class="send-modal"
@@ -366,6 +367,10 @@
       <template v-if="currentStep === 4">
         <StButton color="white" @click="cancelSend">Cancel</StButton>
       </template>
+      <div class="tx-failed-controls" v-if="currentStep === 7">
+        <StButton @click="prepareSend" color="white">Try Again</StButton>
+        <StButton @click="closeModal" color="secondary">Cancel</StButton>
+      </div>
     </template>
   </StModal>
 </template>
@@ -420,9 +425,11 @@ export default {
       if (currentStep.value === 4) {
         sendTimeout.value = setTimeout(() => send(), 4900);
       }
-      /* if(currentStep.value === 5) {
-        setTimeout(() => send(), 4000)
-      } */
+      if (currentStep.value === 5) {
+        // setTimeout(() => send(), 4000)
+        clearTimeout(counterTimeout.value);
+        counter.value = 5;
+      }
     });
 
     const route = useRoute();
@@ -454,8 +461,8 @@ export default {
         $value: amount,
         $rules: [
           (amount) => {
-            if (!amount || Number(amount) <= 0) {
-              return 'Amount has to be positive';
+            if (!amount || Number(amount) < 0.05) {
+              return 'Minimum amount is 0.05 XST';
             } else if (account.value && account.value.utxo < Number(amount)) {
               return 'Insufficient funds on this account';
             }
@@ -589,6 +596,62 @@ export default {
       clearTimeout(sendTimeout.value);
     }
 
+    async function tryAgain() {
+      try {
+        // changeStep(5);
+        // await validateFields();
+        let target = sumOf(amount.value, aproxFee.value);
+        const utxo = coinSelection(target);
+
+        if (utxo.length === 0) {
+          setTimeout(() => changeStep(7), 4000);
+          return;
+        }
+        console.info('TRANSACTION BUILDER: candidates: ', unspentOutputs);
+        console.info('TRANSACTION BUILDER: coin control: ', utxo);
+        console.info('TRANSACTION BUILDER: entered amount: ', amount.value);
+        console.info('TRANSACTION BUILDER: fee: ', aproxFee.value);
+        console.info('TRANSACTION BUILDER: target amount: ', target);
+
+        let transactionResponse = '';
+        if (account.value.wif && account.value.isImported) {
+          // build transaction for imported account
+          transactionResponse = await useTransactionBuilderForImportedAccount(
+            utxo,
+            {
+              address: depositAddress.value,
+              amount: target,
+              account: account.value,
+            }
+          );
+        } else {
+          // build transaction for native hd account
+          try {
+            transactionResponse = await useTransactionBuilder(utxo, {
+              address: depositAddress.value,
+              amount: target,
+              account: account.value,
+            });
+          } catch (e) {
+            changeStep(7);
+          }
+        }
+        if (transactionResponse.txid) {
+          CryptoService.storeTxAndLabel(transactionResponse.txid, label.value);
+          setTimeout(() => changeStep(6), 4000);
+        } else {
+          setTimeout(() => changeStep(7), 4000);
+        }
+        // setTimeout(() => closeModal(), 2000);
+      } catch (e) {
+        if (e instanceof ValidationError) {
+          console.log(e);
+        } else {
+          changeStep(7);
+        }
+      }
+    }
+
     async function send() {
       try {
         changeStep(5);
@@ -608,7 +671,7 @@ export default {
 
         let transactionResponse = '';
         if (account.value.wif && account.value.isImported) {
-          // BUILD TRANSACTION FOR IMPORTED ACCOUNT
+          // build transaction for imported account
           transactionResponse = await useTransactionBuilderForImportedAccount(
             utxo,
             {
@@ -618,12 +681,16 @@ export default {
             }
           );
         } else {
-          // BUILD TRANSACTION FOR NATIVE ACCOUNT
-          transactionResponse = await useTransactionBuilder(utxo, {
-            address: depositAddress.value,
-            amount: target,
-            account: account.value,
-          });
+          // build transaction for native hd account
+          try {
+            transactionResponse = await useTransactionBuilder(utxo, {
+              address: depositAddress.value,
+              amount: target,
+              account: account.value,
+            });
+          } catch (e) {
+            changeStep(7);
+          }
         }
         if (transactionResponse.txid) {
           CryptoService.storeTxAndLabel(transactionResponse.txid, label.value);
@@ -635,6 +702,8 @@ export default {
       } catch (e) {
         if (e instanceof ValidationError) {
           console.log(e);
+        } else {
+          changeStep(7);
         }
       }
     }
@@ -719,6 +788,7 @@ export default {
       cancelSend,
 
       send,
+      tryAgain,
       getUnspentOutputs,
       formatAmount,
       counter,
@@ -874,5 +944,14 @@ export default {
   align-items: center;
   justify-content: center;
   margin-top: auto;
+}
+.tx-failed-controls {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.tx-failed-controls .st-button--secondary {
+  color: var(--grey50);
 }
 </style>
