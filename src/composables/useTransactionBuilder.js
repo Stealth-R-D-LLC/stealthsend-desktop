@@ -45,83 +45,80 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
   async function buildTransaction() {
     // eslint-disable-next-line no-async-promise-executor
-      let rawTransaction = new bitcoin.TransactionBuilder(
-        CryptoService.network,
-        3000000
+    let rawTransaction = new bitcoin.TransactionBuilder(
+      CryptoService.network,
+      3000000
+    );
+
+    // add all outputs
+    for await (let tx of utxo) {
+      // get prevoutscript
+      const txDetails = await mainStore.rpc('gettransaction', [tx.txid]);
+
+      let vout = txDetails.vout.find((el) => el.value === tx.amount);
+
+      rawTransaction.addInput(
+        txDetails.txid,
+        vout.n,
+        null,
+        Buffer.from(vout.scriptPubKey.hex, 'hex')
+      );
+    }
+
+    let recipient = {
+      address: sendForm.address,
+      amount: Number(sumOf(sendForm.amount, fee * -1)) * 1e6,
+      // amount: multiply(bignumber(sendForm.amount), bignumber(-Math.abs(0.01)), 1e6).d[0]
+    };
+
+    let sumUtxo = utxo.map((el) => el.amount).reduce((a, b) => sumOf(a, b), 0);
+    let change = {
+      address: sendForm.account.address,
+      amount: calculateChange(sumUtxo, Number(sendForm.amount)) * 1e6, // account amount - (send amount + fee)
+    };
+
+    // add the output for recipient
+    rawTransaction.addOutput(recipient.address, recipient.amount);
+
+    // add the output for the change, send the change back to yourself.
+    // Outputs - inputs = transaction fee, so always double-check your math!
+    if (change.amount > 0) {
+      rawTransaction.addOutput(change.address, change.amount);
+    }
+
+    let { account: accountIndex } = CryptoService.breakAccountPath(
+      sendForm.account.path
+    );
+
+    for (let i = 0; i < utxo.length; i++) {
+      // careful how to derive the path. depends on the account of the address
+      const child = CryptoService.master.derivePath(
+        `m/44'/${
+          process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
+        }'/${accountIndex}'/0/${findPathForAddress(utxo[i].address)}` // TODO CHANGE 1 (TESTNET) TO 125 (XST)
       );
 
-      // add all outputs
-      for await (let tx of utxo) {
-        // get prevoutscript
-        const txDetails = await mainStore.rpc('gettransaction', [tx.txid]);
-
-        let vout = txDetails.vout.find((el) => el.value === tx.amount);
-
-        rawTransaction.addInput(
-          txDetails.txid,
-          vout.n,
-          null,
-          Buffer.from(vout.scriptPubKey.hex, 'hex')
-        );
-      }
-
-      let recipient = {
-        address: sendForm.address,
-        amount: Number(sumOf(sendForm.amount, fee * -1)) * 1e6,
-        // amount: multiply(bignumber(sendForm.amount), bignumber(-Math.abs(0.01)), 1e6).d[0]
-      };
-
-      let sumUtxo = utxo
-        .map((el) => el.amount)
-        .reduce((a, b) => sumOf(a, b), 0);
-      let change = {
-        address: sendForm.account.address,
-        amount: calculateChange(sumUtxo, Number(sendForm.amount)) * 1e6, // account amount - (send amount + fee)
-      };
-
-      // add the output for recipient
-      rawTransaction.addOutput(recipient.address, recipient.amount);
-
-      // add the output for the change, send the change back to yourself.
-      // Outputs - inputs = transaction fee, so always double-check your math!
-      if (change.amount > 0) {
-        rawTransaction.addOutput(change.address, change.amount);
-      }
-
-      let { account: accountIndex } = CryptoService.breakAccountPath(
-        sendForm.account.path
+      const keyPair = bitcoin.ECPair.fromWIF(
+        child.toWIF(),
+        CryptoService.network
       );
 
-      for (let i = 0; i < utxo.length; i++) {
-        // careful how to derive the path. depends on the account of the address
-        const child = CryptoService.master.derivePath(
-          `m/44'/${
-            process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
-          }'/${accountIndex}'/0/${findPathForAddress(utxo[i].address)}` // TODO CHANGE 1 (TESTNET) TO 125 (XST)
-        );
-
-        const keyPair = bitcoin.ECPair.fromWIF(
-          child.toWIF(),
-          CryptoService.network
-        );
-
-        try {
-          rawTransaction.sign(i, keyPair);
-        } catch (e) {
-          throw new Error('TRANSACTION BUILDER: cannot sign tx: ', e)
-        }
+      try {
+        rawTransaction.sign(i, keyPair);
+      } catch (e) {
+        throw new Error('TRANSACTION BUILDER: cannot sign tx: ', e);
       }
+    }
 
-      console.dir(rawTransaction);
+    console.dir(rawTransaction);
 
-      const rawTransactionToHex = rawTransaction.build().toHex();
+    const rawTransactionToHex = rawTransaction.build().toHex();
 
-      const txid = await mainStore.rpc('sendrawtransaction', [
-        rawTransactionToHex,
-      ]);
+    const txid = await mainStore.rpc('sendrawtransaction', [
+      rawTransactionToHex,
+    ]);
 
-      return txid;
-
+    return txid;
   }
 
   const txid = await buildTransaction(utxo, sendForm);

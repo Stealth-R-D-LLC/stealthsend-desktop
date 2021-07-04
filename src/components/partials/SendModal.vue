@@ -596,62 +596,6 @@ export default {
       clearTimeout(sendTimeout.value);
     }
 
-    async function tryAgain() {
-      try {
-        // changeStep(5);
-        // await validateFields();
-        let target = sumOf(amount.value, aproxFee.value);
-        const utxo = coinSelection(target);
-
-        if (utxo.length === 0) {
-          setTimeout(() => changeStep(7), 4000);
-          return;
-        }
-        console.info('TRANSACTION BUILDER: candidates: ', unspentOutputs);
-        console.info('TRANSACTION BUILDER: coin control: ', utxo);
-        console.info('TRANSACTION BUILDER: entered amount: ', amount.value);
-        console.info('TRANSACTION BUILDER: fee: ', aproxFee.value);
-        console.info('TRANSACTION BUILDER: target amount: ', target);
-
-        let transactionResponse = '';
-        if (account.value.wif && account.value.isImported) {
-          // build transaction for imported account
-          transactionResponse = await useTransactionBuilderForImportedAccount(
-            utxo,
-            {
-              address: depositAddress.value,
-              amount: target,
-              account: account.value,
-            }
-          );
-        } else {
-          // build transaction for native hd account
-          try {
-            transactionResponse = await useTransactionBuilder(utxo, {
-              address: depositAddress.value,
-              amount: target,
-              account: account.value,
-            });
-          } catch (e) {
-            changeStep(7);
-          }
-        }
-        if (transactionResponse.txid) {
-          CryptoService.storeTxAndLabel(transactionResponse.txid, label.value);
-          setTimeout(() => changeStep(6), 4000);
-        } else {
-          setTimeout(() => changeStep(7), 4000);
-        }
-        // setTimeout(() => closeModal(), 2000);
-      } catch (e) {
-        if (e instanceof ValidationError) {
-          console.log(e);
-        } else {
-          changeStep(7);
-        }
-      }
-    }
-
     async function send() {
       try {
         changeStep(5);
@@ -788,7 +732,6 @@ export default {
       cancelSend,
 
       send,
-      tryAgain,
       getUnspentOutputs,
       formatAmount,
       counter,
