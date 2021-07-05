@@ -1,7 +1,7 @@
 <template>
   <StModal
     light
-    :steps="activeStep === 'add-account' ? 0 : step"
+    :steps="activeStep === 'add-account' ? 0 : steps"
     :current-step="currentStep"
     :visible="isVisible"
     @close="closeModal"
@@ -80,15 +80,25 @@
           </div>
         </template>
         <template v-if="currentStep === 2">
-          <StFormItem label="Account Name">
-            <StInput v-model="accountName" placeholder="Enter Account Name" />
-          </StFormItem>
-          <StFormItem label="Private Key">
+          <StFormItem
+            label="Account Name"
+            :error-message="form.accountName.$errors"
+          >
             <StInput
-              v-model="privateKey"
+              v-model="form.accountName.$value"
+              placeholder="Enter Account Name"
+            />
+          </StFormItem>
+          <StFormItem
+            label="Private Key"
+            :error-message="form.privateKey.$errors"
+          >
+            <StInput
+              v-model="form.privateKey.$value"
               placeholder="Scan or paste your private key"
             >
               <StTooltip
+                position="bottom-left"
                 class="tooltip"
                 :tooltip="
                   copyPending ? 'Copied to clipboard!' : 'Click to copy'
@@ -122,8 +132,8 @@
               </StTooltip>
             </StInput>
           </StFormItem>
-          <div class="button">
-            <StButton @click="nextStep">Import</StButton>
+          <div class="button button-import">
+            <StButton @click="accountImport">Import</StButton>
           </div>
         </template>
         <template v-if="currentStep === 3">
@@ -147,7 +157,7 @@
 import { useMainStore } from '@/store';
 import { computed, ref, watchEffect, watch } from 'vue';
 import CryptoService from '@/services/crypto';
-import { useValidation } from 'vue3-form-validation';
+import { useValidation, ValidationError } from 'vue3-form-validation';
 
 export default {
   name: 'StAccountModal',
@@ -178,6 +188,18 @@ export default {
             }
             if (accountName.length > 50) {
               return 'Name too long';
+            }
+          },
+        ],
+      },
+      privateKey: {
+        $value: privateKey,
+        $rules: [
+          (privateKey) => {
+            if (activeStep.value === 'import-account') {
+              if (!CryptoService.isWIFValid(privateKey)) {
+                return 'Invalid private key';
+              }
             }
           },
         ],
@@ -242,7 +264,11 @@ export default {
     // METHODS
     function closeModal() {
       mainStore.SET_MODAL_VISIBILITY('account', false);
+      activeStep.value === 'add-account';
+      currentStep.value = 1;
       accountName.value = '';
+      understand.value = false;
+      privateKey.value = '';
       resetFields();
     }
     function changeStep(name) {
@@ -252,12 +278,25 @@ export default {
       privateKey.value = '';
       activeStep.value = name;
     }
-    async function nextStep() {
-      if (currentStep.value === 2) {
-        await CryptoService.importAccount(accountName.value, privateKey.value);
-      }
+    function nextStep() {
       if (understand.value) {
         currentStep.value += 1;
+      }
+    }
+    async function accountImport() {
+      if (currentStep.value === 2) {
+        try {
+          await validateFields();
+          await CryptoService.importAccount(
+            accountName.value,
+            privateKey.value
+          );
+          nextStep();
+        } catch (e) {
+          if (e instanceof ValidationError) {
+            console.log(e);
+          }
+        }
       }
     }
     function handleCopy() {
@@ -326,6 +365,7 @@ export default {
       nextStep,
       generateAccount,
       handleCopy,
+      accountImport,
 
       form,
       errors,
@@ -441,6 +481,9 @@ export default {
   margin-top: 56px;
   width: 100%;
   text-align: center;
+}
+.button-import {
+  margin-top: 120px;
 }
 .button .st-button {
   min-width: 177px;
