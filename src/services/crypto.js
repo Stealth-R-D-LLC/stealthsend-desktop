@@ -106,6 +106,14 @@ const CryptoService = {
     const keyPair = bitcoin.ECPair.fromWIF(wif, this.network);
     return keyPair;
   },
+  isWIFValid(WIF) {
+    try {
+      bitcoin.ECPair.fromWIF(WIF, this.network);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  },
   hexToArray(hexString) {
     // convert hex string to uint8array
     // helper for seed

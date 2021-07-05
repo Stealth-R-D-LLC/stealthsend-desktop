@@ -12,7 +12,7 @@
 import { useMainStore } from '@/store';
 
 // import StLoading from '@/components/kit/StLoading.vue'
-import { computed } from 'vue';
+import { computed, watchEffect } from 'vue';
 import DefaultLayout from './components/layout/Default.vue';
 import NewUserLayout from './components/layout/NewUser.vue';
 import SingleColumnLayout from './components/layout/SingleColumnLayout.vue';
@@ -23,6 +23,7 @@ import NoInternet from '@/components/connection/NoInternetConnection.vue';
 import NoStealthConnection from '@/components/connection/NoStealthConnection.vue';
 import { useOnline } from '@vueuse/core';
 // import db from '@/db';
+import { useMagicKeys } from '@vueuse/core';
 
 export default {
   name: 'StDefault',
@@ -31,6 +32,8 @@ export default {
     NoStealthConnection,
   },
   setup() {
+    const { alt, l, escape } = useMagicKeys();
+
     const mainStore = useMainStore();
     const online = useOnline();
 
@@ -40,6 +43,9 @@ export default {
     });
     const isOnline = computed(() => {
       return online.value;
+    })
+    const modals = computed(() => {
+      return mainStore.modals;
     });
     const layout = computed(() => {
       if (!route && !route.name) return;
@@ -58,11 +64,19 @@ export default {
       }
     });
 
-    document.addEventListener('keydown', function (event) {
-      if (route.name === 'Lock') return; // don't handle if already on lock screen
-      // ALT + L combo
-      if (event.altKey && (event.key === 'l' || event.key === '¬')) {
+    watchEffect(() => {
+      if (alt.value && l.value) {
+        if (route.name === 'Lock') return; // don't handle if already on lock screen
         router.push('/lock');
+      }
+    });
+
+    watchEffect(() => {
+      if (escape.value) {
+        // close all modals
+        for (const modal in modals.value) {
+          mainStore.SET_MODAL_VISIBILITY(modal, false);
+        }
       }
     });
 
