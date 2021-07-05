@@ -354,7 +354,7 @@ export default {
 .logo {
   min-height: 158px;
   max-width: 197px;
-  margin: 0 !important;
+  margin: 0 0 20px;
 }
 .lock-container .box-animated {
   height: 100%;
