@@ -46,6 +46,7 @@
       <StTooltip
         class="tooltip"
         :tooltip="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
+        position="bottom-right"
       >
         <StClipboard :content="depositAddress" @click="handleCopy"
           >Copy to Clipboard</StClipboard
@@ -172,9 +173,10 @@ export default {
   text-align: center;
 }
 .tooltip {
-  padding: 24px 0;
+  width: fit-content;
+  padding: 24px 0 0;
+  margin: 0 auto 40px;
   display: block;
-  width: 100%;
   text-align: center;
 }
 .qr-img {

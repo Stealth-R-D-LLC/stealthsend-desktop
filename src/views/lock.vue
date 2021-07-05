@@ -346,7 +346,7 @@ export default {
 }
 .lock-container .box {
   text-align: center;
-  width: 370px;
+  width: 328px;
   max-width: 100%;
   height: 0;
   transition: 0.7s;
