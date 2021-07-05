@@ -81,12 +81,12 @@ export default {
 
     const step = ref(0);
     function switcherChange(value) {
-      step.value = value
+      step.value = value;
     }
 
-          emitter.on('dashboard:card-toggle', () => {
-        console.log('aja!!!');
-      });
+    emitter.on('dashboard:card-toggle', () => {
+      console.log('aja!!!');
+    });
 
     return {
       accounts,
