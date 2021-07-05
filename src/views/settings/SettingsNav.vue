@@ -131,19 +131,19 @@
       <ul class="group">
         <li class="group-item" @click="goTo('/settings/general-information')">
           <p class="group-item__name">General Information</p>
-          <p class="group-item__desc">Lorem ipsum</p>
+          <p class="group-item__desc">Information about Stealth and StealthSend</p>
         </li>
         <li class="group-item" @click="goTo('/settings/website')">
           <p class="group-item__name">Website</p>
-          <p class="group-item__desc">Lorem ipsum</p>
+          <p class="group-item__desc">Get more information</p>
         </li>
         <li class="group-item" @click="goTo('/settings/terms-of-use')">
           <p class="group-item__name">Terms of Use</p>
-          <p class="group-item__desc">Lorem ipsum</p>
+          <p class="group-item__desc">View our Terms of Use</p>
         </li>
         <li class="group-item" @click="goTo('/settings/privacy-policy')">
           <p class="group-item__name">Privacy Policy</p>
-          <p class="group-item__desc">Lorem ipsum</p>
+          <p class="group-item__desc">View our Privacy Policy</p>
         </li>
       </ul>
       <p class="group-title">

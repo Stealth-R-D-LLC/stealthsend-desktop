@@ -2,14 +2,14 @@
   <div class="st-settings-child st-password-container">
     <div class="st-settings-child__overflow">
       <h2 class="title">General Information</h2>
-      <p class="subtitle">Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum</p>
+      <p class="subtitle">Information about Stealth and StealthSend</p>
       <div class="content">
         <p class="page-title">Stealth: The Fastest Private Digital Currency</p>
         <p class="text">
           We are building the Holy Grail of Crypto: a fast, feeless, private and
           scalable digital currency
         </p>
-        <p class="text">Application version: v{{ version }}</p>
+        <p class="text">Application version: v. {{ version }}</p>
         <p class="text">
           Github Source Repository
           <br />

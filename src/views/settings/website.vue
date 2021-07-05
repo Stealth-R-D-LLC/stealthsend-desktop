@@ -2,7 +2,7 @@
   <div class="st-settings-child st-password-container">
     <div class="st-settings-child__overflow">
       <h2 class="title">Website</h2>
-      <p class="subtitle">Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum</p>
+      <p class="subtitle">Get more information</p>
       <div class="content">aaaaa</div>
     </div>
   </div>
