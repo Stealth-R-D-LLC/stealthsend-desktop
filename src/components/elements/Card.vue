@@ -157,8 +157,9 @@ export default {
           amountLeft: `${formatAmount(props.account.utxo, true, 2)} XST`,
           amountRight: `$${formatAmount(
             multiply(props.account.utxo, CryptoService.constraints.XST_USD),
-            true,
-            2
+            false,
+            4,
+            4
           )}`,
           percentage: formatAmount(
             CryptoService.constraints.changePercent24Hr,
