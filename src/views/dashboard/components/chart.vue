@@ -159,7 +159,7 @@ export default {
               type: 'datetime',
               labels: {
                 show: true,
-                format: 'dd MMM',
+                format: 'd MMM',
                 minHeight: 120,
                 offsetY: 40,
                 showDuplicates: false,
