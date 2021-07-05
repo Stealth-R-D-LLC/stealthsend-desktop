@@ -5,7 +5,6 @@
       <Card
         v-for="account in accounts"
         :key="account.address"
-        :accounts="accounts"
         :account="account"
         :type="step"
         :rates="constraints"
