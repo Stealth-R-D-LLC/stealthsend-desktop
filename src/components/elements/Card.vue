@@ -84,10 +84,10 @@
         </svg>
         <ul>
           <li>
-            <a @click="openModal('send')">Send</a>
+            <a @click="toggleModal('send', account)">Send</a>
           </li>
           <li>
-            <a @click="openModal('receive')">Receive</a>
+            <a @click="toggleModal('receive', account)">Receive</a>
           </li>
           <li>
             <a @click="openAccountDetails(account)">View Account</a>
@@ -183,6 +183,10 @@ export default {
       mainStore.SET_ACCOUNT_DETAILS(account);
       router.push('/account/details');
     };
+    function toggleModal(modal, account) {
+      mainStore.SET_ACCOUNT_DETAILS(account);      
+      openModal(modal)
+    }
     function openModal(modal) {
       mainStore.SET_MODAL_VISIBILITY(modal, true);
     }
@@ -198,7 +202,7 @@ export default {
       accountOptions,
       toggleAccountOptions,
       openAccountDetails,
-      openModal,
+      toggleModal,
       handleClick,
       steps,
       isHiddenAmounts: computed(() => mainStore.isAmountsHidden),
