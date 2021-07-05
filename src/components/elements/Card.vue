@@ -184,8 +184,8 @@ export default {
       router.push('/account/details');
     };
     function toggleModal(modal, account) {
-      mainStore.SET_ACCOUNT_DETAILS(account);      
-      openModal(modal)
+      mainStore.SET_ACCOUNT_DETAILS(account);
+      openModal(modal);
     }
     function openModal(modal) {
       mainStore.SET_MODAL_VISIBILITY(modal, true);
