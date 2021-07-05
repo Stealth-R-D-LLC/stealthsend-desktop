@@ -54,6 +54,7 @@ export const useMainStore = defineStore({
       this.offCanvasData = payload;
     },
     SET_MODAL_VISIBILITY(modal, visibility) {
+      console.log('aaa', modal);
       this.modals[modal] = visibility;
     },
     SET_ACCOUNT_DETAILS(payload) {

@@ -22,13 +22,16 @@ import { useMagicKeys } from '@vueuse/core';
 export default {
   name: 'TsDefault',
   setup() {
-    const { alt, l } = useMagicKeys();
+    const { alt, l, escape } = useMagicKeys();
 
     const mainStore = useMainStore();
 
     const route = useRoute();
     const isLoading = computed(() => {
       return mainStore.globalLoading;
+    });
+    const modals = computed(() => {
+      return mainStore.modals;
     });
     const layout = computed(() => {
       if (!route && !route.name) return;
@@ -51,6 +54,15 @@ export default {
       if (alt.value && l.value) {
         if (route.name === 'Lock') return; // don't handle if already on lock screen
         router.push('/lock');
+      }
+    });
+
+    watchEffect(() => {
+      if (escape.value) {
+        // close all modals
+        for (const modal in modals.value) {
+          mainStore.SET_MODAL_VISIBILITY(modal, false);
+        }
       }
     });
 
