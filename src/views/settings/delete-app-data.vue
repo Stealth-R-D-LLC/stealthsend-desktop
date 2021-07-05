@@ -52,7 +52,7 @@
                   <animate
                     attributeName="stroke-dashoffset"
                     values="50;430"
-                    dur="3.2s"
+                    dur="5.6s"
                   ></animate>
                 </circle>
               </svg>
@@ -80,11 +80,11 @@ export default {
     const isCleared = ref(false);
     const timeout = ref(null);
     const counterTimeout = ref(null);
-    const counter = ref(4);
+    const counter = ref(5);
 
     function countdown() {
       counter.value -= 1;
-      counterTimeout.value = setTimeout(() => countdown(), 950);
+      counterTimeout.value = setTimeout(() => countdown(), 1000);
     }
     function clearAppData() {
       isCleared.value = true;
@@ -94,14 +94,14 @@ export default {
         localStorage.clear();
         isCleared.value = false;
         clearTimeout(counterTimeout.value);
-        counter.value = 4;
+        counter.value = 5;
         router.push('/welcome');
-      }, 3000);
+      }, 5000);
     }
     function cancelClearAppData() {
       clearTimeout(timeout.value);
       clearTimeout(counterTimeout.value);
-      counter.value = 4;
+      counter.value = 5;
       isCleared.value = false;
     }
 
