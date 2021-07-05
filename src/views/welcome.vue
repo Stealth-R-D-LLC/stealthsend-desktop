@@ -53,12 +53,14 @@
                     World’s first feeless,<br />private high performance<br />blockchain
                     protocol
                   </h3>
+                  <div class="app-version">StealthSend, stable v. {{ version }}</div>
                 </template>
                 <template v-if="isRecovery">
                   <h3 class="title">
                     World’s first feeless,<br />private high performance<br />blockchain
                     protocol
                   </h3>
+                  <div class="app-version">StealthSend, stable v. {{ version }}</div>
                 </template>
                 <div v-if="!isAccount && !isRecovery">
                   <h4 class="title">Welcome to StealthSend</h4>
@@ -2087,6 +2089,7 @@ import _shuffle from 'lodash/shuffle';
 import _cloneDeep from 'lodash/cloneDeep';
 import Lottie from 'vue-lottie/src/lottie.vue';
 import * as animationData from '@/assets/animation/logo.json';
+import pkgjson from '@/../package.json';
 
 export default {
   name: 'StWelcome',
@@ -2136,6 +2139,7 @@ export default {
       loop: false,
       autoplay: true,
     });
+    const version = ref(pkgjson.version);
 
     const { form, errors, submitting, validateFields, resetFields } =
       useValidation({
@@ -2562,6 +2566,8 @@ export default {
       createWallet,
       createdMnemonic,
       createNewWallet,
+
+      version,
 
       isLoading,
     };
@@ -3048,5 +3054,14 @@ export default {
 }
 :deep .st-input .st-icon {
   cursor: pointer;
+}
+
+.app-version {
+  font-family: var(--secondary-font);
+  font-size: 12px;
+  line-height: 24px;
+  letter-spacing: 0.12px;
+  color: white;
+  margin-top: auto;
 }
 </style>
