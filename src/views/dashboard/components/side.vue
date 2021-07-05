@@ -5,7 +5,6 @@
       <Card
         v-for="account in accounts"
         :key="account.address"
-        :accounts="accounts"
         :account="account"
         :type="step"
         :rates="constraints"
@@ -21,6 +20,7 @@ import Card from '@/components/elements/Card';
 import CryptoService from '@/services/crypto';
 import { ref, computed, watch } from 'vue';
 import { useMainStore } from '@/store';
+import emitter from '@/services/emitter';
 
 export default {
   components: {
@@ -81,8 +81,12 @@ export default {
 
     const step = ref(0);
     function switcherChange(value) {
-      step.value = value;
+      step.value = value
     }
+
+          emitter.on('dashboard:card-toggle', () => {
+        console.log('aja!!!');
+      });
 
     return {
       accounts,

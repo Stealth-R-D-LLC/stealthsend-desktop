@@ -105,6 +105,7 @@ import { multiply } from 'mathjs';
 import useHelpers from '@/composables/useHelpers';
 import CryptoService from '@/services/crypto';
 import router from '@/router';
+import emitter from '@/services/emitter';
 
 export default {
   name: 'StCard',
@@ -128,11 +129,6 @@ export default {
       type: Boolean,
       required: false,
       default: true,
-    },
-    accounts: {
-      type: Array,
-      required: true,
-      default: () => [],
     },
     account: {
       type: Object,
@@ -175,9 +171,12 @@ export default {
     };
     function toggleAccountOptions(name) {
       if (accountOptions.value === name) {
+        // close
         accountOptions.value = '';
       } else {
+        // open
         accountOptions.value = name;
+        emitter.emit('dashboard:card-open', name);
       }
     }
     const openAccountDetails = (account) => {
@@ -187,6 +186,14 @@ export default {
     function openModal(modal) {
       mainStore.SET_MODAL_VISIBILITY(modal, true);
     }
+
+    emitter.on('dashboard:card-open', (name) => {
+      // on open card details, close all other card details
+      if (name !== accountOptions.value) {
+        accountOptions.value = '';
+      }
+    });
+
     return {
       accountOptions,
       toggleAccountOptions,
