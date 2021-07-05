@@ -2,7 +2,7 @@
   <div class="st-settings-child st-password-container">
     <div class="st-settings-child__overflow">
       <h2 class="title">Privacy Policy</h2>
-      <p class="subtitle">Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum</p>
+      <p class="subtitle">View our Privacy Policy</p>
       <div class="content">
         <div class="content__inner" v-for="(n, index) in 3" :key="n">
           <p class="medium">{{ index + 1 }}. General information</p>

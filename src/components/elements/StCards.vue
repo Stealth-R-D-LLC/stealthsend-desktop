@@ -22,21 +22,28 @@
       <svg
         v-if="isHiddenAmounts"
         @click="toggleHiddenAmounts"
-        width="26"
-        height="14"
-        viewBox="0 0 26 14"
+        width="22"
+        height="12"
+        viewBox="0 0 22 12"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
-          d="M13 13C17.0501 13 20.7168 11 24 7C20.7168 3 17.0501 1 13 1C8.94991 1 5.28325 3 2 7C5.28325 11 8.94991 13 13 13Z"
+          d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
           stroke="#4E00F6"
           stroke-width="2"
         />
-        <circle cx="13" cy="7" r="2" fill="#4E00F6" />
+        <circle
+          r="1"
+          transform="matrix(-1 0 0 1 11 6)"
+          fill="#4E00F6"
+          stroke="#4E00F6"
+          stroke-width="2"
+        />
       </svg>
+
       <svg
         v-else
         @click="toggleHiddenAmounts"

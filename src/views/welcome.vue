@@ -53,12 +53,18 @@
                     World’s first feeless,<br />private high performance<br />blockchain
                     protocol
                   </h3>
+                  <div class="app-version">
+                    StealthSend, stable v. {{ version }}
+                  </div>
                 </template>
                 <template v-if="isRecovery">
                   <h3 class="title">
                     World’s first feeless,<br />private high performance<br />blockchain
                     protocol
                   </h3>
+                  <div class="app-version">
+                    StealthSend, stable v. {{ version }}
+                  </div>
                 </template>
                 <div v-if="!isAccount && !isRecovery">
                   <h4 class="title">Welcome to StealthSend</h4>
@@ -1784,6 +1790,23 @@
           <div class="step" v-if="recoveryStep === 0">
             <div>
               <h5>Restore from Recovery Phrase</h5>
+              <StFormItem
+                class="custom-st-form"
+                label="Account name"
+                :error-message="recoveryForm.account.$errors"
+              >
+                <StInput
+                  id="account-name"
+                  v-model="recoveryForm.account.$value"
+                  placeholder="Enter Account Name"
+                />
+              </StFormItem>
+            </div>
+            <StButton @click="recoveryStepNext">Proceed</StButton>
+          </div>
+          <div class="step" v-if="recoveryStep === 1">
+            <div>
+              <h5>Restore from Recovery Phrase</h5>
               <p class="desc-small">
                 You are about to restore a backup using an existing Recovery
                 Phrase.
@@ -1812,7 +1835,7 @@
             </div>
             <StButton @click="recoveryStepNext">Proceed</StButton>
           </div>
-          <div v-if="recoveryStep === 1">
+          <div v-if="recoveryStep === 2">
             <h5>Recovery Phrase Verification</h5>
             <p class="desc-small">
               To verify your Recovery Phrase enter the words<br />
@@ -1924,7 +1947,7 @@
               </p>
             </StFormItem>
           </div>
-          <div v-if="recoveryStep === 2">
+          <div v-if="recoveryStep === 3">
             <h5>Checking Recovery Phrase</h5>
             <p class="desc-medium">
               Please be patient and don’t turn off the computer or exit the
@@ -1932,7 +1955,7 @@
             </p>
             <img src="../../static/xstloader.gif" alt="Test gif" />
           </div>
-          <div v-if="recoveryStep === 3" class="step">
+          <div v-if="recoveryStep === 4" class="step">
             <div>
               <h5>{{ isValidMnemonic ? 'Congratulations' : 'Error' }}</h5>
               <p>
@@ -1948,7 +1971,7 @@
             >
             <StButton v-else @click="recoveryStep = 0">Back</StButton>
           </div>
-          <div class="step" v-if="recoveryStep === 4">
+          <div class="step" v-if="recoveryStep === 5">
             <div>
               <h5>Set Your Password</h5>
               <p class="desc">
@@ -2087,6 +2110,7 @@ import _shuffle from 'lodash/shuffle';
 import _cloneDeep from 'lodash/cloneDeep';
 import Lottie from 'vue-lottie/src/lottie.vue';
 import * as animationData from '@/assets/animation/logo.json';
+import pkgjson from '@/../package.json';
 
 export default {
   name: 'StWelcome',
@@ -2136,6 +2160,7 @@ export default {
       loop: false,
       autoplay: true,
     });
+    const version = ref(pkgjson.version);
 
     const { form, errors, submitting, validateFields, resetFields } =
       useValidation({
@@ -2222,6 +2247,24 @@ export default {
           ],
         },
       });
+    const { form: recoveryForm, validateFields: validateRecoveryFields } =
+      useValidation({
+        account: {
+          $value: account,
+          $rules: [
+            {
+              rule: () => {
+                if (!account.value) {
+                  return 'Account name is required';
+                }
+                if (account.value.length > 50) {
+                  return 'Name too long';
+                }
+              },
+            },
+          ],
+        },
+      });
 
     watchEffect(async () => {
       if (currentStep.value === 5) {
@@ -2265,7 +2308,7 @@ export default {
         createdMnemonic.value = generateMnemonic.mnemonic.split(' ');
         reorderedMnemonic.value = _shuffle(_cloneDeep(createdMnemonic.value));
       }
-      if (recoveryStep.value === 1) {
+      if (recoveryStep.value === 2) {
         // Fill array with wordlist
         wordlist.value = await bip39.wordlists.EN;
         setTimeout(
@@ -2277,10 +2320,10 @@ export default {
           1
         );
       }
-      if (recoveryStep.value === 2) {
+      if (recoveryStep.value === 3) {
         setTimeout(() => recoveryStepNext(), 4200);
       }
-      if (recoveryStep.value === 3) {
+      if (recoveryStep.value === 4) {
         // Clear selected words if mnemonic is not valid
         if (!isValidMnemonic.value) {
           selectedRecoveryWords.value = [];
@@ -2394,7 +2437,8 @@ export default {
         currentStep.value += 1;
       }
     }
-    function recoveryStepNext() {
+    async function recoveryStepNext() {
+      await validateRecoveryFields();
       recoveryStep.value += 1;
     }
 
@@ -2451,7 +2495,7 @@ export default {
       let acc = {
         xpub: xpub,
         address: address,
-        label: account.value || `Account ${next}`,
+        label: `${account.value} ${next}` || `Account ${next}`,
         utxo: accUtxo,
         isArchived: false,
         isFavourite: false,
@@ -2562,6 +2606,9 @@ export default {
       createWallet,
       createdMnemonic,
       createNewWallet,
+      recoveryForm,
+
+      version,
 
       isLoading,
     };
@@ -2617,7 +2664,7 @@ export default {
 .logo {
   min-height: 158px;
   max-width: 197px;
-  margin: 0 !important;
+  margin: 0 0 20px;
 }
 .left video,
 .left img {
@@ -2693,6 +2740,7 @@ export default {
   font-size: 16px;
   font-weight: 600;
   font-family: var(--primary-font);
+  letter-spacing: 0.32px;
 }
 .left .box .box__inner .support {
   display: flex;
@@ -3048,5 +3096,17 @@ export default {
 }
 :deep .st-input .st-icon {
   cursor: pointer;
+}
+.custom-st-form {
+  margin: 116px 0 54px;
+}
+
+.app-version {
+  font-family: var(--secondary-font);
+  font-size: 12px;
+  line-height: 24px;
+  letter-spacing: 0.12px;
+  color: white;
+  margin-top: auto;
 }
 </style>
