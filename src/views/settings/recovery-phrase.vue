@@ -40,7 +40,7 @@
           View and store your Recovery
         </p>
         <p v-else-if="currentStep === 2" class="subtitle">
-          Carefully record all 24 words
+          Carefully record all {{ walletMnemonic.length }} words
         </p>
         <p v-else-if="currentStep === 3" class="subtitle">
           To verify your Recovery Phrase enter the words in the order received
@@ -87,7 +87,7 @@
                 v-for="(mnemonic, index) in walletMnemonic"
                 :key="index"
               >
-                <span class="bold">{{ index + 1 }}.</span> {{ mnemonic }}
+                <span class="bold">{{ index + 1 }}.&nbsp;</span> {{ mnemonic }}
               </a>
             </div>
           </div>
@@ -222,6 +222,7 @@
         <StButton
           :disabled="!savedPhrase"
           v-if="currentStep === 4 && isValidMnemonic"
+          @click="goBack"
           >Confirm</StButton
         >
         <StButton v-if="currentStep === 4 && !isValidMnemonic" @click="goBack"
@@ -254,21 +255,7 @@ export default {
     const password = ref('');
     const isValid = ref(false);
     const wordlist = ref(bip39.wordlists.EN);
-    // TODO: currently this is hardcoded
-    const walletMnemonic = ref([
-      'chunk',
-      'bottom',
-      'begin',
-      'raven',
-      'tape',
-      'ten',
-      'number',
-      'smile',
-      'lawsuit',
-      'bronze',
-      'leopard',
-      'tennis',
-    ]);
+    let walletMnemonic = ref([]);
     const selectedMnemonic = ref([]);
     const mnemonic = ref('');
     const isError = ref(false);
@@ -294,7 +281,7 @@ export default {
     });
 
     // WATCH
-    watchEffect(() => {
+    watchEffect(async () => {
       if (currentStep.value === 3) {
         setTimeout(
           () =>
@@ -303,6 +290,13 @@ export default {
               .getElementsByClassName('st-input__inner')[0]
               .focus(),
           1
+        );
+      }
+      if (currentStep.value === 2) {
+        const wallet = await CryptoService.getWalletFromDb();
+        walletMnemonic.value = await CryptoService.AESDecrypt(
+          wallet.mnemonic,
+          wallet.password
         );
       }
     });
