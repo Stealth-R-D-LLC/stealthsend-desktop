@@ -2,7 +2,7 @@
   <div class="st-settings-child st-password-container">
     <div class="st-settings-child__overflow">
       <h2 class="title">Terms Of Use</h2>
-      <p class="subtitle">This Terms of Use (“ToU” and/or “Terms”)</p>
+      <p class="subtitle">View our Terms of Use</p>
       <div class="content">
         <div class="content__inner" v-for="(n, index) in 3" :key="n">
           <p class="desc">
