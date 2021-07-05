@@ -43,7 +43,7 @@ export default {
     });
     const isOnline = computed(() => {
       return online.value;
-    })
+    });
     const modals = computed(() => {
       return mainStore.modals;
     });
