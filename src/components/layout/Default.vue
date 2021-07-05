@@ -39,7 +39,7 @@ import AddAccount from '@/components/partials/AddAccount.vue';
 import OffCanvas from '@/components/elements/StOffCanvas.vue';
 
 export default {
-  name: 'TsDefault',
+  name: 'StDefault',
   components: {
     MenuBar,
     TopBar,

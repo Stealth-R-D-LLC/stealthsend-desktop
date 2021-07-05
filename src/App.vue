@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+    <NoInternet v-if="!isOnline" />
+    <!-- TODO: No connection to Stealth -->
+    <NoStealthConnection v-if="false" />
     <StLoading :visibility="isLoading"></StLoading>
     <component :is="layout"> </component>
   </div>
@@ -16,16 +19,27 @@ import SingleColumnLayout from './components/layout/SingleColumnLayout.vue';
 import LockLayout from './components/layout/Lock.vue';
 import { useRoute } from 'vue-router';
 import router from '@/router';
+import NoInternet from '@/components/connection/NoInternetConnection.vue';
+import NoStealthConnection from '@/components/connection/NoStealthConnection.vue';
+import { useOnline } from '@vueuse/core';
 // import db from '@/db';
 
 export default {
-  name: 'TsDefault',
+  name: 'StDefault',
+  components: {
+    NoInternet,
+    NoStealthConnection,
+  },
   setup() {
     const mainStore = useMainStore();
+    const online = useOnline();
 
     const route = useRoute();
     const isLoading = computed(() => {
       return mainStore.globalLoading;
+    });
+    const isOnline = computed(() => {
+      return online.value;
     });
     const layout = computed(() => {
       if (!route && !route.name) return;
@@ -82,6 +96,7 @@ export default {
     calculateIdleTime();
 
     return {
+      isOnline,
       isLoading,
       layout,
     };
