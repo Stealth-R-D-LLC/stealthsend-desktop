@@ -9,7 +9,7 @@
 import { useMainStore } from '@/store';
 
 // import StLoading from '@/components/kit/StLoading.vue'
-import { computed } from 'vue';
+import { computed, watchEffect } from 'vue';
 import DefaultLayout from './components/layout/Default.vue';
 import NewUserLayout from './components/layout/NewUser.vue';
 import SingleColumnLayout from './components/layout/SingleColumnLayout.vue';
@@ -17,10 +17,13 @@ import LockLayout from './components/layout/Lock.vue';
 import { useRoute } from 'vue-router';
 import router from '@/router';
 // import db from '@/db';
+import { useMagicKeys } from '@vueuse/core';
 
 export default {
   name: 'TsDefault',
   setup() {
+    const { alt, l } = useMagicKeys();
+
     const mainStore = useMainStore();
 
     const route = useRoute();
@@ -44,10 +47,9 @@ export default {
       }
     });
 
-    document.addEventListener('keydown', function (event) {
-      if (route.name === 'Lock') return; // don't handle if already on lock screen
-      // ALT + L combo
-      if (event.altKey && (event.key === 'l' || event.key === '¬')) {
+    watchEffect(() => {
+      if (alt.value && l.value) {
+        if (route.name === 'Lock') return; // don't handle if already on lock screen
         router.push('/lock');
       }
     });
