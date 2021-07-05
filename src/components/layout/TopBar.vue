@@ -749,7 +749,7 @@ export default {
         const hdWallet = await CryptoService.scanWallet();
         accounts.value = hdWallet.accounts;
         // select first option
-        account.value = hdWallet.accounts[0]; // TODO
+        account.value = mainStore.accountDetails;
         resolve();
       });
     }
