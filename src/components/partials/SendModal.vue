@@ -41,6 +41,7 @@
             label="label"
             :object="true"
             :can-deselect="false"
+            :clear-on-select="false"
             placeholder="Select account"
             @select="getUnspentOutputs"
           >
