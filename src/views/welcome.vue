@@ -2664,7 +2664,7 @@ export default {
 .logo {
   min-height: 158px;
   max-width: 197px;
-  margin: 0 !important;
+  margin: 0 0 20px;
 }
 .left video,
 .left img {
@@ -2740,6 +2740,7 @@ export default {
   font-size: 16px;
   font-weight: 600;
   font-family: var(--primary-font);
+  letter-spacing: 0.32px;
 }
 .left .box .box__inner .support {
   display: flex;
