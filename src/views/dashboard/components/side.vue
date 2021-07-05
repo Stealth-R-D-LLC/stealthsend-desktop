@@ -80,7 +80,7 @@ export default {
 
     const step = ref(0);
     function switcherChange(value) {
-      step.value = value
+      step.value = value;
     }
 
     return {
