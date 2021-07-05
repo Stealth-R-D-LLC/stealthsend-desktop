@@ -131,7 +131,9 @@
       <ul class="group">
         <li class="group-item" @click="goTo('/settings/general-information')">
           <p class="group-item__name">General Information</p>
-          <p class="group-item__desc">Information about Stealth and StealthSend</p>
+          <p class="group-item__desc">
+            Information about Stealth and StealthSend
+          </p>
         </li>
         <li class="group-item" @click="goTo('/settings/website')">
           <p class="group-item__name">Website</p>
