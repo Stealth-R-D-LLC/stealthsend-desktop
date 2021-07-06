@@ -3107,7 +3107,8 @@ export default {
   cursor: pointer;
 }
 .custom-st-form {
-  margin: 116px 0 54px;
+  max-width: 392px;
+  margin: 116px auto 54px;
 }
 
 .app-version {
