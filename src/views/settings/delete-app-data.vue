@@ -186,4 +186,7 @@ export default {
   bottom: 1px;
   left: 1px;
 }
+.st-button {
+  padding: 5px 63px !important;
+}
 </style>
