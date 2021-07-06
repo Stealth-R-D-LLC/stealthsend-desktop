@@ -514,6 +514,13 @@ export default {
   align-items: center;
   justify-content: space-between;
 }
+.card-header h5 {
+  display: inline-block;
+  width: 180px;
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+}
 .amount-container {
   margin-top: 22px;
   margin-bottom: 20px;
