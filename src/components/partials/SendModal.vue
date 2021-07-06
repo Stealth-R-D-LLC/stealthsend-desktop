@@ -488,7 +488,6 @@ export default {
         }
       }
     );
-    
 
     function closeModal() {
       mainStore.SET_MODAL_VISIBILITY('send', false);
@@ -741,10 +740,10 @@ export default {
       console.log('max: ', maxAmount);
     }
 
-      function preventRemove(acc) {
-        setTimeout(() => {
-          account.value = acc;
-        }, 10)
+    function preventRemove(acc) {
+      setTimeout(() => {
+        account.value = acc;
+      }, 10);
     }
 
     return {
