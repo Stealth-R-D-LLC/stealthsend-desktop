@@ -1,8 +1,3 @@
-// import { ref, onMounted, watch } from 'vue'
-
-// import { null } from "mathjs";
-
-import CryptoService from '@/services/crypto';
 import { add, format, subtract } from 'mathjs';
 
 export default function useCoinControl(outputs, target) {
@@ -226,10 +221,7 @@ export default function useCoinControl(outputs, target) {
         .map((el) => el.amount)
         .reduce((a, b) => a + b, 0);
       if (coinControlSum > adjustedTarget) {
-        bestSet = knapsackSelection(
-          outputs,
-          sumOf(target, CryptoService.constraints.MINIMAL_CHANGE)
-        ); // treba svim fjama rijesiti parametre a ne da gledaju u globalno
+        bestSet = knapsackSelection(outputs, target); // treba svim fjama rijesiti parametre a ne da gledaju u globalno
       }
       return bestSet;
     }
