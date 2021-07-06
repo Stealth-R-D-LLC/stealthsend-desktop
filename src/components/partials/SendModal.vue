@@ -533,9 +533,6 @@ export default {
     let unspentOutputs = [];
 
     async function getUnspentOutputs(acc) {
-      console.log('account', acc);
-      console.log('aa', account.value);
-
       if (!acc) return;
       let res = [];
       if (acc.xpub) {

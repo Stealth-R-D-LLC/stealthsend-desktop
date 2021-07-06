@@ -2372,7 +2372,6 @@ export default {
         isValidMnemonic.value = CryptoService.isMnemonicValid(
           selectedRecoveryWords.value.join(' ')
         );
-
         recoveryStepNext();
       }
     }
