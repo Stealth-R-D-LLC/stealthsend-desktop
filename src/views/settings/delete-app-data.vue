@@ -84,7 +84,7 @@ export default {
 
     function countdown() {
       counter.value -= 1;
-      counterTimeout.value = setTimeout(() => countdown(), 1000);
+      counterTimeout.value = setTimeout(() => countdown(), 1050);
     }
     function clearAppData() {
       isCleared.value = true;
@@ -185,5 +185,8 @@ export default {
   right: 1px;
   bottom: 1px;
   left: 1px;
+}
+.st-button {
+  padding: 5px 63px !important;
 }
 </style>

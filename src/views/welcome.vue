@@ -1958,18 +1958,18 @@
           <div v-if="recoveryStep === 4" class="step">
             <div>
               <h5>{{ isValidMnemonic ? 'Congratulations' : 'Error' }}</h5>
-              <p>
+              <h6>
                 {{
                   isValidMnemonic
                     ? 'Recovery Phrase successfully verified'
                     : 'Recovery Phrase is not valid'
                 }}
-              </p>
+              </h6>
             </div>
             <StButton v-if="isValidMnemonic" @click="recoveryStepNext"
               >Proceed</StButton
             >
-            <StButton v-else @click="recoveryStep = 0">Back</StButton>
+            <StButton v-else @click="goBack">Back</StButton>
           </div>
           <div class="step" v-if="recoveryStep === 5">
             <div>
@@ -2247,24 +2247,27 @@ export default {
           ],
         },
       });
-    const { form: recoveryForm, validateFields: validateRecoveryFields } =
-      useValidation({
-        account: {
-          $value: account,
-          $rules: [
-            {
-              rule: () => {
-                if (!account.value) {
-                  return 'Account name is required';
-                }
-                if (account.value.length > 50) {
-                  return 'Name too long';
-                }
-              },
+    const {
+      form: recoveryForm,
+      validateFields: validateRecoveryFields,
+      resetFields: resetRecoveryFields,
+    } = useValidation({
+      account: {
+        $value: account,
+        $rules: [
+          {
+            rule: () => {
+              if (!account.value) {
+                return 'Account name is required';
+              }
+              if (account.value.length > 50) {
+                return 'Name too long';
+              }
             },
-          ],
-        },
-      });
+          },
+        ],
+      },
+    });
 
     watchEffect(async () => {
       if (currentStep.value === 5) {
@@ -2542,6 +2545,11 @@ export default {
       }
     }
 
+    function goBack() {
+      recoveryStep.value = 0;
+      resetRecoveryFields();
+    }
+
     function handleAnimation(anim) {
       animation.value = anim;
     }
@@ -2610,6 +2618,7 @@ export default {
       createdMnemonic,
       createNewWallet,
       recoveryForm,
+      goBack,
 
       version,
 
@@ -3101,7 +3110,8 @@ export default {
   cursor: pointer;
 }
 .custom-st-form {
-  margin: 116px 0 54px;
+  max-width: 392px;
+  margin: 116px auto 54px;
 }
 
 .app-version {

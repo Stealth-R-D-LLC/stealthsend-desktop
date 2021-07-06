@@ -334,7 +334,10 @@ export default {
       }
     }
 
-    function orderTransactions(filter, filterDirection) {
+    function orderTransactions(
+      filter = { label: '1w', value: 7 },
+      filterDirection = { label: 'All', value: '' }
+    ) {
       // sort transactions by blocktime
       const transactionsTmp = props.transactions
         .map((el, index) => {
@@ -372,7 +375,7 @@ export default {
     }
 
     function filterByPeriod(filter, transactions) {
-      if (!filter || filter === Infinity) return transactions;
+      if (!filter || filter === 7) return transactions;
       return transactions.filter(
         (el) =>
           differenceInCalendarDays(new Date(), fromUnixTime(el.blocktime)) <
@@ -409,10 +412,7 @@ export default {
     }
 
     onMounted(async () => {
-      orderTransactions(
-        { label: 'All', value: Infinity },
-        { label: 'All', value: '' }
-      );
+      orderTransactions();
       await CryptoService.getTxWithLabels();
     });
 
