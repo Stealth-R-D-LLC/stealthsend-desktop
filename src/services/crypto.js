@@ -58,8 +58,8 @@ const CryptoService = {
     XST_USD: 0.199,
     XST_BTC: 0.00000364,
     changePercent24Hr: 0,
-    MINIMAL_CHANGE: 0,
-    FEE: 0.02,
+    MINIMAL_CHANGE: 0.01,
+    MINIMUM_XST_FOR_SEND: 0.05
   },
   isFirstArrival: true,
   network: networkConfig,
