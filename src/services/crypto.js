@@ -464,6 +464,19 @@ const CryptoService = {
 
     return wallet;
   },
+
+  async storeMnemonicInWallet(mnemonic) {
+    let wallet = await CryptoService.getWalletFromDb();
+
+    if (!wallet.password) {
+      return;
+    }
+
+    wallet.mnemonic = CryptoService.AESEncrypt(mnemonic, wallet.password);
+    await db.setItem('wallet', wallet);
+
+    return wallet;
+  },
   async accountDiscovery(n = 0) {
     const mainStore = useMainStore();
     //  Address gap limit is currently set  to 20. If the software hits 20 unused addresses in a row,
@@ -633,10 +646,16 @@ const CryptoService = {
     const balance = await mainStore.rpc('getaddressbalance', [address]);
 
     let accounts = await this.getAccounts();
+    let wallet = await this.getWalletFromDb();
     const foundAccount = accounts.some((account) => {
       return account.address === address;
     });
     if (foundAccount) return foundAccount;
+
+    const encryptedWIF = await CryptoService.AESEncrypt(
+      accountPrivateKey,
+      wallet.password
+    );
 
     accounts.push({
       address,
@@ -646,7 +665,7 @@ const CryptoService = {
       isImported: true,
       utxo: balance,
       asset: 'XST',
-      wif: accountPrivateKey,
+      wif: encryptedWIF,
     });
 
     await db.setItem('accounts', accounts);
