@@ -2795,7 +2795,7 @@ export default {
 }
 .right__inner-top h5,
 .right__inner-top h6 {
-  margin-bottom: 36px;
+  margin-bottom: 48px;
 }
 .right__inner-top .desc {
   margin-bottom: 132px;
