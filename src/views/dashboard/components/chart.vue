@@ -96,7 +96,7 @@ export default {
     function formatDate(date) {
       return format(date, 'dd MMM');
     }
-    function changeChartPeriod(period = '1M') {
+    function changeChartPeriod(period = '3d') {
       currentPeriod.value = period;
       refreshChart.value = true;
       mainStore.getChartData(currentPeriod.value).then((res) => {
