@@ -297,7 +297,7 @@ export default {
 
 <style scoped>
 .full-height .st-dashboard-chart {
-  height: calc(100vh - 220px);
+  height: calc(100vh - 285px);
 }
 .st-dashboard-chart {
   height: 450px;
