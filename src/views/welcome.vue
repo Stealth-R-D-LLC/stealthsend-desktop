@@ -1183,7 +1183,7 @@
                 </div>
               </div>
             </div>
-            <div class="step" v-if="currentStep === 5">
+            <div class="step set-password" v-if="currentStep === 5">
               <div>
                 <h5>Set Your Password</h5>
                 <p class="desc">
@@ -1971,7 +1971,7 @@
             >
             <StButton v-else @click="goBack">Back</StButton>
           </div>
-          <div class="step" v-if="recoveryStep === 5">
+          <div class="step set-password" v-if="recoveryStep === 5">
             <div>
               <h5>Set Your Password</h5>
               <p class="desc">
@@ -2909,8 +2909,15 @@ export default {
   flex-direction: column;
   justify-content: space-between;
 }
+.step.set-password {
+  align-items: center;
+}
 .step button {
   margin: 40px auto 0;
+}
+.set-password > div {
+  width: 100%;
+  max-width: 384px;
 }
 .st-button {
   min-width: 200px;
