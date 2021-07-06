@@ -1,8 +1,7 @@
 <template>
   <div class="container">
     <NoInternet v-if="!isOnline" />
-    <!-- TODO: No connection to Stealth -->
-    <NoStealthConnection v-if="false" />
+    <!-- <NoStealthConnection v-if="!isRpcAvailable" /> -->
     <StLoading :visibility="isLoading"></StLoading>
     <component :is="layout"> </component>
   </div>
@@ -44,6 +43,10 @@ export default {
     const isOnline = computed(() => {
       return online.value;
     });
+    // const isRpcAvailable = computed(() => {
+    //   console.log('aaa', mainStore).rpc;
+    //   return mainStore.rpc.isAvailable
+    // })
     const modals = computed(() => {
       return mainStore.modals;
     });

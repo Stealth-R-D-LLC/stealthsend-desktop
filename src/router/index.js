@@ -22,6 +22,7 @@ import SettingsWebsite from '@/views/settings/website.vue';
 import Transactions from '@/views/transactions.vue';
 import UIKit from '@/views/uikit.vue';
 import Welcome from '@/views/welcome.vue';
+import NoConnection from '@/components/connection/NoStealthConnection.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
@@ -52,6 +53,15 @@ const routes = [
       layout: 'lock',
     },
   },
+  {
+    path: '/noconnection',
+    name: 'NoConnection',
+    component: NoConnection,
+    meta: {
+      layout: 'lock',
+    },
+  },
+
   {
     path: '/dashboard',
     name: 'Dashboard',
