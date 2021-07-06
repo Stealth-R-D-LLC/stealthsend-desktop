@@ -28,24 +28,25 @@
     <p class="paragraph">Short list your Favourite Accounts in ordered list.</p>
     <label for="multiselect" class="multiselect-label">
       <span>Add Favourite to list</span>
-      <a>Add</a>
+      <a @click="addToFavouriteList">Add</a>
     </label>
     <StMultiselect
       v-model="account"
       :class="{ 'multiselect-filled': account }"
-      :options="accounts"
-      track-by="_id"
+      :options="unfavouritedAccounts"
+      track-by="address"
       value-prop="address"
+      :object="true"
       label="Add favourite to list"
       placeholder="Select Account from the dropdown"
     >
-      <template #singlelabel="{ value }">
+      <template #singleLabel>
         <div class="multiselect-single-label">
           <p class="account-label">
-            {{ value.label }}
+            {{ account && account.label }}
           </p>
           <p class="account-utxo">
-            {{ value.utxo }}
+            {{ account && formatAmount(account.utxo, true, 8, 2) }}
           </p>
         </div>
       </template>
@@ -55,12 +56,16 @@
           <span>
             {{ option.label }}
           </span>
-          <span> {{ option.utxo }} XST </span>
+          <span> {{ formatAmount(option.utxo, true, 8, 2) }} XST </span>
         </div>
       </template>
     </StMultiselect>
     <div class="accounts-list">
-      <div class="account-grid" v-for="(acc, index) in accounts" :key="index">
+      <div
+        class="account-grid"
+        v-for="(acc, index) in favouritedAccounts"
+        :key="index"
+      >
         <p class="bold">{{ index + 1 }}.</p>
         <div>
           <p class="flex-paragraph">
@@ -81,7 +86,7 @@
             USD
           </p>
         </div>
-        <svg
+        <!-- <svg
           v-if="index + 1 > 1"
           class="order"
           width="12"
@@ -92,7 +97,7 @@
         >
           <path d="M6 16L6 2" stroke="#A2A1A4" stroke-width="2" />
           <path d="M11 7L6 2L1 7" stroke="#A2A1A4" stroke-width="2" />
-        </svg>
+        </svg> -->
       </div>
     </div>
   </div>
@@ -103,6 +108,8 @@ import { ref, computed } from 'vue';
 import CryptoService from '@/services/crypto';
 import useHelpers from '@/composables/useHelpers';
 import { useMainStore } from '@/store';
+import emitter from '@/services/emitter';
+
 export default {
   name: 'FavouriteList',
   setup() {
@@ -128,6 +135,24 @@ export default {
       }, 300);
     }
 
+    const favouritedAccounts = computed(() => {
+      return accounts.value.filter((el) => el.isFavourite);
+    });
+
+    const unfavouritedAccounts = computed(() => {
+      return accounts.value.filter((el) => !el.isFavourite);
+    });
+
+    async function addToFavouriteList() {
+      console.log('qq', account.value);
+      await CryptoService.favouriteAccount(account.value);
+      const scannedAccounts = await CryptoService.scanWallet();
+      accounts.value = scannedAccounts.accounts;
+      emitter.emit('account:toggle-favourite');
+    }
+
+    emitter.on('account:toggle-favourite', scanWallet);
+
     return {
       // variables
       account,
@@ -137,6 +162,10 @@ export default {
       closeCanvas,
       formatAmount,
       XST_USD_RATE,
+
+      favouritedAccounts,
+      unfavouritedAccounts,
+      addToFavouriteList,
     };
   },
 };
@@ -162,7 +191,7 @@ export default {
 .close:hover path {
   stroke: var(--marine200);
 }
-.multiselect-single-label {
+/* .multiselect-single-label {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -170,7 +199,7 @@ export default {
   position: absolute;
   top: -5px;
   color: var(--grey900);
-}
+} */
 .multiselect-single-label .account-utxo {
   margin-top: 5px;
   font-size: 14px;
