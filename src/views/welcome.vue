@@ -1183,7 +1183,7 @@
                 </div>
               </div>
             </div>
-            <div class="step" v-if="currentStep === 5">
+            <div class="step set-password" v-if="currentStep === 5">
               <div>
                 <h5>Set Your Password</h5>
                 <p class="desc">
@@ -1325,11 +1325,11 @@
               </div>
               <StButton @click="handleSubmit">Proceed</StButton>
             </div> -->
-            <div class="step" v-if="currentStep === 6">
+            <div class="step create-notice" v-if="currentStep === 6">
               <div>
                 <h5>Create a New Account</h5>
                 <div class="notice">
-                  <h6 class="bold">Notice</h6>
+                  <h6>Notice</h6>
                   <p>
                     Once you have selected your new account name, you will need
                     to create a Recovery Phrase to backup the account and
@@ -1971,7 +1971,7 @@
             >
             <StButton v-else @click="goBack">Back</StButton>
           </div>
-          <div class="step" v-if="recoveryStep === 5">
+          <div class="step set-password" v-if="recoveryStep === 5">
             <div>
               <h5>Set Your Password</h5>
               <p class="desc">
@@ -2909,8 +2909,22 @@ export default {
   flex-direction: column;
   justify-content: space-between;
 }
+.step.create-notice > div {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.step.create-notice > div .st-form-item {
+  width: 100%;
+  max-width: 384px;
+}
 .step button {
   margin: 40px auto 0;
+}
+.set-password > div {
+  width: 100%;
+  max-width: 384px;
 }
 .st-button {
   min-width: 200px;
@@ -2919,12 +2933,14 @@ export default {
 }
 .notice {
   padding: 24px;
-  background-color: var(--background50);
+  background-color: var(--background100);
 }
 .notice h6 {
+  font-weight: 600;
   margin-bottom: 16px;
 }
 .notice p {
+  color: var(--grey900);
   text-align: left;
 }
 .recovery p {
