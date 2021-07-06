@@ -100,7 +100,9 @@
                   ? '$••• USD'
                   : `$${formatAmount(
                       Math.abs(item.amount * XST_USD_RATE),
-                      false, 4, 4
+                      false,
+                      4,
+                      4
                     )} USD`
               }}
             </template>
@@ -110,7 +112,9 @@
                   ? '$•••'
                   : `$${formatAmount(
                       Math.abs(item.amount * XST_USD_RATE),
-                      false, 4, 4
+                      false,
+                      4,
+                      4
                     )}`
               }}
             </template>
