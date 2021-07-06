@@ -3069,6 +3069,7 @@ export default {
   display: block;
   width: fit-content;
   color: var(--marine500);
+  font-family: var(--secondary-font);
   font-size: 12px;
   line-height: 24px;
   letter-spacing: 0.12px;
