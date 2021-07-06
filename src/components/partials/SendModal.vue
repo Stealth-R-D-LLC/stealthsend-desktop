@@ -164,7 +164,7 @@
                 />
               </svg>
             </StAmount>
-            <p class="form-desc">Minimum: {{minimumXSTForSend}} XST</p>
+            <p class="form-desc">Minimum: {{ minimumXSTForSend }} XST</p>
           </StFormItem>
         </div>
       </template>
@@ -418,8 +418,8 @@ export default {
     });
 
     const minimumXSTForSend = computed(() => {
-      return CryptoService.constraints.MINIMUM_XST_FOR_SEND
-    })
+      return CryptoService.constraints.MINIMUM_XST_FOR_SEND;
+    });
 
     watchEffect(() => {
       if (currentStep.value === 2) {
@@ -572,7 +572,7 @@ export default {
         return findFee(newFee.fee);
       }
       aproxFee.value = newFee.fee;
-      return aproxFee.value
+      return aproxFee.value;
     }
 
     function coinSelection(targetAmount) {
@@ -725,15 +725,15 @@ export default {
       //   return;
       // }
 
-      // if not, find real fee 
+      // if not, find real fee
       let fee = findFee();
       console.log('fee', fee);
       // subtract real fee from amount
-      const maxAmount = format(subtract(item.utxo, fee), {precision: 8})
+      const maxAmount = format(subtract(item.utxo, fee), { precision: 8 });
       form.amount.$value = 123;
       console.log('max: ', maxAmount);
       console.log('jesi tu majku ti');
-    } 
+    }
 
     return {
       loadMax,
