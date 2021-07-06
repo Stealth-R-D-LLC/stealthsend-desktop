@@ -84,7 +84,7 @@ export default {
 
     function countdown() {
       counter.value -= 1;
-      counterTimeout.value = setTimeout(() => countdown(), 1000);
+      counterTimeout.value = setTimeout(() => countdown(), 1050);
     }
     function clearAppData() {
       isCleared.value = true;
