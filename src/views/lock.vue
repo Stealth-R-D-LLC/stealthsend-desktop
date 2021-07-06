@@ -235,6 +235,7 @@ export default {
           }
         }, 500);
       }, 3500);
+      mainStore.checkRpcStatus();
     });
 
     async function validatePassword() {

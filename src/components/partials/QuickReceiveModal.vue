@@ -128,8 +128,8 @@ export default {
       let qr = new VanillaQR({
         url: depositAddress.value,
         noBorder: false,
-        colorDark: '#140435',
-        colorLight: '#FAF9FC',
+        colorDark: '#FAF9FC',
+        colorLight: '#140435',
       });
       qrSrc.value = qr.toImage('png').src;
     }
