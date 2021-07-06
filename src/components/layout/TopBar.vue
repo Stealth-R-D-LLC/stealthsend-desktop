@@ -907,7 +907,7 @@ export default {
   min-height: 456px;
 }
 :deep .st-modal__body {
-  margin: 30px 0 6px 0 !important;
+  margin: 36px 0 0 0 !important;
 }
 .account-modal__hide-header :deep .st-modal__header {
   display: none;
@@ -1009,7 +1009,7 @@ export default {
   margin-top: -23px;
 }
 .custom-form-item {
-  margin: 163px 0 204px;
+  margin: 160px 0 201px;
 }
 :deep .st-input input {
   background-position: 92% 49% !important;
