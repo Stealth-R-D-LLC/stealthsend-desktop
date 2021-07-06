@@ -130,6 +130,10 @@ export default {
       const wallet = await CryptoService.getWalletFromDb();
       // use old data to decrypt seed
       const decryptedSeed = await CryptoService.AESDecrypt(wallet.seed, hash);
+      const decryptedMnemonic = await CryptoService.AESDecrypt(
+        wallet.mnemonic,
+        hash
+      );
       // get hash and salt based on new password
       let { hash: newHash, salt: newSalt } = await CryptoService.hashPassword(
         newPassword.value
@@ -139,14 +143,38 @@ export default {
         decryptedSeed,
         newHash
       );
+      // encrypt mnemonic with new hash
+      const encryptedNewMnemonic = await CryptoService.AESEncrypt(
+        decryptedMnemonic,
+        newHash
+      );
 
       // change wallet data with data based on new password
       wallet.seed = encryptedNewSeed;
+      wallet.mnemonic = encryptedNewMnemonic;
       wallet.password = newHash.toString(cryptoJs.enc.Hex);
       wallet.salt = newSalt;
 
       //update wallet with new data
       await db.setItem('wallet', wallet);
+
+      // check for imported accounts to re-encrypt WIF with new password
+      // get old account data from db
+      const account = await CryptoService.getAccounts();
+
+      account.map(async (item) => {
+        if (item.wif) {
+          const decryptedWIF = await CryptoService.AESDecrypt(item.wif, hash);
+          const encryptedNewWIF = await CryptoService.AESEncrypt(
+            decryptedWIF,
+            newHash
+          );
+          item.wif = encryptedNewWIF;
+        }
+      });
+
+      await db.setItem('accounts', account);
+
       router.push('/lock');
     }
 
