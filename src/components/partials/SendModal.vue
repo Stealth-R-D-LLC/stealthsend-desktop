@@ -482,6 +482,8 @@ export default {
         scanWallet();
         if (!isVisible.value) {
           closeModal();
+        } else {
+          mainStore.checkRpcStatus();
         }
       }
     );
