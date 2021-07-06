@@ -2909,10 +2909,10 @@ export default {
   flex-direction: column;
   justify-content: space-between;
 }
-<<<<<<< Updated upstream .step.set-password {
+.step.set-password {
   align-items: center;
 }
-======= .step.create-notice > div {
+.step.create-notice > div {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -2922,7 +2922,7 @@ export default {
   width: 100%;
   max-width: 384px;
 }
->>>>>>>Stashed changes .step button {
+.step button {
   margin: 40px auto 0;
 }
 .set-password > div {
