@@ -4,7 +4,7 @@
       <h2 class="title">Website</h2>
       <p class="subtitle"></p>
       <div class="content">
-                <p class="text">
+        <p class="text">
           Check our website
           <br />
           <StLink> https://www.stealth.org </StLink>
