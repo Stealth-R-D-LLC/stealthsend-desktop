@@ -1,12 +1,14 @@
 import { API } from '@/api/axios';
 import CryptoService from '@/services/crypto';
 import { defineStore } from 'pinia';
+import router from '@/router';
 
 export const useMainStore = defineStore({
   // name of the store
   // it is used in devtools and allows restoring state
   id: 'main',
   state: () => ({
+    blocks: 0,
     globalLoading: false,
     headerStyle: 'default', // has grey style on some screens and default white on most of them
     wallet: null,
@@ -81,7 +83,33 @@ export const useMainStore = defineStore({
     TOGGLE_DRAWER(payload = false) {
       this.isDrawerOpened = payload;
     },
-
+    checkRpcStatus() {
+      return new Promise((resolve, reject) => {
+        API.post('', {
+          method: 'getinfo'
+        })
+          .then((res) => {
+            const blocks = res?.data?.result?.blocks;
+            if (this.blocks && blocks) {
+              this.blocks = blocks;
+            }
+            if (!res || !blocks) {
+              router.push('/noconnection');
+            }
+            if (this.blocks > blocks) {
+              this.SET_RPC_STATUS(false);
+              router.push('/noconnection');
+              
+            }
+            resolve();
+          })
+          .catch((err) => {
+            console.error('RPC offline: ', err);
+            router.push('/noconnection');
+            reject(err);
+          });
+      });
+    },
     rpc(method, payload) {
       return new Promise((resolve, reject) => {
         API.post('', {

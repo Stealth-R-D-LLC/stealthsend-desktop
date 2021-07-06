@@ -87,7 +87,7 @@
             </StFormItem>
             <StButton color="white" @click="validatePassword"
               >Continue</StButton
-            >
+            >            
           </form>
         </template>
       </div>
@@ -235,6 +235,7 @@ export default {
           }
         }, 500);
       }, 3500);
+      mainStore.checkRpcStatus();
     });
 
     async function validatePassword() {
