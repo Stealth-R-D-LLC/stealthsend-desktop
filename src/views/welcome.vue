@@ -2474,7 +2474,7 @@ export default {
         if (e instanceof ValidationError) {
           console.log(e.message);
         }
-        mainStore.STOP_GLOBAL_LOADING()
+        mainStore.STOP_GLOBAL_LOADING();
       }
     }
 
