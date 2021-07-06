@@ -25,6 +25,7 @@
             :can-deselect="false"
             placeholder="Select account"
             @select="changeAccount"
+            @remove="preventRemove"
           >
             <template #singleLabel>
               <div class="multiselect-single-label">
@@ -433,7 +434,14 @@ export default {
       }
     }
 
+    function preventRemove(acc) {
+      setTimeout(() => {
+        account.value = acc;
+      }, 10);
+    }
+
     return {
+      preventRemove,
       isVisible,
       closeModal,
       inputAmountState,
