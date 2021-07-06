@@ -245,6 +245,7 @@
       </template>
     </div>
     <div class="header-right">
+      <p class="rpc-status">{{ rpcStatus }}</p>
       <StIcon name="sync-status"></StIcon>
       <!-- <StIcon name="support"></StIcon> -->
       <!-- <StIcon
@@ -578,6 +579,7 @@ export default {
     const account = ref(null);
     const accounts = ref([]);
     const isVisible = ref(false);
+    const rpcStatus = ref('');
     const activeStep = ref('public-key');
     const publicKey = ref('');
     const privateKey = ref('');
@@ -623,12 +625,31 @@ export default {
       return mainStore.isAmountsHidden;
     });
 
-    onMounted(() => {
+    onMounted(async () => {
       if (!componentVisibility.value.chart) {
         toggleComponentVisibility('chart');
       }
       if (!componentVisibility.value.txDashboard) {
         toggleComponentVisibility('txDashboard');
+      }
+      if (
+        window.history.state.current &&
+        window.history.state.back === '/lock'
+      ) {
+        try {
+          await mainStore.rpc('getinfo', []);
+          rpcStatus.value = `Connected to ${
+            process.env.VUE_APP_NETWORK[0].toUpperCase() +
+            process.env.VUE_APP_NETWORK.substring(1)
+          }`;
+          setTimeout(() => (rpcStatus.value = ''), 5000);
+        } catch (error) {
+          rpcStatus.value = `Not connected to ${
+            process.env.VUE_APP_NETWORK[0].toUpperCase() +
+            process.env.VUE_APP_NETWORK.substring(1)
+          }`;
+          setTimeout(() => (rpcStatus.value = ''), 5000);
+        }
       }
     });
 
@@ -810,6 +831,7 @@ export default {
       publicQrCode,
       privateQrCode,
       checkPassword,
+      rpcStatus,
       showPassword,
       password,
       closeModal,
@@ -835,6 +857,7 @@ export default {
 
 <style scoped>
 .layout__header {
+  min-height: 26px;
   border-bottom: 1px solid var(--grey100);
   display: flex;
   justify-content: space-between;
@@ -1013,5 +1036,8 @@ export default {
 }
 :deep .st-input input {
   background-position: 92% 49% !important;
+}
+.rpc-status {
+  margin-right: 12px;
 }
 </style>
