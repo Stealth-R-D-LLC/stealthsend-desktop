@@ -94,9 +94,9 @@ export default {
       changeChartPeriod();
     });
     function formatDate(date) {
-      return format(date, 'dd MMM');
+      return format(date, 'dd MMM, yyyy');
     }
-    function changeChartPeriod(period = '1M') {
+    function changeChartPeriod(period = '3d') {
       currentPeriod.value = period;
       refreshChart.value = true;
       mainStore.getChartData(currentPeriod.value).then((res) => {
@@ -159,7 +159,7 @@ export default {
               type: 'datetime',
               labels: {
                 show: true,
-                format: 'd MMM',
+                format: 'd MMM, yyyy',
                 minHeight: 120,
                 offsetY: 40,
                 showDuplicates: false,
