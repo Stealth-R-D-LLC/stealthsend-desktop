@@ -45,6 +45,7 @@ export default {
 
 <style scoped>
 .content {
+  max-width: 503px;
   margin-top: 40px;
   font-family: var(--secondary-font);
   color: var(--grey900);
@@ -53,6 +54,7 @@ export default {
   letter-spacing: 0.12px;
 }
 .content .page-title {
+  font-size: 14px;
   font-weight: 700;
   margin-bottom: 26px;
 }
@@ -60,7 +62,7 @@ export default {
 .content .text {
   font-weight: normal;
   margin-bottom: 26px;
-  font-size: 14px;
+  font-size: 12px;
   letter-spacing: 0.12px;
   line-height: 24px;
 }
@@ -68,7 +70,7 @@ export default {
 .content .st-link {
   font-weight: normal;
   margin-bottom: 26px;
-  font-size: 14px;
+  font-size: 12px;
   letter-spacing: 0.12px;
   line-height: 24px;
 }
