@@ -7,7 +7,7 @@
         }}</StLabel>
         <StLabel label="USD Value"
           >${{
-            isHiddenAmounts ? '•••' : formatAmount(usdAmount, false, 2)
+            isHiddenAmounts ? '•••' : formatAmount(usdAmount, false, 4,4)
           }}</StLabel
         >
         <StLabel label="BTC Value">{{
