@@ -56,12 +56,16 @@
           <span>
             {{ option.label }}
           </span>
-                <span> {{ formatAmount(option.utxo, true, 8, 2) }} XST </span>
+          <span> {{ formatAmount(option.utxo, true, 8, 2) }} XST </span>
         </div>
       </template>
     </StMultiselect>
     <div class="accounts-list">
-      <div class="account-grid" v-for="(acc, index) in favouritedAccounts" :key="index">
+      <div
+        class="account-grid"
+        v-for="(acc, index) in favouritedAccounts"
+        :key="index"
+      >
         <p class="bold">{{ index + 1 }}.</p>
         <div>
           <p class="flex-paragraph">
@@ -132,22 +136,22 @@ export default {
     }
 
     const favouritedAccounts = computed(() => {
-      return accounts.value.filter(el => el.isFavourite)
-    })
+      return accounts.value.filter((el) => el.isFavourite);
+    });
 
-        const unfavouritedAccounts = computed(() => {
-          return accounts.value.filter(el => !el.isFavourite)
-    })
+    const unfavouritedAccounts = computed(() => {
+      return accounts.value.filter((el) => !el.isFavourite);
+    });
 
     async function addToFavouriteList() {
       console.log('qq', account.value);
       await CryptoService.favouriteAccount(account.value);
-      const scannedAccounts = await CryptoService.scanWallet()
+      const scannedAccounts = await CryptoService.scanWallet();
       accounts.value = scannedAccounts.accounts;
       emitter.emit('account:toggle-favourite');
     }
 
-    emitter.on('account:toggle-favourite', scanWallet)
+    emitter.on('account:toggle-favourite', scanWallet);
 
     return {
       // variables
@@ -161,7 +165,7 @@ export default {
 
       favouritedAccounts,
       unfavouritedAccounts,
-      addToFavouriteList
+      addToFavouriteList,
     };
   },
 };

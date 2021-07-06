@@ -69,8 +69,6 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       );
     }
 
-    
-
     let recipient = {
       address: sendForm.address,
       amount: Number(sumOf(sendForm.amount, fee * -1)) * 1e6,
