@@ -351,7 +351,8 @@ export default {
       accountOptions.value = '';
     }
     async function archiveAccount(account) {
-      const scannedAccounts = await CryptoService.archiveAccount(account);
+      await CryptoService.archiveAccount(account);
+      const scannedAccounts = await CryptoService.scanWallet();
       accounts.value = scannedAccounts.accounts;
       accountOptions.value = '';
     }

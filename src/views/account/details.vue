@@ -141,10 +141,6 @@ export default {
     });
 
     const usdAmount = computed(() => {
-      console.log(
-        'CryptoService.constraints.XST_USD',
-        CryptoService.constraints.XST_USD
-      );
       return (
         Number(account.value.utxo) * CryptoService.constraints.XST_USD || 0
       );
@@ -180,39 +176,20 @@ export default {
         .catch((err) => {
           return err;
         });
-      await mainStore
-        .rpc('getaddressinputs', [account.value.address])
-        .then((res) => {
-          let mappedAmounts = res.map((el) => {
-            return {
-              ...el,
-              account: account.value.label,
-            };
-          });
-          transactions.value = transactions.value.concat(mappedAmounts);
-        })
-        .catch((err) => {
-          return err;
+      await mainStore.rpc('gethdaccount', [account.value.xpub]).then((res) => {
+        let mappedAmounts = res.map((el) => {
+          return {
+            ...el,
+            account: account.value.label,
+            blocktime: el.txinfo.blocktime,
+            amount: el.account_balance_change,
+          };
         });
-      await mainStore
-        .rpc('getaddressoutputs', [account.value.address])
-        .then((res) => {
-          let mappedAmounts = res.map((el) => {
-            return {
-              ...el,
-              account: account.value.label,
-              // output amounts should be shown as negatives in the transaction table
-              amount: el.amount * -1,
-            };
-          });
-          transactions.value = transactions.value.concat(mappedAmounts);
-        })
-        .catch((err) => {
-          return err;
-        });
+        transactions.value = mappedAmounts;
+      });
     }
 
-    if (account.value) {
+    if (Object.keys(account.value).length > 0) {
       getData();
     }
     emitter.on('header:account-changed', (account) => {

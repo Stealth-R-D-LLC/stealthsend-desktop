@@ -2,6 +2,7 @@
   <div
     class="st-form-item"
     :class="{
+      'st-form-item--disabled': isDisabled,
       'st-form-item--has-error': errorMessage.length,
       'st-form-item--is-dark': color === 'dark',
       'st-form-item--is-success': notice,
@@ -67,6 +68,10 @@ export default {
       required: false,
       default: '',
     },
+    isDisabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['rightLabelClick'],
   setup(_, ctx) {
@@ -91,11 +96,14 @@ export default {
   left: 0;
   pointer-events: none;
   font-size: 12px;
-  color: var(--marine500);
+  color: var(--marine400);
   font-family: var(--secondary-font);
   font-weight: 600;
   letter-spacing: 0.12px;
   line-height: 24px;
+}
+.st-form-item :deep .st-input input::placeholder {
+  color: var(--grey900);
 }
 .st-form-item__message {
   position: absolute;
@@ -118,7 +126,7 @@ export default {
   color: var(--grey50) !important;
 }
 .st-form-item--is-dark :deep input::placeholder {
-  color: var(--grey100);
+  color: var(--grey100) !important;
 }
 .st-form-item--is-dark :deep input {
   color: var(--grey100);
@@ -168,5 +176,21 @@ export default {
   top: -22px;
   right: 0;
   cursor: pointer;
+}
+.st-form-item--disabled {
+  pointer-events: none;
+}
+.st-form-item--disabled :deep label,
+:deep .label-right {
+  color: var(--grey400);
+}
+.st-form-item--disabled :deep input::placeholder {
+  color: var(--grey400) !important;
+}
+.st-form-item--disabled :deep fieldset:after {
+  display: none;
+}
+.st-form-item--disabled :deep input:hover {
+  border-color: var(--grey100);
 }
 </style>

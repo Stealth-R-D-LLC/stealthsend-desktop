@@ -84,10 +84,10 @@
         </svg>
         <ul>
           <li>
-            <a @click="openModal('send')">Send</a>
+            <a @click="toggleModal('send', account)">Send</a>
           </li>
           <li>
-            <a @click="openModal('receive')">Receive</a>
+            <a @click="toggleModal('receive', account)">Receive</a>
           </li>
           <li>
             <a @click="openAccountDetails(account)">View Account</a>
@@ -105,6 +105,7 @@ import { multiply } from 'mathjs';
 import useHelpers from '@/composables/useHelpers';
 import CryptoService from '@/services/crypto';
 import router from '@/router';
+import emitter from '@/services/emitter';
 
 export default {
   name: 'StCard',
@@ -129,11 +130,6 @@ export default {
       required: false,
       default: true,
     },
-    accounts: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
     account: {
       type: Object,
       required: true,
@@ -157,8 +153,9 @@ export default {
           amountLeft: `${formatAmount(props.account.utxo, true, 2)} XST`,
           amountRight: `$${formatAmount(
             multiply(props.account.utxo, CryptoService.constraints.XST_USD),
-            true,
-            2
+            false,
+            4,
+            4
           )}`,
           percentage: formatAmount(
             CryptoService.constraints.changePercent24Hr,
@@ -174,23 +171,38 @@ export default {
     };
     function toggleAccountOptions(name) {
       if (accountOptions.value === name) {
+        // close
         accountOptions.value = '';
       } else {
+        // open
         accountOptions.value = name;
+        emitter.emit('dashboard:card-open', name);
       }
     }
     const openAccountDetails = (account) => {
       mainStore.SET_ACCOUNT_DETAILS(account);
       router.push('/account/details');
     };
+    function toggleModal(modal, account) {
+      mainStore.SET_ACCOUNT_DETAILS(account);
+      openModal(modal);
+    }
     function openModal(modal) {
       mainStore.SET_MODAL_VISIBILITY(modal, true);
     }
+
+    emitter.on('dashboard:card-open', (name) => {
+      // on open card details, close all other card details
+      if (name !== accountOptions.value) {
+        accountOptions.value = '';
+      }
+    });
+
     return {
       accountOptions,
       toggleAccountOptions,
       openAccountDetails,
-      openModal,
+      toggleModal,
       handleClick,
       steps,
       isHiddenAmounts: computed(() => mainStore.isAmountsHidden),
