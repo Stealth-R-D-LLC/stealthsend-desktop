@@ -2,8 +2,8 @@
   <div class="st-settings-nav">
     <div class="st-settings-nav__title">Settings</div>
     <div class="st-settings-nav__body">
-      <p class="group-title">
-        <span>Security</span>
+      <div class="group-title">
+        <h6 class="semi-bold">Security</h6>
         <svg
           width="22"
           height="25"
@@ -19,20 +19,20 @@
             stroke-width="2"
           />
         </svg>
-      </p>
+      </div>
       <ul class="group">
-        <li class="group-item" @click="goTo('/settings/password')">
+        <router-link to="/settings/password" class="group-item">
           <p class="group-item__name">Password</p>
           <p class="group-item__desc">Authorise access to application</p>
-        </li>
-        <li class="group-item" @click="goTo('/settings/recovery-phrase')">
+        </router-link>
+        <router-link to="/settings/recovery-phrase" class="group-item">
           <p class="group-item__name">Recovery Phrase</p>
           <p class="group-item__desc">See and backup created seed</p>
-        </li>
-        <li class="group-item" @click="goTo('/settings/auto-lock')">
+        </router-link>
+        <router-link to="/settings/auto-lock" class="group-item">
           <p class="group-item__name">Auto-lock</p>
           <p class="group-item__desc">Configure idle time in application</p>
-        </li>
+        </router-link>
       </ul>
       <!-- <p class="group-title">
         <span>Support Center</span>
@@ -75,8 +75,8 @@
           <p class="group-item__desc">Lorem ipsum</p>
         </li>
       </ul> -->
-      <p class="group-title">
-        <span>Notifications</span>
+      <div class="group-title">
+        <h6 class="semi-bold">Notifications</h6>
         <svg
           width="18"
           height="19"
@@ -97,24 +97,24 @@
             stroke-width="2"
           />
         </svg>
-      </p>
+      </div>
 
       <ul class="group">
-        <li class="group-item" @click="goTo('/settings/desktop-notifications')">
+        <router-link to="/settings/desktop-notifications" class="group-item">
           <p class="group-item__name">Desktop</p>
           <p class="group-item__desc">Notifications appear in system</p>
-        </li>
-        <li class="group-item" @click="goTo('/settings/app-notifications')">
+        </router-link>
+        <router-link to="/settings/app-notifications" class="group-item">
           <p class="group-item__name">In-App</p>
           <p class="group-item__desc">Notifications appear in application</p>
-        </li>
-        <li class="group-item" @click="goTo('/settings/email-notifications')">
+        </router-link>
+        <router-link to="/settings/email-notifications" class="group-item">
           <p class="group-item__name">E-mail</p>
           <p class="group-item__desc">Notifications appear in mailbox</p>
-        </li>
+        </router-link>
       </ul>
-      <p class="group-title">
-        <span>About</span>
+      <div class="group-title">
+        <h6 class="semi-bold">About</h6>
         <svg
           width="20"
           height="20"
@@ -126,27 +126,27 @@
           <circle cx="10" cy="7" r="1" fill="#4E00F6" />
           <path stroke="#4E00F6" stroke-width="2" d="M10 9v5" />
         </svg>
-      </p>
+      </div>
 
       <ul class="group">
-        <li class="group-item" @click="goTo('/settings/general-information')">
+        <router-link to="/settings/general-information" class="group-item">
           <p class="group-item__name">General Information</p>
           <p class="group-item__desc">
             Information about Stealth and StealthSend
           </p>
-        </li>
-        <li class="group-item" @click="goTo('/settings/website')">
+        </router-link>
+        <router-link to="/settings/website" class="group-item">
           <p class="group-item__name">Website</p>
           <p class="group-item__desc">Get more information</p>
-        </li>
-        <li class="group-item" @click="goTo('/settings/terms-of-use')">
+        </router-link>
+        <router-link to="/settings/terms-of-use" class="group-item">
           <p class="group-item__name">Terms of Use</p>
           <p class="group-item__desc">View our Terms of Use</p>
-        </li>
-        <li class="group-item" @click="goTo('/settings/privacy-policy')">
+        </router-link>
+        <router-link to="/settings/privacy-policy" class="group-item">
           <p class="group-item__name">Privacy Policy</p>
           <p class="group-item__desc">View our Privacy Policy</p>
-        </li>
+        </router-link>
       </ul>
       <p class="group-title">
         <span>Help</span>
@@ -263,44 +263,42 @@ export default {
   border-bottom: 1px solid var(--grey100);
   margin: 20px 0 16px 0;
 }
-.group-title span {
-  font-family: var(--primary-font);
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 24px;
-  letter-spacing: 0.32px;
+.group-title h6 {
   color: var(--grey900);
 }
 
 .group-item {
+  display: block;
+  text-decoration: none;
   padding: 20px 0;
   border-bottom: 1px solid var(--grey100);
   cursor: pointer;
   transition: all 0.2s;
 }
+.group-item.router-link-active {
+  border-color: var(--grey300);
+}
+.group-item.router-link-active .group-item__name {
+  color: var(--marine500);
+}
+.group-item.router-link-active .group-item__desc {
+  color: var(--grey700);
+}
 .group-item:hover {
   border-bottom: 1px solid var(--grey300);
 }
 .group-item:hover .group-item__name {
-  color: var(--grey1100);
+  color: var(--marine500);
 }
 .group-item:hover .group-item__desc {
   color: var(--grey700);
 }
 
 .group-item__name {
-  font-family: var(--secondary-font);
-  font-size: 12px;
-  line-height: 24px;
-  letter-spacing: 0.12px;
   color: var(--grey900);
   transition: all 0.2s;
 }
 .group-item__desc {
-  font-family: var(--secondary-font);
-  font-size: 12px;
-  line-height: 24px;
-  letter-spacing: 0.12px;
   color: var(--grey500);
   transition: all 0.2s;
 }

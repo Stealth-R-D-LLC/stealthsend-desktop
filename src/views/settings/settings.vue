@@ -4,9 +4,7 @@
     <div class="st-settings-child" v-if="$route.path === '/settings'">
       <div class="st-settings-child__overflow">
         <h2 class="title">General Information</h2>
-        <p class="subtitle">
-          Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-        </p>
+        <p class="subtitle">Information about Stealth and StealthSend</p>
         <div class="content">
           <p class="page-title">
             Stealth: The Fastest Private Digital Currency
