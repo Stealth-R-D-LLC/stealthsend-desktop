@@ -127,7 +127,7 @@
           <circle cx="10" cy="7" r="1" fill="#4E00F6" />
           <path stroke="#4E00F6" stroke-width="2" d="M10 9v5" />
         </svg>
-      </div> 
+      </div>
 
       <ul class="group">
         <router-link to="/settings/general-information" class="group-item">
@@ -137,7 +137,7 @@
           </p>
         </router-link>
         <a href="https://www.stealth.org" class="group-item" target="_blank">
-                  <p class="group-item__name">Website</p>
+          <p class="group-item__name">Website</p>
           <p class="group-item__desc">Get more information</p>
         </a>
         <!-- <router-link to="/settings/website" class="group-item">
