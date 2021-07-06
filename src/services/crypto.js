@@ -304,10 +304,11 @@ const CryptoService = {
   },
 
   async favouriteAccount(account) {
+    console.log('a_ ', account);
     let accounts = await db.getItem('accounts');
     if (accounts.length < 1) {
       console.error('Accounts do not exist');
-      return this.scanWallet();
+      // return await this.scanWallet();
     }
 
     const wantedIndex = accounts.findIndex(
@@ -333,8 +334,6 @@ const CryptoService = {
 
     accounts[wantedIndex].isFavourite = false;
     await db.setItem('accounts', accounts);
-
-    return this.scanWallet();
   },
 
   async activateAccount(account) {
@@ -349,8 +348,6 @@ const CryptoService = {
     accounts[wantedIndex].isArchived = false;
 
     await db.setItem('accounts', accounts);
-
-    return this.scanWallet();
   },
 
   async changeAccountName(account, accountName) {
@@ -365,8 +362,6 @@ const CryptoService = {
     accounts[wantedIndex].label = accountName;
 
     await db.setItem('accounts', accounts);
-
-    return this.scanWallet();
   },
 
   async addToAddressBook(addressBookItem) {
