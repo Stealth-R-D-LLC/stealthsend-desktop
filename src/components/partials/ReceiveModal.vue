@@ -389,8 +389,8 @@ export default {
             : depositAddress.value,
         noBorder: false,
         // borderSize: 20,
-        colorDark: '#140435',
-        colorLight: '#FAF9FC',
+        colorDark: '#FAF9FC',
+        colorLight: '#140435',
         // size: 140,
       });
       qrSrc.value = qr.toImage('png').src;
