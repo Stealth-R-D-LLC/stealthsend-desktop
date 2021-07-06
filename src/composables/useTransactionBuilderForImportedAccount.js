@@ -70,8 +70,19 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         rawTransaction.addOutput(change.address, change.amount);
       }
 
-      const keyPair = bitcoin.ECPair.fromWIF(
+      const wallet = await CryptoService.getWalletFromDb();
+      if (!wallet.password) {
+        console.error('Invalid wallet');
+        return;
+      }
+
+      const decryptedWIF = CryptoService.AESDecrypt(
         sendForm.account.wif,
+        wallet.password
+      );
+
+      const keyPair = bitcoin.ECPair.fromWIF(
+        decryptedWIF,
         CryptoService.network
       );
 

@@ -1953,7 +1953,7 @@
               Please be patient and don’t turn off the computer or exit the
               application
             </p>
-            <img src="../../static/xstloader.gif" alt="Test gif" />
+            <img src="../../static/xstloader.gif" alt="checkPhrase" />
           </div>
           <div v-if="recoveryStep === 4" class="step">
             <div>
@@ -2389,7 +2389,7 @@ export default {
       selectedRecoveryWords.value = [];
     }
 
-    function selectWordsInOrder(item) {
+    async function selectWordsInOrder(item) {
       let removedWord = reorderedMnemonic.value.splice(
         reorderedMnemonic.value.indexOf(item),
         1
@@ -2461,6 +2461,7 @@ export default {
         CryptoService.seed = bytes.toString('hex');
         CryptoService.master = master;
         await CryptoService.storeWalletInDb(password.value);
+        await CryptoService.storeMnemonicInWallet(selectedRecoveryWords.value);
         await restoreAccounts();
         CryptoService.isFirstArrival = false;
         await CryptoService.unlock(password.value);
@@ -2523,6 +2524,8 @@ export default {
       mainStore.START_GLOBAL_LOADING();
       /* createdMnemonic.value = await CryptoService.generateMnemonicAndSeed(); */
       await CryptoService.storeWalletInDb(password.value);
+      await CryptoService.storeMnemonicInWallet(selectedWords.value);
+
       await restoreAccounts();
       goToDashboard();
       mainStore.STOP_GLOBAL_LOADING();
