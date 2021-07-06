@@ -86,7 +86,7 @@ export const useMainStore = defineStore({
     checkRpcStatus() {
       return new Promise((resolve, reject) => {
         API.post('', {
-          method: 'getinfo'
+          method: 'getinfo',
         })
           .then((res) => {
             const blocks = res?.data?.result?.blocks;
@@ -99,7 +99,6 @@ export const useMainStore = defineStore({
             if (this.blocks > blocks) {
               this.SET_RPC_STATUS(false);
               router.push('/noconnection');
-              
             }
             resolve();
           })

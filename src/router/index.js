@@ -61,7 +61,7 @@ const routes = [
       layout: 'lock',
     },
   },
-  
+
   {
     path: '/dashboard',
     name: 'Dashboard',

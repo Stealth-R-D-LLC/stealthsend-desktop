@@ -87,7 +87,7 @@
             </StFormItem>
             <StButton color="white" @click="validatePassword"
               >Continue</StButton
-            >            
+            >
           </form>
         </template>
       </div>
