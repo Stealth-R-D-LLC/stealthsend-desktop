@@ -8,8 +8,7 @@
   </div>
 </template>
 
-<script>
-</script>
+<script></script>
 
 <style scoped>
 .lock-layout {
