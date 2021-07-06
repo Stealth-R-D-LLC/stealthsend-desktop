@@ -2372,7 +2372,6 @@ export default {
         isValidMnemonic.value = CryptoService.isMnemonicValid(
           selectedRecoveryWords.value.join(' ')
         );
-
         recoveryStepNext();
       }
     }
@@ -2474,6 +2473,7 @@ export default {
         if (e instanceof ValidationError) {
           console.log(e.message);
         }
+        mainStore.STOP_GLOBAL_LOADING();
       }
     }
 

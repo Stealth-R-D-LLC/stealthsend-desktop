@@ -306,6 +306,7 @@ import { useMainStore } from '@/store';
 import useHelpers from '@/composables/useHelpers';
 import router from '@/router';
 import CryptoService from '../../services/crypto';
+import emitter from '@/services/emitter';
 
 export default {
   name: 'StAccounts',
@@ -341,14 +342,18 @@ export default {
       mainStore.SET_ACCOUNT_DETAILS(account);
     }
     async function favouriteAccount(account) {
-      const scannedAccounts = await CryptoService.favouriteAccount(account);
+      await CryptoService.favouriteAccount(account);
+      const scannedAccounts = await CryptoService.scanWallet();
       accounts.value = scannedAccounts.accounts;
       accountOptions.value = '';
+      emitter.emit('account:toggle-favourite');
     }
     async function unfavouriteAccount(account) {
-      const scannedAccounts = await CryptoService.unfavouriteAccount(account);
+      await CryptoService.unfavouriteAccount(account);
+      const scannedAccounts = await CryptoService.scanWallet();
       accounts.value = scannedAccounts.accounts;
       accountOptions.value = '';
+      emitter.emit('account:toggle-favourite');
     }
     async function archiveAccount(account) {
       await CryptoService.archiveAccount(account);
@@ -357,7 +362,8 @@ export default {
       accountOptions.value = '';
     }
     async function activateAccount(account) {
-      const scannedAccounts = await CryptoService.activateAccount(account);
+      await CryptoService.activateAccount(account);
+      const scannedAccounts = await CryptoService.scanWallet();
       accounts.value = scannedAccounts.accounts;
       accountOptions.value = '';
     }
@@ -513,6 +519,13 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+.card-header h5 {
+  display: inline-block;
+  width: 180px;
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
 }
 .amount-container {
   margin-top: 22px;

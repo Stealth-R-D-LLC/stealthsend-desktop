@@ -75,7 +75,7 @@
           <p class="group-item__desc">Lorem ipsum</p>
         </li>
       </ul> -->
-      <div class="group-title">
+      <!-- <div class="group-title">
         <h6 class="semi-bold">Notifications</h6>
         <svg
           width="18"
@@ -113,6 +113,7 @@
           <p class="group-item__desc">Notifications appear in mailbox</p>
         </router-link>
       </ul>
+      -->
       <div class="group-title">
         <h6 class="semi-bold">About</h6>
         <svg
@@ -135,10 +136,14 @@
             Information about Stealth and StealthSend
           </p>
         </router-link>
-        <router-link to="/settings/website" class="group-item">
+        <a href="https://www.stealth.org" class="group-item" target="_blank">
           <p class="group-item__name">Website</p>
           <p class="group-item__desc">Get more information</p>
-        </router-link>
+        </a>
+        <!-- <router-link to="/settings/website" class="group-item">
+          <p class="group-item__name">Website</p>
+          <p class="group-item__desc">Get more information</p>
+        </router-link> -->
         <router-link to="/settings/terms-of-use" class="group-item">
           <p class="group-item__name">Terms of Use</p>
           <p class="group-item__desc">View our Terms of Use</p>

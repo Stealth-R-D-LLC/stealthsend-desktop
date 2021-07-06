@@ -140,6 +140,7 @@ const CryptoService = {
     });
   },
   breakAccountPath(path = "0'/0/0") {
+    console.log('path:', path);
     path = path.replace("'", '');
     const account = +path.split('/')[0];
     const change = +path.split('/')[1];
@@ -151,6 +152,7 @@ const CryptoService = {
     };
   },
   getKeysForAccount(account = 0, change = 0, address = 0) {
+    console.log('aca', account, change, account);
     if (!this.master)
       return {
         xpub: '',
@@ -175,6 +177,7 @@ const CryptoService = {
     };
   },
   getChildFromRoot(account, change, address) {
+    console.log('getChildFromRoot', account, change, address);
     // With non-hardened keys, you can prove a child public key is linked to a parent public key
     // using just the public keys.
     // You can also derive public child keys from a public parent key,
@@ -304,10 +307,11 @@ const CryptoService = {
   },
 
   async favouriteAccount(account) {
+    console.log('a_ ', account);
     let accounts = await db.getItem('accounts');
     if (accounts.length < 1) {
       console.error('Accounts do not exist');
-      return this.scanWallet();
+      // return await this.scanWallet();
     }
 
     const wantedIndex = accounts.findIndex(
@@ -333,8 +337,6 @@ const CryptoService = {
 
     accounts[wantedIndex].isFavourite = false;
     await db.setItem('accounts', accounts);
-
-    return this.scanWallet();
   },
 
   async activateAccount(account) {
@@ -349,8 +351,6 @@ const CryptoService = {
     accounts[wantedIndex].isArchived = false;
 
     await db.setItem('accounts', accounts);
-
-    return this.scanWallet();
   },
 
   async changeAccountName(account, accountName) {
@@ -365,8 +365,6 @@ const CryptoService = {
     accounts[wantedIndex].label = accountName;
 
     await db.setItem('accounts', accounts);
-
-    return this.scanWallet();
   },
 
   async addToAddressBook(addressBookItem) {
