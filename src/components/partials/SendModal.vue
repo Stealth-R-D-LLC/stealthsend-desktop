@@ -44,6 +44,7 @@
             :clear-on-select="false"
             placeholder="Select account"
             @select="getUnspentOutputs"
+            @remove="preventRemove($event)"
           >
             <template #singleLabel>
               <div class="multiselect-single-label">
@@ -487,6 +488,7 @@ export default {
         }
       }
     );
+    
 
     function closeModal() {
       mainStore.SET_MODAL_VISIBILITY('send', false);
@@ -531,11 +533,14 @@ export default {
     scanWallet();
     let unspentOutputs = [];
 
-    async function getUnspentOutputs(account) {
-      if (!account) return;
+    async function getUnspentOutputs(acc) {
+      console.log('account', acc);
+      console.log('aa', account.value);
+
+      if (!acc) return;
       let res = [];
-      if (account.xpub) {
-        res = await mainStore.rpc('gethdaccount', [account.xpub]);
+      if (acc.xpub) {
+        res = await mainStore.rpc('gethdaccount', [acc.xpub]);
 
         // map only unspent outputs, put txid in each one of them and flatten the array
         unspentOutputs = res
@@ -549,11 +554,11 @@ export default {
           .filter((el) => el.length > 0)
           .reduce((a, b) => a.concat(b), []);
       } else {
-        res = await mainStore.rpc('getaddressoutputs', [account.address]);
+        res = await mainStore.rpc('getaddressoutputs', [acc.address]);
         unspentOutputs = res.filter((el) => el.isspent === 'false');
       }
       //       const outputs = await mainStore.rpc('getaddressoutputs', [
-      //   account.address,
+      //   acc.address,
       //   1,
       //   100,
       // ]);
@@ -734,10 +739,16 @@ export default {
       const maxAmount = format(subtract(item.utxo, fee), { precision: 8 });
       form.amount.$value = 123;
       console.log('max: ', maxAmount);
-      console.log('jesi tu majku ti');
+    }
+
+      function preventRemove(acc) {
+        setTimeout(() => {
+          account.value = acc;
+        }, 10)
     }
 
     return {
+      preventRemove,
       loadMax,
       validateFirstStep,
       validateSecondStep,
