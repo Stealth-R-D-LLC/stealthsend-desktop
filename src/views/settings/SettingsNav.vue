@@ -131,19 +131,21 @@
       <ul class="group">
         <router-link to="/settings/general-information" class="group-item">
           <p class="group-item__name">General Information</p>
-          <p class="group-item__desc">Lorem ipsum</p>
+          <p class="group-item__desc">
+            Information about Stealth and StealthSend
+          </p>
         </router-link>
         <router-link to="/settings/website" class="group-item">
           <p class="group-item__name">Website</p>
-          <p class="group-item__desc">Lorem ipsum</p>
+          <p class="group-item__desc">Get more information</p>
         </router-link>
         <router-link to="/settings/terms-of-use" class="group-item">
           <p class="group-item__name">Terms of Use</p>
-          <p class="group-item__desc">Lorem ipsum</p>
+          <p class="group-item__desc">View our Terms of Use</p>
         </router-link>
         <router-link to="/settings/privacy-policy" class="group-item">
           <p class="group-item__name">Privacy Policy</p>
-          <p class="group-item__desc">Lorem ipsum</p>
+          <p class="group-item__desc">View our Privacy Policy</p>
         </router-link>
       </ul>
       <p class="group-title">

@@ -106,6 +106,14 @@ const CryptoService = {
     const keyPair = bitcoin.ECPair.fromWIF(wif, this.network);
     return keyPair;
   },
+  isWIFValid(WIF) {
+    try {
+      bitcoin.ECPair.fromWIF(WIF, this.network);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  },
   hexToArray(hexString) {
     // convert hex string to uint8array
     // helper for seed
@@ -274,16 +282,19 @@ const CryptoService = {
     if (accounts.length < 1) {
       console.error('Accounts do not exist');
       return this.scanWallet();
+    } else if (accounts.filter((acc) => !acc.isArchived).length === 1) {
+      console.error('Cannot archive all accounts');
+      return this.scanWallet();
     }
 
     const wantedIndex = accounts.findIndex(
       (item) => item.address === account.address
     );
 
-    if (accounts[wantedIndex].utxo > 0) {
-      console.error('Cannot archive account with balance > 0');
-      return this.scanWallet();
-    }
+    // if (accounts[wantedIndex].utxo > 0) {
+    //   console.error('Cannot archive account with balance > 0');
+    //   return this.scanWallet();
+    // }
 
     accounts[wantedIndex].isArchived = true;
 
@@ -306,7 +317,7 @@ const CryptoService = {
     accounts[wantedIndex].isFavourite = true;
     await db.setItem('accounts', accounts);
 
-    return this.scanWallet();
+    // return this.scanWallet();
   },
 
   async unfavouriteAccount(account) {
@@ -578,11 +589,14 @@ const CryptoService = {
         // When a user looks at their wallet, the software aggregates the sum of value of all their
         // UTXOs and presents it to them as their "balance".
         // Bitcoin doesn’t know balances associated with an account or username as they appear in banking.
-        balance = add(balance, accUtxo);
-        balance = format(balance, { precision: 14 });
+        if (!account.isArchived) {
+          // do not include archived accounts into calculating the whole balance of the wallet XST-167
+          balance = add(balance, accUtxo);
+          balance = format(balance, { precision: 14 });
+        }
       }
       resolve({
-        utxo: balance, // sum of all utxo
+        utxo: balance, // sum of all utxo (except archived accounts)
         txs: txs, // all transactions,
         accounts: newAccounts,
       });
