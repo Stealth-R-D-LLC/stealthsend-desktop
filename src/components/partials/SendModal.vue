@@ -51,7 +51,7 @@
                   {{ account && account.label }}
                 </p>
                 <p class="account-utxo">
-                  {{ account && formatAmount(account.utxo) }}
+                  {{ account && formatAmount(account.utxo, true, 8, 2) }}
                 </p>
               </div>
             </template>
@@ -61,7 +61,7 @@
                 <span>
                   {{ option.label }}
                 </span>
-                <span> {{ option.utxo }} XST </span>
+                <span> {{ formatAmount(option.utxo, true, 8, 2) }} XST </span>
               </div>
             </template>
           </StMultiselect>
@@ -72,7 +72,7 @@
             :error-message="form.amount.$errors"
             label="Amount"
           >
-            <a v-if="account" class="load-max" @click="greet(account.utxo)"
+            <a v-if="account" class="load-max" @click="loadMax(account)"
               >Load max</a
             >
             <StAmount
@@ -164,7 +164,7 @@
                 />
               </svg>
             </StAmount>
-            <p class="form-desc">Minimum: 0.05 XST</p>
+            <p class="form-desc">Minimum: {{ minimumXSTForSend }} XST</p>
           </StFormItem>
         </div>
       </template>
@@ -387,7 +387,7 @@ import useFeeEstimator from '@/composables/useFeeEstimator';
 import useHelpers from '@/composables/useHelpers';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import { useRoute } from 'vue-router';
-import { format, add } from 'mathjs';
+import { format, add, subtract } from 'mathjs';
 
 const sumOf = (x = 0, y = 0) => {
   let sum = add(x, y);
@@ -415,6 +415,10 @@ export default {
 
     const pickedAccount = computed(() => {
       return mainStore.accountDetails;
+    });
+
+    const minimumXSTForSend = computed(() => {
+      return CryptoService.constraints.MINIMUM_XST_FOR_SEND;
     });
 
     watchEffect(() => {
@@ -462,8 +466,8 @@ export default {
         $value: amount,
         $rules: [
           (amount) => {
-            if (!amount || Number(amount) < 0.05) {
-              return 'Minimum amount is 0.05 XST';
+            if (!amount || Number(amount) < minimumXSTForSend.value) {
+              return 'Minimum amount is ' + minimumXSTForSend.value + ' XST';
             } else if (account.value && account.value.utxo < Number(amount)) {
               return 'Insufficient funds on this account';
             }
@@ -478,6 +482,8 @@ export default {
         scanWallet();
         if (!isVisible.value) {
           closeModal();
+        } else {
+          mainStore.checkRpcStatus();
         }
       }
     );
@@ -568,6 +574,7 @@ export default {
         return findFee(newFee.fee);
       }
       aproxFee.value = newFee.fee;
+      return aproxFee.value;
     }
 
     function coinSelection(targetAmount) {
@@ -700,15 +707,38 @@ export default {
       }
     }
 
-    function greet(item) {
-      form.amount.$value = item;
-      //TODO: temporary solution
-      setTimeout(() => (inputAmountState.value = 'USD'), 1);
-      setTimeout(() => (inputAmountState.value = 'XST'), 1);
+    function loadMax(item) {
+      console.log('available: ', item.utxo);
+      // get amount from account
+      // check if amount is less than miminim amount for send
+      // if (item.utxo < minimumXSTForSend.value) {
+      //   console.log('1aaa');
+      //   form.amount.$value = item.utxo;
+      //   amount.value = item.utxo;
+      //   validateFields();
+      //   return;
+      // }
+      // // if not, get min fee, subtract it from amount and check if given amount is less than minimum
+      // if (Number(format(subtract(item.utxo, minimumXSTForSend.value), {precision: 8})) < minimumXSTForSend.value) {
+      //   console.log('2aa');
+      //   form.amount.$value = item.utxo;
+      //   // amount.value = item.utxo;
+      //   validateFields();
+      //   return;
+      // }
+
+      // if not, find real fee
+      let fee = findFee();
+      console.log('fee', fee);
+      // subtract real fee from amount
+      const maxAmount = format(subtract(item.utxo, fee), { precision: 8 });
+      form.amount.$value = 123;
+      console.log('max: ', maxAmount);
+      console.log('jesi tu majku ti');
     }
 
     return {
-      greet,
+      loadMax,
       validateFirstStep,
       validateSecondStep,
 
