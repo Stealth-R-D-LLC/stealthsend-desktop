@@ -221,10 +221,7 @@ export default function useCoinControl(outputs, target) {
         .map((el) => el.amount)
         .reduce((a, b) => a + b, 0);
       if (coinControlSum > adjustedTarget) {
-        bestSet = knapsackSelection(
-          outputs,
-          target
-        ); // treba svim fjama rijesiti parametre a ne da gledaju u globalno
+        bestSet = knapsackSelection(outputs, target); // treba svim fjama rijesiti parametre a ne da gledaju u globalno
       }
       return bestSet;
     }
