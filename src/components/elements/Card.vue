@@ -300,10 +300,10 @@ export default {
 
 .card-header h6 {
   display: inline-block;
-    width: 260px;
-    white-space: nowrap;
-    overflow: hidden !important;
-    text-overflow: ellipsis;
+  width: 260px;
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
 }
 .amount-container {
   margin-top: 18px;
