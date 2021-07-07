@@ -1,11 +1,11 @@
 <template>
   <div class="card">
-    <div class="card__inner">
+    <div class="card__inner" @click="$emit('click')">
       <div class="card-header">
         <h6 class="semi-bold">{{ account.label }}</h6>
         <svg
           class="info"
-          @click="toggleAccountOptions(account.label)"
+          @click.stop="toggleAccountOptions(account.label)"
           width="12"
           height="10"
           viewBox="0 0 12 10"
@@ -258,6 +258,7 @@ export default {
 }
 .card__inner {
   padding: 16px 20px 24px;
+  cursor: pointer;
 }
 .account-options {
   position: absolute;

@@ -709,32 +709,15 @@ export default {
     }
 
     function loadMax(item) {
-      console.log('available: ', item.utxo);
       // get amount from account
       // check if amount is less than miminim amount for send
-      // if (item.utxo < minimumXSTForSend.value) {
-      //   console.log('1aaa');
-      //   form.amount.$value = item.utxo;
-      //   amount.value = item.utxo;
-      //   validateFields();
-      //   return;
-      // }
-      // // if not, get min fee, subtract it from amount and check if given amount is less than minimum
-      // if (Number(format(subtract(item.utxo, minimumXSTForSend.value), {precision: 8})) < minimumXSTForSend.value) {
-      //   console.log('2aa');
-      //   form.amount.$value = item.utxo;
-      //   // amount.value = item.utxo;
-      //   validateFields();
-      //   return;
-      // }
-
       // if not, find real fee
       let fee = findFee();
-      console.log('fee', fee);
       // subtract real fee from amount
       const maxAmount = format(subtract(item.utxo, fee), { precision: 8 });
-      form.amount.$value = 123;
-      console.log('max: ', maxAmount);
+      form.amount.$value = maxAmount;
+      setTimeout(() => (inputAmountState.value = 'USD'), 1);
+      setTimeout(() => (inputAmountState.value = 'XST'), 1);
     }
 
     function preventRemove(acc) {
@@ -773,6 +756,7 @@ export default {
       getUnspentOutputs,
       formatAmount,
       counter,
+      minimumXSTForSend,
 
       form,
       errors,
