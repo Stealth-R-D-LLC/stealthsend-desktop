@@ -2917,7 +2917,7 @@ export default {
 }
 .step.create-notice > div .st-form-item {
   width: 100%;
-  max-width: 384px;
+  max-width: 392px;
 }
 .step button {
   margin: 40px auto 0;
@@ -2927,7 +2927,7 @@ export default {
   max-width: 384px;
 }
 .st-button {
-  min-width: 200px;
+  min-width: 233px;
   padding: 5px 64px;
   font-family: var(--secondary-font);
 }
