@@ -226,12 +226,9 @@ export default {
           ? '?chain=main'
           : '?chain=test';
       window
-        .open(
-          'https://stealthmonitor.org/address/' + address + chain,
-          '_blank'
-        )
+        .open('https://stealthmonitor.org/address/' + address + chain, '_blank')
         .focus();
-    } 
+    }
 
     async function getTx(txid) {
       const res = await mainStore.rpc('gettransaction', [txid]);
