@@ -1,8 +1,5 @@
 <template>
-  <header
-    class="layout__header"
-    :class="computedClass"
-  >
+  <header class="layout__header" :class="computedClass">
     <div class="header-left">
       <template v-if="checkVisibilityForRoute(['Dashboard'])">
         <div :class="{ nonclickable: !componentVisibility.txDashboard }">
@@ -620,7 +617,7 @@ export default {
     const computedClass = computed(() => {
       return {
         'layout__header--is-grey': headerStyle.value === 'grey',
-        'layout__header--settings': route.path.split("/").includes("settings")
+        'layout__header--settings': route.path.split('/').includes('settings'),
       };
     });
     const headerStyle = computed(() => mainStore.headerStyle);
@@ -858,7 +855,7 @@ export default {
       form,
       validateFields,
       resetFields,
-      computedClass
+      computedClass,
     };
   },
 };
