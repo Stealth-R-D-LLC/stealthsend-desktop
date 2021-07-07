@@ -26,7 +26,29 @@ export default {
 
     async function scanWallet() {
       const hdWallet = await CryptoService.scanWallet();
-      accounts.value = hdWallet.accounts;
+
+      // find first account with 0 balance
+      let firstZeroAccount = null;
+      for (let acc of hdWallet.accounts) {
+        if (acc.utxo === 0) {
+          firstZeroAccount = acc;
+          break;
+        }
+      }
+
+      let tmpAccounts = [];
+      if (firstZeroAccount) {
+        tmpAccounts = [firstZeroAccount];
+        for (let acc of hdWallet.accounts) {
+          if (acc.address === firstZeroAccount.address) continue;
+          tmpAccounts.push(acc);
+        }
+      } else {
+        tmpAccounts = tmpAccounts.concat(hdWallet.accounts);
+      }
+      console.log('acccc', tmpAccounts);
+
+      accounts.value = tmpAccounts;
     }
     scanWallet();
     function unarchieve(account) {

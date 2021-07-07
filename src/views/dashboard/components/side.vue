@@ -8,6 +8,7 @@
         :account="account"
         :type="step"
         :rates="constraints"
+        @click="openAccount(account)"
       >
       </Card>
     </div>
@@ -20,6 +21,7 @@ import Card from '@/components/elements/Card';
 import CryptoService from '@/services/crypto';
 import { ref, computed, watch } from 'vue';
 import { useMainStore } from '@/store';
+import router from '@/router';
 
 export default {
   components: {
@@ -68,7 +70,11 @@ export default {
       const hdWallet = await CryptoService.scanWallet();
       utxo.value = Number(hdWallet.utxo);
       txs.value = hdWallet.txs;
-      accounts.value = hdWallet.accounts.filter((el) => !el.isArchived);
+      accounts.value = hdWallet.accounts
+        .filter((el) => !el.isArchived)
+        .sort((a, b) => {
+          return a.isFavourite === b.isFavourite ? 0 : a.isFavourite ? -1 : 1;
+        });
     }
     scanWallet();
 
@@ -82,7 +88,13 @@ export default {
       step.value = value;
     }
 
+    function openAccount(account) {
+      mainStore.SET_ACCOUNT_DETAILS(account);
+      router.push('/account/details');
+    }
+
     return {
+      openAccount,
       accounts,
       switcherChange,
       step,

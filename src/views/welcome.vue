@@ -1419,8 +1419,8 @@
                 <h5>Recovery Phrase</h5>
                 <h6>Your new StealthSend Account is being prepared.</h6>
                 <p class="desc-medium">
-                  Please move your mouse to generate a random list of words
-                  unique to your wallet.
+                  A random list of words unique to your wallet is being <br />
+                  generated.
                 </p>
                 <svg
                   width="76"
