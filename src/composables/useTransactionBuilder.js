@@ -10,6 +10,8 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
   const { fee } = useFeeEstimator(utxo.length);
 
+  console.log('TRANSACTION BUILDER: latest fee:', fee);
+
   const sumOf = (x = 0, y = 0) => {
     let sum = add(x, y);
     sum = format(sum, { precision: 14 });
@@ -22,15 +24,13 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     return Number(diff);
   };
   function calculateChange(accountAmount, sendAmount) {
-    let change = subtractOf(accountAmount, sumOf(sendAmount, fee));
+    let change = subtractOf(accountAmount, sendAmount);
     return change;
   }
 
   function findPathForAddress(address) {
     const path = sendForm.account.path;
     const { account: accountIndex } = CryptoService.breakAccountPath(path);
-    console.log('account', accountIndex);
-    console.log('address', address);
     // find address index on this particular account
     // iterate over account addresses until passed address is found and return its index
     for (let i = 0; i < 30; i++) {
@@ -75,11 +75,20 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       // amount: multiply(bignumber(sendForm.amount), bignumber(-Math.abs(0.01)), 1e6).d[0]
     };
 
+    console.log(
+      'TRANSACTION BUILDER: recipient will get:',
+      Number(sumOf(sendForm.amount, fee * -1))
+    );
+
     let sumUtxo = utxo.map((el) => el.amount).reduce((a, b) => sumOf(a, b), 0);
     let change = {
       address: sendForm.account.address,
       amount: calculateChange(sumUtxo, Number(sendForm.amount)) * 1e6, // account amount - (send amount + fee)
     };
+    console.log(
+      'TRANSACTION BUILDER: change:',
+      calculateChange(sumUtxo, Number(sendForm.amount))
+    );
 
     // add the output for recipient
     rawTransaction.addOutput(recipient.address, recipient.amount);
