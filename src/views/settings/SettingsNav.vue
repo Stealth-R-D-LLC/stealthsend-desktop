@@ -220,7 +220,6 @@ export default {
   name: 'StSettingsNav',
   setup() {
     function goTo(path) {
-      console.log('path: ', path);
       router.push(path);
     }
     function openWebsite() {

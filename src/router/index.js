@@ -20,7 +20,6 @@ import Settings from '@/views/settings/settings.vue';
 import SettingsTermsOfUse from '@/views/settings/terms-of-use.vue';
 import SettingsWebsite from '@/views/settings/website.vue';
 import Transactions from '@/views/transactions.vue';
-import UIKit from '@/views/uikit.vue';
 import Welcome from '@/views/welcome.vue';
 import NoConnection from '@/components/connection/NoStealthConnection.vue';
 import { createRouter, createWebHistory } from 'vue-router';
@@ -30,20 +29,6 @@ const routes = [
     path: '/',
     // redirect: 'dashboard',
     pathMatch: 'full',
-    // beforeEnter: (_to, _from, _next) => {
-    // db.find({ name: 'wallet' }).then(docs => {
-    //   console.log("DB", db)
-    //   console.log("BEFORE if docs", docs)
-    //   if (!docs || docs.length === 0) {
-    //     console.log("EMTPY docs", docs)
-    //     next('/welcome')
-    //   } else {
-    //     console.log("FULL docs", docs)
-    //     next('/dashboard')
-    //   }
-
-    // })
-    //}
   },
   {
     path: '/lock',
@@ -69,11 +54,6 @@ const routes = [
     meta: {
       layout: 'default',
     },
-  },
-  {
-    path: '/uikit',
-    name: 'UIKit',
-    component: UIKit,
   },
   {
     path: '/transactions/:address',
