@@ -6,18 +6,88 @@
     <div class="header-left">
       <template v-if="checkVisibilityForRoute(['Dashboard'])">
         <div :class="{ nonclickable: !componentVisibility.txDashboard }">
-          <StIcon
+          <svg
             :class="{ inactive: !componentVisibility.chart }"
-            name="chart"
             @click="toggleComponentVisibility('chart')"
-          ></StIcon>
+            width="16"
+            height="18"
+            viewBox="0 0 16 18"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M2 18V7"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M6 18V9"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M10 18V0"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M14 18V4"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+          </svg>
         </div>
         <div :class="{ nonclickable: !componentVisibility.chart }">
-          <StIcon
+          <svg
             :class="{ inactive: !componentVisibility.txDashboard }"
-            name="tx-list"
             @click="toggleComponentVisibility('txDashboard')"
-          ></StIcon>
+            width="18"
+            height="12"
+            viewBox="0 0 18 12"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M4 1H18"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M0 1H2"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M4 6H18"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M0 6H2"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M4 11H18"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M0 11H2"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+          </svg>
         </div>
       </template>
       <template v-if="checkVisibilityForRoute(['AccountDetails'])">
@@ -246,14 +316,73 @@
     </div>
     <div class="header-right">
       <p class="rpc-status">{{ rpcStatus }}</p>
-      <StIcon name="sync-status"></StIcon>
+      <svg
+        width="22"
+        height="22"
+        viewBox="0 0 22 22"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="11" cy="11" r="11" fill="#E0D3FC" />
+        <path
+          d="M18 11C18 14.866 14.866 18 11 18C7.13401 18 4 14.866 4 11C4 7.13401 7.13401 4 11 4C12.0736 4 13.0907 4.24169 14 4.67363"
+          stroke="#4E00F6"
+          stroke-width="2"
+        />
+        <path d="M17 7L11 13L8 10" stroke="#4E00F6" stroke-width="2" />
+      </svg>
+
       <!-- <StIcon name="support"></StIcon> -->
       <!-- <StIcon
         name="notifications"
         @click="toggleDrawer('recent-notifications')"
       ></StIcon> -->
-      <StIcon @click="openQuickDeposit" name="qr"></StIcon>
-      <StIcon @click="goto('/settings')" name="settings"></StIcon>
+      <svg
+        @click="openQuickDeposit"
+        width="18"
+        height="18"
+        viewBox="0 0 18 18"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M7 7H1V1H7V7Z"
+          stroke="#4E00F6"
+          stroke-width="2"
+        />
+        <path d="M11 0V3H14V1H17V5" stroke="#4E00F6" stroke-width="2" />
+        <path d="M7 18V16H4V17H1V14" stroke="#4E00F6" stroke-width="2" />
+        <path d="M11 18V16H14V17H17V14" stroke="#4E00F6" stroke-width="2" />
+        <path d="M11 13H7V11H4" stroke="#4E00F6" stroke-width="2" />
+        <path d="M10 7H18" stroke="#4E00F6" stroke-width="2" />
+        <path d="M14 9V11H17V9" stroke="#4E00F6" stroke-width="2" />
+        <path d="M1 10V12" stroke="#4E00F6" stroke-width="2" />
+        <path d="M11 9V10.6364" stroke="#4E00F6" stroke-width="2" />
+      </svg>
+      <svg
+        @click="goto('/settings')"
+        width="18"
+        height="18"
+        viewBox="0 0 18 18"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M7 11L18 11" stroke="#4E00F6" stroke-width="2" />
+        <path
+          d="M4 14C5.65685 14 7 12.6569 7 11C7 9.34315 5.65685 8 4 8C2.34315 8 1 9.34315 1 11C1 12.6569 2.34315 14 4 14Z"
+          stroke="#4E00F6"
+          stroke-width="2"
+        />
+        <path d="M0 4H7" stroke="#4E00F6" stroke-width="2" />
+        <path
+          d="M14 7C15.6569 7 17 5.65685 17 4C17 2.34315 15.6569 1 14 1C12.3431 1 11 2.34315 11 4C11 5.65685 12.3431 7 14 7Z"
+          stroke="#4E00F6"
+          stroke-width="2"
+        />
+        <path d="M7 17H18" stroke="#4E00F6" stroke-width="2" />
+      </svg>
     </div>
     <StModal
       light
