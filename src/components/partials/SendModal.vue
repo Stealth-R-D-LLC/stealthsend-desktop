@@ -467,9 +467,13 @@ export default {
         $value: amount,
         $rules: [
           (amount) => {
+            let fee = findFee();
+            const maxAmount = format(subtract(account.value.utxo, fee), {
+              precision: 8,
+            });
             if (!amount || Number(amount) < minimumXSTForSend.value) {
               return 'Minimum amount is ' + minimumXSTForSend.value + ' XST';
-            } else if (account.value && account.value.utxo < Number(amount)) {
+            } else if (maxAmount < Number(amount)) {
               return 'Insufficient funds on this account';
             }
           },
@@ -713,6 +717,7 @@ export default {
       // check if amount is less than miminim amount for send
       // if not, find real fee
       let fee = findFee();
+      console.log('fee', fee);
       // subtract real fee from amount
       const maxAmount = format(subtract(item.utxo, fee), { precision: 8 });
       form.amount.$value = maxAmount;
