@@ -8,6 +8,7 @@
         :account="account"
         :type="step"
         :rates="constraints"
+        @click="openAccount(account)"
       >
       </Card>
     </div>
@@ -20,6 +21,7 @@ import Card from '@/components/elements/Card';
 import CryptoService from '@/services/crypto';
 import { ref, computed, watch } from 'vue';
 import { useMainStore } from '@/store';
+import router from '@/router';
 
 export default {
   components: {
@@ -86,7 +88,13 @@ export default {
       step.value = value;
     }
 
+    function openAccount(account) {
+      mainStore.SET_ACCOUNT_DETAILS(account);
+      router.push('/account/details');
+    }
+
     return {
+      openAccount,
       accounts,
       switcherChange,
       step,
