@@ -206,6 +206,7 @@
         </svg>
         <svg
           @click="toggleDrawer('favourite-list')"
+          class="favourite-list"
           width="24"
           height="25"
           viewBox="0 0 24 25"
@@ -888,6 +889,10 @@ export default {
 
 .header-left div + div,
 .header-right svg + svg {
+  margin-left: 24px;
+}
+
+.favourite-list {
   margin-left: 24px;
 }
 
