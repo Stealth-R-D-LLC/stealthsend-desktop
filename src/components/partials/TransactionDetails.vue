@@ -119,7 +119,8 @@
         <p class="bold">Receiving Address</p>
         <p
           v-if="tx && tx.vout && tx.vout.length && tx.vout[0]"
-          class="item-link"
+          class="item-link pointer"
+          @click="openAddressExplorer(tx.vout[0].scriptPubKey.addresses[0])"
         >
           {{ tx.vout[0].scriptPubKey.addresses[0] }}
         </p>
@@ -127,7 +128,7 @@
       </div>
       <div class="item">
         <p class="bold">Transaction ID</p>
-        <p class="item-link">
+        <p class="item-link pointer" @click="openBlockExplorer(tx.txid)">
           {{ tx.txid }}
         </p>
       </div>
@@ -219,6 +220,19 @@ export default {
         .focus();
     }
 
+    function openAddressExplorer(address) {
+      const chain =
+        process.env.VUE_APP_NETWORK === 'mainnet'
+          ? '?chain=main'
+          : '?chain=test';
+      window
+        .open(
+          'https://stealthmonitor.org/address/' + address + chain,
+          '_blank'
+        )
+        .focus();
+    } 
+
     async function getTx(txid) {
       const res = await mainStore.rpc('gettransaction', [txid]);
       tx.value = {
@@ -235,6 +249,7 @@ export default {
       formatAmount,
 
       openBlockExplorer,
+      openAddressExplorer,
       openEditMode,
       editMode,
       txWithLabels,
@@ -298,5 +313,9 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.pointer {
+  cursor: pointer;
 }
 </style>
