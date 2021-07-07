@@ -465,6 +465,27 @@ const CryptoService = {
     };
   },
 
+  async findLastUsedAccountPath() {
+    const mainStore = useMainStore();
+
+    let emptyInARow = 0;
+    let lastAccountPath = "";
+    for (let i = 0; i < Infinity; i++) {
+      const acc = this.getChildFromRoot(i, 0, 0);
+      const hdAccount = await mainStore.rpc('gethdaccount', [acc.xpub]);
+
+      if (hdAccount.length > 0) {
+        lastAccountPath = acc.path;
+        emptyInARow = 0;
+        continue;
+      }
+
+      emptyInARow += 1;
+      if (emptyInARow >= 20) break;
+    }
+    return parseInt(lastAccountPath);
+  },
+
   isAddressValid(address) {
     const { version } = bitcoin.address.fromBase58Check(address);
     const isMainnet = process.env.VUE_APP_NETWORK === 'mainnet';
