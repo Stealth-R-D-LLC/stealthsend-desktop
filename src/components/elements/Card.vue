@@ -258,6 +258,7 @@ export default {
 }
 .card__inner {
   padding: 16px 20px 24px;
+  cursor: pointer;
 }
 .account-options {
   position: absolute;
