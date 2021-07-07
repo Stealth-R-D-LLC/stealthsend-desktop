@@ -68,7 +68,14 @@ export default {
       const hdWallet = await CryptoService.scanWallet();
       utxo.value = Number(hdWallet.utxo);
       txs.value = hdWallet.txs;
-      accounts.value = hdWallet.accounts.filter((el) => !el.isArchived);
+      accounts.value = hdWallet.accounts
+        .filter((el) => !el.isArchived)
+        .sort((a, b) => {
+          return a.isFavourite === b.isFavourite ? 0 : a.isFavourite ? -1 : 1;
+        });
+        // .sort((a, b) => {
+        //   return a.utxo - b.utxo;
+        // });
     }
     scanWallet();
 
