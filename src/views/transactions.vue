@@ -114,14 +114,12 @@ import isWithinInterval from 'date-fns/isWithinInterval';
 import isSameDay from 'date-fns/isSameDay';
 import { useMainStore } from '@/store';
 import { useRoute } from 'vue-router';
-import StFormItem from '@/components/elements/StFormItem.vue';
 
 export default {
   name: 'Transactions',
   components: {
     TransactionList,
     DatePicker,
-    StFormItem,
   },
   beforeRouteLeave() {
     //const mainStore = useMainStore();

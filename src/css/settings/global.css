@@ -7,7 +7,29 @@ html, body {
     overflow: hidden;
 }
 
-.st-button--primary {
-    font-family: var(--secondary-font);
-    padding: 5px 30px !important;
+button {
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.st-form-item {
+    position: relative;
+}
+
+.st-form-item .st-form-item__error {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: left;
+}
+
+.no-margin {
+    margin: 0;
+}
+
+.st-input .st-icon {
+    height: 35px;
+    display: flex;
+    align-items: center;
+    bottom: 2px;
 }

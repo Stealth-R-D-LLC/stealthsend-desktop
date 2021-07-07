@@ -34,18 +34,88 @@
       <div class="account-details-container__body--overflow">
         <div class="icons">
           <div :class="{ nonclickable: !componentVisibility.txDashboard }">
-            <StIcon
+            <svg
               :class="{ inactive: !componentVisibility.chart }"
-              name="chart"
               @click="toggleComponentVisibility('chart')"
-            ></StIcon>
+              width="16"
+              height="18"
+              viewBox="0 0 16 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M2 18V7"
+                stroke="#4E00F6"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M6 18V9"
+                stroke="#4E00F6"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M10 18V0"
+                stroke="#4E00F6"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M14 18V4"
+                stroke="#4E00F6"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+            </svg>
           </div>
           <div :class="{ nonclickable: !componentVisibility.chart }">
-            <StIcon
+            <svg
               :class="{ inactive: !componentVisibility.txDashboard }"
-              name="tx-list"
               @click="toggleComponentVisibility('txDashboard')"
-            ></StIcon>
+              width="18"
+              height="12"
+              viewBox="0 0 18 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M4 1H18"
+                stroke="#4E00F6"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M0 1H2"
+                stroke="#4E00F6"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M4 6H18"
+                stroke="#4E00F6"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M0 6H2"
+                stroke="#4E00F6"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M4 11H18"
+                stroke="#4E00F6"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M0 11H2"
+                stroke="#4E00F6"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+            </svg>
           </div>
         </div>
         <Chart v-if="componentVisibility.chart"></Chart>

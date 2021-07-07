@@ -129,7 +129,7 @@ fieldset[disabled] .multiselect {
   align-items: center;
   min-height: 40px;
     padding: 8px 40px 8px 0;
-    border-bottom: 2px solid var(--grey200);
+    border-bottom: 1.5px solid var(--grey200);
     font-size: 12px;
     margin: 0 auto;
     transition: width 0.3s;
@@ -137,10 +137,9 @@ fieldset[disabled] .multiselect {
 .multiselect__tags::after {
   content: '';
   position: absolute;
-  bottom: -2px;
-  height: 2px;
+  bottom: -1px;
+  border-bottom: 1.5px solid var(--marine400);
   width: 60px;
-  background-color: var(--marine400);
   transition: width 0.3s;
 }
 .multiselect-filled .multiselect__tags::after {

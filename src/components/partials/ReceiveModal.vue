@@ -48,7 +48,12 @@
             </template>
           </StMultiselect>
         </StFormItem>
-        <StFormItem color="dark" label="Amount">
+        <StFormItem
+          color="dark"
+          :filled="amount || amountFiat"
+          label="Amount"
+          size="lg"
+        >
           <StAmount
             v-if="inputAmountState === 'XST'"
             v-model="amount"
@@ -132,8 +137,13 @@
             </div>
           </StAmount>
         </StFormItem>
-        <StFormItem color="dark" label="Address">
-          <StInput v-model="depositAddress" placeholder="Loading..." disabled>
+        <StFormItem
+          color="dark"
+          :filled="depositAddress"
+          label="Address"
+          readonly
+        >
+          <StInput v-model="depositAddress" placeholder="Loading..." readonly>
             <StTooltip
               v-if="depositAddress"
               :tooltip="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
@@ -187,13 +197,16 @@
         <StFormItem
           class="receiving-address"
           label="Receiving Address"
+          position="center"
           color="dark"
+          :filled="depositAddress"
+          readonly
         >
           <StInput
             class="address-input"
             v-model="depositAddress"
             placeholder="Deposit address"
-            disabled
+            readonly
           ></StInput>
         </StFormItem>
         <StTooltip
@@ -211,6 +224,7 @@
         <StFormItem
           label="Email"
           color="dark"
+          :filled="form.email.$value"
           :error-message="form.email.$errors"
         >
           <StInput v-model="form.email.$value" placeholder="Email"></StInput>
@@ -225,18 +239,18 @@
       <template v-if="currentStep === 1">
         <StButton
           :disabled="!depositAddress"
-          color="white"
+          type="type-d"
           @click="changeStep(2)"
           >Generate QR Code</StButton
         >
       </template>
       <template v-if="currentStep === 2">
-        <StButton color="white" @click="changeStep(3)"
+        <StButton type="type-d" @click="changeStep(3)"
           >Share via Email</StButton
         >
       </template>
       <template v-if="currentStep === 3">
-        <StButton color="white" @click="sendEmail">Send Email</StButton>
+        <StButton type="type-d" @click="sendEmail">Send Email</StButton>
       </template>
     </template>
   </StModal>
@@ -489,7 +503,6 @@ export default {
   text-align: center;
 }
 .tooltip {
-  margin-top: 10px;
   display: block;
   width: 100%;
   text-align: center;
@@ -506,7 +519,7 @@ export default {
   color: var(--grey50);
 }
 .qr-img {
-  margin: 46px auto 0;
+  margin: 33px auto 0;
   display: block;
   max-width: 145px;
 }
@@ -592,16 +605,13 @@ export default {
   margin-bottom: 36px;
 }
 .receive-modal .st-modal__body {
-  margin: 10px 0 0;
-}
-.receive-modal .st-form-item {
-  margin: 10px 0 54px;
-}
-.receive-modal .st-form-item.receiving-address {
   margin: 0;
 }
+.receive-modal .st-form-item.receiving-address {
+  margin-bottom: 22px;
+}
 .receive-modal .st-input {
-  margin-bottom: 20;
+  margin-bottom: 16px;
 }
 .receive-modal .st-modal__footer {
   display: flex;
