@@ -29,8 +29,6 @@ export default async function useTransactionBuilder(utxo, sendForm) {
   function findPathForAddress(address) {
     const path = sendForm.account.path;
     const { account: accountIndex } = CryptoService.breakAccountPath(path);
-    console.log('account', accountIndex);
-    console.log('address', address);
     // find address index on this particular account
     // iterate over account addresses until passed address is found and return its index
     for (let i = 0; i < 30; i++) {

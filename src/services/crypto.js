@@ -31,27 +31,6 @@ if (process.env.VUE_APP_NETWORK === 'mainnet') {
     wif: 0xbe,
   };
 }
-// libs.bitcoin.networks.stealthtestnet = {
-//   messagePrefix: 'unused',
-//   bip32: {
-// public: 0x043587cf,
-// private: 0x04358394,
-//   },
-//   pubKeyHash: 0x6f,
-//   scriptHash: 0xc4,
-//   wif: 0xef
-// };
-
-// libs.bitcoin.networks.stealth = {
-//   messagePrefix: 'unused',
-//   bip32: {
-// public: 0x0488b21e,
-// private: 0x0488ade4
-//   },
-//   pubKeyHash: 0x3e,
-//   scriptHash: 0x85,
-//   wif: 0xbe
-// };
 
 const CryptoService = {
   constraints: {
@@ -66,7 +45,6 @@ const CryptoService = {
   master: null,
   seed: null,
   txWithLabels: {},
-  // password: '',
 
   async init() {
     // check if there's already a wallet stored in the db
@@ -140,7 +118,6 @@ const CryptoService = {
     });
   },
   breakAccountPath(path = "0'/0/0") {
-    console.log('path:', path);
     path = path.replace("'", '');
     const account = +path.split('/')[0];
     const change = +path.split('/')[1];
@@ -152,7 +129,6 @@ const CryptoService = {
     };
   },
   getKeysForAccount(account = 0, change = 0, address = 0) {
-    console.log('aca', account, change, account);
     if (!this.master)
       return {
         xpub: '',
@@ -177,7 +153,6 @@ const CryptoService = {
     };
   },
   getChildFromRoot(account, change, address) {
-    console.log('getChildFromRoot', account, change, address);
     // With non-hardened keys, you can prove a child public key is linked to a parent public key
     // using just the public keys.
     // You can also derive public child keys from a public parent key,
@@ -193,25 +168,6 @@ const CryptoService = {
         process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
       }'/${account}'`
     );
-    // this.WIFtoPK(child.toWIF()) // decrypt
-    // console.log('1: ', acc.toWIF());
-    // console.log('2: ', keypair.toWIF());
-    // console.log('public key: ', keypair);
-    // console.log('public key1: ', Buffer.from(keypair.d));
-    // console.log('---');
-    // console.log('xpub', String(acc.neutered().toBase58())); // xpub Account Extended Public Key
-    // console.log('public key: ', keypair.publicKey.toString('hex')); // public key
-    // // console.log('keypair: ', keypair.privateKey.toString('hex'));
-    // console.log('secret key: ', keypair.toWIF()); // private key
-    // console.log('haha: ', bitcoin.ECPair.fromWIF('V7ZNZ67eXaq1je59K99KxfeMDDH7cic7yRc8BTuXqoq3FvNTwh9J', this.network));
-    // let testkeypair = bitcoin.ECPair.fromWIF('V7ZNZ67eXaq1je59K99KxfeMDDH7cic7yRc8BTuXqoq3FvNTwh9J', this.network);
-    // console.log('ima li pk', testkeypair.publicKey);
-    // console.log('11', keypair.publicKey);
-    // console.log('addr ', bitcoin.payments.p2pkh({ // netje
-    //   pubkey: testkeypair.publicKey.toString('hex'),
-    //   network: this.network,
-    // }).address);
-    // let testkeypair = bitcoin.ECPair.fromWIF('privatekey', this.network);
     return {
       address: bitcoin.payments.p2pkh({
         pubkey: keypair.publicKey,
@@ -307,11 +263,10 @@ const CryptoService = {
   },
 
   async favouriteAccount(account) {
-    console.log('a_ ', account);
     let accounts = await db.getItem('accounts');
     if (accounts.length < 1) {
       console.error('Accounts do not exist');
-      // return await this.scanWallet();
+      return;
     }
 
     const wantedIndex = accounts.findIndex(
@@ -320,8 +275,6 @@ const CryptoService = {
 
     accounts[wantedIndex].isFavourite = true;
     await db.setItem('accounts', accounts);
-
-    // return this.scanWallet();
   },
 
   async unfavouriteAccount(account) {
