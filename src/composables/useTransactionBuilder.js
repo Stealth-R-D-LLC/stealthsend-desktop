@@ -75,14 +75,20 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       // amount: multiply(bignumber(sendForm.amount), bignumber(-Math.abs(0.01)), 1e6).d[0]
     };
 
-    console.log('TRANSACTION BUILDER: recipient will get:', Number(sumOf(sendForm.amount, fee * -1)));
+    console.log(
+      'TRANSACTION BUILDER: recipient will get:',
+      Number(sumOf(sendForm.amount, fee * -1))
+    );
 
     let sumUtxo = utxo.map((el) => el.amount).reduce((a, b) => sumOf(a, b), 0);
     let change = {
       address: sendForm.account.address,
       amount: calculateChange(sumUtxo, Number(sendForm.amount)) * 1e6, // account amount - (send amount + fee)
     };
-    console.log('TRANSACTION BUILDER: change:', calculateChange(sumUtxo, Number(sendForm.amount)));
+    console.log(
+      'TRANSACTION BUILDER: change:',
+      calculateChange(sumUtxo, Number(sendForm.amount))
+    );
 
     // add the output for recipient
     rawTransaction.addOutput(recipient.address, recipient.amount);
