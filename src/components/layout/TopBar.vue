@@ -1,8 +1,5 @@
 <template>
-  <header
-    class="layout__header"
-    :class="{ 'layout__header--is-grey': headerStyle === 'grey' }"
-  >
+  <header class="layout__header" :class="computedClass">
     <div class="header-left">
       <template v-if="checkVisibilityForRoute(['Dashboard'])">
         <div :class="{ nonclickable: !componentVisibility.txDashboard }">
@@ -617,6 +614,14 @@ export default {
       return route.name;
     });
 
+    const computedClass = computed(() => {
+      return {
+        'layout__header--is-grey': headerStyle.value === 'grey',
+        'layout__header--settings': route.path.split('/').includes('settings'),
+      };
+    });
+    const headerStyle = computed(() => mainStore.headerStyle);
+
     const componentVisibility = computed(() => {
       return mainStore.componentVisibility;
     });
@@ -820,7 +825,7 @@ export default {
       toggleComponentVisibility,
       goto,
       openQuickDeposit,
-      headerStyle: computed(() => mainStore.headerStyle),
+      headerStyle,
       isVisible,
       changeStep,
       activeStep,
@@ -850,6 +855,7 @@ export default {
       form,
       validateFields,
       resetFields,
+      computedClass,
     };
   },
 };
@@ -862,6 +868,10 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.layout__header--settings {
+  width: calc(100% - 440px);
+  margin-left: auto;
 }
 .header-left,
 .header-right {
