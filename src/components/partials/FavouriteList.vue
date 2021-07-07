@@ -144,7 +144,6 @@ export default {
     });
 
     async function addToFavouriteList() {
-      console.log('qq', account.value);
       await CryptoService.favouriteAccount(account.value);
       const scannedAccounts = await CryptoService.scanWallet();
       accounts.value = scannedAccounts.accounts;

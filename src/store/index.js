@@ -141,7 +141,6 @@ export const useMainStore = defineStore({
       });
     },
     getChartData(payload) {
-      console.log(payload);
       return new Promise((resolve, reject) => {
         API.get(`https://api.stealth.org/api/charts/homepage?period=${payload}`)
           .then((res) => {
