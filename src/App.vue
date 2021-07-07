@@ -65,6 +65,7 @@ export default {
 
     watchEffect(() => {
       if (alt.value && l.value) {
+        console.log('Lock');
         if (route.name === 'Lock') return; // don't handle if already on lock screen
         router.push('/lock');
       }
