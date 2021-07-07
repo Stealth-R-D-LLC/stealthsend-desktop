@@ -73,9 +73,6 @@ export default {
         .sort((a, b) => {
           return a.isFavourite === b.isFavourite ? 0 : a.isFavourite ? -1 : 1;
         });
-        // .sort((a, b) => {
-        //   return a.utxo - b.utxo;
-        // });
     }
     scanWallet();
 
