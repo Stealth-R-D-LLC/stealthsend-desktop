@@ -5,7 +5,6 @@ fieldset[disabled] .multiselect {
 .st-form-item--is-dark .multiselect__tags .multiselect__single {
   color: var(--white);
 }
-
 .st-form-item--is-dark .multiselect__select::before {
   border-color: var(--white) transparent transparent transparent;
 }
@@ -394,4 +393,17 @@ fieldset[disabled] .multiselect {
 
 .dark .multiselect__select::before {
   border-color: var(--white) transparent transparent transparent;
+}
+
+.st-form-item--is-dark .multiselect--disabled {
+  /* color: var(--white); */
+  /* color: pink; */
+  background: none;
+  pointer-events: none;
+  /* opacity: 0.6; */
+}
+
+.st-form-item--is-dark .multiselect--disabled .multiselect__current,
+.st-form-item--is-dark .multiselect--disabled .multiselect__select {
+  background: none;
 }
