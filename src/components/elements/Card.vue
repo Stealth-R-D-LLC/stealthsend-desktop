@@ -314,7 +314,8 @@ export default {
   justify-content: space-between;
   color: var(--grey500);
 }
-svg {
+svg.info,
+.account-options > svg {
   cursor: pointer;
 }
 </style>
