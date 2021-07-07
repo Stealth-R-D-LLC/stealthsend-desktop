@@ -37,7 +37,7 @@
           </template>
 
           <template #option="{ option }">
-            <div class="flex-space-between">
+            <div class="flex-space-between option">
               <span>
                 {{ option.label }}
               </span>
@@ -880,7 +880,22 @@ export default {
   align-items: center;
 }
 :deep .multiselect {
-  max-width: 170px;
+  max-width: 270px;
+}
+
+:deep .multiselect__single {
+  display: inline-block;
+  width: 260px;
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+}
+.option > span {
+  display: inline-block;
+  width: 200px;
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
 }
 .header-right {
   justify-content: flex-end;
