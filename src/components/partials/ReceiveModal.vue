@@ -16,7 +16,7 @@
         <StFormItem color="dark" label="Account">
           <StMultiselect
             :class="{ 'multiselect-filled': account }"
-          :disabled="!depositAddress"
+            :disabled="!depositAddress"
             v-model="account"
             :options="accounts"
             track-by="address"
@@ -358,7 +358,7 @@ export default {
     const qrSrc = ref('');
     async function changeAccount(acc = accounts.value[0]) {
       if (pickedAccount.value) {
-        acc = pickedAccount.value
+        acc = pickedAccount.value;
       }
       depositAddress.value = '';
       const { account, change } = CryptoService.breakAccountPath(acc.path);
