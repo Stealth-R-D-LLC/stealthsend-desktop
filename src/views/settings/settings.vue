@@ -93,9 +93,10 @@ export default {
 
 <style>
 .st-settings-child {
-  padding: 42px 10px 42px 64px;
-  height: calc(100vh - 166px);
+  padding: 42px 10px 40px 64px;
+  height: calc(100vh - 101px);
   width: 100%;
+  box-sizing: border-box;
 }
 .st-settings-child__overflow {
   overflow: auto;
