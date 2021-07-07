@@ -368,10 +368,7 @@ export default {
       accountOptions.value = '';
     }
     async function changeAccountName(account) {
-      await CryptoService.changeAccountName(
-        account,
-        accountName.value
-      );
+      await CryptoService.changeAccountName(account, accountName.value);
       const scannedAccounts = await CryptoService.scanWallet();
       accounts.value = scannedAccounts.accounts;
       editAccountNameModal.value = false;
