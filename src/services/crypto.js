@@ -575,9 +575,9 @@ const CryptoService = {
 
   async getNextAccountPath() {
     let accounts = await this.getAccounts();
-    let largest = 0;
+    let largest = -1;
     for (let acc of accounts) {
-      if (parseInt(acc.path) > largest) {
+      if (acc.path && parseInt(acc.path) > largest) {
         largest = parseInt(acc.path);
       }
     }
