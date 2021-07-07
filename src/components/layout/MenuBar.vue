@@ -307,7 +307,7 @@ export default defineComponent({
 }
 
 .layout__aside nav {
-  margin-top: 28px;
+  margin-top: 36px;
 }
 
 .layout__aside .item__footer {
