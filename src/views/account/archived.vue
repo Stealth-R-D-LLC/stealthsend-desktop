@@ -38,16 +38,15 @@ export default {
 
       let tmpAccounts = [];
       if (firstZeroAccount) {
-        tmpAccounts = [firstZeroAccount]
+        tmpAccounts = [firstZeroAccount];
         for (let acc of hdWallet.accounts) {
           if (acc.address === firstZeroAccount.address) continue;
           tmpAccounts.push(acc);
         }
       } else {
-        tmpAccounts = tmpAccounts.concat(hdWallet.accounts)
+        tmpAccounts = tmpAccounts.concat(hdWallet.accounts);
       }
       console.log('acccc', tmpAccounts);
-
 
       accounts.value = tmpAccounts;
     }
