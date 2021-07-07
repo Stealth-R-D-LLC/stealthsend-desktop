@@ -37,7 +37,7 @@
       <h6 v-if="currentStep === 4 && !isValidMnemonic" class="title">Error</h6>
       <template v-if="!checkMnemonic">
         <p v-if="currentStep === 1" class="subtitle">
-          View and store your Recovery
+          View and store your Recovery Phrase offline
         </p>
         <p v-else-if="currentStep === 2" class="subtitle">
           Carefully record all {{ walletMnemonic.length }} words
@@ -263,7 +263,7 @@ export default {
     const checkMnemonic = ref(false);
     const savedPhrase = ref(false);
 
-    const { form, validateFields } = useValidation({
+    const { form, validateFields, resetFields } = useValidation({
       password: {
         $value: password,
         $rules: [
@@ -355,6 +355,7 @@ export default {
     function closeModal() {
       isVisible.value = false;
       password.value = '';
+      resetFields();
     }
     function openModal() {
       isVisible.value = true;
@@ -366,6 +367,7 @@ export default {
             .focus(),
         1
       );
+      resetFields();
     }
 
     return {
@@ -416,6 +418,9 @@ export default {
   justify-content: center;
 }
 .grey-box {
+  width: 100%;
+  max-width: 568px;
+  box-sizing: border-box;
   border-radius: 4px;
   padding: 24px;
   background-color: var(--background100);
