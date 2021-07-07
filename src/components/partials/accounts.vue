@@ -412,6 +412,16 @@ export default {
 </script>
 
 <style scoped>
+.accounts-container__inner h4,
+.archived {
+  font-family: var(--primary-font);
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 28px;
+  letter-spacing: 0.32px;
+  color: var(--grey1000);
+}
 .fill-enter-active {
   animation: fill 0.7s;
 }
@@ -443,6 +453,7 @@ export default {
   border: 1px solid var(--purple50);
   box-shadow: 0px 8px 24px -8px rgba(34, 3, 101, 0.1);
   border-radius: 2px;
+  width: 240px;
 }
 .card-purple {
   background: var(--marine300) !important;
@@ -526,17 +537,25 @@ export default {
   white-space: nowrap;
   overflow: hidden !important;
   text-overflow: ellipsis;
+  font-family: var(--primary-font);
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.32px;
+  color: var(--grey900);
 }
 .amount-container {
-  margin-top: 22px;
-  margin-bottom: 20px;
+  margin: 24px 0;
 }
 .currency {
-  font-size: 14px;
+  font-size: 16px;
   line-height: 24px;
+  letter-spacing: 0.12px;
 }
 .grey {
   color: var(--grey500);
+  font-size: 14px;
 }
 .link-purple {
   display: block;
@@ -546,6 +565,7 @@ export default {
   line-height: 24px;
   color: var(--marine700);
   transition: 0.3s;
+  letter-spacing: 0.12px;
 }
 .link-purple:hover {
   color: var(--white);
