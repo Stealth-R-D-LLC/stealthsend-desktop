@@ -396,11 +396,8 @@ fieldset[disabled] .multiselect {
 }
 
 .st-form-item--is-dark .multiselect--disabled {
-  /* color: var(--white); */
-  /* color: pink; */
   background: none;
   pointer-events: none;
-  /* opacity: 0.6; */
 }
 
 .st-form-item--is-dark .multiselect--disabled .multiselect__current,
