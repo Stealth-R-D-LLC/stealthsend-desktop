@@ -237,9 +237,9 @@ export default {
 .st-settings-nav {
   min-width: 346px;
   width: 346px;
-  margin-top: -83px;
+  margin-top: -102px;
   height: 100vh;
-  padding: 0 24px;
+  padding: 19px 24px 0;
   background-color: var(--background50);
 }
 
