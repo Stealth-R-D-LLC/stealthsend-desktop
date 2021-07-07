@@ -136,7 +136,12 @@
             Information about Stealth and StealthSend
           </p>
         </router-link>
-        <a href="https://www.stealth.org" class="group-item" target="_blank">
+        <a
+          href=""
+          @click.prevent="openWebsite"
+          class="group-item"
+          target="_blank"
+        >
           <p class="group-item__name">Website</p>
           <p class="group-item__desc">Get more information</p>
         </a>
@@ -215,11 +220,14 @@ export default {
   name: 'StSettingsNav',
   setup() {
     function goTo(path) {
-      console.log('path: ', path);
       router.push(path);
+    }
+    function openWebsite() {
+      window.open('https://stealth.org/', '_blank').focus();
     }
     return {
       goTo,
+      openWebsite,
     };
   },
 };
