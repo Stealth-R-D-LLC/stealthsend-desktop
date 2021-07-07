@@ -33,7 +33,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     const { account: accountIndex } = CryptoService.breakAccountPath(path);
     // find address index on this particular account
     // iterate over account addresses until passed address is found and return its index
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < Infinity; i++) {
       // similar logic like in accountDiscovery
       const acc = CryptoService.getChildFromRoot(accountIndex, 0, i);
       if (acc.address === address) {
