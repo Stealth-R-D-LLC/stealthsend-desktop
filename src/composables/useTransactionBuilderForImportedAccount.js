@@ -3,7 +3,7 @@ import CryptoService from '@/services/crypto';
 import { useMainStore } from '@/store';
 import * as bitcoin from 'bitcoinjs-lib';
 import { Buffer } from 'buffer';
-import { add, format, subtract } from 'mathjs';
+import { add, format, subtract, multiply, round } from 'mathjs';
 
 export default async function useTransactionBuilder(utxo, sendForm) {
   const mainStore = useMainStore();
@@ -11,16 +11,23 @@ export default async function useTransactionBuilder(utxo, sendForm) {
   const { fee } = useFeeEstimator(utxo.length);
 
   const sumOf = (x = 0, y = 0) => {
-    let sum = add(x, y);
-    sum = format(sum, { precision: 14 });
+    let sum = round(add(x, y));
+    sum = format(sum, { precision: 8 });
     return Number(sum);
   };
 
   const subtractOf = (x = 0, y = 0) => {
-    let diff = subtract(x, y);
-    diff = format(diff, { precision: 14 });
+    let diff = round(subtract(x, y), 8);
+    // diff = format(diff, { precision: 8 });
     return Number(diff);
   };
+
+  const multiplyOf = (x = 0, y = 0) => {
+    let result = round(multiply(x, y), 8);
+    // result = format(result, { precision: 8 });
+    return Number(result);
+  };
+
   function calculateChange(accountAmount, sendAmount) {
     let change = subtractOf(accountAmount, sumOf(sendAmount, fee));
     return change;
@@ -50,7 +57,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
       let recipient = {
         address: sendForm.address,
-        amount: Number(sumOf(sendForm.amount, fee * -1)) * 1e6,
+        amount: multiplyOf(Number(sumOf(sendForm.amount, multiplyOf(fee, -1))), 1e6),
       };
 
       let sumUtxo = utxo
@@ -58,7 +65,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         .reduce((a, b) => sumOf(a, b), 0);
       let change = {
         address: sendForm.account.address,
-        amount: calculateChange(sumUtxo, Number(sendForm.amount)) * 1e6, // account amount - (send amount + fee)
+        amount: multiplyOf(calculateChange(sumUtxo, Number(sendForm.amount)), 1e6), // account amount - (send amount + fee)
       };
 
       // add the output for recipient
