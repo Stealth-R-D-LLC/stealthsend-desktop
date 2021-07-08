@@ -12,7 +12,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
   console.log('TRANSACTION BUILDER: latest fee:', fee);
 
- const sumOf = (x = 0, y = 0) => {
+  const sumOf = (x = 0, y = 0) => {
     let sum = round(add(x, y), 8);
     // sum = format(sum, { precision: 8 });
     return sum;
@@ -77,7 +77,10 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
     let recipient = {
       address: sendForm.address,
-      amount: multiplyOf(Number(sumOf(sendForm.amount, multiplyOf(fee, -1))), 1e6),
+      amount: multiplyOf(
+        Number(sumOf(sendForm.amount, multiplyOf(fee, -1))),
+        1e6
+      ),
       // amount: multiply(bignumber(sendForm.amount), bignumber(-Math.abs(0.01)), 1e6).d[0]
     };
 
@@ -89,7 +92,10 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     let sumUtxo = utxo.map((el) => el.amount).reduce((a, b) => sumOf(a, b), 0);
     let change = {
       address: sendForm.account.address,
-      amount: multiplyOf(calculateChange(sumUtxo, Number(sendForm.amount)), 1e6), // account amount - (send amount + fee)
+      amount: multiplyOf(
+        calculateChange(sumUtxo, Number(sendForm.amount)),
+        1e6
+      ), // account amount - (send amount + fee)
     };
     console.log(
       'TRANSACTION BUILDER: change:',
