@@ -241,20 +241,22 @@ export default {
       () => isVisible.value,
       async () => {
         if (isVisible.value) {
-          existingAccounts = await CryptoService.getAccounts();
-          let next = await CryptoService.getNextAccountPath();
-          // get current last existing account
-          const { xpub: lastAccountPk } = CryptoService.getChildFromRoot(
-            next - 1 >= 0 ? next - 1 : 0,
-            0,
-            0
-          );
-          let lastHdAccount = await mainStore.rpc('gethdaccount', [
-            lastAccountPk,
-          ]);
-          if (lastHdAccount.length === 0) {
-            isLastAccountEmpty.value = true;
-          }
+          let { accounts } = await CryptoService.scanWallet();
+          isLastAccountEmpty.value = accounts.some((el) => el.utxo === 0);
+          // console.log('exx', existingAccounts);
+          // let next = await CryptoService.getNextAccountPath();
+          // // get current last existing account
+          // const { xpub: lastAccountPk } = CryptoService.getChildFromRoot(
+          //   next - 1 >= 0 ? next - 1 : 0,
+          //   0,
+          //   0
+          // );
+          // let lastHdAccount = await mainStore.rpc('gethdaccount', [
+          //   lastAccountPk,
+          // ]);
+          // if (lastHdAccount.length === 0) {
+          //   isLastAccountEmpty.value = true;
+          // }
         }
       }
     );
