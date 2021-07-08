@@ -179,7 +179,8 @@ export default {
             String(el.amount) === query.value ||
             el.txid === query.value ||
             findLabelForTx(el.txid) === query.value ||
-            el.outputs.some((el) => el.address === query.value)
+            el.outputs.some((el) => el.address === query.value) ||
+            el.txinfo.destinations.some((el) => el.addresses.includes(query.value))
           );
         });
       }
