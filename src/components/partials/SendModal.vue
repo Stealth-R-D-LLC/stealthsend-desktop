@@ -86,7 +86,7 @@
                 distractionFree: true,
                 valueAsInteger: false,
                 useGrouping: true,
-                precision: 8,
+                precision: 6,
                 allowNegative: false,
               }"
             >
@@ -392,7 +392,7 @@ import { format, add, subtract } from 'mathjs';
 
 const sumOf = (x = 0, y = 0) => {
   let sum = add(x, y);
-  sum = format(sum, { precision: 14 });
+  sum = format(sum, { precision: 8 });
   return Number(sum);
 };
 export default {
@@ -642,6 +642,7 @@ export default {
               account: account.value,
             });
           } catch (e) {
+            console.log('Transaction builder error: ', e);
             changeStep(7);
           }
         }
