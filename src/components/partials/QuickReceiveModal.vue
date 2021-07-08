@@ -9,6 +9,7 @@
     <template #header>Quick Receive XST</template>
     <template #body>
       <StFormItem
+        position="center"
         class="receiving-address"
         label="Receiving Address"
         color="dark"
@@ -174,7 +175,6 @@ export default {
 }
 .tooltip {
   width: fit-content;
-  padding: 24px 0 0;
   margin: 0 auto 40px;
   display: block;
   text-align: center;
@@ -182,20 +182,15 @@ export default {
 .qr-img {
   margin: 16px auto;
   display: block;
-  max-width: 145px;
+  max-width: 205px;
 }
 
 .address-loader {
   animation: rotating 2s linear infinite;
 }
-.receiving-address :deep label {
-  right: 0;
-  text-align: center;
-}
-:deep .st-form-item__message--is-notice {
-  width: 100%;
-  text-align: center;
-  margin-top: 8px;
+
+:deep .st-modal__body {
+  margin: 36px 0 0 0;
 }
 
 .st-clipboard {
@@ -242,8 +237,9 @@ export default {
 
 <style>
 .quick-receive-modal .st-modal-container {
-  width: 416px;
+  width: 480px;
   height: 520px;
+  box-sizing: border-box;
 }
 .quick-receive-modal .st-modal-container--dark .st-modal__header {
   font-weight: 600;

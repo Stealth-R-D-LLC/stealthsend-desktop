@@ -27,6 +27,7 @@
             <StFormItem
               color="dark"
               label="Password"
+              :filled="password"
               :error-message="form.password.$errors"
             >
               <StInput
@@ -38,23 +39,24 @@
                 <svg
                   v-if="!showPassword"
                   @click="showPassword = true"
-                  width="44"
-                  height="24"
-                  viewBox="0 0 44 24"
+                  width="22"
+                  height="12"
+                  viewBox="0 0 22 12"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
+                    fill-rule="evenodd"
                     clip-rule="evenodd"
-                    d="M33 18c3.314 0 6.314-1.667 9-5-2.686-3.333-5.686-5-9-5s-6.314 1.667-9 5c2.686 3.333 5.686 5 9 5z"
-                    stroke="#FAF9FC"
+                    d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
+                    stroke="#4E00F6"
                     stroke-width="2"
                   />
                   <circle
                     r="1"
-                    transform="matrix(-1 0 0 1 33 13)"
-                    fill="#FAF9FC"
-                    stroke="#FAF9FC"
+                    transform="matrix(-1 0 0 1 11 6)"
+                    fill="#4E00F6"
+                    stroke="#4E00F6"
                     stroke-width="2"
                   />
                 </svg>
@@ -62,30 +64,28 @@
                   v-else
                   @click="showPassword = false"
                   :class="{ 'icon-active': showPassword }"
-                  width="26"
-                  height="19"
-                  viewBox="0 0 26 19"
+                  width="22"
+                  height="16"
+                  viewBox="0 0 22 16"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M13 3C8.94991 3 5.28325 5.03704 2 9.11111C5.28325 13.1852 8.94991 15.2222 13 15.2222C17.0501 15.2222 20.7168 13.1852 24 9.11111C23.2599 8.1928 22.5004 7.37799 21.7214 6.66667"
-                    stroke="#FEFEFE"
-                    stroke-width="2"
-                  />
-                  <path d="M9 9L15.1111 9" stroke="#4E00F6" stroke-width="2" />
-                  <path
-                    d="M23.1113 1L6.00022 18.1111"
+                    d="M11 3C7.68629 3 4.68629 4.66667 2 8C4.68629 11.3333 7.68629 13 11 13C14.3137 13 17.3137 11.3333 20 8C19.3945 7.24866 18.7731 6.58199 18.1357 6"
                     stroke="#4E00F6"
                     stroke-width="2"
                   />
+                  <path d="M7 8L12 8" stroke="#4E00F6" stroke-width="2" />
+                  <path d="M19 1L5 15" stroke="#4E00F6" stroke-width="2" />
                 </svg>
               </StInput>
-              <a class="forgot" @click="forgotPassword = true"
-                >Forgot Password</a
-              >
+              <template #description>
+                <a class="forgot" @click="forgotPassword = true"
+                  >Forgot Password</a
+                >
+              </template>
             </StFormItem>
-            <StButton color="white" @click="validatePassword"
+            <StButton type="type-d" @click="validatePassword"
               >Continue</StButton
             >
           </form>
@@ -152,10 +152,15 @@
       </template>
       <template #footer>
         <template v-if="!isCleared">
-          <StButton color="secondary" @click="forgotPassword = false"
+          <StButton
+            class="no-margin"
+            type="type-b"
+            @click="forgotPassword = false"
             >Cancel</StButton
           >
-          <StButton @click="clearData">Clear App Data</StButton>
+          <StButton class="no-margin" @click="clearData"
+            >Clear App Data</StButton
+          >
         </template>
         <StButton class="cancel-button" v-else @click="cancelClearData"
           >Cancel</StButton
@@ -264,15 +269,15 @@ export default {
         forgotPassword.value = false;
         isCleared.value = false;
         clearTimeout(counterTimeout.value);
-        counter.value = 4;
-        location.reload();
+        counter.value = 6;
+        router.push('/welcome');
       }, 5000);
     }
 
     function cancelClearData() {
       clearTimeout(timeout.value);
       clearTimeout(counterTimeout.value);
-      counter.value = 4;
+      counter.value = 6;
       isCleared.value = false;
       forgotPassword.value = false;
     }
@@ -366,23 +371,18 @@ export default {
 }
 h4 {
   margin-top: 20px;
-  margin-bottom: 40px;
+  margin-bottom: 100px;
   color: var(--white);
 }
 h5 {
   margin-bottom: 36px;
   color: var(--white);
 }
-.st-button {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 184px;
-}
 :deep .st-input input {
   background-position: 92% 49% !important;
 }
 .form {
-  height: calc(100% - 97px);
+  height: calc(100% - 157px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -426,12 +426,6 @@ svg circle {
   display: flex;
   align-content: center;
   justify-content: space-between;
-}
-.st-button {
-  padding: 5px 64px;
-}
-.st-button--primary {
-  min-width: 219px;
 }
 .cancel-button {
   min-width: 169px !important;

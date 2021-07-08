@@ -1,16 +1,10 @@
 <template>
   <div class="address-book">
     <div class="top">
-      <span v-if="activeTab === 'address-book'" class="title"
-        >Address book</span
-      >
-      <span v-if="activeTab === 'contact-details'" class="title"
-        >Contact details</span
-      >
-      <span v-if="activeTab === 'add-contact'" class="title">Add contact</span>
-      <span v-if="activeTab === 'edit-contact'" class="title"
-        >Edit contact</span
-      >
+      <h6 v-if="activeTab === 'address-book'">Address book</h6>
+      <h6 v-if="activeTab === 'contact-details'">Contact details</h6>
+      <h6 v-if="activeTab === 'add-contact'">Add contact</h6>
+      <h6 v-if="activeTab === 'edit-contact'">Edit contact</h6>
       <div class="icons">
         <svg
           v-if="activeTab === 'address-book'"
@@ -148,21 +142,25 @@
     <!-- CONTACT DETAILS -->
     <div class="contact-details" v-if="activeTab === 'contact-details'">
       <div>
-        <StFormItem label="Name">
+        <StFormItem label="Name" :filled="addContactForm.name" readonly>
           <StInput
             readonly
             v-model="addContactForm.name"
             placeholder="Please enter a contact name"
           />
         </StFormItem>
-        <StFormItem label="Description">
+        <StFormItem
+          label="Description"
+          :filled="addContactForm.description"
+          readonly
+        >
           <StInput
             readonly
             v-model="addContactForm.description"
             placeholder="Please enter a description"
           />
         </StFormItem>
-        <StFormItem label="Address">
+        <StFormItem label="Address" :filled="addContactForm.address" readonly>
           <StInput
             readonly
             v-model="addContactForm.address"
@@ -261,24 +259,33 @@
     </div>
     <div class="edit-contact" v-if="activeTab === 'edit-contact'">
       <div>
-        <StFormItem :error-message="editForm.editName.$errors">
+        <StFormItem
+          label="Name"
+          :filled="editContactForm.name"
+          :error-message="editForm.editName.$errors"
+        >
           <StInput
             v-model="editContactForm.name"
-            label="Name"
             placeholder="Please enter a contact name"
           />
         </StFormItem>
-        <StFormItem :error-message="editForm.editDescription.$errors">
+        <StFormItem
+          label="Description"
+          :filled="editContactForm.description"
+          :error-message="editForm.editDescription.$errors"
+        >
           <StInput
             v-model="editContactForm.description"
-            label="Description"
             placeholder="Please enter a description"
           />
         </StFormItem>
-        <StFormItem :error-message="editForm.editAddress.$errors">
+        <StFormItem
+          label="Address"
+          :filled="editContactForm.address"
+          :error-message="editForm.editAddress.$errors"
+        >
           <StInput
             v-model="editContactForm.address"
-            label="Address"
             placeholder="Please enter a valid XST address"
           />
         </StFormItem>
@@ -316,7 +323,11 @@
     <!-- ADD CONTACT -->
     <div class="add-contact" v-if="activeTab === 'add-contact'">
       <div>
-        <StFormItem label="Name" :error-message="addForm.newName.$errors">
+        <StFormItem
+          label="Name"
+          :filled="addContactForm.name"
+          :error-message="addForm.newName.$errors"
+        >
           <StInput
             v-model="addContactForm.name"
             placeholder="Please enter a contact name"
@@ -324,6 +335,7 @@
         </StFormItem>
         <StFormItem
           label="Description"
+          :filled="addContactForm.description"
           :error-message="addForm.newDescription.$errors"
         >
           <StInput
@@ -331,11 +343,16 @@
             placeholder="Please enter a description"
           />
         </StFormItem>
-        <StFormItem label="Address" :error-message="addForm.newAddress.$errors">
+        <StFormItem
+          label="Address"
+          :filled="addContactForm.address"
+          :error-message="addForm.newAddress.$errors"
+        >
           <StInput
             v-model="addContactForm.address"
             placeholder="Please enter a valid XST address"
           />
+          <template #description> Please enter a valid XST address </template>
         </StFormItem>
         <StCheckbox class="custom-checkbox" v-model="addContactForm.favorite"
           >Favorite list</StCheckbox
@@ -882,6 +899,10 @@ svg:hover circle {
   margin-right: 15px;
 }
 
+.st-form-item {
+  margin-bottom: 20px;
+}
+
 /* ADD CONTACT */
 .add-contact,
 .contact-details,
@@ -895,6 +916,9 @@ svg:hover circle {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+.add-contact__bottom button {
+  margin: 0;
 }
 .add-contact__bottom p {
   cursor: pointer;
@@ -917,5 +941,9 @@ svg:hover circle {
   padding: 5px 64px;
   min-width: 157px;
   font-family: var(--secondary-font);
+}
+
+:deep .st-form-item__readonly .label {
+  color: var(--grey1000);
 }
 </style>

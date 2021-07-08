@@ -119,12 +119,12 @@
                   <p>Customer Support</p> -->
                 </div>
                 <div class="buttons" v-else>
-                  <StButton color="white" @click="isAccount = true"
+                  <StButton type="type-d" @click="isAccount = true"
                     >Create a New Account</StButton
                   >
                   <StButton
                     class="button-medium"
-                    color="white"
+                    type="type-d"
                     @click="isRecovery = true"
                     >Restore a Backup</StButton
                   >
@@ -1191,6 +1191,7 @@
                 </p>
                 <StFormItem
                   label="Password"
+                  :filled="form.password.$value"
                   :error-message="form.password.$errors"
                 >
                   <StInput
@@ -1246,6 +1247,7 @@
                 </StFormItem>
                 <StFormItem
                   label="Confirm Password"
+                  :filled="form.confirmPassword.$value"
                   :error-message="form.confirmPassword.$errors"
                 >
                   <StInput
@@ -1338,6 +1340,7 @@
                 </div>
                 <StFormItem
                   label="Account name"
+                  :filled="form.account.$value"
                   :error-message="form.account.$errors"
                 >
                   <StInput
@@ -1793,6 +1796,7 @@
               <StFormItem
                 class="custom-st-form"
                 label="Account name"
+                :filled="recoveryForm.account.$value"
                 :error-message="recoveryForm.account.$errors"
               >
                 <StInput
@@ -1882,12 +1886,15 @@
               >
             </transition>
             <StFormItem
+              class="word-st-form-item"
+              :filled="recoveryWord"
               :label="`Word ${
                 selectedRecoveryWords.length + 1
               } (of ${restoreRecoveryPhraseLength})`"
             >
               <StInput
                 id="recovery-word"
+                :placeholder="`Enter ${selectedRecoveryWords.length + 1}. word`"
                 v-model="recoveryWord"
                 @keyup.enter="selectRecoveryPhraseWord(recoveryWord)"
               >
@@ -1979,6 +1986,7 @@
               </p>
               <StFormItem
                 label="Password"
+                :filled="form.password.$value"
                 :error-message="form.password.$errors"
               >
                 <StInput
@@ -2034,6 +2042,7 @@
               </StFormItem>
               <StFormItem
                 label="Confirm Password"
+                :filled="form.confirmPassword.$value"
                 :error-message="form.confirmPassword.$errors"
               >
                 <StInput
@@ -2795,7 +2804,7 @@ export default {
   margin-bottom: 48px;
 }
 .right__inner-top .desc {
-  margin-bottom: 132px;
+  margin-bottom: 76px;
 }
 .right__inner-top .desc-medium {
   margin-bottom: 76px;
@@ -2905,6 +2914,10 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-items: center;
+}
+.step.set-password > div .st-form-item {
+  margin-bottom: 32px;
 }
 .step.create-notice > div {
   width: 100%;
@@ -2929,6 +2942,7 @@ export default {
   font-family: var(--secondary-font);
 }
 .notice {
+  margin-bottom: 36px;
   padding: 24px;
   background-color: var(--background100);
 }
@@ -3083,6 +3097,9 @@ export default {
 }
 
 /* RECOVERY PHRASE  */
+.word-st-form-item {
+  margin-top: 36px;
+}
 .recovery-select {
   text-align: left;
 }
@@ -3090,7 +3107,6 @@ export default {
   margin-bottom: 24px;
 }
 .searched-words {
-  margin-top: 8px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -3125,7 +3141,7 @@ export default {
 }
 .custom-st-form {
   max-width: 392px;
-  margin: 116px auto 54px;
+  margin: 96px auto 54px;
 }
 
 .app-version {

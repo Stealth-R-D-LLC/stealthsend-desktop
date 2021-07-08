@@ -28,6 +28,7 @@
       <template v-if="currentStep === 1">
         <StFormItem
           color="dark"
+          :filled="form.account.$value"
           :error-message="form.account.$errors"
           label="Account"
         >
@@ -70,12 +71,16 @@
         <div class="form-item">
           <StFormItem
             color="dark"
+            size="lg"
+            :filled="form.amount.$value"
             :error-message="form.amount.$errors"
             label="Amount"
           >
-            <a v-if="account" class="load-max" @click="loadMax(account)"
-              >Load max</a
-            >
+            <template #labelRight>
+              <a v-if="account" class="load-max" @click="loadMax(account)"
+                >Load max</a
+              >
+            </template>
             <StAmount
               v-if="inputAmountState === 'XST'"
               v-model="form.amount.$value"
@@ -173,6 +178,7 @@
         <div class="form-item">
           <StFormItem
             color="dark"
+            :filled="form.depositAddress.$value"
             label="Receiving Address"
             :error-message="form.depositAddress.$errors"
           >
@@ -214,7 +220,7 @@
           </StFormItem>
         </div>
         <div class="form-item">
-          <StFormItem label="Label" color="dark">
+          <StFormItem label="Label" :filled="label" color="dark">
             <StInput
               v-model="label"
               placeholder="Add a label to your transaction"
@@ -358,20 +364,20 @@
     </template>
     <template #footer class="flex-center-all">
       <template v-if="currentStep === 1">
-        <StButton color="white" @click="validateFirstStep">Proceed</StButton>
+        <StButton type="type-d" @click="validateFirstStep">Proceed</StButton>
       </template>
       <template v-if="currentStep === 2">
-        <StButton @click="validateSecondStep" color="white">Proceed</StButton>
+        <StButton @click="validateSecondStep" type="type-d">Proceed</StButton>
       </template>
       <template v-if="currentStep === 3">
-        <StButton color="white" @click="prepareSend">Confirm payment</StButton>
+        <StButton type="type-d" @click="prepareSend">Confirm payment</StButton>
       </template>
       <template v-if="currentStep === 4">
-        <StButton color="white" @click="cancelSend">Cancel</StButton>
+        <StButton type="type-d" @click="cancelSend">Cancel</StButton>
       </template>
       <div class="tx-failed-controls" v-if="currentStep === 7">
-        <StButton @click="prepareSend" color="white">Try Again</StButton>
-        <StButton @click="closeModal" color="secondary">Cancel</StButton>
+        <StButton @click="prepareSend" type="type-d">Try Again</StButton>
+        <StButton @click="closeModal" type="type-d">Cancel</StButton>
       </div>
     </template>
   </StModal>
@@ -771,9 +777,6 @@ export default {
   position: absolute;
   top: -46px;
 }
-.tooltip {
-  margin-top: 10px;
-}
 :deep .st-amount > .st-icon {
   cursor: pointer;
 }
@@ -819,13 +822,6 @@ export default {
 }
 .load-max {
   cursor: pointer;
-  position: absolute;
-  top: -22px;
-  right: 0;
-  font-size: 12px;
-  line-height: 24px;
-  letter-spacing: 0.12px;
-  color: var(--grey100);
   transition: 0.3s;
 }
 .load-max:hover {
@@ -897,13 +893,13 @@ export default {
   flex-direction: column;
 }
 .send-modal .st-modal__header {
-  margin-bottom: 36px;
+  margin-bottom: 44px;
 }
 .send-modal .st-modal__body {
-  margin: 10px 0 0;
+  margin: 0;
 }
 .send-modal .st-form-item {
-  margin: 10px 0 54px;
+  margin: 0 0 32px;
 }
 .send-modal .st-modal__footer {
   display: flex;
