@@ -1421,7 +1421,10 @@
               <div>
                 <h5>Recovery Phrase</h5>
                 <h6>Your new StealthSend Account is being prepared.</h6>
-                <p class="desc-medium"></p>
+                <p class="desc-medium">
+                  A random list of words unique to your wallet is being <br />
+                  generated.
+                </p>
                 <svg
                   width="76"
                   height="78"
@@ -2926,7 +2929,7 @@ export default {
 }
 .step.create-notice > div .st-form-item {
   width: 100%;
-  max-width: 384px;
+  max-width: 392px;
 }
 .step button {
   margin: 40px auto 0;
@@ -2936,7 +2939,7 @@ export default {
   max-width: 384px;
 }
 .st-button {
-  min-width: 200px;
+  min-width: 233px;
   padding: 5px 64px;
   font-family: var(--secondary-font);
 }

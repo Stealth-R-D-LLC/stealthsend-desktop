@@ -149,9 +149,9 @@ export default {
               type: 'gradient',
               gradient: {
                 shadeIntensity: 1,
-                opacityFrom: 0.1,
-                opacityTo: 0.8,
-                stops: [0, 90, 100],
+                opacityFrom: 0.5,
+                opacityTo: 0.3,
+                stops: [0, 100],
               },
             },
             xaxis: {
