@@ -2511,7 +2511,7 @@ export default {
       let acc = {
         xpub: xpub,
         address: address,
-        label: `${account.value} ${next}` || `Account ${next}`,
+        label: `${account.value} ${next + 1}` || `Account ${next + 1}`,
         utxo: accUtxo,
         isArchived: false,
         isFavourite: false,
