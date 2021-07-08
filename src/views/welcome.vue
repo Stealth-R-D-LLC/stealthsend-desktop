@@ -2804,7 +2804,7 @@ export default {
   margin-bottom: 48px;
 }
 .right__inner-top .desc {
-  margin-bottom: 132px;
+  margin-bottom: 76px;
 }
 .right__inner-top .desc-medium {
   margin-bottom: 76px;
