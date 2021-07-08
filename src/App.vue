@@ -31,7 +31,7 @@ export default {
     NoStealthConnection,
   },
   setup() {
-    const { alt, l, escape } = useMagicKeys();
+    const { alt, l } = useMagicKeys();
 
     const mainStore = useMainStore();
     const online = useOnline();
@@ -42,9 +42,6 @@ export default {
     });
     const isOnline = computed(() => {
       return online.value;
-    });
-    const modals = computed(() => {
-      return mainStore.modals;
     });
     const layout = computed(() => {
       if (!route && !route.name) return;
@@ -68,15 +65,6 @@ export default {
         console.log('Lock');
         if (route.name === 'Lock') return; // don't handle if already on lock screen
         router.push('/lock');
-      }
-    });
-
-    watchEffect(() => {
-      if (escape.value) {
-        // close all modals
-        for (const modal in modals.value) {
-          mainStore.SET_MODAL_VISIBILITY(modal, false);
-        }
       }
     });
 

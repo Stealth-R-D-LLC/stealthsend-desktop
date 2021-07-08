@@ -3,7 +3,7 @@ import CryptoService from '@/services/crypto';
 import { useMainStore } from '@/store';
 import * as bitcoin from 'bitcoinjs-lib';
 import { Buffer } from 'buffer';
-import { add, subtract, multiply, round } from 'mathjs';
+import { add, format, subtract, floor } from 'mathjs';
 
 export default async function useTransactionBuilder(utxo, sendForm) {
   const mainStore = useMainStore();
@@ -13,23 +13,16 @@ export default async function useTransactionBuilder(utxo, sendForm) {
   console.log('TRANSACTION BUILDER: latest fee:', fee);
 
   const sumOf = (x = 0, y = 0) => {
-    let sum = round(add(x, y), 8);
-    // sum = format(sum, { precision: 8 });
-    return sum;
+    let sum = add(x, y);
+    sum = format(sum, { precision: 14 });
+    return Number(sum);
   };
 
   const subtractOf = (x = 0, y = 0) => {
-    let diff = round(subtract(x, y), 8);
-    // diff = format(diff, { precision: 8 });
-    return diff;
+    let diff = subtract(x, y);
+    diff = format(diff, { precision: 14 });
+    return Number(diff);
   };
-
-  const multiplyOf = (x = 0, y = 0) => {
-    let result = round(multiply(x, y), 8);
-    // result = format(result, { precision: 8 });
-    return result;
-  };
-
   function calculateChange(accountAmount, sendAmount) {
     let change = subtractOf(accountAmount, sendAmount);
     return change;
@@ -43,13 +36,14 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     for (let i = 0; i < Infinity; i++) {
       // similar logic like in accountDiscovery
       const acc = CryptoService.getChildFromRoot(accountIndex, 0, i);
-      console.log('TRANSACTION BUILDER: checking addr');
       if (acc.address === address) {
+        console.log('tu');
         let { address } = CryptoService.breakAccountPath(
           `${accountIndex}'/0/${i}`
         );
         return address;
       }
+      console.log('nisam tu');
     }
   }
 
@@ -77,29 +71,23 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
     let recipient = {
       address: sendForm.address,
-      amount: multiplyOf(
-        Number(sumOf(sendForm.amount, multiplyOf(fee, -1))),
-        1e6
-      ),
+      amount: Number(sumOf(sendForm.amount, fee * -1)) * 1e6,
       // amount: multiply(bignumber(sendForm.amount), bignumber(-Math.abs(0.01)), 1e6).d[0]
     };
 
     console.log(
       'TRANSACTION BUILDER: recipient will get:',
-      multiplyOf(Number(sumOf(sendForm.amount, multiplyOf(fee, -1))), 1e6)
+      Number(sumOf(sendForm.amount, fee * -1))
     );
 
     let sumUtxo = utxo.map((el) => el.amount).reduce((a, b) => sumOf(a, b), 0);
     let change = {
       address: sendForm.account.address,
-      amount: multiplyOf(
-        calculateChange(sumUtxo, Number(sendForm.amount)),
-        1e6
-      ), // account amount - (send amount + fee)
+      amount: floor(calculateChange(sumUtxo, Number(sendForm.amount)) * 1e6), // account amount - (send amount + fee)
     };
     console.log(
       'TRANSACTION BUILDER: change:',
-      calculateChange(sumUtxo, Number(sendForm.amount))
+      floor(calculateChange(sumUtxo, Number(sendForm.amount)) * 1e6)
     );
 
     // add the output for recipient
