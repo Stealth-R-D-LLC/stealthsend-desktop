@@ -611,7 +611,7 @@ export default {
   margin-bottom: 22px;
 }
 .receive-modal .st-input {
-  margin-bottom: 16px;
+  margin-bottom: 0;
 }
 .receive-modal .st-modal__footer {
   display: flex;

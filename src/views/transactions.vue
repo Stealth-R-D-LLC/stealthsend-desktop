@@ -1,7 +1,7 @@
 <template>
   <div class="transactions-container">
     <div class="controls">
-      <StFormItem label="Search">
+      <StFormItem label="Search" :filled="query">
         <StInput
           label="Search"
           v-model="query"
@@ -217,18 +217,18 @@ export default {
 
 <style scoped>
 .controls {
-  margin: 0 24px;
+  margin: 14px 24px 0;
   display: grid;
   grid-template-columns: 9fr 3fr;
   grid-gap: 0 47px;
 }
-.st-form-item {
-  margin: 40px 0 10px;
+.st-form-item .st-input {
+  margin-bottom: 0px;
 }
 .calendar {
   pointer-events: none;
   position: absolute;
-  bottom: calc(50% - 10px);
+  top: calc(50% + 7px);
   right: 0;
 }
 </style>
