@@ -150,6 +150,7 @@
                 <template #body>
                   <StFormItem label="Account name" :filled="accountName">
                     <StInput
+                      label="Account name"
                       v-model="accountName"
                       placeholder="Account name"
                     ></StInput>
