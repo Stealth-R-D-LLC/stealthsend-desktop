@@ -1,4 +1,4 @@
-import { add, format, subtract } from 'mathjs';
+import { add, format, subtract, round } from 'mathjs';
 
 export default function useCoinControl(outputs, target) {
   const orderBy = (arr, props, orders) =>
@@ -16,9 +16,15 @@ export default function useCoinControl(outputs, target) {
     );
 
   const sumOf = (x = 0, y = 0) => {
-    let sum = add(x, y);
-    sum = format(sum, { precision: 14 });
+    let sum = round(add(x, y));
+    sum = format(sum, { precision: 8 });
     return Number(sum);
+  };
+
+  const subtractOf = (x = 0, y = 0) => {
+    let diff = round(subtract(x, y), 8);
+    // diff = format(diff, { precision: 8 });
+    return Number(diff);
   };
 
   const removeFromArray = (arr, predicate) => {
@@ -154,10 +160,10 @@ export default function useCoinControl(outputs, target) {
                     bestSet = [...selectedUtxos];
                     bestSetValue = selectionSum;
                     // deselect last addition and try for better combinations
-                    selectionSum = subtract(selectionSum, tx.amount);
-                    selectionSum = Number(
-                      format(selectionSum, { precision: 14 })
-                    );
+                    selectionSum = subtractOf(selectionSum, tx.amount);
+                    // selectionSum = Number(
+                    //   format(selectionSum, { precision: 8 })
+                    // );
                     selectedUtxos = removeFromArray(
                       selectedUtxos,
                       (el) => el.txid === tx.txid

@@ -243,7 +243,6 @@ export default {
       async () => {
         if (isVisible.value) {
           existingAccounts = await CryptoService.getAccounts();
-          console.log('eeee', existingAccounts);
           let next = await CryptoService.getNextAccountPath();
           // get current last existing account
           const { xpub: lastAccountPk } = CryptoService.getChildFromRoot(
