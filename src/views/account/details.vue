@@ -171,8 +171,6 @@ export default {
     const mainStore = useMainStore();
     const { formatAmount } = useHelpers();
 
-    mainStore.SET_HEADER_STYLE('grey');
-
     onBeforeRouteLeave(() => {
       mainStore.SET_ACCOUNT_DETAILS(null);
     });
@@ -308,6 +306,7 @@ export default {
   height: calc(100vh - 252px);
   width: calc(100% - 14px);
   padding-right: 14px;
+  overflow-x: hidden;
 }
 .account-details-container__body--overflow::-webkit-scrollbar {
   width: 4px;
