@@ -1,8 +1,5 @@
 <template>
-  <header
-    class="layout__header"
-    :class="{ 'layout__header--is-grey': headerStyle === 'grey' }"
-  >
+  <header class="layout__header" :class="computedClass">
     <div class="header-left">
       <template v-if="checkVisibilityForRoute(['Dashboard'])">
         <div :class="{ nonclickable: !componentVisibility.txDashboard }">
@@ -281,6 +278,7 @@
         </svg>
         <svg
           @click="toggleDrawer('favourite-list')"
+          class="favourite-list"
           width="24"
           height="25"
           viewBox="0 0 24 25"
@@ -748,6 +746,14 @@ export default {
       return route.name;
     });
 
+    const computedClass = computed(() => {
+      return {
+        'layout__header--is-grey': headerStyle.value === 'grey',
+        'layout__header--settings': route.path.split('/').includes('settings'),
+      };
+    });
+    const headerStyle = computed(() => mainStore.headerStyle);
+
     const componentVisibility = computed(() => {
       return mainStore.componentVisibility;
     });
@@ -951,7 +957,7 @@ export default {
       toggleComponentVisibility,
       goto,
       openQuickDeposit,
-      headerStyle: computed(() => mainStore.headerStyle),
+      headerStyle,
       isVisible,
       changeStep,
       activeStep,
@@ -981,6 +987,7 @@ export default {
       form,
       validateFields,
       resetFields,
+      computedClass,
     };
   },
 };
@@ -993,6 +1000,10 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.layout__header--settings {
+  width: calc(100% - 440px);
+  margin-left: auto;
 }
 .header-left,
 .header-right {
@@ -1009,6 +1020,10 @@ export default {
 
 .header-left div + div,
 .header-right svg + svg {
+  margin-left: 24px;
+}
+
+.favourite-list {
   margin-left: 24px;
 }
 

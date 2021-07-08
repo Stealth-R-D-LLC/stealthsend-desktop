@@ -43,10 +43,6 @@ export default {
     const isOnline = computed(() => {
       return online.value;
     });
-    // const isRpcAvailable = computed(() => {
-    //   console.log('aaa', mainStore).rpc;
-    //   return mainStore.rpc.isAvailable
-    // })
     const modals = computed(() => {
       return mainStore.modals;
     });
@@ -69,6 +65,7 @@ export default {
 
     watchEffect(() => {
       if (alt.value && l.value) {
+        console.log('Lock');
         if (route.name === 'Lock') return; // don't handle if already on lock screen
         router.push('/lock');
       }

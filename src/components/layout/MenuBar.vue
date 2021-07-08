@@ -51,27 +51,6 @@
             <span class="item__span"> Dashboard </span>
           </router-link>
         </li>
-        <!-- <li>
-          <router-link class="item" to="/uikit">
-            <div class="icon">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M12 20H22" stroke="#FCFAFF" stroke-width="2" />
-                <path d="M12 16H22" stroke="#FCFAFF" stroke-width="2" />
-                <path d="M9 13H1V21H9V13Z" stroke="#FCFAFF" stroke-width="2" />
-                <path d="M12 8H22" stroke="#FCFAFF" stroke-width="2" />
-                <path d="M12 4H22" stroke="#FCFAFF" stroke-width="2" />
-                <path d="M9 1H1V9H9V1Z" stroke="#FCFAFF" stroke-width="2" />
-              </svg>
-            </div>
-            <span class="item__span"> UI Kit </span>
-          </router-link>
-        </li> -->
         <li @click="openModal('send')">
           <span class="item">
             <div class="icon">
@@ -328,7 +307,7 @@ export default defineComponent({
 }
 
 .layout__aside nav {
-  margin-top: 28px;
+  margin-top: 36px;
 }
 
 .layout__aside .item__footer {
