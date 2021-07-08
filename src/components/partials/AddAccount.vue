@@ -242,7 +242,7 @@ export default {
       async () => {
         if (isVisible.value) {
           let { accounts } = await CryptoService.scanWallet();
-          isLastAccountEmpty.value = accounts.some(el => el.utxo === 0)
+          isLastAccountEmpty.value = accounts.some((el) => el.utxo === 0);
           // console.log('exx', existingAccounts);
           // let next = await CryptoService.getNextAccountPath();
           // // get current last existing account
