@@ -2464,8 +2464,8 @@ export default {
         CryptoService.master = master;
         await CryptoService.storeWalletInDb(password.value);
         await CryptoService.storeMnemonicInWallet(selectedRecoveryWords.value);
-        const lastAccountPath = await CryptoService.findLastUsedAccountPath()
-        for(let i = 0; i <= (lastAccountPath + 1); i++) {
+        const lastAccountPath = await CryptoService.findLastUsedAccountPath();
+        for (let i = 0; i <= lastAccountPath + 1; i++) {
           await restoreAccounts();
         }
         CryptoService.isFirstArrival = false;
