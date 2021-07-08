@@ -60,7 +60,9 @@
           :filled="label"
           @rightLabelClick="saveLabel"
         >
-          <template #labelRight>Save</template>
+          <template #labelRight>
+            <span @click="saveLabel">Save</span>
+          </template>
           <StInput
             class="edit-label-input"
             v-model="label"
