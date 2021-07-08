@@ -487,16 +487,21 @@ const CryptoService = {
   },
 
   isAddressValid(address) {
-    const { version } = bitcoin.address.fromBase58Check(address);
-    const isMainnet = process.env.VUE_APP_NETWORK === 'mainnet';
-    // https://en.bitcoin.it/wiki/Base58Check_encoding
-    if (isMainnet && version === 62) {
-      // 62 is for mainnet
-      return true;
-    } else if (!isMainnet && version === 111) {
-      // 111 is for testnet
-      return true;
-    } else {
+    try {
+      const { version } = bitcoin.address.fromBase58Check(address);
+      return version === 62;
+      // const isMainnet = process.env.VUE_APP_NETWORK === 'mainnet';
+      // // https://en.bitcoin.it/wiki/Base58Check_encoding
+      // if (isMainnet && version === 62) {
+      //   // 62 is for mainnet
+      //   return true;
+      // } else if (!isMainnet && version === 111) {
+      //   // 111 is for testnet
+      //   return true;
+      // } else {
+      //   return false;
+      // }
+    } catch (e) {
       return false;
     }
   },
