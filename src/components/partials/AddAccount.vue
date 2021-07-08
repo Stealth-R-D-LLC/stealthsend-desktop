@@ -138,10 +138,7 @@
         </template>
         <template v-if="currentStep === 3">
           <h5>Importing Private Key</h5>
-          <p class="medium">
-            Please be patient and don’t exit the
-            application
-          </p>
+          <p class="medium">Please be patient and don’t exit the application</p>
         </template>
         <template v-if="currentStep === 4">
           <h5>Success</h5>
