@@ -15,7 +15,6 @@ export default function useCoinControl(outputs, target) {
       }, 0)
     );
 
-
   const sumOf = (x = 0, y = 0) => {
     let sum = round(add(x, y));
     sum = format(sum, { precision: 8 });

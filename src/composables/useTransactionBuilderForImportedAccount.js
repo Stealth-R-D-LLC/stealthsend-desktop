@@ -57,7 +57,10 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
       let recipient = {
         address: sendForm.address,
-        amount: multiplyOf(Number(sumOf(sendForm.amount, multiplyOf(fee, -1))), 1e6),
+        amount: multiplyOf(
+          Number(sumOf(sendForm.amount, multiplyOf(fee, -1))),
+          1e6
+        ),
       };
 
       let sumUtxo = utxo
@@ -65,7 +68,10 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         .reduce((a, b) => sumOf(a, b), 0);
       let change = {
         address: sendForm.account.address,
-        amount: multiplyOf(calculateChange(sumUtxo, Number(sendForm.amount)), 1e6), // account amount - (send amount + fee)
+        amount: multiplyOf(
+          calculateChange(sumUtxo, Number(sendForm.amount)),
+          1e6
+        ), // account amount - (send amount + fee)
       };
 
       // add the output for recipient
