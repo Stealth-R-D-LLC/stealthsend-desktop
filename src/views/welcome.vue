@@ -54,7 +54,7 @@
                     protocol
                   </h3>
                   <div class="app-version">
-                    StealthSend, stable v. {{ version }}
+                    StealthSend, stable v.{{ version }}
                   </div>
                 </template>
                 <template v-if="isRecovery">

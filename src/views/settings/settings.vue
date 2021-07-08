@@ -13,7 +13,7 @@
             We are building the Holy Grail of Crypto: a fast, feeless, private
             and scalable digital currency
           </p>
-          <p class="text">Application version: v. {{ version }}</p>
+          <p class="text">Application version: v.{{ version }}</p>
           <p class="text">
             Github Source Repository
             <br />
