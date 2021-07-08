@@ -475,10 +475,12 @@ export default {
           (amount) => {
             let fee = findFee();
             // subtract real fee from amount
-            const maxAmount = format(subtract(account.value.utxo, fee), { precision: 8 });
+            const maxAmount = format(subtract(account.value.utxo, fee), {
+              precision: 8,
+            });
             if (!amount || Number(amount) < minimumXSTForSend.value) {
               return 'Minimum amount is ' + minimumXSTForSend.value + ' XST';
-            } 
+            }
             if (Number(amount) > maxAmount) {
               return 'Insufficient funds on this account';
             }
