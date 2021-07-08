@@ -551,6 +551,7 @@ const CryptoService = {
               blocktime: tx.txinfo.blocktime,
               account: account.label,
               xpub: account.xpub,
+              txinfo: tx.txinfo,
             });
           }
           newAccounts.push({
