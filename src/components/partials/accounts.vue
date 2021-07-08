@@ -148,7 +148,11 @@
               >
                 <template #header> Account Wizard </template>
                 <template #body>
-                  <StFormItem label="Account name" :filled="form.accountName.$value" :error-message="form.accountName.$errors">
+                  <StFormItem
+                    label="Account name"
+                    :filled="form.accountName.$value"
+                    :error-message="form.accountName.$errors"
+                  >
                     <StInput
                       label="Account name"
                       v-model="form.accountName.$value"
@@ -347,8 +351,8 @@ export default {
               console.log('aaa', accounts.value);
               return 'Account name is required';
             }
-            if (accounts.value.some(el => el.label === accountName)) {
-              return 'Account name already exists'
+            if (accounts.value.some((el) => el.label === accountName)) {
+              return 'Account name already exists';
             }
           },
         ],
@@ -422,7 +426,7 @@ export default {
     };
 
     function closeEditModal() {
-      editAccountNameModal.value = false
+      editAccountNameModal.value = false;
       resetFields();
     }
     return {
