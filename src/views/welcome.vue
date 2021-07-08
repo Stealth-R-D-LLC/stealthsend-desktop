@@ -2914,6 +2914,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-items: center;
 }
 .step.set-password > div .st-form-item {
   margin-bottom: 32px;
