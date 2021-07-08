@@ -20,36 +20,47 @@
         </p>
         <StFormItem
           label="Current password"
-          notice="Please enter a password you are using to access the application"
+          :filled="password"
           :error-message="form.password.$errors"
         >
+          <template #labelRight>Mandatory</template>
           <StInput
             type="password"
             placeholder="Please enter current password"
             v-model="password"
           ></StInput>
+          <template #description>
+            Please enter a password you are using to access the application
+          </template>
         </StFormItem>
         <StFormItem
           label="New password"
-          notice="Please enter a unique and unused password for accessing the application"
+          :filled="newPassword"
           :error-message="form.newPassword.$errors"
         >
+          <template #labelRight>Mandatory</template>
           <StInput
             type="password"
             placeholder="Please enter new password"
             v-model="newPassword"
           ></StInput>
+          <template #description>
+            Please enter a unique and unused password for accessing the
+            application
+          </template>
         </StFormItem>
         <StFormItem
           label="Confirm password"
-          notice="Newly set password need to match"
+          :filled="confirmNewPassword"
           :error-message="form.confirmNewPassword.$errors"
         >
+          <template #labelRight>Mandatory</template>
           <StInput
             type="password"
             placeholder="Please confirm new password"
             v-model="confirmNewPassword"
           ></StInput>
+          <template #description> Newly set password need to match </template>
         </StFormItem>
       </div>
     </div>
@@ -214,9 +225,5 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.st-form-item {
-  margin-bottom: 80px !important;
 }
 </style>

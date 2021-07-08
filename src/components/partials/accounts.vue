@@ -148,16 +148,15 @@
               >
                 <template #header> Account Wizard </template>
                 <template #body>
-                  <StInput
-                    v-model="accountName"
-                    label="Account name"
-                    placeholder="Account name"
-                  ></StInput>
+                  <StFormItem label="Account name" :filled="accountName">
+                    <StInput
+                      v-model="accountName"
+                      placeholder="Account name"
+                    ></StInput>
+                  </StFormItem>
                 </template>
                 <template #footer>
-                  <StButton
-                    color="secondary"
-                    @click="editAccountNameModal = false"
+                  <StButton type="type-d" @click="editAccountNameModal = false"
                     >Cancel</StButton
                   >
                   <StButton @click="changeAccountName(account)"
@@ -453,7 +452,6 @@ export default {
   border: 1px solid var(--purple50);
   box-shadow: 0px 8px 24px -8px rgba(34, 3, 101, 0.1);
   border-radius: 2px;
-  width: 240px;
 }
 .card-purple {
   background: var(--marine300) !important;
@@ -588,5 +586,12 @@ svg {
 }
 .link svg {
   margin-right: 8px;
+}
+:deep .st-modal__footer {
+  display: flex;
+  justify-content: space-between;
+}
+:deep .st-modal__footer button {
+  margin: 0;
 }
 </style>
