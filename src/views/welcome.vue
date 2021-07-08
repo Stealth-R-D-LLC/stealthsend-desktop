@@ -2514,13 +2514,7 @@ export default {
 
       await CryptoService.storeAccountInDb(acc);
 
-      // break out of recursion after saving first account that doesn't have transactions
-      if (hdAccount.length === 0) {
-        mainStore.STOP_GLOBAL_LOADING();
-        return;
-      }
-
-      await restoreAccounts();
+      mainStore.STOP_GLOBAL_LOADING();
     }
 
     const createWallet = ref(false);
