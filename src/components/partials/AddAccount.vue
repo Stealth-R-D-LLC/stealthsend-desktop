@@ -36,19 +36,21 @@
             </p>
           </div>
           <StFormItem
-            :is-disabled="isLastAccountEmpty"
+            :disabled="isLastAccountEmpty"
             label="Account Name"
+            :filled="form.accountName.$value"
             :error-message="form.accountName.$errors"
           >
             <StInput
               v-model="form.accountName.$value"
               placeholder="Please add Unique Account Name"
+              :disabled="isLastAccountEmpty"
             ></StInput>
           </StFormItem>
         </div>
         <div class="add-account__actions">
           <div class="buttons">
-            <StButton color="secondary" @click="closeModal">Cancel</StButton>
+            <StButton type="type-b" @click="closeModal">Cancel</StButton>
             <StButton
               @click="generateAccount"
               :disabled="!accountName.length || isLastAccountEmpty"
@@ -409,7 +411,6 @@ export default {
   letter-spacing: 0.32px;
   color: var(--grey900);
   padding-bottom: 12px;
-  padding-right: 20px;
   font-family: var(--secondary-font);
   border-bottom: 3px solid var(--grey200);
   transition: 0.3s;
@@ -453,6 +454,12 @@ export default {
 .desc-red p {
   color: var(--red600);
 }
+.add-account__actions .buttons button {
+  margin: 0;
+}
+.st-form-item .st-input {
+  margin-bottom: 0;
+}
 .buttons {
   display: flex;
   align-items: center;
@@ -483,7 +490,7 @@ export default {
   text-align: center;
 }
 .button-import {
-  margin-top: 120px;
+  margin-top: 97px;
 }
 .button .st-button {
   min-width: 177px;

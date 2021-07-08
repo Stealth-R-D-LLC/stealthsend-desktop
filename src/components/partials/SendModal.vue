@@ -776,9 +776,6 @@ export default {
   position: absolute;
   top: -46px;
 }
-.tooltip {
-  margin-top: 10px;
-}
 :deep .st-amount > .st-icon {
   cursor: pointer;
 }
