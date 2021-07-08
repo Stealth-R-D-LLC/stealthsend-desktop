@@ -150,6 +150,7 @@
                 <template #body>
                   <StFormItem label="Account name" :filled="accountName">
                     <StInput
+                      label="Account name"
                       v-model="accountName"
                       placeholder="Account name"
                     ></StInput>
@@ -456,7 +457,7 @@ export default {
   border: 1px solid var(--marine400) !important;
 }
 .archived {
-  margin-top: 64px;
+  margin-top: 40px;
 }
 .info-purple path {
   stroke: var(--marine700);
