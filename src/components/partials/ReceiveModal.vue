@@ -65,7 +65,7 @@
               distractionFree: true,
               valueAsInteger: false,
               useGrouping: true,
-              precision: 8,
+              precision: 6,
               allowNegative: false,
             }"
           >
@@ -350,14 +350,13 @@ export default {
     });
 
     async function scanWallet() {
+      const hdWallet = await CryptoService.scanWallet();
+      accounts.value = hdWallet.accounts.filter((el) => !el.isArchived);
       if (pickedAccount.value) {
         // already picked from account details
         account.value = { ...pickedAccount.value };
-      }
-      const hdWallet = await CryptoService.scanWallet();
-      accounts.value = hdWallet.accounts.filter((el) => !el.isArchived);
-      // select first account so that we can immediately start finding the first available address
-      if (!pickedAccount.value) {
+      } else {
+        // select first account so that we can immediately start finding the first available address
         account.value = hdWallet.accounts[0];
       }
     }
@@ -365,15 +364,17 @@ export default {
     async function onOpen() {
       // when the modal is opened, scan for the address and show it
       await scanWallet();
+      if (pickedAccount.value) {
+        pickedAccount.value;
+        changeAccount(pickedAccount.value);
+        return;
+      }
       changeAccount();
     }
 
     const depositAddress = ref('');
     const qrSrc = ref('');
     async function changeAccount(acc = accounts.value[0]) {
-      if (pickedAccount.value) {
-        acc = pickedAccount.value;
-      }
       depositAddress.value = '';
       const { account, change } = CryptoService.breakAccountPath(acc.path);
       const discoveredAddresses = await CryptoService.accountDiscovery(account);

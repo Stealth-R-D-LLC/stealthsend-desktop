@@ -2473,7 +2473,10 @@ export default {
         CryptoService.master = master;
         await CryptoService.storeWalletInDb(password.value);
         await CryptoService.storeMnemonicInWallet(selectedRecoveryWords.value);
-        await restoreAccounts();
+        const lastAccountPath = await CryptoService.findLastUsedAccountPath()
+        for(let i = 0; i <= (lastAccountPath + 1); i++) {
+          await restoreAccounts();
+        }
         CryptoService.isFirstArrival = false;
         await CryptoService.unlock(password.value);
         // goToDashboard();
@@ -2502,7 +2505,7 @@ export default {
 
       for (let tx of hdAccount) {
         accUtxo = add(accUtxo, tx.account_balance_change);
-        accUtxo = format(accUtxo, { precision: 14 });
+        accUtxo = format(accUtxo, { precision: 8 });
       }
 
       let acc = {
@@ -2520,13 +2523,7 @@ export default {
 
       await CryptoService.storeAccountInDb(acc);
 
-      // break out of recursion after saving first account that doesn't have transactions
-      if (hdAccount.length === 0) {
-        mainStore.STOP_GLOBAL_LOADING();
-        return;
-      }
-
-      await restoreAccounts();
+      mainStore.STOP_GLOBAL_LOADING();
     }
 
     const createWallet = ref(false);

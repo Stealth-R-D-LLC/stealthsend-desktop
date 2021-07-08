@@ -465,6 +465,27 @@ const CryptoService = {
     };
   },
 
+  async findLastUsedAccountPath() {
+    const mainStore = useMainStore();
+
+    let emptyInARow = 0;
+    let lastAccountPath = "";
+    for (let i = 0; i < Infinity; i++) {
+      const acc = this.getChildFromRoot(i, 0, 0);
+      const hdAccount = await mainStore.rpc('gethdaccount', [acc.xpub]);
+
+      if (hdAccount.length > 0) {
+        lastAccountPath = acc.path;
+        emptyInARow = 0;
+        continue;
+      }
+
+      emptyInARow += 1;
+      if (emptyInARow >= 20) break;
+    }
+    return parseInt(lastAccountPath);
+  },
+
   isAddressValid(address) {
     const { version } = bitcoin.address.fromBase58Check(address);
     const isMainnet = process.env.VUE_APP_NETWORK === 'mainnet';
@@ -510,7 +531,7 @@ const CryptoService = {
           const hdAccount = await mainStore.rpc('gethdaccount', [account.xpub]);
           for (let tx of hdAccount) {
             accUtxo = add(accUtxo, tx.account_balance_change);
-            accUtxo = format(accUtxo, { precision: 14 });
+            accUtxo = format(accUtxo, { precision: 8 });
             txs.push({
               outputs: tx.outputs,
               amount: tx.account_balance_change,
@@ -530,7 +551,7 @@ const CryptoService = {
             [account.address]
           );
           accUtxo = add(accUtxo, importedAccountBalance);
-          accUtxo = format(accUtxo, { precision: 14 });
+          accUtxo = format(accUtxo, { precision: 8 });
 
           newAccounts.push({
             ...account,
@@ -543,7 +564,7 @@ const CryptoService = {
         if (!account.isArchived) {
           // do not include archived accounts into calculating the whole balance of the wallet XST-167
           balance = add(balance, accUtxo);
-          balance = format(balance, { precision: 14 });
+          balance = format(balance, { precision: 8 });
         }
       }
       resolve({
