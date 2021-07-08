@@ -18,50 +18,52 @@
           lose your password, the only access to your account will be through
           the use of Recovery Phrase.
         </p>
-        <StFormItem
-          label="Current password"
-          :filled="password"
-          :error-message="form.password.$errors"
-        >
-          <template #labelRight>Mandatory</template>
-          <StInput
-            type="password"
-            placeholder="Please enter current password"
-            v-model="password"
-          ></StInput>
-          <template #description>
-            Please enter a password you are using to access the application
-          </template>
-        </StFormItem>
-        <StFormItem
-          label="New password"
-          :filled="newPassword"
-          :error-message="form.newPassword.$errors"
-        >
-          <template #labelRight>Mandatory</template>
-          <StInput
-            type="password"
-            placeholder="Please enter new password"
-            v-model="newPassword"
-          ></StInput>
-          <template #description>
-            Please enter a unique and unused password for accessing the
-            application
-          </template>
-        </StFormItem>
-        <StFormItem
-          label="Confirm password"
-          :filled="confirmNewPassword"
-          :error-message="form.confirmNewPassword.$errors"
-        >
-          <template #labelRight>Mandatory</template>
-          <StInput
-            type="password"
-            placeholder="Please confirm new password"
-            v-model="confirmNewPassword"
-          ></StInput>
-          <template #description> Newly set password need to match </template>
-        </StFormItem>
+        <div class="set-password-container">
+          <StFormItem
+            label="Current password"
+            :filled="password"
+            :error-message="form.password.$errors"
+          >
+            <template #labelRight>Mandatory</template>
+            <StInput
+              type="password"
+              placeholder="Please enter current password"
+              v-model="password"
+            ></StInput>
+            <template #description>
+              Please enter a password you are using to access the application
+            </template>
+          </StFormItem>
+          <StFormItem
+            label="New password"
+            :filled="newPassword"
+            :error-message="form.newPassword.$errors"
+          >
+            <template #labelRight>Mandatory</template>
+            <StInput
+              type="password"
+              placeholder="Please enter new password"
+              v-model="newPassword"
+            ></StInput>
+            <template #description>
+              Please enter a unique and unused password for accessing the
+              application
+            </template>
+          </StFormItem>
+          <StFormItem
+            label="Confirm password"
+            :filled="confirmNewPassword"
+            :error-message="form.confirmNewPassword.$errors"
+          >
+            <template #labelRight>Mandatory</template>
+            <StInput
+              type="password"
+              placeholder="Please confirm new password"
+              v-model="confirmNewPassword"
+            ></StInput>
+            <template #description> Newly set password need to match </template>
+          </StFormItem>
+        </div>
       </div>
     </div>
   </div>
@@ -204,6 +206,9 @@ export default {
 </script>
 
 <style scoped>
+.set-password-container {
+  max-width: 424px;
+}
 .notice {
   padding: 24px;
   background-color: var(--background100);

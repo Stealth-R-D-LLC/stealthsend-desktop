@@ -516,7 +516,7 @@ export default {
   background-color: var(--grey100);
   display: block;
   height: 1px;
-  width: calc(100% + 443px);
+  width: 520px;
 }
 .mnemonic:nth-child(6n + 1) {
   margin-right: auto;

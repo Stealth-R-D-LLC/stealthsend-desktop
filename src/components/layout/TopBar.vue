@@ -752,11 +752,20 @@ export default {
     });
 
     const computedClass = computed(() => {
+      let headerColor = '';
+      if (route.path.split('/').includes('account')) {
+        headerColor = 'grey';
+      } else {
+        headerColor = 'default';
+      }
+      console.log(headerStyle.value);
+      console.log('This is header color' + headerColor);
       return {
-        'layout__header--is-grey': headerStyle.value === 'grey',
+        'layout__header--is-grey': headerStyle.value != headerColor,
         'layout__header--settings': route.path.split('/').includes('settings'),
       };
     });
+
     const headerStyle = computed(() => mainStore.headerStyle);
 
     const componentVisibility = computed(() => {
@@ -1035,7 +1044,7 @@ export default {
 .layout__header--is-grey {
   background: var(--background100);
   margin: 0;
-  padding: 45px 24px 29px;
+  padding: 41px 24px 29px;
 }
 
 .layout__header svg:hover {
