@@ -469,7 +469,7 @@ const CryptoService = {
     const mainStore = useMainStore();
 
     let emptyInARow = 0;
-    let lastAccountPath = "";
+    let lastAccountPath = '';
     for (let i = 0; i < Infinity; i++) {
       const acc = this.getChildFromRoot(i, 0, 0);
       const hdAccount = await mainStore.rpc('gethdaccount', [acc.xpub]);
