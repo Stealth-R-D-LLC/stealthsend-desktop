@@ -3,18 +3,88 @@
     <div class="header-left">
       <template v-if="checkVisibilityForRoute(['Dashboard'])">
         <div :class="{ nonclickable: !componentVisibility.txDashboard }">
-          <StIcon
+          <svg
             :class="{ inactive: !componentVisibility.chart }"
-            name="chart"
             @click="toggleComponentVisibility('chart')"
-          ></StIcon>
+            width="16"
+            height="18"
+            viewBox="0 0 16 18"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M2 18V7"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M6 18V9"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M10 18V0"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M14 18V4"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+          </svg>
         </div>
         <div :class="{ nonclickable: !componentVisibility.chart }">
-          <StIcon
+          <svg
             :class="{ inactive: !componentVisibility.txDashboard }"
-            name="tx-list"
             @click="toggleComponentVisibility('txDashboard')"
-          ></StIcon>
+            width="18"
+            height="12"
+            viewBox="0 0 18 12"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M4 1H18"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M0 1H2"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M4 6H18"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M0 6H2"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M4 11H18"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M0 11H2"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+          </svg>
         </div>
       </template>
       <template v-if="checkVisibilityForRoute(['AccountDetails'])">
@@ -47,43 +117,45 @@
         </StMultiselect>
         <div class="icons-flex">
           <svg
-            v-if="!isHiddenAmounts"
+            v-if="isHiddenAmounts"
             @click="toggleHiddenAmounts"
-            width="26"
-            height="14"
-            viewBox="0 0 26 14"
+            width="22"
+            height="12"
+            viewBox="0 0 22 12"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
               fill-rule="evenodd"
               clip-rule="evenodd"
-              d="M13 13C17.0501 13 20.7168 11 24 7C20.7168 3 17.0501 1 13 1C8.94991 1 5.28325 3 2 7C5.28325 11 8.94991 13 13 13Z"
+              d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
               stroke="#4E00F6"
               stroke-width="2"
             />
-            <circle cx="13" cy="7" r="2" fill="#4E00F6" />
+            <circle
+              r="1"
+              transform="matrix(-1 0 0 1 11 6)"
+              fill="#4E00F6"
+              stroke="#4E00F6"
+              stroke-width="2"
+            />
           </svg>
           <svg
             v-else
             @click="toggleHiddenAmounts"
-            width="26"
-            height="19"
-            viewBox="0 0 26 19"
+            width="22"
+            height="16"
+            viewBox="0 0 22 16"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              d="M13 3C8.94991 3 5.28325 5.03704 2 9.11111C5.28325 13.1852 8.94991 15.2222 13 15.2222C17.0501 15.2222 20.7168 13.1852 24 9.11111C23.2599 8.1928 22.5004 7.37799 21.7214 6.66667"
+              d="M11 3C7.68629 3 4.68629 4.66667 2 8C4.68629 11.3333 7.68629 13 11 13C14.3137 13 17.3137 11.3333 20 8C19.3945 7.24866 18.7731 6.58199 18.1357 6"
               stroke="#4E00F6"
               stroke-width="2"
             />
-            <path d="M9 9L15.1111 9" stroke="#4E00F6" stroke-width="2" />
-            <path
-              d="M23.1113 1L6.00022 18.1111"
-              stroke="#4E00F6"
-              stroke-width="2"
-            />
+            <path d="M7 8L12 8" stroke="#4E00F6" stroke-width="2" />
+            <path d="M19 1L5 15" stroke="#4E00F6" stroke-width="2" />
           </svg>
           <svg
             @click="isVisible = true"
@@ -124,85 +196,89 @@
       <template v-if="checkVisibilityForRoute(['Transactions'])">
         <div class="icons-flex">
           <svg
-            v-if="!isHiddenAmounts"
+            v-if="isHiddenAmounts"
             @click="toggleHiddenAmounts"
-            width="26"
-            height="14"
-            viewBox="0 0 26 14"
+            width="22"
+            height="12"
+            viewBox="0 0 22 12"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
               fill-rule="evenodd"
               clip-rule="evenodd"
-              d="M13 13C17.0501 13 20.7168 11 24 7C20.7168 3 17.0501 1 13 1C8.94991 1 5.28325 3 2 7C5.28325 11 8.94991 13 13 13Z"
+              d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
               stroke="#4E00F6"
               stroke-width="2"
             />
-            <circle cx="13" cy="7" r="2" fill="#4E00F6" />
+            <circle
+              r="1"
+              transform="matrix(-1 0 0 1 11 6)"
+              fill="#4E00F6"
+              stroke="#4E00F6"
+              stroke-width="2"
+            />
           </svg>
           <svg
             v-else
             @click="toggleHiddenAmounts"
-            width="26"
-            height="19"
-            viewBox="0 0 26 19"
+            width="22"
+            height="16"
+            viewBox="0 0 22 16"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              d="M13 3C8.94991 3 5.28325 5.03704 2 9.11111C5.28325 13.1852 8.94991 15.2222 13 15.2222C17.0501 15.2222 20.7168 13.1852 24 9.11111C23.2599 8.1928 22.5004 7.37799 21.7214 6.66667"
+              d="M11 3C7.68629 3 4.68629 4.66667 2 8C4.68629 11.3333 7.68629 13 11 13C14.3137 13 17.3137 11.3333 20 8C19.3945 7.24866 18.7731 6.58199 18.1357 6"
               stroke="#4E00F6"
               stroke-width="2"
             />
-            <path d="M9 9L15.1111 9" stroke="#4E00F6" stroke-width="2" />
-            <path
-              d="M23.1113 1L6.00022 18.1111"
-              stroke="#4E00F6"
-              stroke-width="2"
-            />
+            <path d="M7 8L12 8" stroke="#4E00F6" stroke-width="2" />
+            <path d="M19 1L5 15" stroke="#4E00F6" stroke-width="2" />
           </svg>
         </div>
       </template>
       <template v-if="checkVisibilityForRoute(['ArchivedAccounts'])">
         <svg
-          v-if="!isHiddenAmounts"
+          v-if="isHiddenAmounts"
           @click="toggleHiddenAmounts"
-          width="26"
-          height="14"
-          viewBox="0 0 26 14"
+          width="22"
+          height="12"
+          viewBox="0 0 22 12"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
             fill-rule="evenodd"
             clip-rule="evenodd"
-            d="M13 13C17.0501 13 20.7168 11 24 7C20.7168 3 17.0501 1 13 1C8.94991 1 5.28325 3 2 7C5.28325 11 8.94991 13 13 13Z"
+            d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
             stroke="#4E00F6"
             stroke-width="2"
           />
-          <circle cx="13" cy="7" r="2" fill="#4E00F6" />
+          <circle
+            r="1"
+            transform="matrix(-1 0 0 1 11 6)"
+            fill="#4E00F6"
+            stroke="#4E00F6"
+            stroke-width="2"
+          />
         </svg>
         <svg
           v-else
           @click="toggleHiddenAmounts"
-          width="26"
-          height="19"
-          viewBox="0 0 26 19"
+          width="22"
+          height="16"
+          viewBox="0 0 22 16"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="M13 3C8.94991 3 5.28325 5.03704 2 9.11111C5.28325 13.1852 8.94991 15.2222 13 15.2222C17.0501 15.2222 20.7168 13.1852 24 9.11111C23.2599 8.1928 22.5004 7.37799 21.7214 6.66667"
+            d="M11 3C7.68629 3 4.68629 4.66667 2 8C4.68629 11.3333 7.68629 13 11 13C14.3137 13 17.3137 11.3333 20 8C19.3945 7.24866 18.7731 6.58199 18.1357 6"
             stroke="#4E00F6"
             stroke-width="2"
           />
-          <path d="M9 9L15.1111 9" stroke="#4E00F6" stroke-width="2" />
-          <path
-            d="M23.1113 1L6.00022 18.1111"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
+          <path d="M7 8L12 8" stroke="#4E00F6" stroke-width="2" />
+          <path d="M19 1L5 15" stroke="#4E00F6" stroke-width="2" />
         </svg>
         <svg
           @click="toggleDrawer('favourite-list')"
@@ -244,14 +320,73 @@
     </div>
     <div class="header-right">
       <p class="rpc-status">{{ rpcStatus }}</p>
-      <StIcon name="sync-status"></StIcon>
+      <svg
+        width="22"
+        height="22"
+        viewBox="0 0 22 22"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="11" cy="11" r="11" fill="#E0D3FC" />
+        <path
+          d="M18 11C18 14.866 14.866 18 11 18C7.13401 18 4 14.866 4 11C4 7.13401 7.13401 4 11 4C12.0736 4 13.0907 4.24169 14 4.67363"
+          stroke="#4E00F6"
+          stroke-width="2"
+        />
+        <path d="M17 7L11 13L8 10" stroke="#4E00F6" stroke-width="2" />
+      </svg>
+
       <!-- <StIcon name="support"></StIcon> -->
       <!-- <StIcon
         name="notifications"
         @click="toggleDrawer('recent-notifications')"
       ></StIcon> -->
-      <StIcon @click="openQuickDeposit" name="qr"></StIcon>
-      <StIcon @click="goto('/settings')" name="settings"></StIcon>
+      <svg
+        @click="openQuickDeposit"
+        width="18"
+        height="18"
+        viewBox="0 0 18 18"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M7 7H1V1H7V7Z"
+          stroke="#4E00F6"
+          stroke-width="2"
+        />
+        <path d="M11 0V3H14V1H17V5" stroke="#4E00F6" stroke-width="2" />
+        <path d="M7 18V16H4V17H1V14" stroke="#4E00F6" stroke-width="2" />
+        <path d="M11 18V16H14V17H17V14" stroke="#4E00F6" stroke-width="2" />
+        <path d="M11 13H7V11H4" stroke="#4E00F6" stroke-width="2" />
+        <path d="M10 7H18" stroke="#4E00F6" stroke-width="2" />
+        <path d="M14 9V11H17V9" stroke="#4E00F6" stroke-width="2" />
+        <path d="M1 10V12" stroke="#4E00F6" stroke-width="2" />
+        <path d="M11 9V10.6364" stroke="#4E00F6" stroke-width="2" />
+      </svg>
+      <svg
+        @click="goto('/settings')"
+        width="18"
+        height="18"
+        viewBox="0 0 18 18"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M7 11L18 11" stroke="#4E00F6" stroke-width="2" />
+        <path
+          d="M4 14C5.65685 14 7 12.6569 7 11C7 9.34315 5.65685 8 4 8C2.34315 8 1 9.34315 1 11C1 12.6569 2.34315 14 4 14Z"
+          stroke="#4E00F6"
+          stroke-width="2"
+        />
+        <path d="M0 4H7" stroke="#4E00F6" stroke-width="2" />
+        <path
+          d="M14 7C15.6569 7 17 5.65685 17 4C17 2.34315 15.6569 1 14 1C12.3431 1 11 2.34315 11 4C11 5.65685 12.3431 7 14 7Z"
+          stroke="#4E00F6"
+          stroke-width="2"
+        />
+        <path d="M7 17H18" stroke="#4E00F6" stroke-width="2" />
+      </svg>
     </div>
     <StModal
       light
@@ -387,6 +522,7 @@
             <form class="form" @submit.prevent>
               <StFormItem
                 class="custom-form-item"
+                :filled="password"
                 label="Password"
                 :error-message="form.password.$errors"
               >
@@ -616,11 +752,20 @@ export default {
     });
 
     const computedClass = computed(() => {
+      let headerColor = '';
+      if (route.path.split('/').includes('account')) {
+        headerColor = 'grey';
+      } else {
+        headerColor = 'default';
+      }
+      console.log(headerStyle.value);
+      console.log('This is header color' + headerColor);
       return {
-        'layout__header--is-grey': headerStyle.value === 'grey',
+        'layout__header--is-grey': headerStyle.value != headerColor,
         'layout__header--settings': route.path.split('/').includes('settings'),
       };
     });
+
     const headerStyle = computed(() => mainStore.headerStyle);
 
     const componentVisibility = computed(() => {
@@ -899,7 +1044,7 @@ export default {
 .layout__header--is-grey {
   background: var(--background100);
   margin: 0;
-  padding: 45px 24px 29px;
+  padding: 41px 24px 29px;
 }
 
 .layout__header svg:hover {
@@ -941,11 +1086,12 @@ export default {
   margin-left: 24px;
 }
 :deep .st-modal-container {
-  width: 416px;
-  min-height: 456px;
+  width: 480px;
+  height: 520px;
+  box-sizing: border-box;
 }
 :deep .st-modal__body {
-  margin: 36px 0 0 0 !important;
+  margin: 12px 0 0 0 !important;
 }
 .account-modal__hide-header :deep .st-modal__header {
   display: none;
@@ -958,6 +1104,7 @@ export default {
   margin-bottom: 36px;
 }
 .account-tabs {
+  margin-top: 36px;
   margin-bottom: 36px;
   display: flex;
   align-items: center;
@@ -971,7 +1118,6 @@ export default {
   letter-spacing: 0.32px;
   color: var(--grey900);
   padding-bottom: 12px;
-  padding-right: 20px;
   border-bottom: 3px solid var(--grey200);
   font-family: var(--secondary-font);
   transition: 0.3s;
@@ -1018,7 +1164,7 @@ export default {
 }
 .copy-key {
   margin-top: 17px;
-  margin-bottom: 51px;
+  margin-bottom: 49px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1040,14 +1186,12 @@ export default {
 .qr-code {
   display: block;
   width: 100%;
-  max-width: 160px;
-  margin: 81px auto 88px;
-}
-.password-desc {
-  margin-top: -23px;
+  max-width: 220px;
+  margin: 63px auto 46px;
+  padding-left: 22px;
 }
 .custom-form-item {
-  margin: 160px 0 201px;
+  margin: 120px 0 0;
 }
 :deep .st-input input {
   background-position: 92% 49% !important;

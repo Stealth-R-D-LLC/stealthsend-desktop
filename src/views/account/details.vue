@@ -2,29 +2,33 @@
   <div class="account-details-container" v-if="account">
     <div class="account-details-container__top">
       <div class="left">
-        <StLabel label="XST Balance" bold>{{
-          isHiddenAmounts ? '•••' : formatAmount(account.utxo, false, 2)
-        }}</StLabel>
-        <StLabel label="USD Value"
-          >${{
-            isHiddenAmounts ? '•••' : formatAmount(usdAmount, false, 4, 4)
-          }}</StLabel
-        >
-        <StLabel label="BTC Value">{{
-          isHiddenAmounts ? '•••' : formatAmount(btcAmount, false, 8, 8)
-        }}</StLabel>
-        <StLabel label="24h %"
-          ><StTag :color="Number(changePercent24Hr) > 0 ? 'success' : 'danger'">
-            {{
-              Number(changePercent24Hr) > 0
-                ? '+' + changePercent24Hr
-                : changePercent24Hr
-            }}%
-          </StTag>
-        </StLabel>
+        <div>
+          <StLabel label="XST Balance" bold>{{
+            isHiddenAmounts ? '•••' : formatAmount(account.utxo, false, 2)
+          }}</StLabel>
+          <StLabel label="USD Value"
+            >${{
+              isHiddenAmounts ? '•••' : formatAmount(usdAmount, false, 4, 4)
+            }}</StLabel
+          >
+          <StLabel label="BTC Value">{{
+            isHiddenAmounts ? '•••' : formatAmount(btcAmount, false, 8, 8)
+          }}</StLabel>
+          <StLabel label="24h %"
+            ><StTag
+              :color="Number(changePercent24Hr) > 0 ? 'success' : 'danger'"
+            >
+              {{
+                Number(changePercent24Hr) > 0
+                  ? '+' + changePercent24Hr
+                  : changePercent24Hr
+              }}%
+            </StTag>
+          </StLabel>
+        </div>
         <div class="actions">
-          <StButton class="send-btn" @click="openModal('send')">Send</StButton>
-          <StButton class="receive-btn" @click="openModal('receive')"
+          <StButton type="type-c" @click="openModal('send')">Send</StButton>
+          <StButton type="type-c" @click="openModal('receive')"
             >Receive</StButton
           >
         </div>
@@ -34,18 +38,88 @@
       <div class="account-details-container__body--overflow">
         <div class="icons">
           <div :class="{ nonclickable: !componentVisibility.txDashboard }">
-            <StIcon
+            <svg
               :class="{ inactive: !componentVisibility.chart }"
-              name="chart"
               @click="toggleComponentVisibility('chart')"
-            ></StIcon>
+              width="16"
+              height="18"
+              viewBox="0 0 16 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M2 18V7"
+                stroke="#4E00F6"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M6 18V9"
+                stroke="#4E00F6"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M10 18V0"
+                stroke="#4E00F6"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M14 18V4"
+                stroke="#4E00F6"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+            </svg>
           </div>
           <div :class="{ nonclickable: !componentVisibility.chart }">
-            <StIcon
+            <svg
               :class="{ inactive: !componentVisibility.txDashboard }"
-              name="tx-list"
               @click="toggleComponentVisibility('txDashboard')"
-            ></StIcon>
+              width="18"
+              height="12"
+              viewBox="0 0 18 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M4 1H18"
+                stroke="#4E00F6"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M0 1H2"
+                stroke="#4E00F6"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M4 6H18"
+                stroke="#4E00F6"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M0 6H2"
+                stroke="#4E00F6"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M4 11H18"
+                stroke="#4E00F6"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M0 11H2"
+                stroke="#4E00F6"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+            </svg>
           </div>
         </div>
         <Chart v-if="componentVisibility.chart"></Chart>
@@ -96,8 +170,6 @@ export default {
   setup() {
     const mainStore = useMainStore();
     const { formatAmount } = useHelpers();
-
-    mainStore.SET_HEADER_STYLE('grey');
 
     onBeforeRouteLeave(() => {
       mainStore.SET_ACCOUNT_DETAILS(null);
@@ -223,7 +295,7 @@ export default {
 }
 
 .account-details-container__top {
-  padding: 24px;
+  padding: 22px 28px 18px;
 }
 .account-details-container__body {
   padding: 24px 10px 24px 24px;
@@ -234,6 +306,7 @@ export default {
   height: calc(100vh - 252px);
   width: calc(100% - 14px);
   padding-right: 14px;
+  overflow-x: hidden;
 }
 .account-details-container__body--overflow::-webkit-scrollbar {
   width: 4px;
@@ -252,46 +325,29 @@ export default {
 }
 
 .account-details-container__top .left {
-  display: grid;
-  grid-gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(15ch, 1fr));
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
 }
-.send-btn,
-.receive-btn {
-  min-width: 120px !important;
-  width: 120px !important;
-  height: 36px;
-  padding: 6px 0;
-  font-family: var(--secondary-font);
-  font-weight: bold;
-  font-size: 12px;
-  line-height: 24px;
-  letter-spacing: 0.12px;
-  color: var(--grey50);
-  border: 1px solid rgba(124, 126, 175, 0.5);
-  background: linear-gradient(
-      153.02deg,
-      rgba(124, 126, 175, 0.15) 0%,
-      rgba(124, 126, 175, 0.15) 83.23%
-    ),
-    var(--purple500);
-  align-self: flex-end;
+.account-details-container__top .left > div {
+  display: flex;
 }
-.send-btn:hover,
-.receive-btn:hover {
-  border: 1px solid rgba(124, 126, 175, 0.5);
-  background: linear-gradient(
-      153.02deg,
-      rgba(124, 126, 175, 0.15) 0%,
-      rgba(124, 126, 175, 0.15) 83.23%
-    ),
-    var(--purple500);
-  cursor: pointer;
+.account-details-container__top .left > div .st-label {
+  margin-right: 24px;
+}
+.account-details-container__top .left > div .st-label--is-bold {
+  margin-right: 56px;
 }
 .actions {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+}
+.actions button {
+  margin: 0;
+}
+.actions button:last-child {
+  margin-left: 24px;
 }
 .receive-btn {
   margin-left: 24px;

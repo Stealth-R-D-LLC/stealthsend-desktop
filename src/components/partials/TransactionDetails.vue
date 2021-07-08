@@ -53,18 +53,22 @@
       </div>
     </div>
     <div class="body" v-if="tx">
-      <div class="item" v-if="editMode">
+      <div class="item item--label">
         <StFormItem
+          v-if="editMode"
           label="Label"
-          label-right="Save"
+          :filled="label"
           @rightLabelClick="saveLabel"
-          notice="Edit transaction label for better personal accounting"
         >
+          <template #labelRight>Save</template>
           <StInput
             class="edit-label-input"
             v-model="label"
-            placeholder=""
+            placeholder="Please enter label"
           ></StInput>
+          <template #description>
+            Edit transaction label for better personal accounting
+          </template>
         </StFormItem>
       </div>
       <div class="item">
@@ -271,6 +275,13 @@ export default {
   border-bottom: 1px solid var(--grey100);
   padding: 16px 0;
   font-size: 12px;
+}
+.item--label {
+  padding: 30px 0 24px;
+  margin-bottom: 12px;
+}
+.item--label .st-form-item {
+  margin-bottom: 0;
 }
 .item .amount {
   color: var(--grey1000);

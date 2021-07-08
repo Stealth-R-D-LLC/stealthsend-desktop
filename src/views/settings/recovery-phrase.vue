@@ -12,6 +12,8 @@
         <StFormItem
           class="item-center"
           label="Password"
+          position="center"
+          :filled="form.password.$value"
           :error-message="form.password.$errors"
         >
           <StInput
@@ -418,6 +420,7 @@ export default {
   justify-content: center;
 }
 .grey-box {
+  margin-bottom: 40px;
   width: 100%;
   max-width: 568px;
   box-sizing: border-box;
@@ -513,7 +516,7 @@ export default {
   background-color: var(--grey100);
   display: block;
   height: 1px;
-  width: calc(100vw - 625px);
+  width: 520px;
 }
 .mnemonic:nth-child(6n + 1) {
   margin-right: auto;

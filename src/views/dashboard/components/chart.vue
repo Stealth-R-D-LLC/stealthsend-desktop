@@ -9,11 +9,13 @@
         >{{ filter.period }}</a
       >
     </div>
-    <template v-if="!refreshChart">
-      <div class="chart-max">{{ maxValue }}</div>
-      <div class="st-dashboard-chart"></div>
-      <div class="chart-min">{{ minValue }}</div>
-    </template>
+    <div class="chart-container">
+      <template v-if="!refreshChart">
+        <div class="chart-max">{{ maxValue }}</div>
+        <div class="st-dashboard-chart"></div>
+        <div class="chart-min">{{ minValue }}</div>
+      </template>
+    </div>
   </div>
 </template>
 
@@ -298,6 +300,9 @@ export default {
 <style scoped>
 .full-height .st-dashboard-chart {
   height: calc(100vh - 285px);
+}
+.chart-container {
+  min-height: 450px;
 }
 .st-dashboard-chart {
   height: 450px;
