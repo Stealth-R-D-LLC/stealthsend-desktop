@@ -457,7 +457,7 @@ export default {
   border: 1px solid var(--marine400) !important;
 }
 .archived {
-  margin-top: 64px;
+  margin-top: 40px;
 }
 .info-purple path {
   stroke: var(--marine700);
