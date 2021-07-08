@@ -60,7 +60,7 @@
               distractionFree: true,
               valueAsInteger: false,
               useGrouping: true,
-              precision: 8,
+              precision: 6,
               allowNegative: false,
             }"
           >
