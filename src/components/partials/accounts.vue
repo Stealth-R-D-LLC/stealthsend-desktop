@@ -144,14 +144,18 @@
               <StModal
                 light
                 :visible="editAccountNameModal"
-                @close="editAccountNameModal = false"
+                @close="closeEditModal"
               >
                 <template #header> Account Wizard </template>
                 <template #body>
-                  <StFormItem label="Account name" :filled="accountName">
+                  <StFormItem
+                    label="Account name"
+                    :filled="form.accountName.$value"
+                    :error-message="form.accountName.$errors"
+                  >
                     <StInput
                       label="Account name"
-                      v-model="accountName"
+                      v-model="form.accountName.$value"
                       placeholder="Account name"
                     ></StInput>
                   </StFormItem>
@@ -274,11 +278,17 @@
                 >
                   <template #header> Account Wizard </template>
                   <template #body>
-                    <StInput
-                      v-model="accountName"
+                    <StFormItem
                       label="Account name"
-                      placeholder="Account name"
-                    ></StInput>
+                      :filled="form.accountName.$value"
+                      :error-message="form.accountName.$errors"
+                    >
+                      <StInput
+                        v-model="form.accountName.$value"
+                        label="Account name"
+                        placeholder="Account name"
+                      ></StInput>
+                    </StFormItem>
                   </template>
                   <template #footer>
                     <StButton
@@ -307,6 +317,7 @@ import useHelpers from '@/composables/useHelpers';
 import router from '@/router';
 import CryptoService from '../../services/crypto';
 import emitter from '@/services/emitter';
+import { useValidation, ValidationError } from 'vue3-form-validation';
 
 export default {
   name: 'StAccounts',
@@ -325,6 +336,29 @@ export default {
     const { formatAmount } = useHelpers();
     let editAccountNameModal = ref(false);
     let accounts = ref(props.accounts);
+
+    const {
+      form,
+      errors, // submitting,
+      validateFields,
+      resetFields,
+    } = useValidation({
+      accountName: {
+        $value: accountName,
+        $rules: [
+          (accountName) => {
+            if (!accountName) {
+              console.log('aaa', accounts.value);
+              return 'Account name is required';
+            }
+            if (accounts.value.some((el) => el.label === accountName)) {
+              return 'Account name already exists';
+            }
+          },
+        ],
+      },
+    });
+
     const activeAccounts = computed(() => {
       return accounts.value.filter((obj) => obj.isArchived === false);
     });
@@ -368,12 +402,20 @@ export default {
       accountOptions.value = '';
     }
     async function changeAccountName(account) {
-      await CryptoService.changeAccountName(account, accountName.value);
-      const scannedAccounts = await CryptoService.scanWallet();
-      accounts.value = scannedAccounts.accounts;
-      editAccountNameModal.value = false;
+      try {
+        await validateFields();
+        await CryptoService.changeAccountName(account, accountName.value);
+        const scannedAccounts = await CryptoService.scanWallet();
+        accounts.value = scannedAccounts.accounts;
+        editAccountNameModal.value = false;
+      } catch (e) {
+        if (e instanceof ValidationError) {
+          console.log(e);
+        }
+      }
     }
     function openEditAccountNameModal(account) {
+      resetFields();
       accountName.value = account.label;
       editAccountNameModal.value = true;
     }
@@ -382,7 +424,13 @@ export default {
 
       router.push('/account/details');
     };
+
+    function closeEditModal() {
+      editAccountNameModal.value = false;
+      resetFields();
+    }
     return {
+      closeEditModal,
       // variables
       activeAccounts,
       archivedAccounts,
@@ -404,6 +452,11 @@ export default {
       formatAmount,
       XST_USD_RATE,
       isHiddenAmounts: computed(() => mainStore.isAmountsHidden),
+
+      form,
+      errors,
+      validateFields,
+      resetFields,
     };
   },
 };
