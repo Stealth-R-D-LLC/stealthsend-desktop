@@ -2,12 +2,15 @@
 fieldset[disabled] .multiselect {
   pointer-events: none;
 }
-.st-form-item--is-dark .multiselect__tags .multiselect__single {
+.st-form-item--dark .multiselect__tags .multiselect__single {
   color: var(--white);
 }
-.st-form-item--is-dark .multiselect__select::before {
+
+.st-form-item--dark .multiselect__select::before {
   border-color: var(--white) transparent transparent transparent;
 }
+
+
 .multiselect__spinner {
   position: absolute;
   right: 1px;
@@ -319,6 +322,18 @@ fieldset[disabled] .multiselect {
   cursor: text;
   pointer-events: none;
 }
+
+.multiselect--disabled .multiselect__current,
+.multiselect--disabled .multiselect__select {
+  background: #ededed;
+  color: #a6a6a6;
+}
+.multiselect__option--disabled {
+  background: #ededed !important;
+  color: #a6a6a6 !important;
+  cursor: text;
+  pointer-events: none;
+}
 .multiselect__option--group {
   background: #ededed;
   color: #35495e;
@@ -394,12 +409,15 @@ fieldset[disabled] .multiselect {
   border-color: var(--white) transparent transparent transparent;
 }
 
-.st-form-item--is-dark .multiselect--disabled {
+.st-form-item--dark .multiselect--disabled {
   background: none;
   pointer-events: none;
 }
 
-.st-form-item--is-dark .multiselect--disabled .multiselect__current,
-.st-form-item--is-dark .multiselect--disabled .multiselect__select {
+.st-form-item--dark .multiselect--disabled .multiselect__current,
+.st-form-item--dark .multiselect--disabled .multiselect__select {
   background: none;
+}
+.st-form-item--dark .multiselect--disabled {
+  background: transparent;
 }
