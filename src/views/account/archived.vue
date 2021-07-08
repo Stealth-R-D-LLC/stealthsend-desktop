@@ -46,7 +46,6 @@ export default {
       } else {
         tmpAccounts = tmpAccounts.concat(hdWallet.accounts);
       }
-      console.log('acccc', tmpAccounts);
 
       accounts.value = tmpAccounts;
     }
