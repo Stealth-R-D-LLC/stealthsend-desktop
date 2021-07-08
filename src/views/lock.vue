@@ -240,9 +240,13 @@ export default {
 
     async function validatePassword() {
       if (await validateFields()) {
-        await CryptoService.unlock(password.value);
-        router.push('/dashboard');
-        resetFields();
+        try {
+          await CryptoService.unlock(password.value);
+          router.push('/dashboard');
+          resetFields();
+        } catch (e) {
+          console.log('e', e);
+        }
       }
     }
 

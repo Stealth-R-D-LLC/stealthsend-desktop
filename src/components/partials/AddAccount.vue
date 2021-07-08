@@ -139,7 +139,7 @@
         <template v-if="currentStep === 3">
           <h5>Importing Private Key</h5>
           <p class="medium">
-            Please be patient and don’t turn off the phone or exit the
+            Please be patient and don’t exit the
             application
           </p>
         </template>

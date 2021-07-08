@@ -70,14 +70,20 @@ const CryptoService = {
     // when retrieving, we need to have the seed in buffer type so we can work with it
     // that's why we are converting the seed from string -> uint8array -> buffer
     // master key
-    this.master = await bip32.fromSeed(
-      Buffer.from(
-        this.hexToArray(
-          this.AESDecrypt(wallet.seed, hash).toString(cryptoJs.enc.Utf8)
-        )
-      ),
-      this.network
-    );
+    try {
+      this.master = await bip32.fromSeed(
+        Buffer.from(
+          this.hexToArray(
+            this.AESDecrypt(wallet.seed, hash).toString(cryptoJs.enc.Utf8)
+          )
+        ),
+        this.network
+      );
+    } catch (e) {
+      console.log('e', e);
+      router.push('/lock');
+    }
+    console.log('master: ', this.master);
     router.push('/dashboard');
   },
   WIFtoPK(wif) {
@@ -129,12 +135,13 @@ const CryptoService = {
     };
   },
   getKeysForAccount(account = 0, change = 0, address = 0) {
-    if (!this.master)
+    if (!this.master) {
       return {
         xpub: '',
         publicKey: '',
         secretKey: '',
       };
+    }
     const keypair = this.master.derivePath(
       `m/44'/${
         process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
