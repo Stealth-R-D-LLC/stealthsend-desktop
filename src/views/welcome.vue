@@ -1662,10 +1662,10 @@
                 <p>Carefully record all {{ recoveryPhraseLength }} words</p>
                 <div class="mnemonic">
                   <span
-                    v-for="(mnemonic, index) in createdMnemonic"
-                    :key="mnemonic"
+                    v-for="(word, index) in createdMnemonic"
+                    :key="word"
                   >
-                    <strong>{{ index + 1 }}.</strong>{{ mnemonic }}
+                    <strong>{{ index + 1 }}.</strong>{{ word }}
                   </span>
                 </div>
               </div>
