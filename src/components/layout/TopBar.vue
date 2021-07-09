@@ -88,7 +88,19 @@
         </div>
       </template>
       <template v-if="checkVisibilityForRoute(['AccountDetails'])">
-        <StMultiselect
+        <div v-if="account" class="account-switcher" @click="openAccountModal">
+          <h6>{{ account && account.label }}</h6>
+          <svg
+            width="8"
+            height="7"
+            viewBox="0 0 8 7"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M8 0.5H0L4 6.5L8 0.5Z" fill="#4E00F6" />
+          </svg>
+        </div>
+        <!-- <StMultiselect
           v-model="account"
           :class="{ 'multiselect-filled': account }"
           :options="accounts"
@@ -114,7 +126,7 @@
               <span> {{ option.utxo }} XST </span>
             </div>
           </template>
-        </StMultiselect>
+        </StMultiselect> -->
         <div class="icons-flex">
           <svg
             v-if="isHiddenAmounts"
@@ -691,6 +703,60 @@
         </div>
       </template>
     </StModal>
+    <StModal
+      light
+      :visible="accountVisible"
+      @close="accountVisible = false"
+      class="account-modal"
+    >
+      <template #header>Select Account</template>
+      <template #body>
+        <div class="account-overflow">
+          <div
+            class="account-card"
+            v-for="account in accounts"
+            :key="account.label"
+            @click="selectAccount(account.label)"
+          >
+            <div class="account-card__header">
+              <h6>{{ account.label }}</h6>
+              <div
+                class="radio"
+                :class="{ 'radio-active': showArrow === account.label }"
+              />
+            </div>
+            <div class="account-card__content">
+              <div class="account-card__content--amount">
+                <h6>{{ amountFormat(account).amountLeft }} XST</h6>
+                <p>~ ${{ amountFormat(account).amountRight }} USD</p>
+              </div>
+              <transition name="fade">
+                <div
+                  v-if="showArrow === account.label"
+                  class="account-card__content--icon"
+                  @click="accountChanged(account)"
+                >
+                  <svg
+                    width="18"
+                    height="16"
+                    viewBox="0 0 18 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M0 8H16" stroke="#4E00F6" stroke-width="2" />
+                    <path
+                      d="M10.3535 15L16.0006 8L10.3535 1"
+                      stroke="#4E00F6"
+                      stroke-width="2"
+                    />
+                  </svg>
+                </div>
+              </transition>
+            </div>
+          </div>
+        </div>
+      </template>
+    </StModal>
   </header>
 </template>
 
@@ -701,6 +767,8 @@ import { ref, computed, watch, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import router from '@/router';
 import CryptoService from '@/services/crypto';
+import useHelpers from '@/composables/useHelpers';
+import { multiply } from 'mathjs';
 import emitter from '@/services/emitter';
 import VanillaQR from 'vanillaqr';
 import { useValidation } from 'vue3-form-validation';
@@ -708,11 +776,13 @@ import { useValidation } from 'vue3-form-validation';
 export default {
   setup() {
     const mainStore = useMainStore();
+    const { formatAmount } = useHelpers();
     let version = pkgjson.version;
     const route = useRoute();
     const account = ref(null);
     const accounts = ref([]);
     const isVisible = ref(false);
+    const accountVisible = ref(false);
     const rpcStatus = ref('');
     const activeStep = ref('public-key');
     const publicKey = ref('');
@@ -722,6 +792,7 @@ export default {
     const checkPassword = ref(false);
     const showPassword = ref(false);
     const password = ref('');
+    const showArrow = ref('');
 
     const {
       form,
@@ -901,12 +972,6 @@ export default {
       router.push(path);
     }
 
-    function accountChanged() {
-      setTimeout(() => {
-        emitter.emit('header:account-changed', account.value);
-      }, 1);
-    }
-
     let copyPending = ref(false);
     function handleCopy() {
       copyPending.value = true;
@@ -959,6 +1024,44 @@ export default {
         .focus();
     }
 
+    function amountFormat(account) {
+      return {
+        asset: 'XST',
+        amountLeft: `${formatAmount(account.utxo, true, 2)} XST`,
+        amountRight: `${formatAmount(
+          multiply(account.utxo, CryptoService.constraints.XST_USD),
+          false,
+          4,
+          4
+        )}`,
+        percentage: formatAmount(
+          CryptoService.constraints.changePercent24Hr,
+          false,
+          2
+        ),
+      };
+    }
+
+    const changedAccount = ref('');
+
+    function accountChanged(account) {
+      mainStore.SET_ACCOUNT_DETAILS(account);
+      scanWallet();
+      setTimeout(() => {
+        emitter.emit('header:account-changed', account);
+      }, 1);
+      accountVisible.value = false;
+    }
+
+    function openAccountModal() {
+      showArrow.value = account.value.label;
+      accountVisible.value = true;
+    }
+
+    function selectAccount(account) {
+      showArrow.value = account;
+    }
+
     // manually trigger retrieving keys
     changeStep('public-key');
 
@@ -973,6 +1076,7 @@ export default {
       openQuickDeposit,
       headerStyle,
       isVisible,
+      accountVisible,
       changeStep,
       activeStep,
       publicKey,
@@ -993,6 +1097,7 @@ export default {
       scanWallet,
       account,
       accounts,
+      changedAccount,
       toggleHiddenAmounts,
       isHiddenAmounts,
       accountChanged,
@@ -1002,6 +1107,10 @@ export default {
       validateFields,
       resetFields,
       computedClass,
+      amountFormat,
+      showArrow,
+      selectAccount,
+      openAccountModal,
     };
   },
 };
@@ -1044,7 +1153,7 @@ export default {
 .layout__header--is-grey {
   background: var(--background100);
   margin: 0;
-  padding: 41px 24px 29px;
+  padding: 43px 25px 29px;
 }
 
 .layout__header svg:hover {
@@ -1198,5 +1307,119 @@ export default {
 }
 .rpc-status {
   margin-right: 12px;
+}
+.account-switcher {
+  width: 170px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.account-switcher h6 {
+  margin-right: 24px;
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+}
+.account-switcher svg {
+  min-width: 8px;
+}
+.account-overflow {
+  margin-top: 36px;
+  overflow: auto;
+  height: 392px;
+  padding-right: 16px;
+}
+.account-overflow::-webkit-scrollbar {
+  width: 4px;
+}
+.account-overflow::-webkit-scrollbar-thumb {
+  background: var(--grey100);
+}
+.account-card {
+  cursor: pointer;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  padding: 20px;
+  background-color: var(--background0);
+  border: 1px solid var(--purple50);
+  box-shadow: 0px 8px 24px -8px rgba(34, 3, 101, 0.1);
+  border-radius: 2px;
+}
+.account-card .account-card__header {
+  margin-bottom: 20px;
+  display: grid;
+  grid-gap: 0 24px;
+  grid-template-columns: 11fr 20px;
+  align-items: center;
+}
+.account-card .account-card__header h6 {
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+}
+.account-card .account-card__content {
+  display: grid;
+  grid-gap: 0 24px;
+  grid-template-columns: 11fr 18px;
+}
+.account-card .account-card__content .account-card__content--amount h6 {
+  margin-bottom: 4px;
+}
+.account-card .account-card__content .account-card__content--icon {
+  display: flex;
+  align-items: flex-end;
+}
+.radio {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  background: linear-gradient(
+      153.02deg,
+      rgba(250, 249, 252, 0.25) 0%,
+      rgba(229, 228, 232, 0.25) 83.23%
+    ),
+    var(--grey50);
+  border: 1px solid rgba(229, 228, 232, 0.15);
+  border-radius: 4px;
+}
+.radio-active::after {
+  background-color: var(--grey50) !important;
+}
+.radio-active::before {
+  opacity: 1 !important;
+}
+.radio::after {
+  content: '';
+  display: block;
+  background-color: var(--grey200);
+  width: 6px;
+  height: 6px;
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  border-radius: 2px;
+  z-index: 2;
+  transition: 0.3s;
+}
+.radio::before {
+  content: '';
+  display: block;
+  width: 16px;
+  height: 16px;
+  background: linear-gradient(
+      153.02deg,
+      rgba(78, 0, 246, 0.15) 0%,
+      rgba(63, 1, 198, 0.15) 83.23%
+    ),
+    #4e00f6;
+  border: 1px solid rgba(63, 1, 198, 0.5);
+  border-radius: 2px;
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  z-index: 1;
+  opacity: 0;
+  transition: 0.3s;
 }
 </style>
