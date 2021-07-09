@@ -761,7 +761,6 @@
 </template>
 
 <script>
-import pkgjson from '../../../package.json';
 import { useMainStore } from '@/store';
 import { ref, computed, watch, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
@@ -777,7 +776,6 @@ export default {
   setup() {
     const mainStore = useMainStore();
     const { formatAmount } = useHelpers();
-    let version = pkgjson.version;
     const route = useRoute();
     const account = ref(null);
     const accounts = ref([]);
@@ -1066,7 +1064,6 @@ export default {
     changeStep('public-key');
 
     return {
-      version,
       toggleDrawer,
       currentRoute,
       componentVisibility,

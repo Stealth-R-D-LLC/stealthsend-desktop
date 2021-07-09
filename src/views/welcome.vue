@@ -54,7 +54,7 @@
                     protocol
                   </h3>
                   <div class="app-version">
-                    StealthSend, stable v.{{ version }}
+                    StealthSend, v.{{ version }}
                   </div>
                 </template>
                 <template v-if="isRecovery">
@@ -63,7 +63,7 @@
                     protocol
                   </h3>
                   <div class="app-version">
-                    StealthSend, stable v. {{ version }}
+                    StealthSend, v.{{ version }}
                   </div>
                 </template>
                 <div v-if="!isAccount && !isRecovery">
@@ -1661,10 +1661,7 @@
                 <h5>Recovery Phrase</h5>
                 <p>Carefully record all {{ recoveryPhraseLength }} words</p>
                 <div class="mnemonic">
-                  <span
-                    v-for="(word, index) in createdMnemonic"
-                    :key="word"
-                  >
+                  <span v-for="(word, index) in createdMnemonic" :key="word">
                     <strong>{{ index + 1 }}.</strong>{{ word }}
                   </span>
                 </div>
