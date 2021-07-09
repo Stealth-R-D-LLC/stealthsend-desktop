@@ -33,3 +33,7 @@ button {
     align-items: center;
     bottom: 2px;
 }
+
+.st-modal-container--light {
+    background-color: var(--background0) !important;
+}

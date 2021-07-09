@@ -391,4 +391,13 @@ export default {
 :deep .st-dashboard-chart {
   margin-top: 24px;
 }
+.st-label:nth-child(1) {
+  min-width: 186px;
+}
+.st-label:nth-child(2) {
+  min-width: 149px;
+}
+.st-label:nth-child(3) {
+  min-width: 140px;
+}
 </style>

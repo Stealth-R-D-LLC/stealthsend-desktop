@@ -84,6 +84,7 @@
         <template v-if="currentStep === 2">
           <StFormItem
             label="Account Name"
+            :filled="form.accountName.$value"
             :error-message="form.accountName.$errors"
           >
             <StInput
@@ -92,7 +93,9 @@
             />
           </StFormItem>
           <StFormItem
+            class="st-form-item__key"
             label="Private Key"
+            :filled="form.privateKey.$value"
             :error-message="form.privateKey.$errors"
           >
             <StInput
@@ -513,5 +516,8 @@ export default {
 
 :deep .st-form-item__message--is-error {
   line-height: 18px;
+}
+.st-form-item__key :deep .st-input input {
+  padding-right: 27px;
 }
 </style>
