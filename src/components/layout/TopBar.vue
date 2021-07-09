@@ -714,27 +714,27 @@
         <div class="account-overflow">
           <div
             class="account-card"
-            v-for="account in accounts"
-            :key="account.label"
-            @click="selectAccount(account.label)"
+            v-for="acc in accounts"
+            :key="acc.label"
+            @click="selectAccount(acc.label)"
           >
             <div class="account-card__header">
-              <h6>{{ account.label }}</h6>
+              <h6>{{ acc.label }}</h6>
               <div
                 class="radio"
-                :class="{ 'radio-active': showArrow === account.label }"
+                :class="{ 'radio-active': showArrow === acc.label }"
               />
             </div>
             <div class="account-card__content">
               <div class="account-card__content--amount">
-                <h6>{{ amountFormat(account).amountLeft }} XST</h6>
-                <p>~ ${{ amountFormat(account).amountRight }} USD</p>
+                <h6>{{ amountFormat(acc).amountLeft }} XST</h6>
+                <p>~ ${{ amountFormat(acc).amountRight }} USD</p>
               </div>
               <transition name="fade">
                 <div
-                  v-if="showArrow === account.label"
+                  v-if="showArrow === acc.label"
                   class="account-card__content--icon"
-                  @click="accountChanged(account)"
+                  @click="accountChanged(acc)"
                 >
                   <svg
                     width="18"
