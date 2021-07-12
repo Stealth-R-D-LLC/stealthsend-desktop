@@ -86,10 +86,10 @@
             <div class="grey-box__inner">
               <a
                 class="mnemonic"
-                v-for="(mnemonic, index) in walletMnemonic"
+                v-for="(word, index) in walletMnemonic"
                 :key="index"
               >
-                <span class="bold">{{ index + 1 }}.&nbsp;</span> {{ mnemonic }}
+                <span class="bold">{{ index + 1 }}.&nbsp;</span> {{ word }}
               </a>
             </div>
           </div>
