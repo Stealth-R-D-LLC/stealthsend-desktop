@@ -339,7 +339,7 @@ export default {
     }
 
     function orderTransactions(
-      filter = { label: '1w', value: 7 },
+      filter = { label: 'All', value: Infinity },
       filterDirection = { label: 'All', value: '' }
     ) {
       // sort transactions by blocktime
