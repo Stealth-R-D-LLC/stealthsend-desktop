@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, protocol, BrowserWindow, webContents } from 'electron';
+import { app, protocol, BrowserWindow } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -63,13 +63,14 @@ async function createWindow() {
     // Load the index.html when not in development
     win.loadURL('app://./index.html');
   }
+  const webContents = win.webContents;
+  webContents.on('did-finish-load', () => {
+    webContents.setZoomFactor(1);
+    webContents.setVisualZoomLevelLimits(1, 1);
+    webContents.setLayoutZoomLevelLimits(0, 0);
+  });
 }
 
-webContents.on('did-finish-load', () => {
-  webContents.setZoomFactor(1);
-  webContents.setVisualZoomLevelLimits(1, 1);
-  webContents.setLayoutZoomLevelLimits(0, 0);
-});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
