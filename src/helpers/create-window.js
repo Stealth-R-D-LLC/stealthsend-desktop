@@ -58,9 +58,8 @@ module.exports = function createWindow(options = {}) {
     win.focus();
   });
 
-  webFrame.setZoomFactor(1)
-  webFrame.setVisualZoomLevelLimits(1, 1)
-
+  webFrame.setZoomFactor(1);
+  webFrame.setVisualZoomLevelLimits(1, 1);
 
   return win;
 };
