@@ -76,13 +76,12 @@ export default {
   background: var(--grey100);
 }
 .accounts-container__content {
-  margin-top: 144px;
+  margin-top: 140px;
   padding: 24px 28px;
-  height: calc(100% - 192px);
+  min-height: calc(100% - 192px);
   background-color: var(--background0);
 }
 .accounts-container__content > div {
-  margin-top: -144px;
-  padding-bottom: 30px;
+  margin-top: -140px;
 }
 </style>
