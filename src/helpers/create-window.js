@@ -85,6 +85,5 @@ module.exports = function createWindow(options = {}) {
 
   webFrame.setZoomFactor(1);
   webFrame.setVisualZoomLevelLimits(1, 1);
-  console.log('jesi li tu burki');
   return win;
 };
