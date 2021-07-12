@@ -174,8 +174,8 @@
         </transition>
       </div>
     </div>
-    <template v-if="archivedAccounts.length">
-      <h4 class="archived">Archived Accounts</h4>
+    <div v-if="archivedAccounts.length" class="archived-container">
+      <h4>Archived Accounts</h4>
       <div class="accounts-container__inner--grid">
         <div
           v-for="(account, index) in archivedAccounts"
@@ -306,7 +306,7 @@
           </transition>
         </div>
       </div>
-    </template>
+    </div>
   </div>
 </template>
 
@@ -429,6 +429,7 @@ export default {
       editAccountNameModal.value = false;
       resetFields();
     }
+
     return {
       closeEditModal,
       // variables
@@ -509,8 +510,11 @@ export default {
   background: var(--marine300) !important;
   border: 1px solid var(--marine400) !important;
 }
-.archived {
-  margin-top: 40px;
+.archived-container {
+  margin: 16px -28px -10px;
+  padding: 24px 28px;
+  background-color: var(--grey50);
+  box-sizing: border-box;
 }
 .info-purple path {
   stroke: var(--marine700);
@@ -542,7 +546,7 @@ export default {
   color: var(--grey50) !important;
 }
 .card__inner {
-  padding: 16px 20px 24px;
+  padding: 18px 20px 24px;
 }
 .account-options {
   position: absolute;
