@@ -124,10 +124,10 @@
                 <a
                   v-if="!account.isFavourite"
                   @click="favouriteAccount(account)"
-                  >Add to Favourites</a
+                  >Add to Favorites</a
                 >
                 <a v-else @click="unfavouriteAccount(account)"
-                  >Remove from Favourites</a
+                  >Remove from Favorites</a
                 >
               </li>
               <li>
