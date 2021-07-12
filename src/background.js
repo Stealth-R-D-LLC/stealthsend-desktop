@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, protocol, BrowserWindow, webFrame, Menu } from 'electron';
+import { app, protocol, BrowserWindow, Menu } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -49,8 +49,8 @@ async function createWindow() {
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
 
-  webFrame.setZoomFactor(1);
-  webFrame.setVisualZoomLevelLimits(1, 1);
+  // webFrame.setZoomFactor(1);
+  // webFrame.setVisualZoomLevelLimits(1, 1);
 
   // win.setMenu(null); // remove menu bar
 
@@ -63,6 +63,11 @@ async function createWindow() {
     // Load the index.html when not in development
     win.loadURL('app://./index.html');
   }
+  const webContents = win.webContents;
+  webContents.on('did-finish-load', () => {
+    webContents.setZoomFactor(1);
+    webContents.setVisualZoomLevelLimits(1, 1);
+  });
 }
 
 // Quit when all windows are closed.
