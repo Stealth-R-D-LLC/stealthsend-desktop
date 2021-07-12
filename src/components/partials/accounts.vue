@@ -149,14 +149,13 @@
                 <template #header> Account Wizard </template>
                 <template #body>
                   <StFormItem
-                    label="Account name"
+                    label="Account Name"
                     :filled="form.accountName.$value"
                     :error-message="form.accountName.$errors"
                   >
                     <StInput
-                      label="Account name"
                       v-model="form.accountName.$value"
-                      placeholder="Account name"
+                      placeholder="Enter Account Name"
                     ></StInput>
                   </StFormItem>
                 </template>
@@ -279,14 +278,13 @@
                   <template #header> Account Wizard </template>
                   <template #body>
                     <StFormItem
-                      label="Account name"
+                      label="Account Name"
                       :filled="form.accountName.$value"
                       :error-message="form.accountName.$errors"
                     >
                       <StInput
                         v-model="form.accountName.$value"
-                        label="Account name"
-                        placeholder="Account name"
+                        placeholder="Enter Account Name"
                       ></StInput>
                     </StFormItem>
                   </template>
