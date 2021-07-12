@@ -9,6 +9,7 @@
       </template>
       <TransactionList
         v-if="componentVisibility.txDashboard"
+        class="dashboard-table"
         :has-table-header="false"
         :transactions="transactions"
       ></TransactionList>
@@ -94,5 +95,29 @@ export default {
   padding: 0;
   overflow: initial;
   height: initial;
+}
+
+.dashboard-table :deep td:nth-child(2) {
+  width: 85px;
+}
+.dashboard-table :deep td:nth-child(3) {
+  width: 140px;
+}
+.dashboard-table :deep td:nth-child(3) div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.dashboard-table :deep td:nth-child(4),
+.dashboard-table :deep td:nth-child(5) {
+  display: none;
+}
+.dashboard-table :deep td:nth-child(6) {
+  width: 129px;
+}
+.dashboard-table :deep td:nth-child(7) {
+  width: 94px;
 }
 </style>

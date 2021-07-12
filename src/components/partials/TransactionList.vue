@@ -3,18 +3,7 @@
     <div class="overflow">
       <Filters @change="orderTransactions" @sort="orderTransactions"></Filters>
       <template v-for="date in txDates" :key="date">
-        <p
-          v-if="
-            ['TODAY', 'YESTERDAY'].includes(
-              todayOrYesterday(date).toUpperCase()
-            )
-          "
-          class="tx-date"
-        >
-          <span class="relative"> {{ todayOrYesterday(date) }}, </span>
-          {{ date }}
-        </p>
-        <p v-else class="tx-date">{{ date }}</p>
+        <p class="tx-date bold">{{ date }}</p>
 
         <StTable
           :data="txs[date]"
@@ -28,6 +17,7 @@
             },
             { key: 'blocktime', title: 'Time', customCellClass: 'blocktime' },
             { key: 'account', title: 'Account' },
+            { key: 'recipient', title: 'Recipient' },
             { key: 'label', title: 'Label' },
             { key: 'amountFiat', title: 'USD Value' },
             { key: 'amount', title: 'XST' },
@@ -76,6 +66,17 @@
               </template>
             </div>
           </template>
+          <template #account="{ item }">
+            <div>{{ item.account }}</div>
+          </template>
+          <template #recipient="{ item }">
+            <span v-if="item.amount > 0">{{
+              item && item.outputs && item.outputs[0].address
+            }}</span>
+            <span v-if="item.amount < 0">{{
+              item && item.inputs && item.inputs[0].address
+            }}</span>
+          </template>
           <template #blocktime="{ item }">
             {{ formatBlocktime(item.blocktime) }}
           </template>
@@ -88,9 +89,13 @@
             }}
           </template>
           <template #label="{ item }">
-            {{
-              findLabelForTx(item.txid) ? findLabelForTx(item.txid) : 'No label'
-            }}
+            <div>
+              {{
+                findLabelForTx(item.txid)
+                  ? findLabelForTx(item.txid)
+                  : 'No label'
+              }}
+            </div>
           </template>
           <template #amountFiat="{ item }">
             {{ item.amount > 0 ? '+' : '-' }}
@@ -487,7 +492,7 @@ export default {
   width: 24px;
 }
 :deep .status-text {
-  width: 164px;
+  width: 106px;
 }
 .status-text svg {
   margin-right: 16px;

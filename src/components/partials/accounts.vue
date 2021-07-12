@@ -346,8 +346,10 @@ export default {
         $rules: [
           (accountName) => {
             if (!accountName) {
-              console.log('aaa', accounts.value);
               return 'Account name is required';
+            }
+            if (accountName.length > 50) {
+              return 'Name too long';
             }
             if (accounts.value.some((el) => el.label === accountName)) {
               return 'Account name already exists';
@@ -589,10 +591,11 @@ export default {
 }
 .card-header h5 {
   display: inline-block;
-  width: 180px;
-  white-space: nowrap;
-  overflow: hidden !important;
+  overflow: hidden;
   text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
   font-family: var(--primary-font);
   font-style: normal;
   font-weight: 600;
