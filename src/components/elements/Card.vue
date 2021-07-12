@@ -234,6 +234,9 @@ export default {
 .card + .card {
   margin-top: 10px;
 }
+.card:last-child {
+  margin-bottom: 20px;
+}
 .card {
   position: relative;
   background: #fefefe;
