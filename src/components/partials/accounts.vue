@@ -381,6 +381,7 @@ export default {
       accounts.value = scannedAccounts.accounts;
       accountOptions.value = '';
       emitter.emit('account:toggle-favourite');
+      emitter.emit('accounts:refresh');
     }
     async function unfavouriteAccount(account) {
       await CryptoService.unfavouriteAccount(account);
@@ -388,18 +389,21 @@ export default {
       accounts.value = scannedAccounts.accounts;
       accountOptions.value = '';
       emitter.emit('account:toggle-favourite');
+      emitter.emit('accounts:refresh');
     }
     async function archiveAccount(account) {
       await CryptoService.archiveAccount(account);
       const scannedAccounts = await CryptoService.scanWallet();
       accounts.value = scannedAccounts.accounts;
       accountOptions.value = '';
+      emitter.emit('accounts:refresh');
     }
     async function activateAccount(account) {
       await CryptoService.activateAccount(account);
       const scannedAccounts = await CryptoService.scanWallet();
       accounts.value = scannedAccounts.accounts;
       accountOptions.value = '';
+      emitter.emit('accounts:refresh');
     }
     async function changeAccountName(account) {
       try {
