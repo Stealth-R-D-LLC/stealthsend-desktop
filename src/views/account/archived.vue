@@ -57,7 +57,7 @@ export default {
 
     emitter.on('accounts:refresh', () => {
       scanWallet();
-    })
+    });
     return {
       accounts,
       unarchieve,
