@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, protocol, BrowserWindow, webFrame, Menu } from 'electron';
+import { app, protocol, BrowserWindow, webContents } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -31,26 +31,26 @@ async function createWindow() {
     },
   });
 
-  const menuTemplate = [
-    {
-      label: 'View',
-      submenu: [
-        { role: 'reload' },
-        { role: 'forceReload' },
-        { role: 'toggleDevTools' },
-      ],
-    },
-    {
-      label: 'Window',
-      submenu: [{ role: 'close' }],
-    },
-  ];
+  // const menuTemplate = [
+  //   {
+  //     label: 'View',
+  //     submenu: [
+  //       { role: 'reload' },
+  //       { role: 'forceReload' },
+  //       { role: 'toggleDevTools' },
+  //     ],
+  //   },
+  //   {
+  //     label: 'Window',
+  //     submenu: [{ role: 'close' }],
+  //   },
+  // ];
 
-  const menu = Menu.buildFromTemplate(menuTemplate);
-  Menu.setApplicationMenu(menu);
+  // const menu = Menu.buildFromTemplate(menuTemplate);
+  // Menu.setApplicationMenu(menu);
 
-  webFrame.setZoomFactor(1);
-  webFrame.setVisualZoomLevelLimits(1, 1);
+  // webFrame.setZoomFactor(1);
+  // webFrame.setVisualZoomLevelLimits(1, 1);
 
   // win.setMenu(null); // remove menu bar
 
@@ -64,6 +64,12 @@ async function createWindow() {
     win.loadURL('app://./index.html');
   }
 }
+
+webContents.on('did-finish-load', () => {
+  webContents.setZoomFactor(1);
+  webContents.setVisualZoomLevelLimits(1, 1);
+  webContents.setLayoutZoomLevelLimits(0, 0);
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
