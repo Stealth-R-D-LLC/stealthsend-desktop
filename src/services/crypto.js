@@ -239,6 +239,7 @@ const CryptoService = {
       path: account.path,
       xpub: account.xpub,
       asset: account.asset,
+      favouritePosition: account.favouritePosition
     });
 
     return db.setItem('accounts', dbAccounts);
@@ -651,6 +652,7 @@ const CryptoService = {
       utxo: balance,
       asset: 'XST',
       wif: encryptedWIF,
+      favouritePosition: null
     });
 
     await db.setItem('accounts', accounts);

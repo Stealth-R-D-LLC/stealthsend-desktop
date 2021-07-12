@@ -124,8 +124,11 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     }
 
     console.dir(rawTransaction);
-
+    
     const rawTransactionToHex = rawTransaction.build().toHex();
+    
+    
+    console.dir(rawTransactionToHex);
 
     const txid = await mainStore.rpc('sendrawtransaction', [
       rawTransactionToHex,
