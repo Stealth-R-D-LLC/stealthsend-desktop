@@ -129,20 +129,23 @@ fieldset[disabled] .multiselect {
   position: relative;
   display: flex;
   align-items: center;
-  min-height: 40px;
-    padding: 8px 40px 8px 0;
-    border-bottom: 1.5px solid var(--grey200);
-    font-size: 12px;
-    margin: 0 auto;
-    transition: width 0.3s;
+  min-height: 33.5px;
+  padding: 8px 40px 8px 0;
+  border-bottom: 1.5px solid var(--grey200);
+  font-size: 12px;
+  margin: 0 auto;
+  transition: width 0.3s;
 }
 .multiselect__tags::after {
   content: '';
   position: absolute;
-  bottom: -1px;
+  bottom: -2px;
   border-bottom: 1.5px solid var(--marine400);
-  width: 60px;
+  width: 0;
   transition: width 0.3s;
+}
+.multiselect__tags:focus-within::after{
+  width: 60px;
 }
 .multiselect-filled .multiselect__tags::after {
   width: 100%;
@@ -208,13 +211,13 @@ fieldset[disabled] .multiselect {
 }
 .multiselect__select {
   display: block;
-    position: absolute;
-    right: 0;
-    top: calc(50% - 2px);
-    text-decoration: none;
-    text-align: center;
-    cursor: pointer;
-    transition: transform 0.2s ease;
+  position: absolute;
+  right: 0;
+  top: calc(50% - 3px);
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
 }
 .multiselect__select::before {
   position: relative;
@@ -226,7 +229,7 @@ fieldset[disabled] .multiselect {
   content: "";
 }
 .multiselect__placeholder {
-  color: var(--grey100);
+  color: var(--grey1000);
   display: inline-block;
   font-family: var(--secondary-font);
 }
