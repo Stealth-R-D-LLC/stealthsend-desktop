@@ -1,4 +1,4 @@
-const { app, BrowserWindow, webFrame, Menu } = require('electron');
+const { app, BrowserWindow } = require('electron');
 const windowStateKeeper = require('electron-window-state');
 
 const isProd = app.isPackaged;
@@ -65,25 +65,25 @@ module.exports = function createWindow(options = {}) {
     win.focus();
   });
 
-  const menuTemplate = [
-    {
-      label: 'View',
-      submenu: [
-        { role: 'reload' },
-        { role: 'forceReload' },
-        { role: 'toggleDevTools' },
-      ],
-    },
-    {
-      label: 'Window',
-      submenu: [{ role: 'close' }],
-    },
-  ];
+  // const menuTemplate = [
+  //   {
+  //     label: 'View',
+  //     submenu: [
+  //       { role: 'reload' },
+  //       { role: 'forceReload' },
+  //       { role: 'toggleDevTools' },
+  //     ],
+  //   },
+  //   {
+  //     label: 'Window',
+  //     submenu: [{ role: 'close' }],
+  //   },
+  // ];
 
-  const menu = Menu.buildFromTemplate(menuTemplate);
-  Menu.setApplicationMenu(menu);
+  // const menu = Menu.buildFromTemplate(menuTemplate);
+  // Menu.setApplicationMenu(menu);
 
-  webFrame.setZoomFactor(1);
-  webFrame.setVisualZoomLevelLimits(1, 1);
+  // webFrame.setZoomFactor(1);
+  // webFrame.setVisualZoomLevelLimits(1, 1);
   return win;
 };
