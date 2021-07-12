@@ -98,6 +98,7 @@
       </StFormItem>
     </div>
     <TransactionList
+      class="transactions-table"
       :transactions="computedTransactions"
       has-table-header
     ></TransactionList>
@@ -238,5 +239,41 @@ export default {
   position: absolute;
   top: calc(50% + 7px);
   right: 0;
+}
+.transactions-table :deep td:nth-child(2) {
+  width: 85px;
+}
+.transactions-table :deep td:nth-child(3) {
+  width: 140px;
+}
+.transactions-table :deep td:nth-child(3) div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.transactions-table :deep td:nth-child(4),
+:deep th:nth-child(4) {
+  display: none;
+}
+.transactions-table :deep td:nth-child(4) {
+  width: 300px;
+}
+.transactions-table :deep td:nth-child(5) {
+  width: 230px;
+}
+.transactions-table :deep td:nth-child(5) div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.transactions-table :deep td:nth-child(6) {
+  width: 121px;
+}
+.transactions-table :deep td:nth-child(7) {
+  width: 121px;
 }
 </style>

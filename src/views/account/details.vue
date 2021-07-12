@@ -125,6 +125,7 @@
         <Chart v-if="componentVisibility.chart"></Chart>
         <TransactionList
           v-if="componentVisibility.txDashboard"
+          class="details-table"
           has-table-header
           :transactions="transactions"
         ></TransactionList>
@@ -399,5 +400,44 @@ export default {
 }
 .st-label:nth-child(3) {
   min-width: 140px;
+}
+
+.details-table :deep td:nth-child(2) {
+  width: 85px;
+}
+.details-table :deep td:nth-child(3) {
+  width: 140px;
+}
+.details-table :deep td:nth-child(3) div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+@media screen and (max-width: 1270px) {
+  .details-table :deep td:nth-child(4),
+  :deep th:nth-child(4) {
+    display: none;
+  }
+}
+.details-table :deep td:nth-child(4) {
+  width: 300px;
+}
+.details-table :deep td:nth-child(5) {
+  width: 230px;
+}
+.details-table :deep td:nth-child(5) div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.details-table :deep td:nth-child(6) {
+  width: 121px;
+}
+.details-table :deep td:nth-child(7) {
+  width: 121px;
 }
 </style>
