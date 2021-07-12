@@ -1335,7 +1335,7 @@
                   </p>
                 </div>
                 <StFormItem
-                  label="Account name"
+                  label="Account Name"
                   :filled="form.account.$value"
                   :error-message="form.account.$errors"
                 >
@@ -1788,7 +1788,7 @@
               <h5>Restore from Recovery Phrase</h5>
               <StFormItem
                 class="custom-st-form"
-                label="Account name"
+                label="Account Name"
                 :filled="recoveryForm.account.$value"
                 :error-message="recoveryForm.account.$errors"
               >
@@ -1832,52 +1832,52 @@
             </div>
             <StButton @click="recoveryStepNext">Proceed</StButton>
           </div>
-          <div v-if="recoveryStep === 2">
-            <h5>Recovery Phrase Verification</h5>
-            <p class="desc-small">
-              To verify your Recovery Phrase enter the words<br />
-              in the order received.
-            </p>
-            <div class="mnemonic-list">
-              <template v-if="selectedRecoveryWords.length">
-                <span v-for="(word, index) in selectedRecoveryWords" :key="word"
-                  >{{ word }}
-                  <div
-                    v-if="index + 1 === selectedRecoveryWords.length"
-                    @click="removeSelectedWord(word)"
-                  >
-                    <svg
-                      width="8"
-                      height="8"
-                      viewBox="0 0 8 8"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
+          <div class="recovery-phrase-flex" v-if="recoveryStep === 2">
+            <div>
+              <h5>Recovery Phrase Verification</h5>
+              <p class="desc-small">
+                To verify your Recovery Phrase enter the words<br />
+                in the order received.
+              </p>
+              <div class="mnemonic-list">
+                <template v-if="selectedRecoveryWords.length">
+                  <span
+                    v-for="(word, index) in selectedRecoveryWords"
+                    :key="word"
+                    >{{ word }}
+                    <div
+                      v-if="index + 1 === selectedRecoveryWords.length"
+                      @click="removeSelectedWord(word)"
                     >
-                      <path
-                        d="M1 1L7 7"
-                        stroke="#1C1A1C"
-                        stroke-width="1.5"
-                        stroke-linejoin="round"
-                      />
-                      <path
-                        d="M1 7L7 1"
-                        stroke="#1C1A1C"
-                        stroke-width="1.5"
-                        stroke-linejoin="round"
-                      />
-                    </svg></div
-                ></span>
-              </template>
-              <p v-else class="no-results">No selected words</p>
+                      <svg
+                        width="8"
+                        height="8"
+                        viewBox="0 0 8 8"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M1 1L7 7"
+                          stroke="#1C1A1C"
+                          stroke-width="1.5"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M1 7L7 1"
+                          stroke="#1C1A1C"
+                          stroke-width="1.5"
+                          stroke-linejoin="round"
+                        />
+                      </svg></div
+                  ></span>
+                </template>
+              </div>
+              <transition name="fade">
+                <a class="clear" @click="clearRecoveryWords">{{
+                  selectedRecoveryWords.length ? 'Clear and redo' : ''
+                }}</a>
+              </transition>
             </div>
-            <transition name="fade">
-              <a
-                v-if="selectedRecoveryWords.length"
-                class="clear"
-                @click="clearRecoveryWords"
-                >Clear and redo</a
-              >
-            </transition>
             <StFormItem
               class="word-st-form-item"
               :filled="recoveryWord"
@@ -1932,7 +1932,10 @@
                   </svg>
                 </div>
               </StInput>
-              <div class="searched-words">
+              <p v-if="isError" class="mnemonic-error">
+                Selected word is not in wordlist
+              </p>
+              <div v-else class="searched-words">
                 <transition-group name="fade">
                   <a
                     v-for="word in searchWordlist"
@@ -1942,9 +1945,6 @@
                   >
                 </transition-group>
               </div>
-              <p v-if="isError" class="mnemonic-error">
-                Selected word is not in wordlist
-              </p>
             </StFormItem>
           </div>
           <div v-if="recoveryStep === 3">
@@ -2982,6 +2982,7 @@ export default {
 .mnemonic-list span {
   position: relative;
   width: fit-content;
+  height: fit-content;
   padding: 0 8px;
   display: flex;
   align-items: center;
@@ -3058,6 +3059,7 @@ export default {
   flex-wrap: wrap;
   background-color: var(--background100);
   padding: 12px 11px;
+  box-sizing: border-box;
 }
 .mnemonic-list span {
   margin: 8px 9px;
@@ -3069,6 +3071,12 @@ export default {
   text-align: left;
   color: var(--red300);
 }
+.recovery-phrase-flex {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 .clear {
   margin-top: 12px;
   cursor: pointer;
@@ -3079,6 +3087,7 @@ export default {
   font-size: 12px;
   line-height: 24px;
   letter-spacing: 0.12px;
+  height: 24px;
   transition: 0.3s;
 }
 .clear:hover {
@@ -3094,6 +3103,7 @@ export default {
 /* RECOVERY PHRASE  */
 .word-st-form-item {
   margin-top: 36px;
+  margin-bottom: 0;
 }
 .recovery-select {
   text-align: left;
@@ -3105,6 +3115,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  min-height: 24px;
 }
 .searched-words a {
   cursor: pointer;
