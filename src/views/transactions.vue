@@ -175,14 +175,18 @@ export default {
       if (query.value && query.value.length > 0) {
         filtered = filtered.filter((el) => {
           return (
-            el.account.indexOf(query.value) > -1  ||
-            String(el.amount).indexOf(query.value) > -1  ||
-            el.txid.indexOf(query.value) > -1  ||
+            el.account.indexOf(query.value) > -1 ||
+            String(el.amount).indexOf(query.value) > -1 ||
+            el.txid.indexOf(query.value) > -1 ||
             findLabelForTx(el.txid).indexOf(query.value) > -1 ||
-            el.outputs.some((el) => el.address.toLowerCase().indexOf(query.value) > -1 ) ||
+            el.outputs.some(
+              (el) => el.address.toLowerCase().indexOf(query.value) > -1
+            ) ||
             el.txinfo.destinations.some((el) =>
               // el.addresses.includes(query.value)
-              el.addresses.some(addr => addr.toLowerCase().indexOf(query.value) > -1)
+              el.addresses.some(
+                (addr) => addr.toLowerCase().indexOf(query.value) > -1
+              )
             )
           );
         });
