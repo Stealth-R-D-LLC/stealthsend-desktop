@@ -444,7 +444,11 @@ export default {
     async function sendEmail() {
       try {
         await validateFields();
-        window.location.href = `mailto:${email.value}?body=${depositAddress.value}&subject=My XST address`;
+        if (amount.value > 0) {
+          window.location.href = `mailto:${email.value}?body=Please send ${amount.value} XST to my following address: ${depositAddress.value}.&subject=My XST address`;
+        } else {
+          window.location.href = `mailto:${email.value}?body=${depositAddress.value}&subject=My XST address`;
+        }
         closeModal();
       } catch (e) {
         if (e instanceof ValidationError) {

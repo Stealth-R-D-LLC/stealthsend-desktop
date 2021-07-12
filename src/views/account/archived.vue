@@ -15,6 +15,7 @@
 import { ref } from 'vue';
 import CryptoService from '@/services/crypto';
 import accounts from '@/components/partials/accounts.vue';
+import emitter from '@/services/emitter';
 
 export default {
   name: 'StArchivedAccounts',
@@ -53,6 +54,10 @@ export default {
     function unarchieve(account) {
       CryptoService.unarchiveAccount(account);
     }
+
+    emitter.on('accounts:refresh', () => {
+      scanWallet();
+    });
     return {
       accounts,
       unarchieve,

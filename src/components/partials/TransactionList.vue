@@ -285,7 +285,9 @@
           </template>
         </StTable>
       </template>
-      <h6 class="no-results" v-if="txDates.length === 0">No transactions</h6>
+      <h6 class="no-results" v-if="txDates.length === 0">
+        No transaction data
+      </h6>
     </div>
   </div>
 </template>
