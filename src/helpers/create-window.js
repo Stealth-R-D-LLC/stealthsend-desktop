@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, webFrame, Menu } = require('electron');
 const windowStateKeeper = require('electron-window-state');
 
 const isProd = app.isPackaged;
@@ -18,8 +18,15 @@ switch (process.platform) {
 
 module.exports = function createWindow(options = {}) {
   const winOptions = {
-    minWidth: 1024,
-    minHeight: 768,
+    width: 1152,
+    height: 700,
+    minWidth: 1152,
+    minHeight: 700,
+    maxWidth: 1600,
+    maxHeight: 1200,
+    center: true,
+    maximizable: false,
+    fullscreenable: false,
     icon: icon,
     titleBarStyle: 'hidden',
     autoHideMenuBar: true,
@@ -58,5 +65,26 @@ module.exports = function createWindow(options = {}) {
     win.focus();
   });
 
+  const menuTemplate = [
+    {
+      label: 'View',
+      submenu: [
+        { role: 'reload' },
+        { role: 'forceReload' },
+        { role: 'toggleDevTools' },
+      ],
+    },
+    {
+      label: 'Window',
+      submenu: [{ role: 'close' }],
+    },
+  ];
+
+  const menu = Menu.buildFromTemplate(menuTemplate);
+  Menu.setApplicationMenu(menu);
+
+  webFrame.setZoomFactor(1);
+  webFrame.setVisualZoomLevelLimits(1, 1);
+  console.log('jesi li tu burki');
   return win;
 };
