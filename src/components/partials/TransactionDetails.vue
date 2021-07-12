@@ -53,9 +53,8 @@
       </div>
     </div>
     <div class="body" v-if="tx">
-      <div class="item item--label">
+      <div v-if="editMode" class="item item--label">
         <StFormItem
-          v-if="editMode"
           label="Label"
           :filled="label"
           @rightLabelClick="saveLabel"
@@ -304,8 +303,9 @@ export default {
   display: flex;
   flex-direction: column;
   overflow: auto;
-  width: calc(100% + 4px);
+  width: 100%;
   height: calc(100vh - 85px);
+  padding-right: 18px;
 }
 .body::-webkit-scrollbar {
   width: 4px;
@@ -326,6 +326,9 @@ export default {
 }
 
 .pointer {
+  cursor: pointer;
+}
+:deep .label-right span {
   cursor: pointer;
 }
 </style>
