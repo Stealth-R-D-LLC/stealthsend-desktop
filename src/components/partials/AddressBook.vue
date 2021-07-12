@@ -87,10 +87,10 @@
               </div>
             </div>
           </div>
-          <div :id="id" v-for="(addressList, id) in orderByName" :key="id">
+          <div :id="id" v-for="(sublist, id) in orderByName" :key="id">
             <div
               class="address-list__inner"
-              v-for="(item, index) in addressList"
+              v-for="(item, index) in sublist"
               :key="item.address"
             >
               <p v-if="index === 0" class="bold letter">
