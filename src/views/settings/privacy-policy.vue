@@ -519,8 +519,7 @@ export default {
 <style scoped>
 .content {
   margin-top: 40px;
-  max-width: 503px;
-  margin-right: auto;
+  padding-right: 75px;
 }
 .content__inner {
   text-align: left;

@@ -317,5 +317,6 @@ export default {
 }
 .group:last-child .group-item {
   padding-bottom: 40px;
+  border: none;
 }
 </style>

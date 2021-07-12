@@ -179,12 +179,12 @@
           <StFormItem
             color="dark"
             :filled="form.depositAddress.$value"
-            label="Receiving Address"
+            label="Address"
             :error-message="form.depositAddress.$errors"
           >
             <StInput
               v-model="form.depositAddress.$value"
-              placeholder="Deposit address"
+              placeholder="Enter address"
               color="dark"
             >
               <StTooltip
