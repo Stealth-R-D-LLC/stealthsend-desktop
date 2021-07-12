@@ -159,7 +159,7 @@ export default {
     });
 
     function findLabelForTx(tx) {
-      return mainStore.txWithLabels[tx];
+      return mainStore.txWithLabels[tx] || 'No label';
     }
 
     async function scanWallet() {
@@ -175,13 +175,14 @@ export default {
       if (query.value && query.value.length > 0) {
         filtered = filtered.filter((el) => {
           return (
-            el.account === query.value ||
-            String(el.amount) === query.value ||
-            el.txid === query.value ||
-            findLabelForTx(el.txid) === query.value ||
-            el.outputs.some((el) => el.address === query.value) ||
+            el.account.indexOf(query.value) > -1  ||
+            String(el.amount).indexOf(query.value) > -1  ||
+            el.txid.indexOf(query.value) > -1  ||
+            findLabelForTx(el.txid).indexOf(query.value) > -1 ||
+            el.outputs.some((el) => el.address.toLowerCase().indexOf(query.value) > -1 ) ||
             el.txinfo.destinations.some((el) =>
-              el.addresses.includes(query.value)
+              // el.addresses.includes(query.value)
+              el.addresses.some(addr => addr.toLowerCase().indexOf(query.value) > -1)
             )
           );
         });
