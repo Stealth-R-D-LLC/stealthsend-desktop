@@ -315,4 +315,7 @@ export default {
   color: var(--grey500);
   transition: all 0.2s;
 }
+.group:last-child .group-item {
+  padding-bottom: 40px;
+}
 </style>
