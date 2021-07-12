@@ -1,4 +1,4 @@
-const { app, BrowserWindow, webFrame } = require('electron');
+const { app, BrowserWindow, webFrame, Menu } = require('electron');
 const windowStateKeeper = require('electron-window-state');
 
 const isProd = app.isPackaged;
@@ -57,6 +57,28 @@ module.exports = function createWindow(options = {}) {
     win.show();
     win.focus();
   });
+
+  const menuTemplate = [
+    {
+      label: 'View',
+      submenu: [
+        { role: 'reload' },
+        { role: 'forceReload' },
+        { role: 'toggleDevTools' },
+      ]
+    },
+    {
+      label: 'Window',
+      submenu: [
+        { role: 'close' }
+      ]
+    },
+  ];
+
+
+  const menu = Menu.buildFromTemplate(menuTemplate)
+  Menu.setApplicationMenu(menu)
+
 
   webFrame.setZoomFactor(1);
   webFrame.setVisualZoomLevelLimits(1, 1);
