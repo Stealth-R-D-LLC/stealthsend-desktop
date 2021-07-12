@@ -25,41 +25,42 @@
         />
       </svg>
     </div>
-    <p class="paragraph">Short list your Favourite Accounts in ordered list.</p>
-    <label for="multiselect" class="multiselect-label">
-      <span>Add Favourite to list</span>
-      <a @click="addToFavouriteList">Add</a>
-    </label>
-    <StMultiselect
-      v-model="account"
-      :class="{ 'multiselect-filled': account }"
-      :options="unfavouritedAccounts"
-      track-by="address"
-      value-prop="address"
-      :object="true"
-      label="Add favourite to list"
-      placeholder="Select Account from the dropdown"
-    >
-      <template #singleLabel>
-        <div class="multiselect-single-label">
-          <p class="account-label">
-            {{ account && account.label }}
-          </p>
-          <p class="account-utxo">
-            {{ account && formatAmount(account.utxo, true, 8, 2) }}
-          </p>
-        </div>
-      </template>
+    <p v-if="favouritedAccounts.length" class="paragraph">
+      Arrange your {{ favouritedAccounts.length }} favorite accounts
+    </p>
+    <p v-else class="paragraph">You don't have any fovorite accounts</p>
+    <StFormItem label="Choose an Account">
+      <template #labelRight><a @click="addToFavouriteList">Add</a></template>
+      <StMultiselect
+        v-model="account"
+        :class="{ 'multiselect-filled': account }"
+        :options="unfavouritedAccounts"
+        track-by="address"
+        value-prop="address"
+        :object="true"
+        placeholder="Select from dropdown"
+      >
+        <template #singleLabel>
+          <div class="multiselect-single-label">
+            <p class="account-label">
+              {{ account && account.label }}
+            </p>
+            <p class="account-utxo">
+              {{ account && formatAmount(account.utxo, true, 8, 2) }}
+            </p>
+          </div>
+        </template>
 
-      <template #option="{ option }">
-        <div class="flex-space-between">
-          <span>
-            {{ option.label }}
-          </span>
-          <span> {{ formatAmount(option.utxo, true, 8, 2) }} XST </span>
-        </div>
-      </template>
-    </StMultiselect>
+        <template #option="{ option }">
+          <div class="flex-space-between">
+            <span class="option">
+              {{ option.label }}
+            </span>
+            <span> {{ formatAmount(option.utxo, true, 8, 2) }} XST </span>
+          </div>
+        </template>
+      </StMultiselect>
+    </StFormItem>
     <div class="accounts-list">
       <div
         class="account-grid"
@@ -68,15 +69,12 @@
       >
         <p class="bold">{{ index + 1 }}.</p>
         <div>
-          <p class="flex-paragraph">
-            <span class="bold">{{ acc.label }}</span>
-            <span
-              ><span class="bold">{{ acc.asset }}</span
-              >/USD</span
-            >
+          <p class="account-name medium bold">{{ acc.label }}</p>
+          <p class="medium">
+            {{ formatAmount(Math.abs(acc.utxo, true, 8)) }} XST
           </p>
-          <p>
-            {{ formatAmount(Math.abs(acc.utxo, true, 8)) }} ~
+          <p class="amount-fiat">
+            ~
             <template v-if="Number(acc.utxo) * XST_USD_RATE < 1">
               {{ formatAmount(Math.abs(acc.utxo * XST_USD_RATE), true) }}
             </template>
@@ -86,18 +84,37 @@
             USD
           </p>
         </div>
-        <!-- <svg
-          v-if="index + 1 > 1"
-          class="order"
-          width="12"
-          height="16"
-          viewBox="0 0 12 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M6 16L6 2" stroke="#A2A1A4" stroke-width="2" />
-          <path d="M11 7L6 2L1 7" stroke="#A2A1A4" stroke-width="2" />
-        </svg> -->
+        <div class="account-icons">
+          <svg
+            @click="removeFromFavoriteList(acc)"
+            width="21"
+            height="20"
+            viewBox="0 0 21 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 5.5L10.4164 2.5L8.12461 7.43769L3 8.22949L6.7082 12.0729L5.83282 17.5L10.4164 14.9377L15 17.5"
+              stroke="#A2A1A4"
+              stroke-width="2"
+            />
+            <path d="M19 10.5H12.5" stroke="#A2A1A4" stroke-width="2" />
+          </svg>
+          <svg
+            width="10"
+            height="15"
+            viewBox="0 0 10 15"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx="1.5" cy="1.5" r="1.5" fill="#A2A1A4" />
+            <circle cx="7.5" cy="1.5" r="1.5" fill="#A2A1A4" />
+            <circle cx="1.5" cy="7.5" r="1.5" fill="#A2A1A4" />
+            <circle cx="7.5" cy="7.5" r="1.5" fill="#A2A1A4" />
+            <circle cx="1.5" cy="13.5" r="1.5" fill="#A2A1A4" />
+            <circle cx="7.5" cy="13.5" r="1.5" fill="#A2A1A4" />
+          </svg>
+        </div>
       </div>
     </div>
   </div>
@@ -129,6 +146,7 @@ export default {
 
     function closeCanvas() {
       mainStore.TOGGLE_DRAWER(false);
+      account.value = null;
       setTimeout(() => {
         mainStore.SET_OFF_CANVAS_DATA(null);
         mainStore.SET_CURRENT_CANVAS('transaction-details');
@@ -145,6 +163,13 @@ export default {
 
     async function addToFavouriteList() {
       await CryptoService.favouriteAccount(account.value);
+      const scannedAccounts = await CryptoService.scanWallet();
+      accounts.value = scannedAccounts.accounts;
+      emitter.emit('account:toggle-favourite');
+      account.value = null;
+    }
+    async function removeFromFavoriteList(account) {
+      await CryptoService.unfavouriteAccount(account);
       const scannedAccounts = await CryptoService.scanWallet();
       accounts.value = scannedAccounts.accounts;
       emitter.emit('account:toggle-favourite');
@@ -165,6 +190,7 @@ export default {
       favouritedAccounts,
       unfavouritedAccounts,
       addToFavouriteList,
+      removeFromFavoriteList,
     };
   },
 };
@@ -209,37 +235,25 @@ export default {
   font-size: 14px;
   line-height: 14px;
   letter-spacing: 0.12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 296px;
 }
-
-.multiselect-label {
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 12px;
-  line-height: 24px;
-  letter-spacing: 0.12px;
-}
-
-.multiselect-label span {
-  color: var(--marine400);
-  font-weight: bold;
-}
-.multiselect-label a {
+:deep .label-right a {
   cursor: pointer;
-  color: var(--marine200);
   transition: 0.3s;
 }
-.multiselect-label a:hover {
+:deep .label-right a:hover {
   color: var(--marine400);
 }
 :deep .multiselect-input > .multiselect-placeholder {
   color: var(--grey900);
 }
 .accounts-list {
-  margin-top: 18px;
+  margin-top: 44px;
   overflow: auto;
-  max-height: calc(100vh - 231px);
+  max-height: calc(100vh - 249px);
   width: calc(100% + 5px);
   padding-right: 18px;
 }
@@ -251,25 +265,50 @@ export default {
 }
 .account-grid {
   display: grid;
-  grid-template-columns: auto 10fr 15px;
-  grid-gap: 0 12px;
+  grid-template-columns: auto 10fr auto;
+  grid-gap: 0 18px;
+  align-items: flex-start;
 }
 .account-grid + .account-grid {
   border-top: 1px solid var(--grey100);
   margin-top: 16px;
-  padding-top: 16px;
+  padding-top: 32px;
 }
-.flex-paragraph {
+.account-name {
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+  max-width: 237px;
+}
+.amount-fiat {
+  color: var(--grey500);
+}
+.account-icons {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
 }
-.order {
+.account-icons svg {
   cursor: pointer;
 }
-.order path {
+.account-icons svg + svg {
+  margin-left: 26px;
+}
+.account-icons svg path,
+.account-icons svg circle {
   transition: 0.3s;
 }
-.order:hover path {
+.account-icons svg:hover path {
   stroke: var(--marine500);
+}
+.account-icons svg:hover circle {
+  fill: var(--marine500);
+}
+.flex-space-between .option {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+  width: 254px;
 }
 </style>

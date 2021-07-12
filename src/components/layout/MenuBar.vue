@@ -304,6 +304,7 @@ export default defineComponent({
 
 .layout__aside.width {
   width: 252px;
+  filter: drop-shadow(15px 0px 30px rgba(20, 4, 53, 0.15));
 }
 
 .layout__aside nav {

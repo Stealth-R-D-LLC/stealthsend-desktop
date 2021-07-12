@@ -18,7 +18,7 @@
             <p class="bold">Important note</p>
             <p>
               Locally stored data such as account names, transaction labels and
-              contacts cannot be recovered after clearing tha app data.
+              contacts cannot be recovered after clearing the app data.
             </p>
             <p>Are you sure you want to proceed and delete all app data?</p>
           </div>
