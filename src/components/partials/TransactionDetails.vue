@@ -54,11 +54,7 @@
     </div>
     <div class="body" v-if="tx">
       <div v-if="editMode" class="item item--label">
-        <StFormItem
-          label="Label"
-          :filled="label"
-          @rightLabelClick="saveLabel"
-        >
+        <StFormItem label="Label" :filled="label" @rightLabelClick="saveLabel">
           <template #labelRight>
             <span @click="saveLabel">Save</span>
           </template>
