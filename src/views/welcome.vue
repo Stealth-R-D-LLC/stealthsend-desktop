@@ -1335,7 +1335,7 @@
                   </p>
                 </div>
                 <StFormItem
-                  label="Account name"
+                  label="Account Name"
                   :filled="form.account.$value"
                   :error-message="form.account.$errors"
                 >
@@ -1788,7 +1788,7 @@
               <h5>Restore from Recovery Phrase</h5>
               <StFormItem
                 class="custom-st-form"
-                label="Account name"
+                label="Account Name"
                 :filled="recoveryForm.account.$value"
                 :error-message="recoveryForm.account.$errors"
               >
