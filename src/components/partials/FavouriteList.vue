@@ -61,11 +61,12 @@
         </template>
       </StMultiselect>
     </StFormItem>
-    <div class="accounts-list">
+    <div id="favouriteList" class="accounts-list">
       <div
         class="account-grid"
         v-for="(acc, index) in favouritedAccounts"
         :key="index"
+        :data-id="index + 1"
       >
         <p class="bold">{{ index + 1 }}.</p>
         <div>
@@ -101,6 +102,7 @@
             <path d="M19 10.5H12.5" stroke="#A2A1A4" stroke-width="2" />
           </svg>
           <svg
+          class="handle"
             width="10"
             height="15"
             viewBox="0 0 10 15"
@@ -121,11 +123,12 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import CryptoService from '@/services/crypto';
 import useHelpers from '@/composables/useHelpers';
 import { useMainStore } from '@/store';
 import emitter from '@/services/emitter';
+import Sortable from 'sortablejs';
 
 export default {
   name: 'FavouriteList',
@@ -144,6 +147,8 @@ export default {
     }
     scanWallet();
 
+    var sortable = null;
+
     function closeCanvas() {
       mainStore.TOGGLE_DRAWER(false);
       account.value = null;
@@ -153,9 +158,47 @@ export default {
       }, 300);
     }
 
-    const favouritedAccounts = computed(() => {
-      return accounts.value.filter((el) => el.isFavourite);
-    });
+        watch(
+      () => mainStore.currentOffCanvas,
+      async () => {
+        if (mainStore.currentOffCanvas === 'favourite-list') {
+          if (!sortable) {
+            var el = document.getElementById('favouriteList');
+            sortable = Sortable.create(el, {
+              animation: 150,
+              easing: "cubic-bezier(1, 0, 0, 1)",
+              handle: ".handle",
+              draggagle: '.account-grid',
+
+              onStart: function() {
+                console.log('start');
+              },
+              onMove: function() {
+                console.log('move');
+              },
+              onEnd: function(evt) {
+                console.log('->', evt.newIndex);
+              },
+              store: {
+                set: function(sortable) {
+                  console.log('gotovo: ', sortable.toArray());
+                  console.log('gotovo: ', sortable.options.group.name);
+                  console.log('-', sortable.options.group);
+                }
+              }
+            });
+          }
+        } 
+      },
+      { deep: true }
+    );
+
+    // const favouritedAccounts = computed(() => {
+    //   return accounts.value.filter((el) => el.isFavourite);
+    // });
+
+    const favouritedAccounts = ref(JSON.parse("[{\"address\":\"SDnBcqzp2ZuLuPcTCvimm4PG2pscwZxDrT\",\"label\":\"ajmooo2222o 0\",\"isArchived\":false,\"isFavourite\":true,\"isImported\":false,\"utxo\":0,\"path\":\"0'/0/0\",\"xpub\":\"xpub6BwS3L358J8RtT19tqF6kSNdFmPtzgGRKjED4X7TA3iuMy3h6aNXqMHDzkfHiQMSfv6h1oYX3i6MqFk9SJ1SktZUtRCuKSH4ALqiVKJddr7\",\"asset\":\"XST\"},{\"address\":\"SAUbK1drTjnwT8Lq8j2XLXSv3RJCFF8k6G\",\"label\":\"jkl7\",\"isArchived\":false,\"isFavourite\":true,\"isImported\":false,\"utxo\":0,\"path\":\"1'/0/0\",\"xpub\":\"xpub6BwS3L358J8RwH3nJRjbtZJ8gEV7etBs8GsqVgoEqd3Zd7en7mYxeRneqyRCEWkgBrQcFCutyf41cUBN3iZ3csow1Lk8bbQJSRNZNz2feDV\",\"asset\":\"XST\"},{\"address\":\"S7AGvc6WXHJPMMBPqwgtt5omCEeFdko2Tm\",\"label\":\"jkl\",\"isArchived\":false,\"isFavourite\":false,\"isImported\":false,\"utxo\":0,\"path\":\"2'/0/0\",\"xpub\":\"xpub6BwS3L358J8RysJwcMSGRRCG7KLoG6zhqxKwNpjzSiGjE1P4MXW7urzQLyfch7CE2VtrWv5WtLPRXm7KeGcQCxCMBTFBwtro8cHQeZ9eXLy\",\"asset\":\"XST\"}]"))
+
 
     const unfavouritedAccounts = computed(() => {
       return accounts.value.filter((el) => !el.isFavourite);
@@ -290,6 +333,9 @@ export default {
 }
 .account-icons svg {
   cursor: pointer;
+}
+.account-icons .handle {
+  cursor: move;
 }
 .account-icons svg + svg {
   margin-left: 26px;
