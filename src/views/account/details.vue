@@ -440,4 +440,7 @@ export default {
 .details-table :deep td:nth-child(7) {
   width: 121px;
 }
+:deep .move-left {
+  transform: translateX(-65px) !important;
+}
 </style>
