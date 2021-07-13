@@ -395,6 +395,7 @@ import useHelpers from '@/composables/useHelpers';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import { useRoute } from 'vue-router';
 import { format, add, subtract } from 'mathjs';
+import emitter from '@/services/emitter';
 
 const sumOf = (x = 0, y = 0) => {
   let sum = add(x, y);
@@ -664,7 +665,10 @@ export default {
         } else {
           setTimeout(() => changeStep(7), 4000);
         }
-        // setTimeout(() => closeModal(), 2000);
+        setTimeout(() => {
+          emitter.emit('transactions:refresh');
+          emitter.emit('accounts:refresh');
+        }, 5100);
       } catch (e) {
         if (e instanceof ValidationError) {
           console.log(e);
