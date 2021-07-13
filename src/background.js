@@ -1,9 +1,10 @@
 'use strict';
 
-import { app, shell, protocol, BrowserWindow, Menu } from 'electron';
+import { app, shell, protocol, BrowserWindow, Menu, ipcMain } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 const isDevelopment = process.env.NODE_ENV !== 'production';
+const path = require('path')
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -23,12 +24,40 @@ async function createWindow() {
     maximizable: false,
     fullscreenable: false,
     webPreferences: {
-      // devTools: false,
-      // Use pluginOptions.nodeIntegration, leave this alone
-      // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
-      contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
+      // nodeIntegration: true,
+      // nodeIntegrationInWorker: true
+      contextIsolation: true, // protect against prototype pollution
+      enableRemoteModule: false, // turn off remote
+      // eslint-disable-next-line no-undef
+      preload: __static + '/preload.js'
     },
+  });
+
+  // resize the window for the create process
+  ipcMain.on("resize:create", () => {
+    win.setBounds({
+      width: 1580,
+      height: 720,
+      minWidth: 1580,
+      minHeight: 720,
+      maxWidth: 1600,
+      maxHeight: 1200,
+      center: true,
+      maximizable: false,
+    })
+  });
+
+  ipcMain.on("resize:other", () => { // can accept event and args
+    win.setBounds({
+      width: 1152,
+      height: 700,
+      minWidth: 1152,
+      minHeight: 700,
+      maxWidth: 1600,
+      maxHeight: 1200,
+      center: true,
+      maximizable: false,
+    })
   });
 
   const menuTemplate = [
