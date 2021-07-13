@@ -585,9 +585,10 @@ export default {
   color: var(--marine200);
 }
 .card-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 11fr auto;
+  grid-gap: 0 10px;
   align-items: center;
-  justify-content: space-between;
 }
 .card-header h5 {
   display: inline-block;
