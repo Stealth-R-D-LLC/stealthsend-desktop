@@ -58,7 +58,13 @@
         Please be patient and don’t turn off the computer or exit the
         application
       </p>
-      <div class="content" :class="{ 'content-loading': checkMnemonic }">
+      <div
+        class="content"
+        :class="{
+          'content-loading': checkMnemonic,
+          'content-3': currentStep === 3,
+        }"
+      >
         <!-- RECOVERY PHRASE STEP 1 -->
         <template v-if="currentStep === 1">
           <div class="grey-box">
@@ -128,7 +134,6 @@
                   </svg>
                 </a>
               </div>
-              <p v-else>No selected words</p>
             </div>
             <StFormItem
               :label="`Word ${selectedMnemonic.length + 1} (of ${
@@ -177,7 +182,10 @@
                   />
                 </svg>
               </StInput>
-              <div class="searched-words">
+              <p v-if="isError" class="mnemonic-error">
+                Selected word is not in wordlist
+              </p>
+              <div v-else class="searched-words">
                 <transition-group name="fade">
                   <a
                     v-for="word in searchedWords"
@@ -187,9 +195,6 @@
                   >
                 </transition-group>
               </div>
-              <p v-if="isError" class="mnemonic-error">
-                Selected word is not in wordlist
-              </p>
             </StFormItem>
           </template>
           <template v-else>
@@ -412,7 +417,13 @@ export default {
   margin-bottom: 28px;
 }
 .content {
-  height: calc(100% - 176px);
+  height: calc(100% - 180px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.content-3 {
+  height: calc(100% - 140px) !important;
 }
 .content-loading {
   display: flex;
@@ -542,6 +553,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  min-height: 24px;
 }
 .searched-words a {
   font-size: 12px;
@@ -556,6 +568,7 @@ export default {
 }
 :deep .st-form-item {
   max-width: 424px;
+  margin-bottom: 0;
 }
 :deep .st-form-item svg {
   cursor: pointer;
