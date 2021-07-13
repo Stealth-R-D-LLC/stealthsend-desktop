@@ -11,7 +11,7 @@
 import { useMainStore } from '@/store';
 
 // import StLoading from '@/components/kit/StLoading.vue'
-import { computed, watchEffect } from 'vue';
+import { computed } from 'vue';
 import DefaultLayout from './components/layout/Default.vue';
 import NewUserLayout from './components/layout/NewUser.vue';
 import SingleColumnLayout from './components/layout/SingleColumnLayout.vue';
@@ -22,7 +22,6 @@ import NoInternet from '@/components/connection/NoInternetConnection.vue';
 import NoStealthConnection from '@/components/connection/NoStealthConnection.vue';
 import { useOnline } from '@vueuse/core';
 // import db from '@/db';
-import { useMagicKeys } from '@vueuse/core';
 
 export default {
   name: 'StDefault',
@@ -31,8 +30,6 @@ export default {
     NoStealthConnection,
   },
   setup() {
-    const { alt, l } = useMagicKeys();
-
     const mainStore = useMainStore();
     const online = useOnline();
 
@@ -60,10 +57,10 @@ export default {
       }
     });
 
-    watchEffect(() => {
-      if (alt.value && l.value) {
-        console.log('Lock');
-        if (route.name === 'Lock') return; // don't handle if already on lock screen
+    document.addEventListener('keydown', function (event) {
+      if (router.name === 'Lock') return; // don't handle if already on lock screen
+      // CTRL + ESCAPE combo
+      if (event.ctrlKey && event.code === 'Escape') {
         router.push('/lock');
       }
     });

@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, protocol, BrowserWindow, Menu } from 'electron';
+import { app, shell, protocol, BrowserWindow, Menu } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -67,6 +67,10 @@ async function createWindow() {
   webContents.on('did-finish-load', () => {
     webContents.setZoomFactor(1);
     webContents.setVisualZoomLevelLimits(1, 1);
+  });
+  webContents.on('new-window', function (event, url) {
+    event.preventDefault();
+    shell.openExternal(url);
   });
 }
 
