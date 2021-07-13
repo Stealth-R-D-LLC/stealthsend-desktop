@@ -517,7 +517,7 @@ export default {
 .archived-container {
   margin: 16px -28px -10px;
   padding: 24px 28px;
-  background-color: var(--grey50);
+  background-color: var(--background50);
   box-sizing: border-box;
 }
 .info-purple path {
