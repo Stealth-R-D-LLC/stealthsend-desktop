@@ -24,7 +24,7 @@
           Please make sure you have a working internet<br />connection to use
           StealthSend.
         </h5>
-        <p class="app-version">StealthSend, v.{{ version }}</p>
+        <p class="app-version">StealthSend, v{{ version }}</p>
       </div>
       <img class="dragon" src="@/assets/ClarenceDragon.png" alt="Test gif" />
     </div>

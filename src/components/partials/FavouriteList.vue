@@ -61,11 +61,12 @@
         </template>
       </StMultiselect>
     </StFormItem>
-    <div class="accounts-list">
+    <div id="favouriteList" class="accounts-list">
       <div
         class="account-grid"
         v-for="(acc, index) in favouritedAccounts"
-        :key="index"
+        :key="acc.address"
+        :data-id="JSON.stringify(acc)"
       >
         <p class="bold">{{ index + 1 }}.</p>
         <div>
@@ -101,6 +102,7 @@
             <path d="M19 10.5H12.5" stroke="#A2A1A4" stroke-width="2" />
           </svg>
           <svg
+            class="handle"
             width="10"
             height="15"
             viewBox="0 0 10 15"
@@ -121,11 +123,12 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import CryptoService from '@/services/crypto';
 import useHelpers from '@/composables/useHelpers';
 import { useMainStore } from '@/store';
 import emitter from '@/services/emitter';
+import Sortable from 'sortablejs';
 
 export default {
   name: 'FavouriteList',
@@ -137,12 +140,19 @@ export default {
     const XST_USD_RATE = computed(() => {
       return CryptoService.constraints.XST_USD || 1;
     });
+    const favouritedAccounts = ref([]);
 
     async function scanWallet() {
+      console.log('fav list scan');
       const hdWallet = await CryptoService.scanWallet();
       accounts.value = hdWallet.accounts;
+      favouritedAccounts.value = accounts.value
+        .filter((el) => el.isFavourite)
+        .sort((a, b) => a.favouritePosition - b.favouritePosition);
     }
     scanWallet();
+
+    var sortable = null;
 
     function closeCanvas() {
       mainStore.TOGGLE_DRAWER(false);
@@ -153,29 +163,63 @@ export default {
       }, 300);
     }
 
-    const favouritedAccounts = computed(() => {
-      return accounts.value.filter((el) => el.isFavourite);
-    });
+    watch(
+      () => mainStore.currentOffCanvas,
+      async () => {
+        if (mainStore.currentOffCanvas === 'favourite-list') {
+          scanWallet();
+          if (!sortable) {
+            var el = document.getElementById('favouriteList');
+            sortable = Sortable.create(el, {
+              animation: 150,
+              easing: 'cubic-bezier(1, 0, 0, 1)',
+              handle: '.handle',
+              draggagle: '.account-grid',
+              store: {
+                set: async function (sortable) {
+                  let newOrder = sortable.toArray().map((el) => JSON.parse(el));
+                  for (let index in newOrder) {
+                    const i = parseInt(index);
+                    newOrder[i]['favouritePosition'] = i + 1;
+                  }
+                  for (let acc of newOrder) {
+                    await CryptoService.changeAccountFavouritePosition(
+                      acc,
+                      acc.favouritePosition
+                    );
+                  }
+                  scanWallet();
+                },
+              },
+            });
+          }
+        }
+      },
+      { deep: true }
+    );
 
     const unfavouritedAccounts = computed(() => {
-      return accounts.value.filter((el) => !el.isFavourite);
+      return accounts.value.filter((el) => !el.isFavourite && !el.isArchived);
     });
 
     async function addToFavouriteList() {
+      if (!account.value) return;
       await CryptoService.favouriteAccount(account.value);
       const scannedAccounts = await CryptoService.scanWallet();
       accounts.value = scannedAccounts.accounts;
-      emitter.emit('account:toggle-favourite');
       account.value = null;
+      emitter.emit('accounts:refresh');
     }
     async function removeFromFavoriteList(account) {
       await CryptoService.unfavouriteAccount(account);
       const scannedAccounts = await CryptoService.scanWallet();
       accounts.value = scannedAccounts.accounts;
-      emitter.emit('account:toggle-favourite');
+      emitter.emit('accounts:refresh');
     }
 
-    emitter.on('account:toggle-favourite', scanWallet);
+    emitter.on('accounts:refresh', () => {
+      scanWallet();
+    });
 
     return {
       // variables
@@ -290,6 +334,9 @@ export default {
 }
 .account-icons svg {
   cursor: pointer;
+}
+.account-icons .handle {
+  cursor: move;
 }
 .account-icons svg + svg {
   margin-left: 26px;
