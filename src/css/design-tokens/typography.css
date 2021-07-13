@@ -65,3 +65,13 @@ p.medium {
 .semi-bold {
   font-weight: 600;
 }
+
+.link {
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--marine500);
+  transition: 0.3s;
+}
+.link:hover {
+  color: var(--marine200);
+}

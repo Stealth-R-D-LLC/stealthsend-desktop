@@ -160,7 +160,7 @@
                   </StFormItem>
                 </template>
                 <template #footer>
-                  <StButton type="type-d" @click="editAccountNameModal = false"
+                  <StButton type="type-b" @click="editAccountNameModal = false"
                     >Cancel</StButton
                   >
                   <StButton @click="changeAccountName(account)"
@@ -290,7 +290,7 @@
                   </template>
                   <template #footer>
                     <StButton
-                      color="secondary"
+                      type="type-b"
                       @click="editAccountNameModal = false"
                       >Cancel</StButton
                     >
@@ -347,6 +347,9 @@ export default {
           (accountName) => {
             if (!accountName) {
               return 'Account name is required';
+            }
+            if (accountName.length > 50) {
+              return 'Name too long';
             }
             if (accounts.value.some((el) => el.label === accountName)) {
               return 'Account name already exists';
@@ -539,7 +542,7 @@ export default {
 .archived-container {
   margin: 16px -28px -10px;
   padding: 24px 28px;
-  background-color: var(--grey50);
+  background-color: var(--background50);
   box-sizing: border-box;
 }
 .info-purple path {
@@ -607,16 +610,18 @@ export default {
   color: var(--marine200);
 }
 .card-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 11fr auto;
+  grid-gap: 0 10px;
   align-items: center;
-  justify-content: space-between;
 }
 .card-header h5 {
   display: inline-block;
-  width: 180px;
-  white-space: nowrap;
-  overflow: hidden !important;
+  overflow: hidden;
   text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
   font-family: var(--primary-font);
   font-style: normal;
   font-weight: 600;
