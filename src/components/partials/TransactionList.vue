@@ -3,18 +3,7 @@
     <div class="overflow">
       <Filters @change="orderTransactions" @sort="orderTransactions"></Filters>
       <template v-for="date in txDates" :key="date">
-        <p
-          v-if="
-            ['TODAY', 'YESTERDAY'].includes(
-              todayOrYesterday(date).toUpperCase()
-            )
-          "
-          class="tx-date"
-        >
-          <span class="relative"> {{ todayOrYesterday(date) }}, </span>
-          {{ date }}
-        </p>
-        <p v-else class="tx-date">{{ date }}</p>
+        <p class="tx-date bold">{{ date }}</p>
 
         <StTable
           :data="txs[date]"
@@ -28,6 +17,7 @@
             },
             { key: 'blocktime', title: 'Time', customCellClass: 'blocktime' },
             { key: 'account', title: 'Account' },
+            { key: 'recipient', title: 'Recipient' },
             { key: 'label', title: 'Label' },
             { key: 'amountFiat', title: 'USD Value' },
             { key: 'amount', title: 'XST' },
@@ -76,48 +66,83 @@
               </template>
             </div>
           </template>
+          <template #account="{ item }">
+            <div :class="{ ellipsis: isExpanded === item.index }">
+              {{ item.account }}
+            </div>
+          </template>
+          <template #recipient="{ item }">
+            <div
+              class="move"
+              :class="{ 'move-left': isExpanded === item.index }"
+            >
+              <span v-if="item.amount > 0">{{
+                item && item.outputs && item.outputs[0].address
+              }}</span>
+              <span v-if="item.amount < 0">{{
+                item && item.inputs && item.inputs[0].address
+              }}</span>
+            </div>
+          </template>
           <template #blocktime="{ item }">
             {{ formatBlocktime(item.blocktime) }}
           </template>
           <template #amount="{ item }">
-            {{ item.amount > 0 ? '+' : '-' }}
-            {{
-              isHiddenAmounts
-                ? '••• XST'
-                : `${formatAmount(Math.abs(item.amount, true, 8))} XST`
-            }}
+            <div
+              class="move"
+              :class="{ 'move-left': isExpanded === item.index }"
+            >
+              {{ item.amount > 0 ? '+' : '-' }}
+              {{
+                isHiddenAmounts
+                  ? '••• XST'
+                  : `${formatAmount(Math.abs(item.amount, true, 8))} XST`
+              }}
+            </div>
           </template>
           <template #label="{ item }">
-            {{
-              findLabelForTx(item.txid) ? findLabelForTx(item.txid) : 'No label'
-            }}
+            <div
+              class="move"
+              :class="{ 'move-left': isExpanded === item.index }"
+            >
+              {{
+                findLabelForTx(item.txid)
+                  ? findLabelForTx(item.txid)
+                  : 'No label'
+              }}
+            </div>
           </template>
           <template #amountFiat="{ item }">
-            {{ item.amount > 0 ? '+' : '-' }}
-            <template v-if="item.amount * XST_USD_RATE < 1">
-              {{
-                isHiddenAmounts
-                  ? '$••• USD'
-                  : `$${formatAmount(
-                      Math.abs(item.amount * XST_USD_RATE),
-                      false,
-                      4,
-                      4
-                    )} USD`
-              }}
-            </template>
-            <template v-else>
-              {{
-                isHiddenAmounts
-                  ? '$•••'
-                  : `$${formatAmount(
-                      Math.abs(item.amount * XST_USD_RATE),
-                      false,
-                      4,
-                      4
-                    )}`
-              }}
-            </template>
+            <div
+              class="move"
+              :class="{ 'move-left': isExpanded === item.index }"
+            >
+              {{ item.amount > 0 ? '+' : '-' }}
+              <template v-if="item.amount * XST_USD_RATE < 1">
+                {{
+                  isHiddenAmounts
+                    ? '$••• USD'
+                    : `$${formatAmount(
+                        Math.abs(item.amount * XST_USD_RATE),
+                        false,
+                        4,
+                        4
+                      )} USD`
+                }}
+              </template>
+              <template v-else>
+                {{
+                  isHiddenAmounts
+                    ? '$•••'
+                    : `$${formatAmount(
+                        Math.abs(item.amount * XST_USD_RATE),
+                        false,
+                        4,
+                        4
+                      )}`
+                }}
+              </template>
+            </div>
           </template>
           <template #actions="{ item }">
             <div class="icon-container">
@@ -487,7 +512,7 @@ export default {
   width: 24px;
 }
 :deep .status-text {
-  width: 164px;
+  width: 106px;
 }
 .status-text svg {
   margin-right: 16px;
@@ -588,5 +613,14 @@ export default {
 }
 .no-results {
   text-align: center;
+}
+.ellipsis {
+  width: calc(100% - 58px);
+}
+.move {
+  transition: 0.3s;
+}
+.move-left {
+  transform: translateX(-58px);
 }
 </style>

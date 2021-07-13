@@ -32,8 +32,10 @@
           <p class="desc">
             For any matters relating to data protection you may contact us in
             writing by email to
-            <a href="mailto:contact@stealth.org">contact@stealth.org</a> or
-            letter to the following address:
+            <a class="link" href="mailto:contact@stealth.org"
+              >contact@stealth.org</a
+            >
+            or letter to the following address:
           </p>
           <p class="desc">
             Stealth R&D, LLC<br />8 The Green, Suite 8023<br />Dover, DE 19901
@@ -70,7 +72,10 @@
             The websites use cookies. Cookies are text files that are stored in
             a computer system via an Internet browser. More detailed information
             on cookies and how they work can be found at:
-            <a href="http://www.allaboutcookies.org"
+            <a
+              class="link"
+              href="http://www.allaboutcookies.org"
+              target="_blank"
               >http://www.allaboutcookies.org</a
             >.
           </p>
@@ -139,7 +144,10 @@
             be associated with any other user-related data. More information
             about the web analytics service used is available at the websites of
             Google Analytics:
-            <a href="https://www.google.ch/policies/privacy/partners"
+            <a
+              class="link"
+              href="https://www.google.ch/policies/privacy/partners"
+              target="_blank"
               >https://www.google.ch/policies/privacy/partners</a
             >
           </p>
@@ -160,9 +168,9 @@
           <p class="desc">
             You may contact us via our website contact page or by email to the
             following email address:
-            <a href="contact@stealth.org">contact@stealth.org</a>. For this, we
-            require the following information: Name, Subject, E-Mail address,
-            message.
+            <a class="link" href="contact@stealth.org">contact@stealth.org</a>.
+            For this, we require the following information: Name, Subject,
+            E-Mail address, message.
           </p>
           <p class="desc">
             We use this data, which you may give voluntarily, only in order to
@@ -478,21 +486,27 @@
           <p class="desc">
             • EU General Data Protection Regulation:
             <a
+              class="link"
               href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.L_.2016.119.01.0001.01.ENG"
+              target="_blank"
               >https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.L_.2016.119.01.0001.01.ENG</a
             >
           </p>
           <p class="desc">
             • Swiss Federal Act on Data Protection:
             <a
+              class="link"
               href="https://www.admin.ch/opc/en/classified-compilation/19920153/index.html"
+              target="_blank"
               >https://www.admin.ch/opc/en/classified-compilation/19920153/index.html</a
             >
           </p>
           <p class="desc">
             • Swiss Ordinance to the Federal Act on Data Protection:
             <a
+              class="link"
               href="https://www.admin.ch/opc/en/classified-compilation/19930159/index.html"
+              target="_blank"
               >https://www.admin.ch/opc/en/classified-compilation/19930159/index.html</a
             >
           </p>
@@ -519,8 +533,7 @@ export default {
 <style scoped>
 .content {
   margin-top: 40px;
-  max-width: 503px;
-  margin-right: auto;
+  padding-right: 75px;
 }
 .content__inner {
   text-align: left;

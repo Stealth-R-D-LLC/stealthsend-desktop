@@ -43,6 +43,10 @@
             />
           </svg>
         </StInput>
+        <template #description>
+          Receiving Account:
+          {{ account && account.label ? account.label : '' }}
+        </template>
       </StFormItem>
       <StTooltip
         class="tooltip"

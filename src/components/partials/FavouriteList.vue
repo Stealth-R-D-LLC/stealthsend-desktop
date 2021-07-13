@@ -1,7 +1,7 @@
 <template>
   <div class="favourite-list">
     <div class="top">
-      <span class="title">Favourite list</span>
+      <span class="title">Favorite List</span>
       <svg
         @click="closeCanvas"
         class="close"
@@ -28,7 +28,7 @@
     <p v-if="favouritedAccounts.length" class="paragraph">
       Arrange your {{ favouritedAccounts.length }} favorite accounts
     </p>
-    <p v-else class="paragraph">You don't have any fovorite accounts</p>
+    <p v-else class="paragraph">You don't have any favorite accounts</p>
     <StFormItem label="Choose an Account">
       <template #labelRight><a @click="addToFavouriteList">Add</a></template>
       <StMultiselect
