@@ -160,7 +160,7 @@
                   </StFormItem>
                 </template>
                 <template #footer>
-                  <StButton type="type-d" @click="editAccountNameModal = false"
+                  <StButton type="type-b" @click="editAccountNameModal = false"
                     >Cancel</StButton
                   >
                   <StButton @click="changeAccountName(account)"
@@ -290,7 +290,7 @@
                   </template>
                   <template #footer>
                     <StButton
-                      color="secondary"
+                      type="type-b"
                       @click="editAccountNameModal = false"
                       >Cancel</StButton
                     >
