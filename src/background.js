@@ -4,7 +4,7 @@ import { app, shell, protocol, BrowserWindow, Menu, ipcMain } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const path = require('path')
+const path = require('path');
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -29,12 +29,12 @@ async function createWindow() {
       contextIsolation: true, // protect against prototype pollution
       enableRemoteModule: false, // turn off remote
       // eslint-disable-next-line no-undef
-      preload: __static + '/preload.js'
+      preload: __static + '/preload.js',
     },
   });
 
   // resize the window for the create process
-  ipcMain.on("resize:create", () => {
+  ipcMain.on('resize:create', () => {
     win.setBounds({
       width: 1580,
       height: 720,
@@ -44,10 +44,11 @@ async function createWindow() {
       maxHeight: 1200,
       center: true,
       maximizable: false,
-    })
+    });
   });
 
-  ipcMain.on("resize:other", () => { // can accept event and args
+  ipcMain.on('resize:other', () => {
+    // can accept event and args
     win.setBounds({
       width: 1152,
       height: 700,
@@ -57,7 +58,7 @@ async function createWindow() {
       maxHeight: 1200,
       center: true,
       maximizable: false,
-    })
+    });
   });
 
   const menuTemplate = [
