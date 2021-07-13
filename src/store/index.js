@@ -1,7 +1,7 @@
 import { API } from '@/api/axios';
+import router from '@/router';
 import CryptoService from '@/services/crypto';
 import { defineStore } from 'pinia';
-import router from '@/router';
 
 export const useMainStore = defineStore({
   // name of the store
@@ -34,9 +34,13 @@ export const useMainStore = defineStore({
     offCanvasData: null,
     addressActiveTab: 'address-book', // address-book, add-contact, edit-contact, contact-details
     sendAddress: '',
+    isLock: false,
   }),
   getters: {},
   actions: {
+    SET_IS_LOCK(payload) {
+      this.isLock = payload;
+    },
     SET_SEND_ADDRESS(payload) {
       this.sendAddress = payload;
     },
