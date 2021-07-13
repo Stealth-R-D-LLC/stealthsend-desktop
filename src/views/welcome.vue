@@ -119,7 +119,6 @@
                     >Create a New Account</StButton
                   >
                   <StButton
-                    class="button-medium"
                     type="type-d"
                     @click="isRecovery = true"
                     >Restore a Backup</StButton
@@ -2737,12 +2736,6 @@ export default {
 }
 .left .box .box__inner .buttons button + button {
   margin-top: 24px;
-}
-.left .box .box__inner .buttons .button-medium {
-  font-size: 16px;
-  font-weight: 600;
-  font-family: var(--primary-font);
-  letter-spacing: 0.32px;
 }
 .left .box .box__inner .support {
   display: flex;
