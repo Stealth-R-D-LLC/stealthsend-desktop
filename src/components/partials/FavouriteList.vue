@@ -65,8 +65,8 @@
       <div
         class="account-grid"
         v-for="(acc, index) in favouritedAccounts"
-        :key="index"
-        :data-id="index + 1"
+        :key="acc.address"
+        :data-id="JSON.stringify(acc)"
       >
         <p class="bold">{{ index + 1 }}.</p>
         <div>
@@ -140,10 +140,12 @@ export default {
     const XST_USD_RATE = computed(() => {
       return CryptoService.constraints.XST_USD || 1;
     });
+    const favouritedAccounts = ref([]);
 
     async function scanWallet() {
       const hdWallet = await CryptoService.scanWallet();
       accounts.value = hdWallet.accounts;
+      favouritedAccounts.value = accounts.value.filter((el) => el.isFavourite).sort((a, b) => a.favouritePosition - b.favouritePosition);
     }
     scanWallet();
 
@@ -162,6 +164,7 @@ export default {
       () => mainStore.currentOffCanvas,
       async () => {
         if (mainStore.currentOffCanvas === 'favourite-list') {
+          scanWallet();
           if (!sortable) {
             var el = document.getElementById('favouriteList');
             sortable = Sortable.create(el, {
@@ -169,21 +172,17 @@ export default {
               easing: 'cubic-bezier(1, 0, 0, 1)',
               handle: '.handle',
               draggagle: '.account-grid',
-
-              onStart: function () {
-                console.log('start');
-              },
-              onMove: function () {
-                console.log('move');
-              },
-              onEnd: function (evt) {
-                console.log('->', evt.newIndex);
-              },
               store: {
-                set: function (sortable) {
-                  console.log('gotovo: ', sortable.toArray());
-                  console.log('gotovo: ', sortable.options.group.name);
-                  console.log('-', sortable.options.group);
+                set: async function (sortable) {
+                  let newOrder = sortable.toArray().map(el => JSON.parse(el))
+                  for (let index in newOrder) {
+                    const i = parseInt(index);
+                    newOrder[i]['favouritePosition'] = i + 1;
+                  }
+                  for (let acc of newOrder) {
+                    await CryptoService.changeAccountFavouritePosition(acc, acc.favouritePosition)
+                  }
+                  scanWallet();
                 },
               },
             });
@@ -191,16 +190,6 @@ export default {
         }
       },
       { deep: true }
-    );
-
-    // const favouritedAccounts = computed(() => {
-    //   return accounts.value.filter((el) => el.isFavourite);
-    // });
-
-    const favouritedAccounts = ref(
-      JSON.parse(
-        '[{"address":"SDnBcqzp2ZuLuPcTCvimm4PG2pscwZxDrT","label":"ajmooo2222o 0","isArchived":false,"isFavourite":true,"isImported":false,"utxo":0,"path":"0\'/0/0","xpub":"xpub6BwS3L358J8RtT19tqF6kSNdFmPtzgGRKjED4X7TA3iuMy3h6aNXqMHDzkfHiQMSfv6h1oYX3i6MqFk9SJ1SktZUtRCuKSH4ALqiVKJddr7","asset":"XST"},{"address":"SAUbK1drTjnwT8Lq8j2XLXSv3RJCFF8k6G","label":"jkl7","isArchived":false,"isFavourite":true,"isImported":false,"utxo":0,"path":"1\'/0/0","xpub":"xpub6BwS3L358J8RwH3nJRjbtZJ8gEV7etBs8GsqVgoEqd3Zd7en7mYxeRneqyRCEWkgBrQcFCutyf41cUBN3iZ3csow1Lk8bbQJSRNZNz2feDV","asset":"XST"},{"address":"S7AGvc6WXHJPMMBPqwgtt5omCEeFdko2Tm","label":"jkl","isArchived":false,"isFavourite":false,"isImported":false,"utxo":0,"path":"2\'/0/0","xpub":"xpub6BwS3L358J8RysJwcMSGRRCG7KLoG6zhqxKwNpjzSiGjE1P4MXW7urzQLyfch7CE2VtrWv5WtLPRXm7KeGcQCxCMBTFBwtro8cHQeZ9eXLy","asset":"XST"}]'
-      )
     );
 
     const unfavouritedAccounts = computed(() => {

@@ -264,6 +264,9 @@ const CryptoService = {
     // }
 
     accounts[wantedIndex].isArchived = true;
+    // archived accounts are removed from the favourite list
+    accounts[wantedIndex].isFavourite = false;
+    accounts[wantedIndex].favouritePosition = null;
 
     await db.setItem('accounts', accounts);
 
@@ -281,7 +284,10 @@ const CryptoService = {
       (item) => item.address === account.address
     );
 
+    let countFavourites = accounts.filter(el => el.favouritePosition)
+
     accounts[wantedIndex].isFavourite = true;
+    accounts[wantedIndex].favouritePosition = countFavourites.length + 1;
     await db.setItem('accounts', accounts);
   },
 
@@ -297,6 +303,16 @@ const CryptoService = {
     );
 
     accounts[wantedIndex].isFavourite = false;
+    accounts[wantedIndex].favouritePosition = null;
+
+    // lower favourite position for remaining accounts 
+    for (let i = 0; i < accounts.length; i++) {
+      if (accounts[i].favouritePosition > account.favouritePosition) {
+        // lower position only for accounts that were beneath the removed account
+        accounts[i].favouritePosition = accounts[i].favouritePosition - 1;
+      }
+    }
+
     await db.setItem('accounts', accounts);
   },
 
@@ -324,6 +340,20 @@ const CryptoService = {
       (item) => item.address === account.address
     );
     accounts[wantedIndex].label = accountName;
+
+    await db.setItem('accounts', accounts);
+  },
+
+  async changeAccountFavouritePosition(account, position = null) {
+    let accounts = await db.getItem('accounts');
+    if (accounts.length < 1) {
+      return;
+    }
+
+    const wantedIndex = accounts.findIndex(
+      (item) => item.address === account.address
+    );
+    accounts[wantedIndex]['favouritePosition'] = position;
 
     await db.setItem('accounts', accounts);
   },
