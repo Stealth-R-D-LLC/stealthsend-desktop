@@ -145,7 +145,9 @@ export default {
     async function scanWallet() {
       const hdWallet = await CryptoService.scanWallet();
       accounts.value = hdWallet.accounts;
-      favouritedAccounts.value = accounts.value.filter((el) => el.isFavourite).sort((a, b) => a.favouritePosition - b.favouritePosition);
+      favouritedAccounts.value = accounts.value
+        .filter((el) => el.isFavourite)
+        .sort((a, b) => a.favouritePosition - b.favouritePosition);
     }
     scanWallet();
 
@@ -174,13 +176,16 @@ export default {
               draggagle: '.account-grid',
               store: {
                 set: async function (sortable) {
-                  let newOrder = sortable.toArray().map(el => JSON.parse(el))
+                  let newOrder = sortable.toArray().map((el) => JSON.parse(el));
                   for (let index in newOrder) {
                     const i = parseInt(index);
                     newOrder[i]['favouritePosition'] = i + 1;
                   }
                   for (let acc of newOrder) {
-                    await CryptoService.changeAccountFavouritePosition(acc, acc.favouritePosition)
+                    await CryptoService.changeAccountFavouritePosition(
+                      acc,
+                      acc.favouritePosition
+                    );
                   }
                   scanWallet();
                 },
