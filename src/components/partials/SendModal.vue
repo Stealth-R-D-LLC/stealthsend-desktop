@@ -669,7 +669,6 @@ export default {
           emitter.emit('transactions:refresh');
           emitter.emit('accounts:refresh');
         }, 5100);
-
       } catch (e) {
         if (e instanceof ValidationError) {
           console.log(e);

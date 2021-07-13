@@ -346,7 +346,7 @@ export default {
       accountName.value = '';
 
       await CryptoService.storeAccountInDb(account);
-      emitter.emit('accounts:refresh')
+      emitter.emit('accounts:refresh');
       // mainStore.STOP_GLOBAL_LOADING();
       closeModal();
     }

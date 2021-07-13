@@ -271,7 +271,7 @@ export default {
     });
     emitter.on('transactions:refresh', () => {
       getData();
-    })
+    });
     return {
       account,
       addressInfo,
