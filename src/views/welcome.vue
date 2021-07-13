@@ -118,9 +118,7 @@
                   <StButton type="type-d" @click="isAccount = true"
                     >Create a New Account</StButton
                   >
-                  <StButton
-                    type="type-d"
-                    @click="isRecovery = true"
+                  <StButton type="type-d" @click="isRecovery = true"
                     >Restore a Backup</StButton
                   >
                 </div>
