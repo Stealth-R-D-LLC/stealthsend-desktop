@@ -328,6 +328,7 @@ import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
 import { ref, computed, watch, onMounted } from 'vue';
 import CryptoService from '@/services/crypto';
 import { useMainStore } from '@/store';
+import emitter from '@/services/emitter';
 
 export default {
   name: 'StTransactionList',
@@ -453,6 +454,11 @@ export default {
         orderTransactions();
       }
     );
+
+    emitter.on('transactions:refresh', () => {
+      orderTransactions();
+      CryptoService.getTxWithLabels();
+    });
 
     return {
       isExpanded,

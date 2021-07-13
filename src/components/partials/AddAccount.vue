@@ -160,6 +160,7 @@ import { useMainStore } from '@/store';
 import { computed, ref, watchEffect, watch } from 'vue';
 import CryptoService from '@/services/crypto';
 import { useValidation, ValidationError } from 'vue3-form-validation';
+import emitter from '@/services/emitter';
 
 export default {
   name: 'StAccountModal',
@@ -345,6 +346,7 @@ export default {
       accountName.value = '';
 
       await CryptoService.storeAccountInDb(account);
+      emitter.emit('accounts:refresh');
       // mainStore.STOP_GLOBAL_LOADING();
       closeModal();
     }
