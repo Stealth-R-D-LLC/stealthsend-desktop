@@ -13,7 +13,12 @@
         <p class="text">
           Github Source Repository
           <br />
-          <StLink> https://github.com/Stealth-R-D-LLC/Stealth </StLink>
+          <a
+            class="link"
+            href="https://github.com/Stealth-R-D-LLC/Stealth"
+            target="_blank"
+            >https://github.com/Stealth-R-D-LLC/Stealth</a
+          >
         </p>
 
         <p class="text">
@@ -23,7 +28,9 @@
         <p class="text">
           Exchange rate source
           <br />
-          <StLink> coincap.io </StLink>
+          <a class="link" href="https://coincap.io/" target="_blank"
+            >coincap.io</a
+          >
         </p>
       </div>
     </div>

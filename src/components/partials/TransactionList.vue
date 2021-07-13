@@ -67,29 +67,44 @@
             </div>
           </template>
           <template #account="{ item }">
-            <div>{{ item.account }}</div>
+            <div :class="{ ellipsis: isExpanded === item.index }">
+              {{ item.account }}
+            </div>
           </template>
           <template #recipient="{ item }">
-            <span v-if="item.amount > 0">{{
-              item && item.outputs && item.outputs[0].address
-            }}</span>
-            <span v-if="item.amount < 0">{{
-              item && item.inputs && item.inputs[0].address
-            }}</span>
+            <div
+              class="move"
+              :class="{ 'move-left': isExpanded === item.index }"
+            >
+              <span v-if="item.amount > 0">{{
+                item && item.outputs && item.outputs[0].address
+              }}</span>
+              <span v-if="item.amount < 0">{{
+                item && item.inputs && item.inputs[0].address
+              }}</span>
+            </div>
           </template>
           <template #blocktime="{ item }">
             {{ formatBlocktime(item.blocktime) }}
           </template>
           <template #amount="{ item }">
-            {{ item.amount > 0 ? '+' : '-' }}
-            {{
-              isHiddenAmounts
-                ? '••• XST'
-                : `${formatAmount(Math.abs(item.amount, true, 8))} XST`
-            }}
+            <div
+              class="move"
+              :class="{ 'move-left': isExpanded === item.index }"
+            >
+              {{ item.amount > 0 ? '+' : '-' }}
+              {{
+                isHiddenAmounts
+                  ? '••• XST'
+                  : `${formatAmount(Math.abs(item.amount, true, 8))} XST`
+              }}
+            </div>
           </template>
           <template #label="{ item }">
-            <div>
+            <div
+              class="move"
+              :class="{ 'move-left': isExpanded === item.index }"
+            >
               {{
                 findLabelForTx(item.txid)
                   ? findLabelForTx(item.txid)
@@ -98,31 +113,36 @@
             </div>
           </template>
           <template #amountFiat="{ item }">
-            {{ item.amount > 0 ? '+' : '-' }}
-            <template v-if="item.amount * XST_USD_RATE < 1">
-              {{
-                isHiddenAmounts
-                  ? '$••• USD'
-                  : `$${formatAmount(
-                      Math.abs(item.amount * XST_USD_RATE),
-                      false,
-                      4,
-                      4
-                    )} USD`
-              }}
-            </template>
-            <template v-else>
-              {{
-                isHiddenAmounts
-                  ? '$•••'
-                  : `$${formatAmount(
-                      Math.abs(item.amount * XST_USD_RATE),
-                      false,
-                      4,
-                      4
-                    )}`
-              }}
-            </template>
+            <div
+              class="move"
+              :class="{ 'move-left': isExpanded === item.index }"
+            >
+              {{ item.amount > 0 ? '+' : '-' }}
+              <template v-if="item.amount * XST_USD_RATE < 1">
+                {{
+                  isHiddenAmounts
+                    ? '$••• USD'
+                    : `$${formatAmount(
+                        Math.abs(item.amount * XST_USD_RATE),
+                        false,
+                        4,
+                        4
+                      )} USD`
+                }}
+              </template>
+              <template v-else>
+                {{
+                  isHiddenAmounts
+                    ? '$•••'
+                    : `$${formatAmount(
+                        Math.abs(item.amount * XST_USD_RATE),
+                        false,
+                        4,
+                        4
+                      )}`
+                }}
+              </template>
+            </div>
           </template>
           <template #actions="{ item }">
             <div class="icon-container">
@@ -593,5 +613,14 @@ export default {
 }
 .no-results {
   text-align: center;
+}
+.ellipsis {
+  width: calc(100% - 58px);
+}
+.move {
+  transition: 0.3s;
+}
+.move-left {
+  transform: translateX(-58px);
 }
 </style>

@@ -154,7 +154,9 @@
             <p class="tos-desc">
               If you wish to make any use of materials on the Websites other
               than that set out in this section, please address your request to:
-              <a href="mailto:contact@stealth.org">contact@stealth.org</a>
+              <a class="link" href="mailto:contact@stealth.org"
+                >contact@stealth.org</a
+              >
             </p>
             <p class="tos-desc">
               If you print, copy, modify, download or otherwise use or provide
@@ -474,7 +476,9 @@
               This Websites is operated by Stealth. All other feedback,
               comments, requests for technical support and other communications
               relating to the Websites should be directed to:
-              <a href="mailto:contact@stealth.org">contact@stealth.org</a>
+              <a class="link" href="mailto:contact@stealth.org"
+                >contact@stealth.org</a
+              >
             </p>
             <p class="tos-desc">Last modified: September 2019</p>
           </div>

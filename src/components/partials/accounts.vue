@@ -160,7 +160,7 @@
                   </StFormItem>
                 </template>
                 <template #footer>
-                  <StButton type="type-d" @click="editAccountNameModal = false"
+                  <StButton type="type-b" @click="editAccountNameModal = false"
                     >Cancel</StButton
                   >
                   <StButton @click="changeAccountName(account)"
@@ -290,7 +290,7 @@
                   </template>
                   <template #footer>
                     <StButton
-                      color="secondary"
+                      type="type-b"
                       @click="editAccountNameModal = false"
                       >Cancel</StButton
                     >
@@ -517,7 +517,7 @@ export default {
 .archived-container {
   margin: 16px -28px -10px;
   padding: 24px 28px;
-  background-color: var(--grey50);
+  background-color: var(--background50);
   box-sizing: border-box;
 }
 .info-purple path {
@@ -585,9 +585,10 @@ export default {
   color: var(--marine200);
 }
 .card-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 11fr auto;
+  grid-gap: 0 10px;
   align-items: center;
-  justify-content: space-between;
 }
 .card-header h5 {
   display: inline-block;
