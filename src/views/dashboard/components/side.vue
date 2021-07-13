@@ -22,6 +22,7 @@ import CryptoService from '@/services/crypto';
 import { ref, computed, watch } from 'vue';
 import { useMainStore } from '@/store';
 import router from '@/router';
+import emitter from '@/services/emitter';
 
 export default {
   components: {
@@ -92,6 +93,13 @@ export default {
       mainStore.SET_ACCOUNT_DETAILS(account);
       router.push('/account/details');
     }
+
+    emitter.on('accounts:refresh', () => {
+      scanWallet();
+    });
+    emitter.on('transactions:refresh', () => {
+      scanWallet();
+    });
 
     return {
       openAccount,

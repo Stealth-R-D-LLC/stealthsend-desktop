@@ -269,6 +269,9 @@ export default {
       mainStore.SET_ACCOUNT_DETAILS(account);
       getData();
     });
+    emitter.on('transactions:refresh', () => {
+      getData();
+    })
     return {
       account,
       addressInfo,
