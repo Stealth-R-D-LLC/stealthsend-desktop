@@ -284,7 +284,7 @@ const CryptoService = {
       (item) => item.address === account.address
     );
 
-    let countFavourites = accounts.filter(el => el.favouritePosition)
+    let countFavourites = accounts.filter((el) => el.favouritePosition);
 
     accounts[wantedIndex].isFavourite = true;
     accounts[wantedIndex].favouritePosition = countFavourites.length + 1;
@@ -305,7 +305,7 @@ const CryptoService = {
     accounts[wantedIndex].isFavourite = false;
     accounts[wantedIndex].favouritePosition = null;
 
-    // lower favourite position for remaining accounts 
+    // lower favourite position for remaining accounts
     for (let i = 0; i < accounts.length; i++) {
       if (accounts[i].favouritePosition > account.favouritePosition) {
         // lower position only for accounts that were beneath the removed account
