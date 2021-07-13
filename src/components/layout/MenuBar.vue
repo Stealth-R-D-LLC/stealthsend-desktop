@@ -227,7 +227,7 @@
         </li>
       </ul>
     </nav>
-    <router-link class="item__footer" to="/lock">
+    <a class="item__footer" @click="lock">
       <svg
         width="16"
         height="17"
@@ -250,7 +250,7 @@
         />
         <path d="M8 11V13" stroke="#C3A9FB" stroke-width="2" />
       </svg>
-    </router-link>
+    </a>
   </aside>
 </template>
 
@@ -281,12 +281,17 @@ export default defineComponent({
       mainStore.SET_CURRENT_CANVAS(canvas);
       mainStore.TOGGLE_DRAWER(true);
     }
+    function lock() {
+      mainStore.SET_IS_LOCK(true);
+      router.push('/lock');
+    }
 
     return {
       isCollapsed,
       toggleMenu,
       openModal,
       toggleDrawer,
+      lock,
     };
   },
 });
@@ -312,6 +317,7 @@ export default defineComponent({
 }
 
 .layout__aside .item__footer {
+  cursor: pointer;
   position: fixed;
   padding: 12px 0;
   text-decoration: none;
