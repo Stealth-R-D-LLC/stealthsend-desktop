@@ -322,4 +322,7 @@ svg.info,
 .account-options > svg {
   cursor: pointer;
 }
+.star {
+  cursor: auto;
+}
 </style>

@@ -645,7 +645,6 @@ export default {
 .link-purple {
   display: block;
   width: fit-content;
-  cursor: pointer;
   font-size: 12px;
   line-height: 24px;
   color: var(--marine700);
@@ -662,15 +661,14 @@ svg {
   display: flex;
   align-items: center;
   width: fit-content;
-  cursor: pointer;
   font-size: 12px;
   line-height: 24px;
   color: var(--marine200);
   transition: 0.3s;
 }
-.link:hover {
+/* .link:hover {
   color: var(--marine700);
-}
+} */
 .link svg {
   margin-right: 8px;
 }
@@ -680,5 +678,9 @@ svg {
 }
 :deep .st-modal__footer button {
   margin: 0;
+}
+
+.link {
+  cursor: auto;
 }
 </style>
