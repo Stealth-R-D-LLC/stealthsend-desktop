@@ -4,7 +4,7 @@
     <div class="accounts-container__inner--grid">
       <div
         v-for="(account, index) in activeAccounts"
-        :key="account._id"
+        :key="account.address"
         class="card"
         :class="{ 'card-purple': account.utxo === 0 && index === 0 }"
       >
@@ -178,7 +178,7 @@
       <div class="accounts-container__inner--grid">
         <div
           v-for="(account, index) in archivedAccounts"
-          :key="account._id"
+          :key="account.address"
           class="card"
         >
           <div class="card__inner">
@@ -319,21 +319,21 @@ import { useValidation, ValidationError } from 'vue3-form-validation';
 
 export default {
   name: 'StAccounts',
-  props: {
-    accounts: {
-      type: Array,
-      required: true,
-      default: () => [],
-    },
-  },
+  // props: {
+  //   accounts: {
+  //     type: Array,
+  //     required: true,
+  //     default: () => [],
+  //   },
+  // },
   emits: ['click'],
-  setup(props) {
+  setup() {
     const mainStore = useMainStore();
     const accountOptions = ref('');
     const accountName = ref('');
     const { formatAmount } = useHelpers();
     let editAccountNameModal = ref(false);
-    let accounts = ref(props.accounts);
+    let accounts = ref([]);
 
     const {
       form,
@@ -346,7 +346,6 @@ export default {
         $rules: [
           (accountName) => {
             if (!accountName) {
-              console.log('aaa', accounts.value);
               return 'Account name is required';
             }
             if (accounts.value.some((el) => el.label === accountName)) {
@@ -356,6 +355,8 @@ export default {
         ],
       },
     });
+
+    // const accounts = ref([]);
 
     const activeAccounts = computed(() => {
       return accounts.value.filter((obj) => obj.isArchived === false);
@@ -375,31 +376,21 @@ export default {
     }
     async function favouriteAccount(account) {
       await CryptoService.favouriteAccount(account);
-      const scannedAccounts = await CryptoService.scanWallet();
-      accounts.value = scannedAccounts.accounts;
       accountOptions.value = '';
-      emitter.emit('account:toggle-favourite');
       emitter.emit('accounts:refresh');
     }
     async function unfavouriteAccount(account) {
       await CryptoService.unfavouriteAccount(account);
-      const scannedAccounts = await CryptoService.scanWallet();
-      accounts.value = scannedAccounts.accounts;
       accountOptions.value = '';
-      emitter.emit('account:toggle-favourite');
       emitter.emit('accounts:refresh');
     }
     async function archiveAccount(account) {
       await CryptoService.archiveAccount(account);
-      const scannedAccounts = await CryptoService.scanWallet();
-      accounts.value = scannedAccounts.accounts;
       accountOptions.value = '';
       emitter.emit('accounts:refresh');
     }
     async function activateAccount(account) {
       await CryptoService.activateAccount(account);
-      const scannedAccounts = await CryptoService.scanWallet();
-      accounts.value = scannedAccounts.accounts;
       accountOptions.value = '';
       emitter.emit('accounts:refresh');
     }
@@ -407,13 +398,13 @@ export default {
       try {
         await validateFields();
         await CryptoService.changeAccountName(account, accountName.value);
-        const scannedAccounts = await CryptoService.scanWallet();
-        accounts.value = scannedAccounts.accounts;
         editAccountNameModal.value = false;
       } catch (e) {
         if (e instanceof ValidationError) {
           console.log(e);
         }
+      } finally {
+        emitter.emit('accounts:refresh');
       }
     }
     function openEditAccountNameModal(account) {
@@ -427,10 +418,43 @@ export default {
       router.push('/account/details');
     };
 
+    async function scanWallet() {
+      const hdWallet = await CryptoService.scanWallet();
+      // accounts.value = hdWallet.accounts;
+      
+      // find first account with 0 balance
+      let firstZeroAccount = null;
+      for (let acc of hdWallet.accounts) {
+        if (acc.utxo === 0) {
+          firstZeroAccount = acc;
+          break;
+        }
+      }
+
+      let tmpAccounts = [];
+      if (firstZeroAccount) {
+        tmpAccounts = [firstZeroAccount];
+        for (let acc of hdWallet.accounts) {
+          if (acc.address === firstZeroAccount.address) continue;
+          tmpAccounts.push(acc);
+        }
+      } else {
+        tmpAccounts = tmpAccounts.concat(hdWallet.accounts);
+      }
+
+      accounts.value = [...tmpAccounts];
+    }
+
     function closeEditModal() {
       editAccountNameModal.value = false;
       resetFields();
     }
+
+    scanWallet();
+
+    emitter.on('accounts:refresh', () => {
+      scanWallet();
+    });
 
     return {
       closeEditModal,
