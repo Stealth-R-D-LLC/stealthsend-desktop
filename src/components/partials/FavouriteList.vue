@@ -143,6 +143,7 @@ export default {
     const favouritedAccounts = ref([]);
 
     async function scanWallet() {
+      console.log('fav list scan');
       const hdWallet = await CryptoService.scanWallet();
       accounts.value = hdWallet.accounts;
       favouritedAccounts.value = accounts.value
@@ -198,24 +199,27 @@ export default {
     );
 
     const unfavouritedAccounts = computed(() => {
-      return accounts.value.filter((el) => !el.isFavourite);
+      return accounts.value.filter((el) => !el.isFavourite && !el.isArchived);
     });
 
     async function addToFavouriteList() {
+      if (!account.value) return;
       await CryptoService.favouriteAccount(account.value);
       const scannedAccounts = await CryptoService.scanWallet();
       accounts.value = scannedAccounts.accounts;
-      emitter.emit('account:toggle-favourite');
       account.value = null;
+      emitter.emit('accounts:refresh');
     }
     async function removeFromFavoriteList(account) {
       await CryptoService.unfavouriteAccount(account);
       const scannedAccounts = await CryptoService.scanWallet();
       accounts.value = scannedAccounts.accounts;
-      emitter.emit('account:toggle-favourite');
+      emitter.emit('accounts:refresh');
     }
 
-    emitter.on('account:toggle-favourite', scanWallet);
+    emitter.on('accounts:refresh', () => {
+      scanWallet();
+    });
 
     return {
       // variables
