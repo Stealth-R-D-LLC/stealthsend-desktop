@@ -68,7 +68,7 @@ async function createWindow() {
     webContents.setZoomFactor(1);
     webContents.setVisualZoomLevelLimits(1, 1);
   });
-  webContents.on('new-window', function(event, url){
+  webContents.on('new-window', function (event, url) {
     event.preventDefault();
     shell.openExternal(url);
   });
