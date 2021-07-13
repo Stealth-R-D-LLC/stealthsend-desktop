@@ -417,6 +417,7 @@
             >Public Key</a
           >
           <a
+            v-if="account && account.isImported"
             :class="{ active: activeStep === 'private-key' }"
             @click="changeStep('private-key')"
             >Private Key</a
