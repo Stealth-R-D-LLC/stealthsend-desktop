@@ -3,7 +3,7 @@
     <div class="accounts-container__overflow">
       <div class="accounts-container__content">
         <!-- <transition-group v-if="accounts.length !== 0" name="list" tag="div"> -->
-          <accounts></accounts>
+        <accounts></accounts>
         <!-- </transition-group> -->
       </div>
     </div>

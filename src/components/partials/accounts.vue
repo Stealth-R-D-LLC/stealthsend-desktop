@@ -421,7 +421,7 @@ export default {
     async function scanWallet() {
       const hdWallet = await CryptoService.scanWallet();
       // accounts.value = hdWallet.accounts;
-      
+
       // find first account with 0 balance
       let firstZeroAccount = null;
       for (let acc of hdWallet.accounts) {
