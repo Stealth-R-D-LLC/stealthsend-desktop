@@ -1,18 +1,11 @@
 <template>
   <div class="welcome">
     <div class="left" :class="{ 'left-active': isAccount || isRecovery }">
-      <img src="@/assets/welcome.png" alt="welcome" />
-      <!-- <video id="bgAnimation" width="320" height="240" autplay muted>
-        <source
-          src="@/assets/animation/backgroundAnimation.mp4"
-          type="video/mp4"
-        />
-        <source
-          src="@/assets/animation/backgroundAnimation.ogg"
-          type="video/ogg"
-        />
+      <!-- <img src="@/assets/welcome.png" alt="welcome" /> -->
+      <video id="welcomeAnimation" autoplay muted>
+        <source src="backgroundAnimation.mp4" type="video/mp4" />
         Not supported
-      </video> -->
+      </video>
 
       <div class="overlay"></div>
       <div
@@ -2335,6 +2328,7 @@ export default {
     });
 
     onMounted(() => {
+      /* document.getElementById('welcomeAnimation').play() */
       setTimeout(() => {
         isWelcome.value = true;
       }, 3500);
