@@ -1,8 +1,8 @@
 'use strict';
 
-import { app, shell, protocol, BrowserWindow, Menu } from 'electron';
-import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
+import { app, BrowserWindow, Menu, protocol, shell } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
+import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 // Scheme must be registered before the app is ready
@@ -61,7 +61,8 @@ async function createWindow() {
   } else {
     createProtocol('app');
     // Load the index.html when not in development
-    win.loadURL('app://./index.html');
+    /* win.loadURL('app://./index.html'); */
+    win.loadFile('index.html');
   }
   const webContents = win.webContents;
   webContents.on('did-finish-load', () => {

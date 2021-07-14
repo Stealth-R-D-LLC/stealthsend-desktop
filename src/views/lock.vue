@@ -1,17 +1,10 @@
 <template>
   <div class="lock-container">
-    <img src="@/assets/welcome.png" alt="welcome" />
-    <!-- <video id="bgAnimation" width="320" height="240" autplay muted>
-      <source
-        src="@/assets/animation/backgroundAnimation.mp4"
-        type="video/mp4"
-      />
-      <source
-        src="@/assets/animation/backgroundAnimation.ogg"
-        type="video/ogg"
-      />
+    <!-- <img src="@/assets/welcome.png" alt="welcome" /> -->
+    <video id="bgAnimation" autoplay muted>
+      <source src="backgroundAnimation.mp4" type="video/mp4" />
       Not supported
-    </video> -->
+    </video>
     <div class="overlay"></div>
     <div class="lock-container__inner">
       <svg

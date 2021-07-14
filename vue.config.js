@@ -46,6 +46,8 @@ module.exports = {
           "type": "development"
         }
       },
+      nodeIntegration: true,
+      customFileProtocol: './'
     }
   },
 };
