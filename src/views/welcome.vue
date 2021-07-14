@@ -2,7 +2,7 @@
   <div class="welcome">
     <div class="left" :class="{ 'left-active': isAccount || isRecovery }">
       <!-- <img src="@/assets/welcome.png" alt="welcome" /> -->
-      <video id="welcomeAnimation" autoplay muted>
+      <video id="welcomeAnimation" controls autoplay muted>
         <source src="backgroundAnimation.mp4" type="video/mp4" />
         Not supported
       </video>
