@@ -91,7 +91,7 @@ async function createWindow() {
   } else {
     createProtocol('app');
     // Load the index.html when not in development
-    win.loadURL('app://./index.html');
+    win.loadFile('index.html');
   }
   const webContents = win.webContents;
   webContents.on('did-finish-load', () => {
