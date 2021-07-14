@@ -36,17 +36,18 @@ async function createWindow() {
   // resize the window for the create process
   ipcMain.on('resize:create', () => {
     win.setBounds({
-      width: 1580,
-      height: 720,
-      minWidth: 1580,
-      minHeight: 720,
-      maxWidth: 1600,
-      maxHeight: 1200,
+      width: 1152,
+      height: 700,
+      minWidth: 1152,
+      minHeight: 700,
+      maxWidth: 1152,
+      maxHeight: 700,
       center: true,
       maximizable: false,
     });
   });
 
+  // resize window after create/recovery finishes
   ipcMain.on('resize:other', () => {
     // can accept event and args
     win.setBounds({
