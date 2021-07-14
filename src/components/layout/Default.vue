@@ -59,6 +59,9 @@ export default {
     // import option will import the WIF (previously exported from somewhere within the app)
     // create new wallet will ask for a new password and generate a new seed/pk/address/etc
     // if there is an account/wallet in the db, ask for password (lock screen page), render dashboard
+    // setTimeout(() => {
+    //   window.ipc.send('resize:other');
+    // }, 10);
     return {};
   },
 };

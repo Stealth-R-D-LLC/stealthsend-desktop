@@ -2339,6 +2339,9 @@ export default {
       setTimeout(() => {
         isWelcome.value = true;
       }, 3500);
+      setTimeout(() => {
+        window.ipc.send('resize:create');
+      }, 10);
     });
 
     const isError = ref(false);
