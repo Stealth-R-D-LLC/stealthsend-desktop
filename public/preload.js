@@ -1,5 +1,4 @@
 const { ipcRenderer, contextBridge } = require( 'electron' )
-console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
 contextBridge.exposeInMainWorld(
     'ipc', {
         send: ( channel, ...args ) => {
@@ -27,5 +26,4 @@ contextBridge.exposeInMainWorld(
         // }
     }
 )
-
-window.ipcRenderer = ipcRenderer
+// window.ipcRenderer = ipcRenderer
