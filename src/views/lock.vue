@@ -1,9 +1,8 @@
 <template>
   <div class="lock-container">
     <!-- <img src="@/assets/welcome.png" alt="welcome" /> -->
-    <video id="bgAnimation" autoplay muted>
+    <video width="320" height="240" autoplay muted>
       <source src="backgroundAnimation.mp4" type="video/mp4" />
-      Not supported
     </video>
     <div class="overlay"></div>
     <div class="lock-container__inner">

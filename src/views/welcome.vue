@@ -2,9 +2,8 @@
   <div class="welcome">
     <div class="left" :class="{ 'left-active': isAccount || isRecovery }">
       <!-- <img src="@/assets/welcome.png" alt="welcome" /> -->
-      <video id="welcomeAnimation" controls autoplay muted>
+      <video width="320" height="240" autoplay muted>
         <source src="backgroundAnimation.mp4" type="video/mp4" />
-        Not supported
       </video>
 
       <div class="overlay"></div>
@@ -2328,7 +2327,15 @@ export default {
     });
 
     onMounted(() => {
-      /* document.getElementById('welcomeAnimation').play() */
+      /* const videoPlayer = document.getElementById('video_player');
+      const videoPlayerSource = document.getElementById('video_player_source');
+      videoPlayer.setAttribute('style', `top: 0; left: 0; width: 100%; `);
+      videoPlayerSource.setAttribute(
+        'src',
+        'backgroundAnimation.webm'
+      );
+      videoPlayer.load();
+      videoPlayer.play(); */
       setTimeout(() => {
         isWelcome.value = true;
       }, 3500);
