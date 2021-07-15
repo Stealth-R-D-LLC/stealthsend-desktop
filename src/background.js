@@ -19,7 +19,7 @@ let delta = {
     height: 24,
     width: 0,
   },
-  darwin: {
+  mac: {
     height: 28,
     width: 0,
   },
