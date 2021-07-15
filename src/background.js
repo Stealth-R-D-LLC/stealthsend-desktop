@@ -1,8 +1,8 @@
 'use strict';
 
-import { app, shell, protocol, BrowserWindow, Menu, ipcMain } from 'electron';
-import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
+import { app, BrowserWindow, ipcMain, Menu, protocol, shell } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
+import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 // Scheme must be registered before the app is ready
@@ -12,7 +12,7 @@ protocol.registerSchemesAsPrivileged([
 
 async function createWindow() {
   // Create the browser window.
-  const win = new BrowserWindow({
+  let win = new BrowserWindow({
     width: 1152,
     height: 700,
     minWidth: 1152,
@@ -56,6 +56,22 @@ async function createWindow() {
       minWidth: 1152,
       minHeight: 700,
       maxWidth: 1600,
+      maxHeight: 1200,
+      center: true,
+      maximizable: false,
+    });
+    win.setResizable(true);
+  });
+
+  // resize window when menu is always expanded
+  ipcMain.on('resize:menu', () => {
+    // can accept event and args
+    win.setBounds({
+      width: 1340,
+      height: 700,
+      minWidth: 1340,
+      minHeight: 700,
+      maxWidth: 1788,
       maxHeight: 1200,
       center: true,
       maximizable: false,
