@@ -10,6 +10,14 @@
           password to unlock your StealthSend app.
         </p>
         <StSwitch
+          class="menu-expand"
+          type="simple"
+          @update:modelValue="toggleExpandedMenu"
+          v-model="menuExpanded"
+        >
+          Keep navigation expanded
+        </StSwitch>
+        <StSwitch
           type="simple"
           @update:modelValue="toggleAutoLock"
           v-model="isEnabled"
@@ -37,10 +45,12 @@
 </template>
 
 <script>
+import { useMainStore } from '@/store';
 import { onMounted, ref } from 'vue';
 
 export default {
   setup() {
+    const mainStore = useMainStore();
     const options = ref([
       // interval config values are in seconds
       { label: '1 minute', value: 60 },
@@ -52,9 +62,11 @@ export default {
     ]);
     const selectedInterval = ref(60);
     const isEnabled = ref(false);
+    const menuExpanded = ref(false);
 
     onMounted(async () => {
       getIntervalFromStorage();
+      getExpandedMenu();
     });
 
     // interval config is set in local storage to avoid reading the db every second
@@ -90,13 +102,40 @@ export default {
       }, 1);
     }
 
+    function getExpandedMenu() {
+      let menu = JSON.parse(localStorage.getItem('menubar'));
+      if (menu) {
+        mainStore.SET_EXPANDED_MENU(
+          JSON.parse(localStorage.getItem('menubar'))
+        );
+        menuExpanded.value = mainStore.isMenuExpanded;
+      }
+    }
+
+    function toggleExpandedMenu() {
+      setTimeout(() => {
+        mainStore.SET_EXPANDED_MENU(menuExpanded.value);
+        localStorage.setItem(
+          'menubar',
+          JSON.stringify(mainStore.isMenuExpanded)
+        );
+        if (mainStore.isMenuExpanded) {
+          window.ipc.send('resize:menu');
+        } else {
+          window.ipc.send('resize:other');
+        }
+      }, 1);
+    }
+
     return {
       selectedInterval,
       options,
       isEnabled,
+      menuExpanded,
 
       changeInterval,
       toggleAutoLock,
+      toggleExpandedMenu,
     };
   },
 };
@@ -170,5 +209,9 @@ export default {
   line-height: 24px;
   letter-spacing: 0.12px;
   color: var(--grey900);
+}
+
+.menu-expand {
+  margin-bottom: 24px;
 }
 </style>

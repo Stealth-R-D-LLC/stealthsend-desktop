@@ -304,8 +304,11 @@ export default {
 .accounts-list::-webkit-scrollbar {
   width: 4px;
 }
-.accounts-list::-webkit-scrollbar-thumb {
+.accounts-list:hover::-webkit-scrollbar-thumb {
   background: var(--grey100);
+}
+.accounts-list::-webkit-scrollbar-thumb {
+  background: transparent;
 }
 .account-grid {
   display: grid;
