@@ -1,8 +1,8 @@
 'use strict';
 
-import { app, shell, protocol, BrowserWindow, Menu, ipcMain } from 'electron';
-import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
+import { app, BrowserWindow, ipcMain, Menu, protocol, shell } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
+import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const os = require('os')
 
@@ -94,6 +94,22 @@ async function createWindow() {
       minHeight: 700 + delta[getOs()].height,
       maxWidth: 1600 + delta[getOs()].width,
       maxHeight: 1200 + delta[getOs()].height,
+      center: true,
+      maximizable: false,
+    });
+    win.setResizable(true);
+  });
+
+  // resize window when menu is always expanded
+  ipcMain.on('resize:menu', () => {
+    // can accept event and args
+    win.setBounds({
+      width: 1340,
+      height: 700,
+      minWidth: 1340,
+      minHeight: 700,
+      maxWidth: 1788,
+      maxHeight: 1200,
       center: true,
       maximizable: false,
     });

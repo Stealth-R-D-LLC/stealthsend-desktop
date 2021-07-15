@@ -2327,16 +2327,6 @@ export default {
     });
 
     onMounted(() => {
-      /* const videoPlayer = document.getElementById('video_player');
-      const videoPlayerSource = document.getElementById('video_player_source');
-      videoPlayer.setAttribute('style', `top: 0; left: 0; width: 100%; `);
-      videoPlayerSource.setAttribute(
-        'src',
-        'backgroundAnimation.webm'
-      );
-      videoPlayer.load();
-      videoPlayer.play(); */
-      console.log('tu sam !');
       setTimeout(() => {
         isWelcome.value = true;
       }, 3500);
@@ -2777,8 +2767,11 @@ export default {
 .right__inner-top::-webkit-scrollbar {
   width: 4px;
 }
-.right__inner-top::-webkit-scrollbar-thumb {
+.right__inner-top:hover::-webkit-scrollbar-thumb {
   background: var(--grey100);
+}
+.right__inner-top::-webkit-scrollbar-thumb {
+  background: transparent;
 }
 .right__inner-top h5,
 .right__inner-top h6 {
