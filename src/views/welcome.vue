@@ -2336,12 +2336,14 @@ export default {
       );
       videoPlayer.load();
       videoPlayer.play(); */
+      console.log('tu sam !');
       setTimeout(() => {
         isWelcome.value = true;
       }, 3500);
-      setTimeout(() => {
+      // setTimeout(() => {
+      //   console.log('sta');
+      // }, 10);
         window.ipc.send('resize:create');
-      }, 10);
     });
 
     const isError = ref(false);
