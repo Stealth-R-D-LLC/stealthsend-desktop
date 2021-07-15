@@ -2343,7 +2343,7 @@ export default {
       // setTimeout(() => {
       //   console.log('sta');
       // }, 10);
-        window.ipc.send('resize:create');
+      window.ipc.send('resize:create');
     });
 
     const isError = ref(false);
