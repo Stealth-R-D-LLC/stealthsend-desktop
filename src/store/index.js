@@ -35,11 +35,15 @@ export const useMainStore = defineStore({
     addressActiveTab: 'address-book', // address-book, add-contact, edit-contact, contact-details
     sendAddress: '',
     isLock: false,
+    isMenuExpanded: false,
   }),
   getters: {},
   actions: {
     SET_IS_LOCK(payload) {
       this.isLock = payload;
+    },
+    SET_EXPANDED_MENU(payload) {
+      this.isMenuExpanded = payload;
     },
     SET_SEND_ADDRESS(payload) {
       this.sendAddress = payload;
