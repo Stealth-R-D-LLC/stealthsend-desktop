@@ -139,7 +139,7 @@ fieldset[disabled] .multiselect {
 .multiselect__tags::after {
   content: '';
   position: absolute;
-  bottom: -2px;
+  bottom: -1px;
   border-bottom: 1.5px solid var(--marine400);
   width: 0;
   transition: width 0.3s;

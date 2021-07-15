@@ -494,8 +494,11 @@ export default {
 .overflow::-webkit-scrollbar {
   width: 4px;
 }
-.overflow::-webkit-scrollbar-thumb {
+.overflow:hover::-webkit-scrollbar-thumb {
   background: var(--grey100);
+}
+.overflow::-webkit-scrollbar-thumb {
+  background: transparent;
 }
 .st-transaction-list .tx-date {
   font-family: var(--secondary-font);
