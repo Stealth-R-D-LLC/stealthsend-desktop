@@ -6,7 +6,10 @@
     <AddAccount />
     <OffCanvas></OffCanvas>
     <MenuBar></MenuBar>
-    <main class="layout__main">
+    <main
+      class="layout__main"
+      :class="{ 'layout__main--fixed': !menuExpanded }"
+    >
       <Side v-if="$route.path === '/dashboard'"></Side>
       <router-view v-slot="{ Component }">
         <div
@@ -37,6 +40,8 @@ import QuickReceiveModal from '@/components/partials/QuickReceiveModal.vue';
 import SendModal from '@/components/partials/SendModal.vue';
 import AddAccount from '@/components/partials/AddAccount.vue';
 import OffCanvas from '@/components/elements/StOffCanvas.vue';
+import { useMainStore } from '@/store';
+import { computed, onMounted } from 'vue';
 
 export default {
   name: 'StDefault',
@@ -52,6 +57,7 @@ export default {
     OffCanvas,
   },
   setup() {
+    const mainStore = useMainStore();
     CryptoService.init();
     // if there's nothing in the db, show welcome screen
     // welcome screen will have recover option, create new wallet option and import option
@@ -60,9 +66,31 @@ export default {
     // create new wallet will ask for a new password and generate a new seed/pk/address/etc
     // if there is an account/wallet in the db, ask for password (lock screen page), render dashboard
     setTimeout(() => {
-      window.ipc.send('resize:other');
+      if (menuExpanded.value) {
+        window.ipc.send('resize:menu');
+      } else {
+        window.ipc.send('resize:other');
+      }
     }, 10);
-    return {};
+
+    const menuExpanded = computed(() => {
+      return mainStore.isMenuExpanded;
+    });
+    onMounted(() => {
+      getExpandedMenu();
+    });
+
+    function getExpandedMenu() {
+      let menu = JSON.parse(localStorage.getItem('menubar'));
+      if (menu) {
+        mainStore.SET_EXPANDED_MENU(
+          JSON.parse(localStorage.getItem('menubar'))
+        );
+      }
+    }
+    return {
+      menuExpanded,
+    };
   },
 };
 </script>
@@ -77,5 +105,8 @@ export default {
 .full-width__grey {
   background-color: var(--background100);
   height: 100%;
+}
+.layout__main--fixed {
+  margin-left: 64px;
 }
 </style>

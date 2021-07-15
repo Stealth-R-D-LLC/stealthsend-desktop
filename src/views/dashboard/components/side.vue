@@ -135,7 +135,10 @@ export default {
 .side__accounts::-webkit-scrollbar {
   width: 4px;
 }
-.side__accounts::-webkit-scrollbar-thumb {
+.side__accounts:hover::-webkit-scrollbar-thumb {
   background: var(--grey100);
+}
+.side__accounts::-webkit-scrollbar-thumb {
+  background: transparent;
 }
 </style>

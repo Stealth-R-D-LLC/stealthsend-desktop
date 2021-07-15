@@ -173,17 +173,19 @@ export default {
     const computedTransactions = computed(() => {
       let filtered = [...transactions.value];
       if (filtered.length === 0) return [];
-      let q = query.value.toLowerCase();
+      let q = query?.value?.toLowerCase();
       if (q && q.length > 0) {
         filtered = filtered.filter((el) => {
           return (
-            el.account.toLowerCase().indexOf(q) > -1 ||
+            el?.account?.toLowerCase().indexOf(q) > -1 ||
             String(el.amount).indexOf(q) > -1 ||
-            el.txid.toLowerCase().indexOf(q) > -1 ||
-            findLabelForTx(el.txid).toLowerCase().indexOf(q) > -1 ||
-            el.outputs.some((el) => el.address.toLowerCase().indexOf(q) > -1) ||
+            el?.txid?.toLowerCase().indexOf(q) > -1 ||
+            findLabelForTx(el.txid)?.toLowerCase().indexOf(q) > -1 ||
+            el.outputs.some(
+              (el) => el?.address?.toLowerCase().indexOf(q) > -1
+            ) ||
             el.txinfo.destinations.some((el) =>
-              el.addresses.some((addr) => addr.toLowerCase().indexOf(q) > -1)
+              el.addresses.some((addr) => addr?.toLowerCase().indexOf(q) > -1)
             )
           );
         });
