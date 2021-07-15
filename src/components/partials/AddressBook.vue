@@ -824,8 +824,11 @@ svg:hover circle {
 .overflow-address::-webkit-scrollbar {
   width: 4px;
 }
-.overflow-address::-webkit-scrollbar-thumb {
+.overflow-address:hover::-webkit-scrollbar-thumb {
   background: var(--grey100);
+}
+.overflow-address::-webkit-scrollbar-thumb {
+  background: transparent;
 }
 .favorite-list .favorite {
   margin-bottom: 16px;
