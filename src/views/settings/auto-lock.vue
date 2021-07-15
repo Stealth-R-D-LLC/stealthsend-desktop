@@ -119,6 +119,11 @@ export default {
           'menubar',
           JSON.stringify(mainStore.isMenuExpanded)
         );
+        if (mainStore.isMenuExpanded) {
+          window.ipc.send('resize:menu');
+        } else {
+          window.ipc.send('resize:other');
+        }
       }, 1);
     }
 

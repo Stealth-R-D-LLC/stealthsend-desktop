@@ -12,7 +12,7 @@ protocol.registerSchemesAsPrivileged([
 
 async function createWindow() {
   // Create the browser window.
-  const win = new BrowserWindow({
+  let win = new BrowserWindow({
     width: 1152,
     height: 700,
     minWidth: 1152,
@@ -44,6 +44,7 @@ async function createWindow() {
       center: true,
       maximizable: false,
     });
+    win.setResizable(false);
   });
 
   // resize window after create/recovery finishes
@@ -59,6 +60,23 @@ async function createWindow() {
       center: true,
       maximizable: false,
     });
+    win.setResizable(true);
+  });
+
+  // resize window when menu is always expanded
+  ipcMain.on('resize:menu', () => {
+    // can accept event and args
+    win.setBounds({
+      width: 1340,
+      height: 700,
+      minWidth: 1340,
+      minHeight: 700,
+      maxWidth: 1788,
+      maxHeight: 1200,
+      center: true,
+      maximizable: false,
+    });
+    win.setResizable(true);
   });
 
   const menuTemplate = [
