@@ -2,16 +2,17 @@
   <aside
     id="aside-menu"
     class="layout__aside"
-    :class="{
-      width: !isCollapsed,
-    }"
+    :class="[
+      { width: isCollapsed || menuExpanded },
+      { 'layout__aside--fixed': !menuExpanded },
+    ]"
   >
     <nav>
       <ul>
-        <li>
+        <li v-if="!menuExpanded">
           <a
             class="item"
-            :class="{ 'item-active': !isCollapsed }"
+            :class="{ 'item-active': isCollapsed }"
             @click.prevent="toggleMenu"
           >
             <svg
@@ -255,7 +256,7 @@
 </template>
 
 <script>
-import { ref, defineComponent } from 'vue';
+import { ref, computed, defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMainStore } from '@/store';
 
@@ -264,11 +265,16 @@ export default defineComponent({
   setup() {
     const mainStore = useMainStore();
     const router = useRouter();
-    const isCollapsed = ref(true);
+    const isCollapsed = ref(false);
 
     router.afterEach(() => {
-      !isCollapsed.value ? (isCollapsed.value = true) : null;
+      !isCollapsed.value ? (isCollapsed.value = false) : null;
     });
+
+    const menuExpanded = computed(() => {
+      return mainStore.isMenuExpanded;
+    });
+
     function toggleMenu() {
       isCollapsed.value = !isCollapsed.value;
     }
@@ -288,6 +294,7 @@ export default defineComponent({
 
     return {
       isCollapsed,
+      menuExpanded,
       toggleMenu,
       openModal,
       toggleDrawer,
@@ -300,7 +307,10 @@ export default defineComponent({
 <style scoped>
 .layout__aside {
   width: 64px;
-  transition: 0.3s;
+  transition: width 0.3s;
+}
+.layout__aside--fixed {
+  position: fixed;
 }
 
 .animate_width {
@@ -318,11 +328,9 @@ export default defineComponent({
 
 .layout__aside .item__footer {
   cursor: pointer;
-  position: fixed;
-  padding: 12px 0;
+  padding: 36px 0;
   text-decoration: none;
   padding-left: 24px;
-  bottom: 24px;
 }
 
 .layout__aside li {
