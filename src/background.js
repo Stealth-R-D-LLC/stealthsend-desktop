@@ -4,11 +4,9 @@ import { app, BrowserWindow, ipcMain, Menu, protocol, shell } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const os = require('os')
+const os = require('os');
 
 console.log('releaseaaaa', os.type(), os.platform());
-
-
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -19,21 +17,21 @@ protocol.registerSchemesAsPrivileged([
 let delta = {
   linux: {
     height: 24,
-    width: 0
+    width: 0,
   },
   darwin: {
     height: 28,
-    width: 0
+    width: 0,
   },
   windows: {
     height: 50,
-    width: 0
+    width: 0,
   },
   other: {
     height: 0,
-    width: 0
-  }
-}
+    width: 0,
+  },
+};
 
 function getOs() {
   const currentOs = os.type().toLowerCase();
