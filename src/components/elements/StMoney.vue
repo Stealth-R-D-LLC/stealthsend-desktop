@@ -5,7 +5,7 @@
       'has-error': hasError,
       'st-amount--is-not-empty':
         (formattedValue && formattedValue.replace('$', '') > 0) ||
-        (formattedValue && formattedValue.replace('XST', '') > 0)
+        (formattedValue && formattedValue.replace('XST', '') > 0),
     }"
   >
     <input
@@ -19,7 +19,7 @@
         'is-disabled': disabled,
         'is-dirty':
           (formattedValue && Number(formattedValue.replace('$', '')) > 0) ||
-          (formattedValue && Number(formattedValue.replace('XST', '')) > 0)
+          (formattedValue && Number(formattedValue.replace('XST', '')) > 0),
       }"
       :value="value"
     />
@@ -29,14 +29,10 @@
 
 <script>
 export default {
-    setup () {
-        
-
-        return {}
-    }
-}
+  setup() {
+    return {};
+  },
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
