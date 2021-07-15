@@ -641,7 +641,7 @@ export default {
           transactionResponse = await useTransactionBuilderForImportedAccount(
             utxo,
             {
-              address: depositAddress.value,
+              address: depositAddress.value.trim(),
               amount: target,
               account: account.value,
             }
@@ -650,7 +650,7 @@ export default {
           // build transaction for native hd account
           try {
             transactionResponse = await useTransactionBuilder(utxo, {
-              address: depositAddress.value,
+              address: depositAddress.value.trim(),
               amount: target,
               account: account.value,
             });
@@ -703,7 +703,7 @@ export default {
           $rules: [
             (depositAddress) =>
               (!depositAddress ||
-                !CryptoService.isAddressValid(depositAddress)) &&
+                !CryptoService.isAddressValid(depositAddress.trim())) &&
               'Please enter a valid XST address',
           ],
         });
