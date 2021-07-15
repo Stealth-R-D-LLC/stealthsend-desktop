@@ -34,16 +34,19 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     // find address index on this particular account
     // iterate over account addresses until passed address is found and return its index
     for (let i = 0; i < Infinity; i++) {
-      // similar logic like in accountDiscovery
-      const acc = CryptoService.getChildFromRoot(accountIndex, 0, i);
-      if (acc.address === address) {
-        console.log('tu');
-        let { address } = CryptoService.breakAccountPath(
-          `${accountIndex}'/0/${i}`
-        );
-        return address;
+      for (let j = 0; j <= 1; j++) {
+        // similar logic like in accountDiscovery
+        const acc = CryptoService.getChildFromRoot(accountIndex, j, i);
+        if (acc.address === address) {
+          console.log('tu');
+          let path = CryptoService.breakAccountPath(
+            `${accountIndex}'/${j}/${i}`
+          );
+          return path;
+        }
+        console.log('nisam tu');
       }
-      console.log('nisam tu');
+      console.log('NISAM TU 2');
     }
   }
 
@@ -81,8 +84,24 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     );
 
     let sumUtxo = utxo.map((el) => el.amount).reduce((a, b) => sumOf(a, b), 0);
+    const { account } = CryptoService.breakAccountPath(sendForm.account.path);
+    const discoveredAddresses = await CryptoService.accountDiscovery(
+      account,
+      1
+    );
+    let nextFreeAddress = CryptoService.nextToUse(
+      discoveredAddresses.freeAddresses
+    );
+    const next = CryptoService.breakAccountPath(nextFreeAddress);
+
+    const child = CryptoService.getChildFromRoot(
+      next.account,
+      next.change,
+      next.address
+    );
+
     let change = {
-      address: sendForm.account.address,
+      address: child.address,
       amount: floor(calculateChange(sumUtxo, Number(sendForm.amount)) * 1e6), // account amount - (send amount + fee)
     };
     console.log(
@@ -99,16 +118,13 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       rawTransaction.addOutput(change.address, change.amount);
     }
 
-    let { account: accountIndex } = CryptoService.breakAccountPath(
-      sendForm.account.path
-    );
-
     for (let i = 0; i < utxo.length; i++) {
       // careful how to derive the path. depends on the account of the address
+      const pathForAddress = findPathForAddress(utxo[i].address);
       const child = CryptoService.master.derivePath(
-        `m/44'/${
-          process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
-        }'/${accountIndex}'/0/${findPathForAddress(utxo[i].address)}` // TODO CHANGE 1 (TESTNET) TO 125 (XST)
+        `m/44'/${process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1}'/${
+          pathForAddress.account
+        }'/${pathForAddress.change}/${pathForAddress.address}` // TODO CHANGE 1 (TESTNET) TO 125 (XST)
       );
 
       const keyPair = bitcoin.ECPair.fromWIF(
