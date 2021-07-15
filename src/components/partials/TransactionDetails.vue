@@ -26,6 +26,8 @@
           <path d="M5 12.5l3 3M13 4.5l2 2" stroke="#4E00F6" stroke-width="2" />
         </svg>
         <svg
+          v-if="tx && tx.amount < 0"
+          @click="redoTransaction"
           width="19"
           height="15"
           viewBox="0 0 19 15"
@@ -239,6 +241,13 @@ export default {
       };
     }
 
+    function redoTransaction() {
+      mainStore.SET_SEND_ADDRESS(tx.value.vout[0].scriptPubKey.addresses[0]);
+      mainStore.SET_REDO_AMOUNT(tx.value.vout[0].value);
+      mainStore.SET_MODAL_VISIBILITY('send', true);
+      close();
+    }
+
     return {
       close,
       tx,
@@ -253,6 +262,7 @@ export default {
       txWithLabels,
       label,
       saveLabel,
+      redoTransaction,
     };
   },
 };

@@ -430,6 +430,11 @@ export default {
     });
 
     watchEffect(() => {
+      if (currentStep.value === 1) {
+        if (mainStore.redoAmount) {
+          amount.value = mainStore.redoAmount;
+        }
+      }
       if (currentStep.value === 2) {
         if (mainStore.sendAddress) {
           depositAddress.value = mainStore.sendAddress;
@@ -505,6 +510,7 @@ export default {
     function closeModal() {
       mainStore.SET_MODAL_VISIBILITY('send', false);
       mainStore.SET_SEND_ADDRESS('');
+      mainStore.SET_REDO_AMOUNT(0);
       // reset all variables
       // account.value = null;
       accounts.value = [];
