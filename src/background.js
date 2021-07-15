@@ -4,21 +4,56 @@ import { app, BrowserWindow, ipcMain, Menu, protocol, shell } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
+const os = require('os');
+
+console.log('releaseaaaa', os.type(), os.platform());
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } },
 ]);
 
+// there are differences in OS's because of the toolbars, borders, etc.
+let delta = {
+  linux: {
+    height: 24,
+    width: 0,
+  },
+  darwin: {
+    height: 28,
+    width: 0,
+  },
+  windows: {
+    height: 50,
+    width: 0,
+  },
+  other: {
+    height: 0,
+    width: 0,
+  },
+};
+
+function getOs() {
+  const currentOs = os.type().toLowerCase();
+  if (currentOs.includes('linux')) {
+    return 'linux';
+  } else if (currentOs.includes('darwin')) {
+    return 'mac';
+  } else if (currentOs.includes('windows')) {
+    return 'windows';
+  }
+  return 'other';
+}
+
 async function createWindow() {
   // Create the browser window.
-  let win = new BrowserWindow({
-    width: 1152,
-    height: 700,
-    minWidth: 1152,
-    minHeight: 700,
-    maxWidth: 1600,
-    maxHeight: 1200,
+  const win = new BrowserWindow({
+    width: 1152 + delta[getOs()].width,
+    height: 700 + delta[getOs()].height,
+    minWidth: 1152 + delta[getOs()].width,
+    minHeight: 700 + delta[getOs()].height,
+    maxWidth: 1600 + delta[getOs()].width,
+    maxHeight: 1200 + delta[getOs()].height,
     center: true,
     maximizable: false,
     fullscreenable: false,
@@ -35,12 +70,12 @@ async function createWindow() {
   // resize the window for the create process
   ipcMain.on('resize:create', () => {
     win.setBounds({
-      width: 1152,
-      height: 700,
-      minWidth: 1152,
-      minHeight: 700,
-      maxWidth: 1152,
-      maxHeight: 700,
+      width: 1152 + delta[getOs()].width,
+      height: 700 + delta[getOs()].height,
+      minWidth: 1152 + delta[getOs()].width,
+      minHeight: 700 + delta[getOs()].height,
+      maxWidth: 1152 + delta[getOs()].width,
+      maxHeight: 700 + delta[getOs()].height,
       center: true,
       maximizable: false,
     });
@@ -51,12 +86,12 @@ async function createWindow() {
   ipcMain.on('resize:other', () => {
     // can accept event and args
     win.setBounds({
-      width: 1152,
-      height: 700,
-      minWidth: 1152,
-      minHeight: 700,
-      maxWidth: 1600,
-      maxHeight: 1200,
+      width: 1152 + delta[getOs()].width,
+      height: 700 + delta[getOs()].height,
+      minWidth: 1152 + delta[getOs()].width,
+      minHeight: 700 + delta[getOs()].height,
+      maxWidth: 1600 + delta[getOs()].width,
+      maxHeight: 1200 + delta[getOs()].height,
       center: true,
       maximizable: false,
     });
@@ -100,7 +135,7 @@ async function createWindow() {
   // webFrame.setZoomFactor(1);
   // webFrame.setVisualZoomLevelLimits(1, 1);
 
-  // win.setMenu(null); // remove menu bar
+  win.setMenu(null); // remove menu bar
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode

@@ -1,6 +1,7 @@
 <template>
   <div class="side">
     <StCards :amount="utxo" @change="switcherChange"></StCards>
+    <StMoney></StMoney>
     <div class="side__accounts">
       <Card
         v-for="account in accounts"
@@ -17,6 +18,7 @@
 
 <script>
 import StCards from '@/components/elements/StCards.vue';
+import StMoney from '@/components/elements/StMoney.vue';
 import Card from '@/components/elements/Card';
 import CryptoService from '@/services/crypto';
 import { ref, computed, watch } from 'vue';
@@ -27,6 +29,7 @@ import emitter from '@/services/emitter';
 export default {
   components: {
     StCards,
+    StMoney,
     Card,
   },
   setup() {
