@@ -1331,8 +1331,11 @@ export default {
 .account-overflow::-webkit-scrollbar {
   width: 4px;
 }
-.account-overflow::-webkit-scrollbar-thumb {
+.account-overflow:hover::-webkit-scrollbar-thumb {
   background: var(--grey100);
+}
+.account-overflow::-webkit-scrollbar-thumb {
+  background: transparent;
 }
 .account-card {
   cursor: pointer;

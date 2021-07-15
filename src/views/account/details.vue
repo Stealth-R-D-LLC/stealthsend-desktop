@@ -315,8 +315,11 @@ export default {
 .account-details-container__body--overflow::-webkit-scrollbar {
   width: 4px;
 }
-.account-details-container__body--overflow::-webkit-scrollbar-thumb {
+.account-details-container__body--overflow:hover::-webkit-scrollbar-thumb {
   background: var(--grey100);
+}
+.account-details-container__body--overflow::-webkit-scrollbar-thumb {
+  background: transparent;
 }
 
 .account-details-container__body :deep .apexcharts-tooltip,

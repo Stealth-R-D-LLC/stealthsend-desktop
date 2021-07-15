@@ -2767,8 +2767,11 @@ export default {
 .right__inner-top::-webkit-scrollbar {
   width: 4px;
 }
-.right__inner-top::-webkit-scrollbar-thumb {
+.right__inner-top:hover::-webkit-scrollbar-thumb {
   background: var(--grey100);
+}
+.right__inner-top::-webkit-scrollbar-thumb {
+  background: transparent;
 }
 .right__inner-top h5,
 .right__inner-top h6 {
