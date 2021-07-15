@@ -306,8 +306,11 @@ export default {
 .body::-webkit-scrollbar {
   width: 4px;
 }
-.body::-webkit-scrollbar-thumb {
+.body:hover::-webkit-scrollbar-thumb {
   background: var(--grey100);
+}
+.body::-webkit-scrollbar-thumb {
+  background: transparent;
 }
 .more-info {
   margin: 22px auto;

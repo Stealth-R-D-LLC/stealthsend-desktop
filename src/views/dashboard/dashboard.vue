@@ -84,8 +84,11 @@ export default {
 .dashboard-container__overflow::-webkit-scrollbar {
   width: 4px;
 }
-.dashboard-container__overflow::-webkit-scrollbar-thumb {
+.dashboard-container__overflow:hover::-webkit-scrollbar-thumb {
   background: var(--grey100);
+}
+.dashboard-container__overflow::-webkit-scrollbar-thumb {
+  background: transparent;
 }
 :deep .st-transaction-list {
   padding: 16px 10px 16px 12px;

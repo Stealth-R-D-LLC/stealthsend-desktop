@@ -73,8 +73,11 @@ export default {
 .notifications-list::-webkit-scrollbar {
   width: 4px;
 }
-.notifications-list::-webkit-scrollbar-thumb {
+.notifications-list:hover::-webkit-scrollbar-thumb {
   background: var(--grey100);
+}
+.notifications-list::-webkit-scrollbar-thumb {
+  background: transparent;
 }
 .notifications-grid {
   display: grid;
