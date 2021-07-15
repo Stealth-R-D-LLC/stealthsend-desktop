@@ -113,8 +113,11 @@ export default {
 .st-settings-child__overflow::-webkit-scrollbar {
   width: 4px;
 }
-.st-settings-child__overflow::-webkit-scrollbar-thumb {
+.st-settings-child__overflow:hover::-webkit-scrollbar-thumb {
   background: var(--grey100);
+}
+.st-settings-child__overflow::-webkit-scrollbar-thumb {
+  background: transparent;
 }
 .st-settings-child .title {
   font-family: var(--primary-font);

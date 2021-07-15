@@ -78,8 +78,11 @@ export default {
 .accounts-container__overflow::-webkit-scrollbar {
   width: 4px;
 }
-.accounts-container__overflow::-webkit-scrollbar-thumb {
+.accounts-container__overflow:hover::-webkit-scrollbar-thumb {
   background: var(--grey100);
+}
+.accounts-container__overflow::-webkit-scrollbar-thumb {
+  background: transparent;
 }
 .accounts-container__content {
   margin-top: 140px;

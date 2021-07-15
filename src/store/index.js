@@ -34,6 +34,7 @@ export const useMainStore = defineStore({
     offCanvasData: null,
     addressActiveTab: 'address-book', // address-book, add-contact, edit-contact, contact-details
     sendAddress: '',
+    redoAmount: 0,
     isLock: false,
     isMenuExpanded: false,
   }),
@@ -44,6 +45,9 @@ export const useMainStore = defineStore({
     },
     SET_EXPANDED_MENU(payload) {
       this.isMenuExpanded = payload;
+    },
+    SET_REDO_AMOUNT(payload) {
+      this.redoAmount = payload;
     },
     SET_SEND_ADDRESS(payload) {
       this.sendAddress = payload;
