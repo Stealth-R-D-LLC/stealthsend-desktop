@@ -44,6 +44,7 @@ async function createWindow() {
       center: true,
       maximizable: false,
     });
+    win.setResizable(false);
   });
 
   // resize window after create/recovery finishes
@@ -59,6 +60,7 @@ async function createWindow() {
       center: true,
       maximizable: false,
     });
+    win.setResizable(true);
   });
 
   const menuTemplate = [
