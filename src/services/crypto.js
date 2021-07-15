@@ -466,7 +466,7 @@ const CryptoService = {
 
     return wallet;
   },
-  async accountDiscovery(n = 0) {
+  async accountDiscovery(n = 0, change = 0) {
     const mainStore = useMainStore();
     //  Address gap limit is currently set  to 20. If the software hits 20 unused addresses in a row,
     // it expects there are no used addresses beyond this point and stops searching the address chain.
@@ -478,7 +478,7 @@ const CryptoService = {
     for (let i = 0; i < GAP_LIMIT; i++) {
       // derive the first account's node (index = 0)
       // derive the external chain node of this account
-      const acc = this.getChildFromRoot(n, 0, i);
+      const acc = this.getChildFromRoot(n, change, i);
       // scan addresses of the external chain; respect the gap limit described below
       const outputs = await mainStore.rpc('getaddressoutputs', [
         acc.address,
