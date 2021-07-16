@@ -69,7 +69,7 @@ export default {
 
 <style scoped>
 .accounts-container {
-  height: calc(100vh - 85px);
+  height: calc(100vh - 99px);
 }
 .accounts-container__overflow {
   height: 100%;
@@ -85,13 +85,7 @@ export default {
   background: transparent;
 }
 .accounts-container__content {
-  margin-top: 140px;
-  padding: 24px 28px;
-  min-height: calc(100% - 192px);
-  background-color: var(--background0);
-}
-.accounts-container__content > div {
-  margin-top: -140px;
+  padding: 24px 28px 0;
 }
 
 .list-item {

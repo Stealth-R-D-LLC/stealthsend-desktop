@@ -101,7 +101,7 @@
                 viewBox="0 0 19 16"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                @click="inputAmountState = 'USD'"
+                @click="formatValue('USD')"
               >
                 <path
                   d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
@@ -136,7 +136,7 @@
                 distractionFree: false,
                 valueAsInteger: false,
                 useGrouping: true,
-                precision: 2,
+                precision: 6,
                 allowNegative: false,
               }"
             >
@@ -146,7 +146,7 @@
                 viewBox="0 0 19 16"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                @click="inputAmountState = 'XST'"
+                @click="formatValue('XST')"
               >
                 <path
                   d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
@@ -377,7 +377,9 @@
       </template>
       <div class="tx-failed-controls" v-if="currentStep === 7">
         <StButton @click="prepareSend" type="type-d">Try Again</StButton>
-        <StButton @click="closeModal" type="type-d">Cancel</StButton>
+        <StButton class="cancel-btn" @click="closeModal" type="type-b"
+          >Cancel</StButton
+        >
       </div>
     </template>
   </StModal>
@@ -484,11 +486,13 @@ export default {
             const maxAmount = format(subtract(account.value.utxo, fee), {
               precision: 8,
             });
-            if (!amount || Number(amount) < minimumXSTForSend.value) {
-              return 'Minimum amount is ' + minimumXSTForSend.value + ' XST';
-            }
-            if (Number(amount) > maxAmount) {
-              return 'Insufficient funds on this account';
+            if (inputAmountState.value === 'XST') {
+              if (!amount || Number(amount) < minimumXSTForSend.value) {
+                return 'Minimum amount is ' + minimumXSTForSend.value + ' XST';
+              }
+              if (Number(amount) > maxAmount) {
+                return 'Insufficient funds on this account';
+              }
             }
           },
         ],
@@ -512,6 +516,7 @@ export default {
       mainStore.SET_SEND_ADDRESS('');
       mainStore.SET_REDO_AMOUNT(0);
       // reset all variables
+      inputAmountState.value = 'XST';
       // account.value = null;
       accounts.value = [];
       // amount.value = null;
@@ -702,6 +707,12 @@ export default {
       }
     }
     async function validateFirstStep() {
+      if (inputAmountState.value === 'USD') {
+        form.amount.$value = Math.abs(
+          form.amount.$value / CryptoService.constraints.XST_USD
+        );
+      }
+      inputAmountState.value = 'XST';
       try {
         await validateFields();
         add(['depositAddress'], {
@@ -743,6 +754,20 @@ export default {
       setTimeout(() => (inputAmountState.value = 'XST'), 1);
     }
 
+    function formatValue(value) {
+      if (inputAmountState.value === 'XST') {
+        form.amount.$value = Math.abs(
+          form.amount.$value * CryptoService.constraints.XST_USD
+        );
+      } else {
+        form.amount.$value = Math.abs(
+          form.amount.$value / CryptoService.constraints.XST_USD
+        );
+      }
+      console.log(form.amount.$value, CryptoService.constraints.XST_USD);
+      inputAmountState.value = value;
+    }
+
     function preventRemove(acc) {
       setTimeout(() => {
         account.value = acc;
@@ -774,6 +799,7 @@ export default {
       copyPending,
       prepareSend,
       cancelSend,
+      formatValue,
 
       send,
       getUnspentOutputs,
@@ -931,5 +957,9 @@ export default {
 
 .tx-failed-controls .st-button--secondary {
   color: var(--grey50);
+}
+.cancel-btn {
+  margin-top: 12px;
+  color: var(--grey50) !important;
 }
 </style>
