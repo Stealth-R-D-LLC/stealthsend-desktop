@@ -1,176 +1,197 @@
 <template>
   <div class="accounts-container__inner">
     <h4>Active Accounts</h4>
-    <div class="accounts-container__inner--grid">
-      <div
-        v-for="(account, index) in activeAccounts"
-        :key="account.address"
-        class="card"
-        :class="{ 'card-purple': account.utxo === 0 && index === 0 }"
-      >
-        <div class="card__inner">
-          <div class="card-header">
-            <h5>{{ account.label }}</h5>
-            <svg
-              :class="[account.utxo < 1 ? 'info-purple' : 'info']"
-              width="10"
-              height="10"
-              viewBox="0 0 10 10"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              @click="toggleAccountOptions(`${account.label}_${index}`)"
-            >
-              <path
-                d="M0 1H7"
-                stroke="#310296"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M0 5H10"
-                stroke="#310296"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M0 9H10"
-                stroke="#310296"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </div>
-          <div class="amount-container">
-            <p class="currency">
-              {{
-                isHiddenAmounts
-                  ? '•••'
-                  : formatAmount(Math.abs(account.utxo, true, 8))
-              }}
-              XST
-            </p>
-            <p class="grey">
-              ~
-              <template v-if="Number(account.utxo) * XST_USD_RATE < 1">
-                {{
-                  isHiddenAmounts
-                    ? '•••'
-                    : formatAmount(Math.abs(account.utxo * XST_USD_RATE), true)
-                }}
-              </template>
-              <template v-else>
-                {{
-                  isHiddenAmounts
-                    ? '•••'
-                    : formatAmount(Math.abs(account.utxo * XST_USD_RATE), false)
-                }}
-              </template>
-              USD
-            </p>
-          </div>
-          <a
-            v-if="account.utxo === 0"
-            @click="openReceiveModal(account)"
-            class="link-purple"
-            >Receive XST</a
-          >
-          <a v-else-if="account.isFavourite" class="link">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M8 1.85039L9.88593 4.78659C10.0214 4.99742 10.231 5.14973 10.4734 5.21337L13.8486 6.09966L11.6389 8.80063C11.4803 8.99457 11.4002 9.24102 11.4145 9.49118L11.6147 12.9751L8.36304 11.7082C8.12956 11.6173 7.87044 11.6173 7.63696 11.7082L4.38535 12.9751L4.58545 9.49118C4.59982 9.24102 4.51975 8.99457 4.36108 8.80063L2.15137 6.09966L5.52665 5.21337C5.76901 5.14973 5.97865 4.99742 6.11407 4.78659L8 1.85039Z"
-                stroke="#C3A9FB"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-            </svg>
-            Favorite
-          </a>
-        </div>
-        <transition name="fill">
-          <div
-            v-if="accountOptions === `${account.label}_${index}`"
-            class="account-options"
-          >
-            <svg
-              class="close"
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              @click="accountOptions = ''"
-            >
-              <path
-                d="M3 3L15 15"
-                stroke="#FAF9FC"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M3 15L15 3"
-                stroke="#FAF9FC"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-            </svg>
-            <ul>
-              <li>
-                <a
-                  v-if="!account.isFavourite"
-                  @click="favouriteAccount(account)"
-                  >Add to Favorites</a
-                >
-                <a v-else @click="unfavouriteAccount(account)"
-                  >Remove from Favorites</a
-                >
-              </li>
-              <li>
-                <a @click="archiveAccount(account)">Archive Account</a>
-              </li>
-              <li>
-                <a @click="openAccountDetails(account)">View Account</a>
-              </li>
-              <li>
-                <a @click="openEditAccountNameModal(account)"
-                  >Edit Account Name</a
-                >
-              </li>
-              <StModal
-                light
-                :visible="editAccountNameModal"
-                @close="closeEditModal"
+    <div
+      class="active-container"
+      :class="{
+        'active-container--no-archived': archivedAccounts.length === 0,
+      }"
+    >
+      <div class="accounts-container__inner--grid active-container__relative">
+        <div
+          v-for="(account, index) in activeAccounts"
+          :key="account.address"
+          class="card"
+          :class="{ 'card-purple': account.utxo === 0 && index === 0 }"
+        >
+          <div class="card__inner">
+            <div class="card-header">
+              <h5>{{ account.label }}</h5>
+              <svg
+                :class="[
+                  account.utxo === 0 && index === 0 ? 'info-purple' : 'info',
+                ]"
+                width="10"
+                height="10"
+                viewBox="0 0 10 10"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                @click="toggleAccountOptions(`${account.label}_${index}`)"
               >
-                <template #header> Account Wizard </template>
-                <template #body>
-                  <StFormItem
-                    label="Account Name"
-                    :filled="form.accountName.$value"
-                    :error-message="form.accountName.$errors"
-                  >
-                    <StInput
-                      v-model="form.accountName.$value"
-                      placeholder="Enter Account Name"
-                    ></StInput>
-                  </StFormItem>
+                <path
+                  d="M0 1H7"
+                  stroke="#310296"
+                  stroke-width="2"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M0 5H10"
+                  stroke="#310296"
+                  stroke-width="2"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M0 9H10"
+                  stroke="#310296"
+                  stroke-width="2"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+            <div class="amount-container">
+              <p class="currency">
+                {{
+                  isHiddenAmounts
+                    ? '•••'
+                    : formatAmount(Math.abs(account.utxo, true, 8))
+                }}
+                XST
+              </p>
+              <p class="grey">
+                ~
+                <template v-if="Number(account.utxo) * XST_USD_RATE < 1">
+                  {{
+                    isHiddenAmounts
+                      ? '•••'
+                      : formatAmount(
+                          Math.abs(account.utxo * XST_USD_RATE),
+                          true
+                        )
+                  }}
                 </template>
-                <template #footer>
-                  <StButton type="type-b" @click="editAccountNameModal = false"
-                    >Cancel</StButton
-                  >
-                  <StButton @click="changeAccountName(account)"
-                    >Submit</StButton
-                  >
+                <template v-else>
+                  {{
+                    isHiddenAmounts
+                      ? '•••'
+                      : formatAmount(
+                          Math.abs(account.utxo * XST_USD_RATE),
+                          false
+                        )
+                  }}
                 </template>
-              </StModal>
-            </ul>
+                USD
+              </p>
+            </div>
+            <a
+              v-if="account.utxo === 0"
+              @click="openReceiveModal(account)"
+              :class="[
+                account.utxo === 0 && index === 0
+                  ? 'link-purple'
+                  : 'link-white',
+              ]"
+              >Receive XST</a
+            >
+            <a v-else-if="account.isFavourite" class="link">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M8 1.85039L9.88593 4.78659C10.0214 4.99742 10.231 5.14973 10.4734 5.21337L13.8486 6.09966L11.6389 8.80063C11.4803 8.99457 11.4002 9.24102 11.4145 9.49118L11.6147 12.9751L8.36304 11.7082C8.12956 11.6173 7.87044 11.6173 7.63696 11.7082L4.38535 12.9751L4.58545 9.49118C4.59982 9.24102 4.51975 8.99457 4.36108 8.80063L2.15137 6.09966L5.52665 5.21337C5.76901 5.14973 5.97865 4.99742 6.11407 4.78659L8 1.85039Z"
+                  stroke="#C3A9FB"
+                  stroke-width="2"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              Favorite
+            </a>
           </div>
-        </transition>
+          <transition name="fill">
+            <div
+              v-if="accountOptions === `${account.label}_${index}`"
+              class="account-options"
+            >
+              <svg
+                class="close"
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                @click="accountOptions = ''"
+              >
+                <path
+                  d="M3 3L15 15"
+                  stroke="#FAF9FC"
+                  stroke-width="2"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M3 15L15 3"
+                  stroke="#FAF9FC"
+                  stroke-width="2"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <ul>
+                <li>
+                  <a
+                    v-if="!account.isFavourite"
+                    @click="favouriteAccount(account)"
+                    >Add to Favorites</a
+                  >
+                  <a v-else @click="unfavouriteAccount(account)"
+                    >Remove from Favorites</a
+                  >
+                </li>
+                <li>
+                  <a @click="archiveAccount(account)">Archive Account</a>
+                </li>
+                <li>
+                  <a @click="openAccountDetails(account)">View Account</a>
+                </li>
+                <li>
+                  <a @click="openEditAccountNameModal(account)"
+                    >Edit Account Name</a
+                  >
+                </li>
+                <StModal
+                  light
+                  :visible="editAccountNameModal"
+                  @close="closeEditModal"
+                >
+                  <template #header> Account Wizard </template>
+                  <template #body>
+                    <StFormItem
+                      label="Account Name"
+                      :filled="form.accountName.$value"
+                      :error-message="form.accountName.$errors"
+                    >
+                      <StInput
+                        v-model="form.accountName.$value"
+                        placeholder="Enter Account Name"
+                      ></StInput>
+                    </StFormItem>
+                  </template>
+                  <template #footer>
+                    <StButton
+                      type="type-b"
+                      @click="editAccountNameModal = false"
+                      >Cancel</StButton
+                    >
+                    <StButton @click="changeAccountName(account)"
+                      >Submit</StButton
+                    >
+                  </template>
+                </StModal>
+              </ul>
+            </div>
+          </transition>
+        </div>
       </div>
     </div>
     <div v-if="archivedAccounts.length" class="archived-container">
@@ -522,6 +543,19 @@ export default {
     border-radius: 0;
   }
 }
+.active-container {
+  background-color: var(--background0);
+  margin: 88px -28px 0;
+  padding: 0 28px;
+  min-height: calc(100vw - 777px);
+}
+.active-container--no-archived {
+  min-height: calc(100vw - 553px);
+}
+.active-container__relative {
+  position: relative;
+  top: -60px;
+}
 .accounts-container__inner--grid {
   margin-top: 28px;
   display: grid;
@@ -540,7 +574,7 @@ export default {
   border: 1px solid var(--marine400) !important;
 }
 .archived-container {
-  margin: 16px -28px -10px;
+  margin: -44px -28px 0;
   padding: 24px 28px;
   background-color: var(--background50);
   box-sizing: border-box;
@@ -642,7 +676,9 @@ export default {
   color: var(--grey500);
   font-size: 14px;
 }
-.link-purple {
+.link-purple,
+.link-white {
+  cursor: pointer;
   display: block;
   width: fit-content;
   font-size: 12px;
@@ -653,6 +689,9 @@ export default {
 }
 .link-purple:hover {
   color: var(--white);
+}
+.link-white:hover {
+  color: var(--marine200);
 }
 svg {
   cursor: pointer;

@@ -105,6 +105,15 @@
             v-model="amountFiat"
             @update:formattedValue="fiatKeyup"
             placeholder="Amount"
+            :options="{
+              locale: 'en',
+              currency: 'USD',
+              distractionFree: false,
+              valueAsInteger: false,
+              useGrouping: true,
+              precision: 6,
+              allowNegative: false,
+            }"
           >
             <div @click="changeCurrency('XST')">
               <svg
@@ -293,6 +302,7 @@ export default {
     function closeModal() {
       mainStore.SET_MODAL_VISIBILITY('receive', false);
       // reset all variables
+      inputAmountState.value = 'XST';
       account.value = null;
       accounts.value = [];
       amount.value = 0;
