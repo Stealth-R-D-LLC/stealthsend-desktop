@@ -294,7 +294,6 @@ fieldset[disabled] .multiselect {
     text-transform: none;
     position: relative;
     cursor: pointer;
-    white-space: nowrap;
     font-family: var(--secondary-font);
 }
 .multiselect__option::after {
