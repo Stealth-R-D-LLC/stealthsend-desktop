@@ -192,6 +192,9 @@ export default {
         $value: accountName,
         $rules: [
           (accountName) => {
+            if (accountName.length <= 0) {
+              return 'Name is required';
+            }
             if (existingAccounts.some((el) => el.label === accountName)) {
               return 'Account name already exists.';
             }
@@ -205,6 +208,15 @@ export default {
         $value: privateKey,
         $rules: [
           (privateKey) => {
+            if (existingAccounts.some((el) => {
+              if(!el.isImported) {
+                return false;
+              }
+              const decryptedWIF = CryptoService.AESDecrypt(el.wif, wallet.password)
+              return decryptedWIF && (decryptedWIF === privateKey)
+            })) {
+              return 'Account already imported.';
+            }
             if (activeStep.value === 'import-account') {
               if (!CryptoService.isWIFValid(privateKey)) {
                 return 'Invalid private key';
@@ -246,12 +258,15 @@ export default {
     });
 
     let existingAccounts = [];
+    let wallet = {};
     let isLastAccountEmpty = ref(false);
     watch(
       () => isVisible.value,
       async () => {
         if (isVisible.value) {
           let { accounts } = await CryptoService.scanWallet();
+          existingAccounts = accounts;
+          wallet = await CryptoService.getWalletFromDb();
           isLastAccountEmpty.value = accounts.some((el) => el.utxo === 0);
           // console.log('exx', existingAccounts);
           // let next = await CryptoService.getNextAccountPath();
