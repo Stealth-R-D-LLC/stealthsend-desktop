@@ -445,10 +445,13 @@ export default {
     async function scanWallet() {
       const hdWallet = await CryptoService.scanWallet();
       // accounts.value = hdWallet.accounts;
+      let activeAccounts = hdWallet.accounts.filter(
+        (obj) => obj.isArchived === false
+      );
 
       // find first account with 0 balance
       let firstZeroAccount = null;
-      for (let acc of hdWallet.accounts) {
+      for (let acc of activeAccounts) {
         if (acc.utxo === 0) {
           firstZeroAccount = acc;
           break;
@@ -547,10 +550,10 @@ export default {
   background-color: var(--background0);
   margin: 88px -28px 0;
   padding: 0 28px;
-  min-height: calc(100vw - 777px);
+  min-height: calc(100vh - 463px);
 }
 .active-container--no-archived {
-  min-height: calc(100vw - 553px);
+  min-height: calc(100vh - 239px);
 }
 .active-container__relative {
   position: relative;
