@@ -437,6 +437,7 @@ export default {
   box-sizing: border-box;
   border-radius: 4px;
   padding: 24px;
+  min-height: 74px;
   background-color: var(--background100);
 }
 .grey-box .info {
