@@ -9,14 +9,14 @@
           recommended to enable Auto-lock. When enabled you will need your
           password to unlock your StealthSend app.
         </p>
-        <StSwitch
+        <!-- <StSwitch
           class="menu-expand"
           type="simple"
           @update:modelValue="toggleExpandedMenu"
           v-model="menuExpanded"
         >
           Keep navigation expanded
-        </StSwitch>
+        </StSwitch> -->
         <StSwitch
           type="simple"
           @update:modelValue="toggleAutoLock"
