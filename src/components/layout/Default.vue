@@ -17,6 +17,7 @@
           :class="{
             'full-width__grey':
               $route.name === 'Transactions' ||
+              $route.name === 'TransactionsQuery' ||
               $route.name === 'ArchivedAccounts',
           }"
         >

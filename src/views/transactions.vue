@@ -147,6 +147,10 @@ export default {
     const route = useRoute();
     const mainStore = useMainStore();
 
+    const currentRoute = computed(() => {
+      return route.name;
+    });
+
     onMounted(() => {
       query.value = '';
 
@@ -156,7 +160,12 @@ export default {
     });
 
     watchEffect(() => {
-      query.value = route.params.address;
+      if (currentRoute.value === 'TransactionsQuery') {
+        query.value = route.params.address;
+        console.log('QUERY: ', query.value);
+      } else {
+        query.value = route.params.address;
+      }
     });
 
     function findLabelForTx(tx) {

@@ -210,7 +210,12 @@
             </svg>
           </div>
         </template>
-        <template v-if="checkVisibilityForRoute(['Transactions'])">
+        <template
+          v-if="
+            checkVisibilityForRoute(['Transactions']) ||
+            checkVisibilityForRoute(['TransactionsQuery'])
+          "
+        >
           <div class="icons-flex">
             <svg
               v-if="isHiddenAmounts"
