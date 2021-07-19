@@ -261,6 +261,7 @@
       <div>
         <StFormItem
           label="Name"
+          :class="{ 'st-form-item__error': editContactForm.name.length > 50 }"
           :filled="editContactForm.name"
           :error-message="editForm.editName.$errors"
         >
@@ -268,9 +269,15 @@
             v-model="editContactForm.name"
             placeholder="Please enter a contact name"
           />
+          <template v-if="editContactForm.name.length > 50" #description>
+            <span class="error">Name too long</span>
+          </template>
         </StFormItem>
         <StFormItem
           label="Description"
+          :class="{
+            'st-form-item__error': editContactForm.description.length > 50,
+          }"
           :filled="editContactForm.description"
           :error-message="editForm.editDescription.$errors"
         >
@@ -278,6 +285,9 @@
             v-model="editContactForm.description"
             placeholder="Please enter a description"
           />
+          <template v-if="editContactForm.description.length > 50" #description>
+            <span class="error">Description too long</span>
+          </template>
         </StFormItem>
         <StFormItem
           label="Address"
@@ -325,6 +335,7 @@
       <div>
         <StFormItem
           label="Name"
+          :class="{ 'st-form-item__error': addContactForm.name.length > 50 }"
           :filled="addContactForm.name"
           :error-message="addForm.newName.$errors"
         >
@@ -332,9 +343,15 @@
             v-model="addContactForm.name"
             placeholder="Please enter a contact name"
           />
+          <template v-if="addContactForm.name.length > 50" #description>
+            <span class="error">Name too long</span>
+          </template>
         </StFormItem>
         <StFormItem
           label="Description"
+          :class="{
+            'st-form-item__error': addContactForm.description.length > 50,
+          }"
           :filled="addContactForm.description"
           :error-message="addForm.newDescription.$errors"
         >
@@ -342,6 +359,9 @@
             v-model="addContactForm.description"
             placeholder="Please enter a description"
           />
+          <template v-if="addContactForm.description.length > 50" #description>
+            <span class="error">Description too long</span>
+          </template>
         </StFormItem>
         <StFormItem
           label="Address"
@@ -513,8 +533,19 @@ export default {
     ]);
     let addressList = ref([]);
     const isActive = ref('A');
-    let addContactForm = ref({});
-    let editContactForm = ref({});
+    let addContactForm = ref({
+      name: '',
+      description: '',
+      address: '',
+      favorite: false,
+    });
+    let editContactForm = ref({
+      id: '',
+      name: '',
+      description: '',
+      address: '',
+      favorite: false,
+    });
 
     const {
       form: addForm,
@@ -525,11 +556,14 @@ export default {
         $value: addContactForm.value.name,
         $rules: [
           {
-            rule: () => addContactForm.value.name.length || 'Name required',
+            rule: () => {
+              return !addContactForm.value.name && 'Name required';
+            },
           },
           {
-            rule: () =>
-              addContactForm.value.name.length <= 50 || 'Name too long',
+            rule: () => {
+              return addContactForm.value.name.length > 50 && 'Name too long';
+            },
           },
         ],
       },
@@ -537,9 +571,12 @@ export default {
         $value: addContactForm.value.description,
         $rules: [
           {
-            rule: () =>
-              addContactForm.value.description.length <= 50 ||
-              'Description too long',
+            rule: () => {
+              return (
+                addContactForm.value.description.length > 50 &&
+                'Description too long'
+              );
+            },
           },
         ],
       },
@@ -547,13 +584,19 @@ export default {
         $value: addContactForm.value.address,
         $rules: [
           {
-            rule: () =>
-              addContactForm.value.address.length || 'Address is required',
+            rule: () => {
+              return (
+                addContactForm.value.address.length || 'Address is required'
+              );
+            },
           },
           {
-            rule: () =>
-              CryptoService.isAddressValid(addContactForm.value.address) ||
-              'Please enter a valid XST address',
+            rule: () => {
+              return (
+                CryptoService.isAddressValid(addContactForm.value.address) ||
+                'Please enter a valid XST address'
+              );
+            },
           },
         ],
       },
@@ -568,11 +611,14 @@ export default {
         $value: editContactForm.value.name,
         $rules: [
           {
-            rule: () => editContactForm.value.name.length || 'Name required',
+            rule: () => {
+              return !editContactForm.value.name && 'Name required';
+            },
           },
           {
-            rule: () =>
-              editContactForm.value.name.length <= 50 || 'Name too long',
+            rule: () => {
+              return editContactForm.value.name.length > 50 && 'Name too long';
+            },
           },
         ],
       },
@@ -580,9 +626,12 @@ export default {
         $value: editContactForm.value.description,
         $rules: [
           {
-            rule: () =>
-              editContactForm.value.description.length <= 50 ||
-              'Description too long',
+            rule: () => {
+              return (
+                editContactForm.value.description.length > 50 &&
+                'Description too long'
+              );
+            },
           },
         ],
       },
@@ -590,32 +639,21 @@ export default {
         $value: editContactForm.value.address,
         $rules: [
           {
-            rule: () =>
-              editContactForm.value.address.length || 'Address is required',
+            rule: () => {
+              return !editContactForm.value.address && 'Address is required';
+            },
           },
           {
-            rule: () =>
-              CryptoService.isAddressValid(editContactForm.value.address) ||
-              'Please enter a valid XST address',
+            rule: () => {
+              return (
+                CryptoService.isAddressValid(editContactForm.value.address) ||
+                'Please enter a valid XST address'
+              );
+            },
           },
         ],
       },
     });
-
-    addContactForm.value = {
-      name: '',
-      description: '',
-      address: '',
-      favorite: false,
-    };
-
-    editContactForm.value = {
-      id: '',
-      name: '',
-      description: '',
-      address: '',
-      favorite: false,
-    };
 
     onMounted(async () => {
       await filterAlphabetically();

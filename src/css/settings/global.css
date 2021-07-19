@@ -16,12 +16,6 @@ button {
     position: relative;
 }
 
-.st-form-item .st-form-item__error {
-    position: absolute;
-    left: 0;
-    right: 0;
-    text-align: left;
-}
 
 .no-margin {
     margin: 0;
@@ -36,4 +30,8 @@ button {
 
 .st-modal-container--light {
     background-color: var(--background0) !important;
+}
+
+.error {
+    color: var(--red300);
 }
