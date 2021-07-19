@@ -167,6 +167,10 @@
                   <template #header> Account Wizard </template>
                   <template #body>
                     <StFormItem
+                      :class="{
+                        'st-form-item__error':
+                          form.accountName.$value.length > 50,
+                      }"
                       label="Account Name"
                       :filled="form.accountName.$value"
                       :error-message="form.accountName.$errors"
@@ -175,6 +179,12 @@
                         v-model="form.accountName.$value"
                         placeholder="Enter Account Name"
                       ></StInput>
+                      <template
+                        v-if="form.accountName.$value.length > 50"
+                        #description
+                      >
+                        <span class="error">Name too long</span>
+                      </template>
                     </StFormItem>
                   </template>
                   <template #footer>
@@ -300,6 +310,10 @@
                   <template #body>
                     <StFormItem
                       label="Account Name"
+                      :class="{
+                        'st-form-item__error':
+                          form.accountName.$value.length > 50,
+                      }"
                       :filled="form.accountName.$value"
                       :error-message="form.accountName.$errors"
                     >
@@ -307,6 +321,12 @@
                         v-model="form.accountName.$value"
                         placeholder="Enter Account Name"
                       ></StInput>
+                      <template
+                        v-if="form.accountName.$value.length > 50"
+                        #description
+                      >
+                        <span class="error">Name too long</span>
+                      </template>
                     </StFormItem>
                   </template>
                   <template #footer>
@@ -724,5 +744,12 @@ svg {
 
 .link {
   cursor: auto;
+}
+:deep .st-form-item .st-form-item__error,
+.error {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: left;
 }
 </style>

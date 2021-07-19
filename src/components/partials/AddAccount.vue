@@ -38,6 +38,9 @@
           <StFormItem
             :disabled="isLastAccountEmpty"
             label="Account Name"
+            :class="{
+              'st-form-item__error': form.accountName.$value.length > 50,
+            }"
             :filled="form.accountName.$value"
             :error-message="form.accountName.$errors"
           >
@@ -46,6 +49,9 @@
               placeholder="Please add Unique Account Name"
               :disabled="isLastAccountEmpty"
             ></StInput>
+            <template v-if="form.accountName.$value.length > 50" #description>
+              <span class="error">Name too long</span>
+            </template>
           </StFormItem>
         </div>
         <div class="add-account__actions">
@@ -521,5 +527,12 @@ export default {
 }
 .st-form-item__key :deep .st-input input {
   padding-right: 27px;
+}
+:deep .st-form-item .st-form-item__error,
+.error {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: left;
 }
 </style>

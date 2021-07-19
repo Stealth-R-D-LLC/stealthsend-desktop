@@ -220,11 +220,20 @@
           </StFormItem>
         </div>
         <div class="form-item">
-          <StFormItem label="Label" :filled="label" color="dark">
+          <StFormItem
+            label="Label"
+            :class="{ 'st-form-item__error': form.label.$value.length > 50 }"
+            :error-message="form.label.$errors"
+            :filled="form.label.$value"
+            color="dark"
+          >
             <StInput
-              v-model="label"
+              v-model="form.label.$value"
               placeholder="Add a label to your transaction"
             />
+            <template v-if="form.label.$value.length > 50" #description>
+              <span class="error">Label too long</span>
+            </template>
           </StFormItem>
         </div>
       </template>
@@ -422,6 +431,7 @@ export default {
     const counter = ref(5);
     const counterTimeout = ref(null);
     const sendTimeout = ref(null);
+    const label = ref('');
 
     const pickedAccount = computed(() => {
       return mainStore.accountDetails;
@@ -497,6 +507,16 @@ export default {
           },
         ],
       },
+      label: {
+        $value: label,
+        $rules: [
+          {
+            rule: () => {
+              return label.value.length > 50 && 'Label too long';
+            },
+          },
+        ],
+      },
     });
 
     watch(
@@ -534,7 +554,6 @@ export default {
     }
 
     const accounts = ref([]);
-    const label = ref('');
 
     async function scanWallet() {
       if (pickedAccount.value) {
@@ -961,5 +980,12 @@ export default {
 .cancel-btn {
   margin-top: 12px;
   color: var(--grey50) !important;
+}
+:deep .st-form-item .st-form-item__error,
+.error {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: left;
 }
 </style>
