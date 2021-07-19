@@ -5,7 +5,7 @@
         <StInput
           label="Search"
           v-model="query"
-          placeholder="You may enter an Account, Address, Amount or Label"
+          placeholder="You may enter an Account, Address, Amount, Label, or Transaction ID"
           ><svg
             width="18"
             height="19"
@@ -174,7 +174,7 @@ export default {
       let filtered = [...transactions.value];
       if (filtered.length === 0) return [];
       let q = query?.value?.toLowerCase();
-      if (q && q.length > 0) {
+      if (q && q.length > 2) {
         filtered = filtered.filter((el) => {
           return (
             el?.account?.toLowerCase().indexOf(q) > -1 ||
