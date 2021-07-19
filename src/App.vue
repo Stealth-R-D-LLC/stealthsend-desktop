@@ -61,6 +61,7 @@ export default {
       if (router.name === 'Lock') return; // don't handle if already on lock screen
       // CTRL + ESCAPE combo
       if (event.ctrlKey && event.code === 'Escape') {
+        mainStore.SET_IS_LOCK(true);
         router.push('/lock');
       }
     });

@@ -56,7 +56,9 @@
             <span class="option">
               {{ option.label }}
             </span>
-            <span> {{ formatAmount(option.utxo, true, 8, 2) }} XST </span>
+            <span class="amount"
+              >{{ formatAmount(option.utxo, true, 8, 2) }} XST</span
+            >
           </div>
         </template>
       </StMultiselect>
@@ -355,10 +357,14 @@ export default {
   fill: var(--marine500);
 }
 .flex-space-between .option {
-  display: block;
-  white-space: nowrap;
-  overflow: hidden !important;
+  overflow: hidden;
   text-overflow: ellipsis;
-  width: 254px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  margin-right: 10px;
+}
+.flex-space-between .amount {
+  white-space: nowrap;
 }
 </style>

@@ -2330,10 +2330,9 @@ export default {
       setTimeout(() => {
         isWelcome.value = true;
       }, 3500);
-      // setTimeout(() => {
-      //   console.log('sta');
-      // }, 10);
-      window.ipc.send('resize:create');
+      setTimeout(() => {
+        window.ipc.send('resize:create');
+      }, 10);
     });
 
     const isError = ref(false);
@@ -3036,6 +3035,7 @@ export default {
   margin-top: 12px;
 }
 .mnemonic-list {
+  min-height: 64px;
   display: flex;
   flex-wrap: wrap;
   background-color: var(--background100);
