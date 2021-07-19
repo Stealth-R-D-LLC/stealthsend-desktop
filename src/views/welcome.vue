@@ -1655,7 +1655,7 @@
                 received.
               </p>
               <div>
-                <div class="mnemonic-list">
+                <div class="mnemonic-list mnemonic-list--words">
                   <template v-if="reorderedMnemonic.length">
                     <span
                       class="clickable"
@@ -1772,6 +1772,10 @@
               <h5>Restore from Recovery Phrase</h5>
               <StFormItem
                 class="custom-st-form"
+                :class="{
+                  'st-form-item__error':
+                    recoveryForm.account.$value.length > 50,
+                }"
                 label="Account Name"
                 :filled="recoveryForm.account.$value"
                 :error-message="recoveryForm.account.$errors"
@@ -1781,6 +1785,12 @@
                   v-model="recoveryForm.account.$value"
                   placeholder="Enter Account Name"
                 />
+                <template
+                  v-if="recoveryForm.account.$value.length > 50"
+                  #description
+                >
+                  <span class="error">Name too long</span>
+                </template>
               </StFormItem>
             </div>
             <StButton @click="recoveryStepNext">Proceed</StButton>
@@ -1823,7 +1833,7 @@
                 To verify your Recovery Phrase enter the words<br />
                 in the order received.
               </p>
-              <div class="mnemonic-list">
+              <div class="mnemonic-list mnemonic-list--words">
                 <template v-if="selectedRecoveryWords.length">
                   <span
                     v-for="(word, index) in selectedRecoveryWords"
@@ -2221,8 +2231,12 @@ export default {
                 if (currentStep.value === 6) {
                   return !account.value && 'Account name is required';
                 }
-                if (account.value.length > 50) {
-                  return 'Name too long';
+              },
+            },
+            {
+              rule: () => {
+                if (currentStep.value === 6) {
+                  return account.value.length > 50 && 'Name too long';
                 }
               },
             },
@@ -2242,9 +2256,11 @@ export default {
               if (!account.value) {
                 return 'Account name is required';
               }
-              if (account.value.length > 50) {
-                return 'Name too long';
-              }
+            },
+          },
+          {
+            rule: () => {
+              return account.value.length > 50 && 'Name too long';
             },
           },
         ],
@@ -3037,12 +3053,14 @@ export default {
   margin-top: 12px;
 }
 .mnemonic-list {
-  min-height: 64px;
   display: flex;
   flex-wrap: wrap;
   background-color: var(--background100);
   padding: 12px 11px;
   box-sizing: border-box;
+}
+.mnemonic-list--words {
+  min-height: 64px;
 }
 .mnemonic-list span {
   margin: 8px 9px;
