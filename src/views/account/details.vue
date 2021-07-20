@@ -420,6 +420,7 @@ export default {
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
+  word-break: break-all;
 }
 @media screen and (max-width: 1270px) {
   .details-table :deep td:nth-child(4),
@@ -439,6 +440,7 @@ export default {
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
+  word-break: break-all;
 }
 .details-table :deep td:nth-child(6) {
   width: 121px;
