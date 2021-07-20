@@ -25,7 +25,7 @@ let delta = {
   },
   windows: {
     height: 39,
-    width: 0,
+    width: 16,
   },
   other: {
     height: 0,
