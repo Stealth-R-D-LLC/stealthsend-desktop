@@ -91,12 +91,18 @@
           <StFormItem
             label="Account Name"
             :filled="form.accountName.$value"
+            :class="{
+              'st-form-item__error': form.accountName.$value.length > 50,
+            }"
             :error-message="form.accountName.$errors"
           >
             <StInput
               v-model="form.accountName.$value"
               placeholder="Enter Account Name"
             />
+            <template v-if="form.accountName.$value.length > 50" #description>
+              <span class="error">Name too long</span>
+            </template>
           </StFormItem>
           <StFormItem
             class="st-form-item__key"

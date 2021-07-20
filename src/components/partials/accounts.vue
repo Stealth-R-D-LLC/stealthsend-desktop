@@ -572,6 +572,14 @@ export default {
   padding: 0 28px;
   min-height: calc(100vh - 463px);
 }
+@media only screen and (min-height: 950px) {
+  .active-container {
+    min-height: calc(100vh - 696px);
+  }
+  .archived-container {
+    min-height: 500px;
+  }
+}
 .active-container--no-archived {
   min-height: calc(100vh - 239px);
 }
@@ -705,6 +713,7 @@ export default {
   cursor: pointer;
   display: block;
   width: fit-content;
+  white-space: nowrap;
   font-size: 12px;
   line-height: 24px;
   color: var(--marine700);
