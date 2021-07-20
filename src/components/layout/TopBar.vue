@@ -343,7 +343,7 @@
       <div class="header-right">
         <p class="rpc-status">{{ rpcStatus }}</p>
         <svg
-        class="rpc-icon"
+          class="rpc-icon"
           width="22"
           height="22"
           viewBox="0 0 22 22"
