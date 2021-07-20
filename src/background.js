@@ -20,11 +20,11 @@ let delta = {
     width: 0,
   },
   mac: {
-    height: 28,
+    height: 22,
     width: 0,
   },
   windows: {
-    height: 50,
+    height: 39,
     width: 0,
   },
   other: {
