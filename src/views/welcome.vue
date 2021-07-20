@@ -2516,7 +2516,7 @@ export default {
       };
 
       await CryptoService.storeAccountInDb(acc);
-
+      window.ipc.send('resize:other');
       mainStore.STOP_GLOBAL_LOADING();
     }
 

@@ -558,10 +558,10 @@ export default {
   margin-right: 24px;
 }
 .icon:last-child {
-  margin-right: 28px;
+  margin-right: 3px;
 }
 .icon-active {
-  margin-right: 26px !important;
+  margin-right: 0 !important;
 }
 .icon-expanded {
   cursor: pointer;
@@ -575,7 +575,7 @@ export default {
   width: 0;
   position: absolute;
   top: calc(50% - 15px);
-  right: 70px;
+  right: 35px;
   background-color: #ffffff;
   transition: 0.3s;
 }
@@ -631,5 +631,11 @@ export default {
 }
 .move-left {
   transform: translateX(-58px);
+}
+:deep .table tr td:first-child {
+  padding: 18px 10px 18px 0;
+}
+:deep .table tr td:last-child {
+  padding: 18px 0 18px 10px;
 }
 </style>

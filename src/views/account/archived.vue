@@ -85,7 +85,9 @@ export default {
   background: transparent;
 }
 .accounts-container__content {
-  padding: 24px 28px 0;
+  background: var(--background50);
+  padding: 0 28px 0;
+  height: 100%;
 }
 
 .list-item {
