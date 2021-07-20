@@ -1,6 +1,6 @@
 <template>
   <div class="accounts-container__inner">
-    <h4>Active Accounts</h4>
+    <h4 class="title">Active Accounts</h4>
     <div
       class="active-container"
       :class="{
@@ -566,32 +566,21 @@ export default {
     border-radius: 0;
   }
 }
+.accounts-container__inner .title {
+  background: #f4f3f6;
+  padding: 24px 28px 88px;
+  margin: 0 -28px 0;
+}
 .active-container {
   background-color: var(--background0);
-  margin: 88px -28px 0;
-  padding: 0 28px;
-  min-height: calc(100vh - 463px);
-}
-@media only screen and (min-height: 950px) {
-  .active-container {
-    min-height: calc(100vh - 696px);
-  }
-  .archived-container {
-    min-height: 500px;
-  }
-}
-.active-container--no-archived {
-  min-height: calc(100vh - 239px);
-}
-.active-container__relative {
-  position: relative;
-  top: -60px;
+  padding: 0 28px 16px;
+  margin: 0 -28px;
 }
 .accounts-container__inner--grid {
-  margin-top: 28px;
   display: grid;
   grid-template-columns: repeat(4, 4fr);
   grid-gap: 28px 20px;
+  transform: translateY(-60px);
 }
 .card {
   position: relative;
@@ -605,10 +594,13 @@ export default {
   border: 1px solid var(--marine400) !important;
 }
 .archived-container {
-  margin: -44px -28px 0;
+  margin: -45px -28px 0;
   padding: 24px 28px;
   background-color: var(--background50);
   box-sizing: border-box;
+}
+.archived-container h4 {
+  margin-bottom: 28px;
 }
 .info-purple path {
   stroke: var(--marine700);
