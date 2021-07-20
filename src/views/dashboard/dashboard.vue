@@ -112,6 +112,7 @@ export default {
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
+  word-break: break-all;
 }
 .dashboard-table :deep td:nth-child(4),
 .dashboard-table :deep td:nth-child(5) {

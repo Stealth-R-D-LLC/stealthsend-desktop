@@ -56,17 +56,32 @@
     </div>
     <div class="body" v-if="tx">
       <div v-if="editMode" class="item item--label">
-        <StFormItem label="Label" :filled="label" @rightLabelClick="saveLabel">
+        <StFormItem
+          label="Label"
+          :class="{
+            'st-form-item__error':
+              form.label.$value && form.label.$value.length > 50,
+          }"
+          :filled="form.label.$value"
+          :error-message="form.label.$errors"
+        >
           <template #labelRight>
             <span @click="saveLabel">Save</span>
           </template>
           <StInput
             class="edit-label-input"
-            v-model="label"
+            v-model="form.label.$value"
             placeholder="Please enter label"
           ></StInput>
           <template #description>
-            Edit transaction label for better personal accounting
+            <span
+              v-if="form.label.$value && form.label.$value.length > 50"
+              class="error"
+              >Label too long</span
+            >
+            <span v-else
+              >Edit transaction label for better personal accounting</span
+            >
           </template>
         </StFormItem>
       </div>
@@ -155,6 +170,7 @@ import { useMainStore } from '@/store';
 import { ref, watch, computed } from 'vue';
 import useHelpers from '@/composables/useHelpers';
 import CryptoService from '@/services/crypto';
+import { useValidation, ValidationError } from 'vue3-form-validation';
 
 export default {
   name: 'StTransactionDetails',
@@ -165,6 +181,20 @@ export default {
     const tx = ref(null);
     const editMode = ref(false);
     const label = ref('');
+
+    const { form, validateFields } = useValidation({
+      label: {
+        $value: label,
+        $rules: [
+          {
+            rule: () => {
+              console.log(label.value);
+              return label.value.length > 50 && 'Label too long';
+            },
+          },
+        ],
+      },
+    });
 
     watch(
       () => mainStore.offCanvasData,
@@ -203,11 +233,18 @@ export default {
       }, 1);
     }
 
-    function saveLabel() {
-      CryptoService.storeTxAndLabel(tx.value.txid, label.value);
-      editMode.value = false;
-      CryptoService.getTxWithLabels();
-      label.value = txWithLabels.value[tx.value.txid];
+    async function saveLabel() {
+      try {
+        await validateFields();
+        CryptoService.storeTxAndLabel(tx.value.txid, label.value);
+        editMode.value = false;
+        CryptoService.getTxWithLabels();
+        label.value = txWithLabels.value[tx.value.txid];
+      } catch (e) {
+        if (e instanceof ValidationError) {
+          console.log(e);
+        }
+      }
     }
 
     function openBlockExplorer(txid) {
@@ -254,6 +291,7 @@ export default {
 
       formatBlocktime,
       formatAmount,
+      form,
 
       openBlockExplorer,
       openAddressExplorer,

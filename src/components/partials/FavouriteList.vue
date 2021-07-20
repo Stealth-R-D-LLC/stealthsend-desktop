@@ -26,10 +26,10 @@
       </svg>
     </div>
     <p v-if="favouritedAccounts.length" class="paragraph">
-      Arrange your {{ favouritedAccounts.length }} favorite accounts
+      Arrange up to 10 favorite accounts
     </p>
     <p v-else class="paragraph">You don't have any favorite accounts</p>
-    <StFormItem label="Choose an Account">
+    <StFormItem label="Choose an Account" :error-message="form.account.$errors">
       <template #labelRight><a @click="addToFavouriteList">Add</a></template>
       <StMultiselect
         v-model="account"
@@ -131,6 +131,7 @@ import useHelpers from '@/composables/useHelpers';
 import { useMainStore } from '@/store';
 import emitter from '@/services/emitter';
 import Sortable from 'sortablejs';
+import { useValidation, ValidationError } from 'vue3-form-validation';
 
 export default {
   name: 'FavouriteList',
@@ -143,6 +144,22 @@ export default {
       return CryptoService.constraints.XST_USD || 1;
     });
     const favouritedAccounts = ref([]);
+
+    const { form, validateFields } = useValidation({
+      account: {
+        $value: account,
+        $rules: [
+          {
+            rule: () => {
+              return (
+                favouritedAccounts.value.length >= 10 &&
+                'You can only have 10 favorite accounts'
+              );
+            },
+          },
+        ],
+      },
+    });
 
     async function scanWallet() {
       console.log('fav list scan');
@@ -205,12 +222,19 @@ export default {
     });
 
     async function addToFavouriteList() {
-      if (!account.value) return;
-      await CryptoService.favouriteAccount(account.value);
-      const scannedAccounts = await CryptoService.scanWallet();
-      accounts.value = scannedAccounts.accounts;
-      account.value = null;
-      emitter.emit('accounts:refresh');
+      try {
+        await validateFields();
+        if (!account.value) return;
+        await CryptoService.favouriteAccount(account.value);
+        const scannedAccounts = await CryptoService.scanWallet();
+        accounts.value = scannedAccounts.accounts;
+        account.value = null;
+        emitter.emit('accounts:refresh');
+      } catch (e) {
+        if (e instanceof ValidationError) {
+          console.log(e);
+        }
+      }
     }
     async function removeFromFavoriteList(account) {
       await CryptoService.unfavouriteAccount(account);
@@ -232,6 +256,7 @@ export default {
       closeCanvas,
       formatAmount,
       XST_USD_RATE,
+      form,
 
       favouritedAccounts,
       unfavouritedAccounts,
@@ -299,7 +324,7 @@ export default {
 .accounts-list {
   margin-top: 44px;
   overflow: auto;
-  max-height: calc(100vh - 249px);
+  max-height: calc(100vh - 280px);
   width: calc(100% + 5px);
   padding-right: 18px;
 }
@@ -362,9 +387,16 @@ export default {
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
+  word-break: break-all;
   margin-right: 10px;
 }
 .flex-space-between .amount {
   white-space: nowrap;
+}
+:deep .st-form-item .st-form-item__error {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: left;
 }
 </style>

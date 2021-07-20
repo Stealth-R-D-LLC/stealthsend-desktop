@@ -259,6 +259,7 @@ export default {
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
+  word-break: break-all;
 }
 .transactions-table :deep td:nth-child(4),
 :deep th:nth-child(4) {
@@ -276,6 +277,7 @@ export default {
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
+  word-break: break-all;
 }
 .transactions-table :deep td:nth-child(6) {
   width: 121px;
