@@ -679,6 +679,7 @@ export default {
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
+  word-break: break-all;
   font-family: var(--primary-font);
   font-style: normal;
   font-weight: 600;

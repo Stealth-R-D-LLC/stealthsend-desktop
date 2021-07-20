@@ -208,13 +208,18 @@ export default {
         $value: privateKey,
         $rules: [
           (privateKey) => {
-            if (existingAccounts.some((el) => {
-              if(!el.isImported) {
-                return false;
-              }
-              const decryptedWIF = CryptoService.AESDecrypt(el.wif, wallet.password)
-              return decryptedWIF && (decryptedWIF === privateKey)
-            })) {
+            if (
+              existingAccounts.some((el) => {
+                if (!el.isImported) {
+                  return false;
+                }
+                const decryptedWIF = CryptoService.AESDecrypt(
+                  el.wif,
+                  wallet.password
+                );
+                return decryptedWIF && decryptedWIF === privateKey;
+              })
+            ) {
               return 'Account already imported.';
             }
             if (activeStep.value === 'import-account') {
