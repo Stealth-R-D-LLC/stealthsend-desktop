@@ -449,6 +449,11 @@ export default {
       } else {
         console.error('Unhandled currency');
       }
+      if (inputAmountState.value === 'XST') {
+        if (amount.value < 0.05) {
+          amount.value = 0.05;
+        }
+      }
     }
 
     async function sendEmail() {

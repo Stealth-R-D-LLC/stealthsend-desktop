@@ -783,8 +783,12 @@ export default {
           form.amount.$value / CryptoService.constraints.XST_USD
         );
       }
-      console.log(form.amount.$value, CryptoService.constraints.XST_USD);
       inputAmountState.value = value;
+      if (inputAmountState.value === 'XST') {
+        if (form.amount.$value < 0.05) {
+          form.amount.$value = 0.05;
+        }
+      }
     }
 
     function preventRemove(acc) {
