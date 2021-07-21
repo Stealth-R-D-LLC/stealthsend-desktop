@@ -19,7 +19,7 @@ module.exports = {
               { family: "Source Sans Pro", variants: [ "300", "400", "600", "700", "900" ] },
               { family: "Noto Sans", variants: [ "400", "700" ] }
           ]
-          /* ...options 
+          /* ...options
       })*/
   ],
   },
@@ -29,6 +29,10 @@ module.exports = {
         "appId": "org.stealthsend.desktop",
         "productName": "StealthSend",
         "copyright": "Copyright © 2021 ${author}",
+        "afterSign": "scripts/notarize.js",
+        "dmg": {
+          "sign": false
+        },
         "linux": {
           "target": ["deb", "AppImage"],
           "maintainer": "Stealth R&D LLC",
@@ -41,9 +45,9 @@ module.exports = {
           "icon": "src/assets/logo.png"
         },
         "mac": {
-          "target": ["dmg", "pkg"],
+          "target": ['dmg'],
           "icon": "src/assets/icon.icns",
-          "type": "development"
+          "type": "distribution",
         }
       },
       // nodeIntegration: true,
