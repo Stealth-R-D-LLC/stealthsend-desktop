@@ -686,24 +686,24 @@ export default {
             });
           } catch (e) {
             console.log('Transaction builder error: ', e);
-            changeStep(7);
+            setTimeout(() => changeStep(7), 4000);
           }
         }
         if (transactionResponse.txid) {
           CryptoService.storeTxAndLabel(transactionResponse.txid, label.value);
-          setTimeout(() => changeStep(6), 4000);
+          setTimeout(() => {
+            changeStep(6);
+            emitter.emit('transactions:refresh');
+            emitter.emit('accounts:refresh');
+          }, 4000);
         } else {
           setTimeout(() => changeStep(7), 4000);
         }
-        setTimeout(() => {
-          emitter.emit('transactions:refresh');
-          emitter.emit('accounts:refresh');
-        }, 5100);
       } catch (e) {
         if (e instanceof ValidationError) {
           console.log(e);
         } else {
-          changeStep(7);
+          setTimeout(() => changeStep(7), 4000);
         }
       }
     }
@@ -783,8 +783,12 @@ export default {
           form.amount.$value / CryptoService.constraints.XST_USD
         );
       }
-      console.log(form.amount.$value, CryptoService.constraints.XST_USD);
       inputAmountState.value = value;
+      if (inputAmountState.value === 'XST') {
+        if (form.amount.$value < 0.05) {
+          form.amount.$value = 0.05;
+        }
+      }
     }
 
     function preventRemove(acc) {

@@ -23,6 +23,7 @@ import TransactionList from '@/components/partials/TransactionList.vue';
 import Chart from '@/views/dashboard/components/chart';
 import CryptoService from '@/services/crypto';
 import { useMainStore } from '@/store';
+import emitter from '@/services/emitter';
 
 export default {
   name: 'StDahboard',
@@ -60,6 +61,10 @@ export default {
 
     scanWallet();
 
+    emitter.on('transactions:refresh', () => {
+      scanWallet();
+    });
+
     return {
       archiveAccount,
       refreshChart,
@@ -73,8 +78,8 @@ export default {
 
 <style scoped>
 .dashboard-container {
-  padding: 24px 10px 24px 12px;
-  height: calc(100vh - 145px);
+  padding: 24px 10px 0 12px;
+  height: calc(100vh - 123px);
 }
 .dashboard-container__overflow {
   overflow: auto;

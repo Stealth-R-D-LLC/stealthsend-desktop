@@ -20,7 +20,7 @@ let delta = {
     width: 0,
   },
   mac: {
-    height: 22,
+    height: 28,
     width: 0,
   },
   windows: {
@@ -126,6 +126,19 @@ async function createWindow() {
     {
       label: 'Window',
       submenu: [{ role: 'close' }],
+    },
+    {
+      label: 'Edit',
+      submenu: [
+        { label: 'Cut', accelerator: 'CmdOrCtrl+X', selector: 'cut:' },
+        { label: 'Copy', accelerator: 'CmdOrCtrl+C', selector: 'copy:' },
+        { label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:' },
+        {
+          label: 'Select All',
+          accelerator: 'CmdOrCtrl+A',
+          selector: 'selectAll:',
+        },
+      ],
     },
   ];
 
