@@ -327,6 +327,7 @@ export default {
             accountName.value,
             privateKey.value
           );
+          emitter.emit('accounts:refresh');
           nextStep();
         } catch (e) {
           if (e instanceof ValidationError) {
