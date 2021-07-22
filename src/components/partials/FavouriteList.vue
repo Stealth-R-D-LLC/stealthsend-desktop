@@ -30,7 +30,7 @@
     </p>
     <p v-else class="paragraph">You don't have any favorite accounts</p>
     <StFormItem label="Choose an Account" :error-message="form.account.$errors">
-      <template #labelRight><a @click="addToFavouriteList">Add</a></template>
+      <template #labelRight v-if="favouritedAccounts.length < 10"><a @click="addToFavouriteList">Add</a></template>
       <StMultiselect
         v-model="account"
         :class="{ 'multiselect-filled': account }"
