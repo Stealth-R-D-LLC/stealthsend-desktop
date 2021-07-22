@@ -245,7 +245,7 @@ export default {
               },
               y: {
                 formatter: function (value) {
-                  return parseFloat(value.toFixed(8));
+                  return parseFloat(value.toFixed(6));
                 },
               },
               fixed: {
@@ -272,9 +272,9 @@ export default {
             return b - a;
           })[0];
           minValue.value =
-            'Low $' + formatAmount(minValue.value, false, 2, 2) + ' USD';
+            'Low $' + formatAmount(minValue.value, false, 4, 4) + ' USD';
           maxValue.value =
-            'High $' + formatAmount(maxValue.value, false, 2, 2) + ' USD';
+            'High $' + formatAmount(maxValue.value, false, 4, 4) + ' USD';
           var chart = new ApexCharts(
             document.querySelector('.st-dashboard-chart'),
             options

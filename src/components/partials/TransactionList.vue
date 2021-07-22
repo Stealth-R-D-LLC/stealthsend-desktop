@@ -96,7 +96,7 @@
               {{
                 isHiddenAmounts
                   ? '••• XST'
-                  : `${formatAmount(Math.abs(item.amount, true, 8))} XST`
+                  : `${formatAmount(Math.abs(item.amount), false, 6, 6)} XST`
               }}
             </div>
           </template>

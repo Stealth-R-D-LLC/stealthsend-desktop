@@ -150,7 +150,7 @@ export default {
       return [
         {
           asset: 'XST',
-          amountLeft: `${formatAmount(props.account.utxo, true, 2)} XST`,
+          amountLeft: `${formatAmount(props.account.utxo, false, 6, 6)} XST`,
           amountRight: `$${formatAmount(
             multiply(props.account.utxo, CryptoService.constraints.XST_USD),
             false,

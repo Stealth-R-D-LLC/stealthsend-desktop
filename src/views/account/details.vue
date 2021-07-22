@@ -4,7 +4,7 @@
       <div class="left">
         <div>
           <StLabel label="XST Balance" bold>{{
-            isHiddenAmounts ? '•••' : formatAmount(account.utxo, false, 2)
+            isHiddenAmounts ? '•••' : formatAmount(account.utxo, false, 6, 6)
           }}</StLabel>
           <StLabel label="USD Value"
             >${{
