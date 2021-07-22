@@ -109,6 +109,7 @@
               </svg>
               Favorite
             </a>
+            <div v-if="account.isImported" class="imported" />
           </div>
           <transition name="fill">
             <div
@@ -271,6 +272,7 @@
                 USD
               </p>
             </div>
+            <div v-if="account.isImported" class="imported" />
           </div>
           <transition name="fill">
             <div
@@ -766,5 +768,15 @@ svg {
   left: 0;
   right: 0;
   text-align: left;
+}
+.imported {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 6px;
+  background-color: var(--red400);
+  position: absolute;
+  right: 20px;
+  bottom: 33px;
 }
 </style>
