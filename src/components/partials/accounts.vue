@@ -205,7 +205,9 @@
       </div>
     </div>
     <div class="archived-container">
-      <h4 v-if="!archivedAccounts.length" class="no-archived">No archived accounts</h4>
+      <h4 v-if="!archivedAccounts.length" class="no-archived">
+        No archived accounts
+      </h4>
       <h4 v-if="archivedAccounts.length">Archived Accounts</h4>
       <div
         v-if="archivedAccounts.length"
