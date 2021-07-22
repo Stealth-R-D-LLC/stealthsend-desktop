@@ -2,14 +2,26 @@
   <div class="welcome">
     <div class="left" :class="{ 'left-active': isAccount || isRecovery }">
       <!-- <img src="@/assets/welcome.png" alt="welcome" /> -->
-      <video width="320" height="240" autoplay muted>
+      <video
+        id="bgAnimation"
+        width="320"
+        height="240"
+        poster="@/assets/animationFrame.png"
+        autoplay
+        muted
+      >
         <source src="backgroundAnimation.mp4" type="video/mp4" />
       </video>
 
       <div class="overlay"></div>
+      <div v-show="isLoading" class="xst-loader">
+        <img src="../../static/xstloaderwhite.gif" alt="white gif" />
+      </div>
       <div
         class="left__inner"
-        :class="{ 'left__inner--active': isAccount || isRecovery }"
+        :class="{
+          'left__inner--active': isAccount || isRecovery || isAccountFinished,
+        }"
       >
         <lottie
           :options="lottieOptions"
@@ -21,16 +33,19 @@
           class="box"
           :class="{
             'box-animated': isWelcome,
-            'box-full': isAccount || isRecovery,
+            'box-full': isAccount || isRecovery || isAccountFinished,
           }"
         >
           <template v-if="isWelcome">
             <div
               class="box__inner"
-              :class="{ 'box__inner--right': isAccount || isRecovery }"
+              :class="{
+                'box__inner--right':
+                  isAccount || isRecovery || isAccountFinished,
+              }"
             >
               <transition-group name="fade">
-                <template v-if="isAccount">
+                <template v-if="isAccount || isAccountFinished">
                   <h3 class="title" v-if="currentStep <= 5">
                     The Fastest Private Digital<br />Currency
                   </h3>
@@ -54,15 +69,16 @@
                   </h3>
                   <div class="app-version">StealthSend, v{{ version }}</div>
                 </template>
-                <div v-if="!isAccount && !isRecovery">
-                  <h4 class="title">Welcome to StealthSend</h4>
-                  <h5 class="subtitle">
-                    Would you like to create a new account or restore from
-                    Recovery Phrase?
-                  </h5>
-                </div>
-                <div v-if="isAccount || isRecovery" class="support">
-                  <!-- <svg
+                <template v-if="!isAccountFinished">
+                  <div v-if="!isAccount && !isRecovery">
+                    <h4 class="title">Welcome to StealthSend</h4>
+                    <h5 class="subtitle">
+                      Would you like to create a new account or restore from
+                      Recovery Phrase?
+                    </h5>
+                  </div>
+                  <div v-if="isAccount || isRecovery" class="support">
+                    <!-- <svg
                     width="22"
                     height="22"
                     viewBox="0 0 22 22"
@@ -105,15 +121,16 @@
                     />
                   </svg>
                   <p>Customer Support</p> -->
-                </div>
-                <div class="buttons" v-else>
-                  <StButton type="type-d" @click="isAccount = true"
-                    >Create a New Account</StButton
-                  >
-                  <StButton type="type-d" @click="isRecovery = true"
-                    >Restore a Backup</StButton
-                  >
-                </div>
+                  </div>
+                  <div class="buttons" v-else>
+                    <StButton type="type-d" @click="isAccount = true"
+                      >Create a New Account</StButton
+                    >
+                    <StButton type="type-d" @click="isRecovery = true"
+                      >Restore a Backup</StButton
+                    >
+                  </div>
+                </template>
               </transition-group>
             </div>
           </template>
@@ -2146,6 +2163,8 @@ export default {
     const selectedRecoveryWords = ref([]);
     const finishedAnimation = ref(false);
     const animation = ref(null); // for saving the reference to the animation
+    const isLoading = ref(false);
+    const isAccountFinished = ref(false);
     const lottieOptions = ref({
       animationData: animationData.default,
       render: 'svg',
@@ -2446,12 +2465,21 @@ export default {
     }
 
     async function recover() {
-      mainStore.START_GLOBAL_LOADING();
       // recover an existing wallet via mnemonic
       // password is asked because we have to lock the seed in the database
       // user is createing a new password in this step
       try {
         await validateFields();
+        const wait = (timeToDelay) =>
+          new Promise((resolve) => setTimeout(resolve, timeToDelay));
+        isRecovery.value = false;
+        isAccount.value = false;
+        isAccountFinished.value = true;
+        let video = document.getElementById('bgAnimation');
+        video.load();
+        video.play();
+        await wait(350);
+        isLoading.value = true;
         let mnemonic = selectedRecoveryWords.value.join(' ');
         // let bytes = bip39.mnemonicToSeedSync(mnemonic);
         let bytes = await bip39.mnemonicToSeed(mnemonic);
@@ -2470,20 +2498,26 @@ export default {
           await restoreAccounts();
         }
         CryptoService.isFirstArrival = false;
-        await CryptoService.unlock(password.value);
+        await wait(1000);
+        isLoading.value = false;
+        CryptoService.unlock(password.value);
+        /* setTimeout(() => {
+          isLoading.value = true;
+          setTimeout(() => {
+            isLoading.value = false;
+            CryptoService.unlock(password.value);
+          }, 4000);
+        }, 350); */
         // goToDashboard();
         resetFields();
       } catch (e) {
         if (e instanceof ValidationError) {
           console.log(e.message);
         }
-        mainStore.STOP_GLOBAL_LOADING();
       }
     }
 
     async function restoreAccounts() {
-      mainStore.START_GLOBAL_LOADING();
-
       let next = await CryptoService.getNextAccountPath();
       const { address, path, xpub, wif } = CryptoService.getChildFromRoot(
         next,
@@ -2516,22 +2550,36 @@ export default {
       };
 
       await CryptoService.storeAccountInDb(acc);
-      window.ipc.send('resize:other');
-      mainStore.STOP_GLOBAL_LOADING();
+      console.log('RESTORE AAAAAA');
     }
-
     const createWallet = ref(false);
     async function createNewWallet() {
       // new wallet is created
       // therefore, new password can be made
-      mainStore.START_GLOBAL_LOADING();
-      /* createdMnemonic.value = await CryptoService.generateMnemonicAndSeed(); */
+      await CryptoService.storeWalletInDb(password.value);
+      await CryptoService.storeMnemonicInWallet(selectedWords.value);
+      await restoreAccounts();
+      isAccount.value = false;
+      isAccountFinished.value = true;
+      let video = document.getElementById('bgAnimation');
+      video.load();
+      video.play();
+      setTimeout(() => {
+        isLoading.value = true;
+        setTimeout(() => {
+          isLoading.value = false;
+          goToDashboard();
+        }, 4000);
+      }, 350);
+      /* mainStore.START_GLOBAL_LOADING();
+      
       await CryptoService.storeWalletInDb(password.value);
       await CryptoService.storeMnemonicInWallet(selectedWords.value);
 
       await restoreAccounts();
       goToDashboard();
-      mainStore.STOP_GLOBAL_LOADING();
+
+      mainStore.STOP_GLOBAL_LOADING(); */
     }
 
     async function handleSubmit() {
@@ -2554,16 +2602,13 @@ export default {
       animation.value = anim;
     }
 
-    const isLoading = computed(() => {
-      return mainStore.globalLoading;
-    });
-
     function goToDashboard() {
       router.push('/dashboard');
     }
     return {
       isWelcome,
       isAccount,
+      isAccountFinished,
       isRecovery,
       currentStep,
       recoveryStep,
@@ -2678,8 +2723,7 @@ export default {
   max-width: 197px;
   margin: 0 0 20px !important;
 }
-.left video,
-.left img {
+.left video {
   position: absolute;
   top: 0;
   left: 0;
@@ -2702,6 +2746,17 @@ export default {
   z-index: -1;
   pointer-events: none;
   background-color: rgba(20, 4, 53, 0.6);
+}
+.xst-loader {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
 }
 .left .box {
   width: 350px;
