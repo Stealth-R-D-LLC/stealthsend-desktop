@@ -18,18 +18,22 @@ let delta = {
   linux: {
     height: 24,
     width: 0,
+    maxHeight: 0,
   },
   mac: {
     height: 28,
     width: 0,
+    maxHeight: 0,
   },
   windows: {
     height: 39,
     width: 16,
+    maxHeight: 59,
   },
   other: {
     height: 0,
     width: 0,
+    maxHeight: 0,
   },
 };
 
@@ -53,7 +57,7 @@ async function createWindow() {
     minWidth: 1152 + delta[getOs()].width,
     minHeight: 700 + delta[getOs()].height,
     maxWidth: 1600 + delta[getOs()].width,
-    maxHeight: 1200 + delta[getOs()].height,
+    maxHeight: 1200 + delta[getOs()].maxHeight,
     center: true,
     maximizable: false,
     fullscreenable: false,
@@ -72,10 +76,6 @@ async function createWindow() {
     win.setBounds({
       width: 1152 + delta[getOs()].width,
       height: 700 + delta[getOs()].height,
-      minWidth: 1152 + delta[getOs()].width,
-      minHeight: 700 + delta[getOs()].height,
-      maxWidth: 1152 + delta[getOs()].width,
-      maxHeight: 700 + delta[getOs()].height,
       center: true,
       maximizable: false,
     });
@@ -91,7 +91,7 @@ async function createWindow() {
       minWidth: 1152 + delta[getOs()].width,
       minHeight: 700 + delta[getOs()].height,
       maxWidth: 1600 + delta[getOs()].width,
-      maxHeight: 1200 + delta[getOs()].height,
+      maxHeight: 1200 + delta[getOs()].maxHeight,
       center: true,
       maximizable: false,
     });
@@ -102,12 +102,12 @@ async function createWindow() {
   ipcMain.on('resize:menu', () => {
     // can accept event and args
     win.setBounds({
-      width: 1340,
-      height: 700,
-      minWidth: 1340,
-      minHeight: 700,
-      maxWidth: 1788,
-      maxHeight: 1200,
+      width: 1340 + delta[getOs()].width,
+      height: 700 + delta[getOs()].height,
+      minWidth: 1340 + delta[getOs()].width,
+      minHeight: 700 + delta[getOs()].height,
+      maxWidth: 1788 + delta[getOs()].width,
+      maxHeight: 1200 + delta[getOs()].maxHeight,
       center: true,
       maximizable: false,
     });
