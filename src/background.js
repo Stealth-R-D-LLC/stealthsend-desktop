@@ -18,12 +18,12 @@ let delta = {
   linux: {
     height: 24,
     width: 0,
-    maxHeight: 0,
+    maxHeight: 24,
   },
   mac: {
     height: 28,
     width: 0,
-    maxHeight: 0,
+    maxHeight: 28,
   },
   windows: {
     height: 39,
