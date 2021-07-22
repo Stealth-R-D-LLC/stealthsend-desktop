@@ -18,18 +18,22 @@ let delta = {
   linux: {
     height: 24,
     width: 0,
+    maxHeight: 0,
   },
   mac: {
     height: 28,
     width: 0,
+    maxHeight: 0,
   },
   windows: {
     height: 39,
     width: 16,
+    maxHeight: 59,
   },
   other: {
     height: 0,
     width: 0,
+    maxHeight: 0,
   },
 };
 
@@ -53,7 +57,7 @@ async function createWindow() {
     minWidth: 1152 + delta[getOs()].width,
     minHeight: 700 + delta[getOs()].height,
     maxWidth: 1600 + delta[getOs()].width,
-    maxHeight: 1200 + delta[getOs()].height,
+    maxHeight: 1200 + delta[getOs()].maxHeight,
     center: true,
     maximizable: false,
     fullscreenable: false,
@@ -87,7 +91,7 @@ async function createWindow() {
       minWidth: 1152 + delta[getOs()].width,
       minHeight: 700 + delta[getOs()].height,
       maxWidth: 1600 + delta[getOs()].width,
-      maxHeight: 1200 + delta[getOs()].height,
+      maxHeight: 1200 + delta[getOs()].maxHeight,
       center: true,
       maximizable: false,
     });
@@ -103,7 +107,7 @@ async function createWindow() {
       minWidth: 1340 + delta[getOs()].width,
       minHeight: 700 + delta[getOs()].height,
       maxWidth: 1788 + delta[getOs()].width,
-      maxHeight: 1200 + delta[getOs()].height,
+      maxHeight: 1200 + delta[getOs()].maxHeight,
       center: true,
       maximizable: false,
     });
