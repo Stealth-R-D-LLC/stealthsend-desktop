@@ -1,7 +1,13 @@
 <template>
   <div class="lock-container">
     <!-- <img src="@/assets/welcome.png" alt="welcome" /> -->
-    <video width="320" height="240" autoplay muted>
+    <video
+      width="320"
+      height="240"
+      poster="@/assets/animationFrame.png"
+      autoplay
+      muted
+    >
       <source src="backgroundAnimation.mp4" type="video/mp4" />
     </video>
     <div class="overlay"></div>
