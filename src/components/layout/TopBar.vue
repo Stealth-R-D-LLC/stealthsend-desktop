@@ -1042,7 +1042,7 @@ export default {
     function amountFormat(account) {
       return {
         asset: 'XST',
-        amountLeft: `${formatAmount(account.utxo, true, 2)}`,
+        amountLeft: `${formatAmount(account.utxo, false, 6, 6)}`,
         amountRight: `${formatAmount(
           multiply(account.utxo, CryptoService.constraints.XST_USD),
           false,

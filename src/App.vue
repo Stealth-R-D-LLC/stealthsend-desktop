@@ -89,6 +89,7 @@ export default {
           config.isEnabled &&
           route.name !== 'Lock'
         ) {
+          mainStore.SET_IS_LOCK(true);
           router.push('/lock');
         }
       }

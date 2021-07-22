@@ -111,7 +111,7 @@ export default {
       return [
         {
           asset: 'XST',
-          amountTop: `${formatAmount(props.amount, true, 2)}`,
+          amountTop: `${formatAmount(props.amount, false, 6, 6)}`,
           amountBottom: `$${formatAmount(
             multiply(props.amount, CryptoService.constraints.XST_USD),
             false,

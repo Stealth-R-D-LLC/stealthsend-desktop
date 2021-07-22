@@ -53,29 +53,33 @@
                 {{
                   isHiddenAmounts
                     ? '•••'
-                    : formatAmount(Math.abs(account.utxo, true, 8))
+                    : formatAmount(Math.abs(account.utxo), false, 6, 6)
                 }}
                 XST
               </p>
               <p class="grey">
                 ~
                 <template v-if="Number(account.utxo) * XST_USD_RATE < 1">
-                  {{
+                  ${{
                     isHiddenAmounts
                       ? '•••'
                       : formatAmount(
                           Math.abs(account.utxo * XST_USD_RATE),
-                          true
+                          false,
+                          4,
+                          4
                         )
                   }}
                 </template>
                 <template v-else>
-                  {{
+                  ${{
                     isHiddenAmounts
                       ? '•••'
                       : formatAmount(
                           Math.abs(account.utxo * XST_USD_RATE),
-                          false
+                          false,
+                          4,
+                          4
                         )
                   }}
                 </template>
@@ -109,6 +113,7 @@
               </svg>
               Favorite
             </a>
+            <div v-if="account.isImported" class="imported" />
           </div>
           <transition name="fill">
             <div
@@ -138,13 +143,16 @@
                 />
               </svg>
               <ul>
-                <li>
-                  <a
-                    v-if="!account.isFavourite"
-                    @click="favouriteAccount(account)"
-                    >Add to Favorites</a
-                  >
-                  <a v-else @click="unfavouriteAccount(account)"
+                <li
+                  v-if="
+                    !account.isFavourite &&
+                    accounts.filter((obj) => obj.isFavourite).length < 10
+                  "
+                >
+                  <a @click="favouriteAccount(account)">Add to Favorites</a>
+                </li>
+                <li v-if="account.isFavourite">
+                  <a @click="unfavouriteAccount(account)"
                     >Remove from Favorites</a
                   >
                 </li>
@@ -258,7 +266,7 @@
                 {{
                   isHiddenAmounts
                     ? '•••'
-                    : formatAmount(Math.abs(account.utxo, true, 8))
+                    : formatAmount(Math.abs(account.utxo), false, 6, 6)
                 }}
                 XST
               </p>
@@ -267,12 +275,16 @@
                   isHiddenAmounts
                     ? '•••'
                     : formatAmount(
-                        Math.abs(account.utxo * XST_USD_RATE, false, 8)
+                        Math.abs(account.utxo * XST_USD_RATE),
+                        false,
+                        4,
+                        4
                       )
                 }}
                 USD
               </p>
             </div>
+            <div v-if="account.isImported" class="imported" />
           </div>
           <transition name="fill">
             <div
@@ -412,6 +424,10 @@ export default {
     // const accounts = ref([]);
 
     const activeAccounts = computed(() => {
+      console.log(
+        'ACCOUNTS: ',
+        accounts.value.filter((obj) => obj.isFavourite)
+      );
       return accounts.value.filter((obj) => obj.isArchived === false);
     });
     const archivedAccounts = computed(() => {
@@ -514,7 +530,8 @@ export default {
 
     return {
       closeEditModal,
-      // variables
+      // variables,
+      accounts,
       activeAccounts,
       archivedAccounts,
       accountOptions,
@@ -593,9 +610,6 @@ export default {
 .active-container__relative {
   position: relative;
   top: -60px;
-}
-.accounts-container__inner--grid.has-archived {
-  transform: translateY(0);
 }
 .card {
   position: relative;
@@ -773,5 +787,15 @@ svg {
   left: 0;
   right: 0;
   text-align: left;
+}
+.imported {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 6px;
+  background-color: var(--red400);
+  position: absolute;
+  right: 20px;
+  bottom: 33px;
 }
 </style>

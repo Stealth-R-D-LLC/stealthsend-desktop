@@ -122,7 +122,7 @@
             />
             <path d="M12 6v7" stroke="#8B8A8D" stroke-width="2" />
           </svg>
-          {{ formatAmount(tx.amount) }} XST
+          {{ formatAmount(tx.amount, false, 6, 6) }} XST
         </p>
       </div>
       <div class="item">
