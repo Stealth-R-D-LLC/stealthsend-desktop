@@ -3214,4 +3214,11 @@ export default {
   color: white;
   margin-top: auto;
 }
+:deep .st-form-item .st-form-item__error,
+.error {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: left;
+}
 </style>
