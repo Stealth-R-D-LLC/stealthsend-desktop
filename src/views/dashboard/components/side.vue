@@ -87,11 +87,11 @@ export default {
     const sortedAccounts = computed(() => {
       let sortedAccounts = accounts.value;
       return sortedAccounts
-      .sort((a, b) => a.favouritePosition - b.favouritePosition)
-      .sort((a, b) => {
+        .sort((a, b) => a.favouritePosition - b.favouritePosition)
+        .sort((a, b) => {
           return a.isFavourite === b.isFavourite ? 0 : a.isFavourite ? -1 : 1;
-        })
-    })
+        });
+    });
 
     const step = ref(0);
     function switcherChange(value) {
@@ -117,7 +117,7 @@ export default {
       step,
       utxo,
       constraints,
-      sortedAccounts
+      sortedAccounts,
     };
   },
 };
