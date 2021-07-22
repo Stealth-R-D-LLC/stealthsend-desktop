@@ -207,9 +207,13 @@
     <div class="archived-container">
       <h4 v-if="!archivedAccounts.length">No archived accounts</h4>
       <h4 v-if="archivedAccounts.length">Archived Accounts</h4>
-      <div v-if="archivedAccounts.length" class="accounts-container__inner--grid" :class="{
-        'has-archived' : archivedAccounts.length
-        }">
+      <div
+        v-if="archivedAccounts.length"
+        class="accounts-container__inner--grid"
+        :class="{
+          'has-archived': archivedAccounts.length,
+        }"
+      >
         <div
           v-for="(account, index) in archivedAccounts"
           :key="account.address"
