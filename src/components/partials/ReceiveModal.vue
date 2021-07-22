@@ -41,10 +41,10 @@
 
             <template #option="{ option }">
               <div class="flex-space-between">
-                <span>
+                <span class="option">
                   {{ option.label }}
                 </span>
-                <span> {{ option.utxo }} XST </span>
+                <span class="amount">{{ option.utxo }} XST</span>
               </div>
             </template>
           </StMultiselect>
@@ -571,6 +571,12 @@ export default {
   font-size: 14px;
   line-height: 14px;
   letter-spacing: 0.12px;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
+  overflow: hidden;
 }
 
 @-webkit-keyframes rotating /* Safari and Chrome */ {
@@ -615,6 +621,18 @@ export default {
 :deep .multiselect__content-wrapper {
   top: 4px;
   padding-top: 65px;
+}
+.flex-space-between .option {
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
+  overflow: hidden;
+  margin-right: 10px;
+}
+.flex-space-between .amount {
+  white-space: nowrap;
 }
 </style>
 <style>
