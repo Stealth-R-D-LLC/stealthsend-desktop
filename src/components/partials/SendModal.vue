@@ -53,7 +53,7 @@
                   {{ account && account.label }}
                 </p>
                 <p class="account-utxo">
-                  {{ account && formatAmount(account.utxo, true, 8, 2) }}
+                  {{ account && formatAmount(account.utxo, false, 6, 6) }}
                 </p>
               </div>
             </template>
@@ -64,7 +64,7 @@
                   {{ option.label }}
                 </span>
                 <span class="amount"
-                  >{{ formatAmount(option.utxo, true, 8, 2) }} XST</span
+                  >{{ formatAmount(option.utxo, false, 6, 6) }} XST</span
                 >
               </div>
             </template>
@@ -138,7 +138,7 @@
                 distractionFree: false,
                 valueAsInteger: false,
                 useGrouping: true,
-                precision: 6,
+                precision: 4,
                 allowNegative: false,
               }"
             >
@@ -246,13 +246,15 @@
             <p class="bold">Account:</p>
             <p>{{ account.label }}</p>
             <p class="bold">Amount:</p>
-            <p>{{ amount }} XST</p>
+            <p>{{ formatAmount(amount, false, 6, 6) }} XST</p>
             <p class="bold">Address</p>
             <p>{{ depositAddress }}</p>
             <p class="bold">Label:</p>
             <p>{{ label ? label : 'No label' }}</p>
             <p class="bold">Fee:</p>
-            <p>{{ aproxFee ? formatAmount(aproxFee) : '0.02' }} XST</p>
+            <p>
+              {{ aproxFee ? formatAmount(aproxFee, false, 6, 6) : '0.02' }} XST
+            </p>
           </div>
         </div>
       </template>

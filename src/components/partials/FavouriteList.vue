@@ -46,7 +46,7 @@
               {{ account && account.label }}
             </p>
             <p class="account-utxo">
-              {{ account && formatAmount(account.utxo, true, 8, 2) }}
+              {{ account && formatAmount(account.utxo, false, 6, 6) }}
             </p>
           </div>
         </template>
@@ -57,7 +57,7 @@
               {{ option.label }}
             </span>
             <span class="amount"
-              >{{ formatAmount(option.utxo, true, 8, 2) }} XST</span
+              >{{ formatAmount(option.utxo, false, 6, 6) }} XST</span
             >
           </div>
         </template>
@@ -74,15 +74,15 @@
         <div>
           <p class="account-name medium bold">{{ acc.label }}</p>
           <p class="medium">
-            {{ formatAmount(Math.abs(acc.utxo, true, 8)) }} XST
+            {{ formatAmount(Math.abs(acc.utxo), false, 6, 6) }} XST
           </p>
           <p class="amount-fiat">
-            ~
+            ~ $
             <template v-if="Number(acc.utxo) * XST_USD_RATE < 1">
-              {{ formatAmount(Math.abs(acc.utxo * XST_USD_RATE), true) }}
+              {{ formatAmount(Math.abs(acc.utxo * XST_USD_RATE), true, 4, 4) }}
             </template>
             <template v-else>
-              {{ formatAmount(Math.abs(acc.utxo * XST_USD_RATE), false) }}
+              {{ formatAmount(Math.abs(acc.utxo * XST_USD_RATE), false, 4, 4) }}
             </template>
             USD
           </p>
