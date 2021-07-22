@@ -34,7 +34,7 @@
                   {{ account && account.label }}
                 </p>
                 <p class="account-utxo">
-                  {{ account && account.utxo }}
+                  {{ account && formatAmount(account.utxo, false, 6, 6) }}
                 </p>
               </div>
             </template>
@@ -44,7 +44,9 @@
                 <span class="option">
                   {{ option.label }}
                 </span>
-                <span class="amount">{{ option.utxo }} XST</span>
+                <span class="amount"
+                  >{{ formatAmount(option.utxo, false, 6, 6) }} XST</span
+                >
               </div>
             </template>
           </StMultiselect>
@@ -111,7 +113,7 @@
               distractionFree: false,
               valueAsInteger: false,
               useGrouping: true,
-              precision: 6,
+              precision: 4,
               allowNegative: false,
             }"
           >
@@ -272,12 +274,14 @@ import { computed, ref } from 'vue';
 import VanillaQR from 'vanillaqr';
 import CryptoService from '@/services/crypto';
 import { useRoute } from 'vue-router';
+import useHelpers from '@/composables/useHelpers';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 
 export default {
   name: 'StReceiveModal',
   setup() {
     const mainStore = useMainStore();
+    const { formatAmount } = useHelpers();
 
     const isVisible = computed(() => {
       return mainStore.modals.receive;
@@ -508,6 +512,7 @@ export default {
 
       form,
       errors,
+      formatAmount,
     };
   },
 };
