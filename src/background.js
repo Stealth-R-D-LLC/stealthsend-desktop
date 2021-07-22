@@ -4,61 +4,23 @@ import { app, BrowserWindow, ipcMain, Menu, protocol, shell } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const os = require('os');
-
-console.log('releaseaaaa', os.type(), os.platform());
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } },
 ]);
 
-// there are differences in OS's because of the toolbars, borders, etc.
-let delta = {
-  linux: {
-    height: 24,
-    width: 0,
-    maxHeight: 24,
-  },
-  mac: {
-    height: 28,
-    width: 0,
-    maxHeight: 28,
-  },
-  windows: {
-    height: 39,
-    width: 16,
-    maxHeight: 59,
-  },
-  other: {
-    height: 0,
-    width: 0,
-    maxHeight: 0,
-  },
-};
-
-function getOs() {
-  const currentOs = os.type().toLowerCase();
-  if (currentOs.includes('linux')) {
-    return 'linux';
-  } else if (currentOs.includes('darwin')) {
-    return 'mac';
-  } else if (currentOs.includes('windows')) {
-    return 'windows';
-  }
-  return 'other';
-}
-
 async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
-    width: 1152 + delta[getOs()].width,
-    height: 700 + delta[getOs()].height,
-    minWidth: 1152 + delta[getOs()].width,
-    minHeight: 700 + delta[getOs()].height,
-    maxWidth: 1600 + delta[getOs()].width,
-    maxHeight: 1200 + delta[getOs()].maxHeight,
+    width: 1152,
+    height: 700,
+    minWidth: 1152,
+    minHeight: 700,
+    maxWidth: 1600,
+    maxHeight: 1200,
     center: true,
+    useContentSize: true,
     maximizable: false,
     fullscreenable: false,
     webPreferences: {
@@ -74,8 +36,8 @@ async function createWindow() {
   // resize the window for the create process
   ipcMain.on('resize:create', () => {
     win.setBounds({
-      width: 1152 + delta[getOs()].width,
-      height: 700 + delta[getOs()].height,
+      width: 1152,
+      height: 700,
       center: true,
       maximizable: false,
     });
@@ -86,12 +48,12 @@ async function createWindow() {
   ipcMain.on('resize:other', () => {
     // can accept event and args
     win.setBounds({
-      width: 1152 + delta[getOs()].width,
-      height: 700 + delta[getOs()].height,
-      minWidth: 1152 + delta[getOs()].width,
-      minHeight: 700 + delta[getOs()].height,
-      maxWidth: 1600 + delta[getOs()].width,
-      maxHeight: 1200 + delta[getOs()].maxHeight,
+      width: 1152,
+      height: 700,
+      minWidth: 1152,
+      minHeight: 700,
+      maxWidth: 1600,
+      maxHeight: 1200,
       center: true,
       maximizable: false,
     });
@@ -102,12 +64,12 @@ async function createWindow() {
   ipcMain.on('resize:menu', () => {
     // can accept event and args
     win.setBounds({
-      width: 1340 + delta[getOs()].width,
-      height: 700 + delta[getOs()].height,
-      minWidth: 1340 + delta[getOs()].width,
-      minHeight: 700 + delta[getOs()].height,
-      maxWidth: 1788 + delta[getOs()].width,
-      maxHeight: 1200 + delta[getOs()].maxHeight,
+      width: 1340,
+      height: 700,
+      minWidth: 1340,
+      minHeight: 700,
+      maxWidth: 1788,
+      maxHeight: 1200,
       center: true,
       maximizable: false,
     });
