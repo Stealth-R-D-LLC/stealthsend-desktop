@@ -33,7 +33,6 @@ Build MacOS:
   artifacts:
     paths:
       - dist_electron/*.dmg
-      - dist_electron/*.pkg
 
 Build Windows:
   script:
