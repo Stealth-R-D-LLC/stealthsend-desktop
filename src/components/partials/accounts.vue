@@ -206,7 +206,9 @@
       </div>
     </div>
     <div class="archived-container">
-      <h4 v-if="!archivedAccounts.length">No archived accounts</h4>
+      <h4 v-if="!archivedAccounts.length" class="no-archived">
+        No archived accounts
+      </h4>
       <h4 v-if="archivedAccounts.length">Archived Accounts</h4>
       <div
         v-if="archivedAccounts.length"
@@ -615,6 +617,11 @@ export default {
   box-sizing: border-box;
 }
 .archived-container h4 {
+  text-align: left;
+  margin-bottom: 28px;
+}
+.archived-container .no-archived {
+  text-align: center;
   margin-bottom: 28px;
 }
 .info-purple path {
