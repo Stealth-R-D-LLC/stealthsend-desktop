@@ -3,7 +3,7 @@
     <StCards :amount="utxo" @change="switcherChange"></StCards>
     <div class="side__accounts">
       <Card
-        v-for="account in accounts"
+        v-for="account in sortedAccounts"
         :key="account.address"
         :account="account"
         :type="step"
@@ -84,6 +84,15 @@ export default {
       return CryptoService.constraints;
     });
 
+    const sortedAccounts = computed(() => {
+      let sortedAccounts = accounts.value;
+      return sortedAccounts
+        .sort((a, b) => a.favouritePosition - b.favouritePosition)
+        .sort((a, b) => {
+          return a.isFavourite === b.isFavourite ? 0 : a.isFavourite ? -1 : 1;
+        });
+    });
+
     const step = ref(0);
     function switcherChange(value) {
       step.value = value;
@@ -108,6 +117,7 @@ export default {
       step,
       utxo,
       constraints,
+      sortedAccounts,
     };
   },
 };
