@@ -580,7 +580,10 @@ export default {
   display: grid;
   grid-template-columns: repeat(4, 4fr);
   grid-gap: 28px 20px;
-  transform: translateY(-60px);
+}
+.active-container__relative {
+  position: relative;
+  top: -60px;
 }
 .card {
   position: relative;
