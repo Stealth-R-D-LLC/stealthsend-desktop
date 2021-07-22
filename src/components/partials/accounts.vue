@@ -204,9 +204,16 @@
         </div>
       </div>
     </div>
-    <div v-if="archivedAccounts.length" class="archived-container">
-      <h4>Archived Accounts</h4>
-      <div class="accounts-container__inner--grid">
+    <div class="archived-container">
+      <h4 v-if="!archivedAccounts.length">No archived accounts</h4>
+      <h4 v-if="archivedAccounts.length">Archived Accounts</h4>
+      <div
+        v-if="archivedAccounts.length"
+        class="accounts-container__inner--grid"
+        :class="{
+          'has-archived': archivedAccounts.length,
+        }"
+      >
         <div
           v-for="(account, index) in archivedAccounts"
           :key="account.address"
@@ -581,6 +588,9 @@ export default {
   grid-template-columns: repeat(4, 4fr);
   grid-gap: 28px 20px;
   transform: translateY(-60px);
+}
+.accounts-container__inner--grid.has-archived {
+  transform: translateY(0);
 }
 .card {
   position: relative;
