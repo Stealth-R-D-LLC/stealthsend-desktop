@@ -508,7 +508,7 @@ export default {
   line-height: 24px;
   letter-spacing: 0.12px;
   color: var(--text);
-  margin: 22px 0;
+  margin: 32px 0 14px;
 }
 
 .st-transaction-list .tx-date .relative {
