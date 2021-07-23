@@ -143,7 +143,7 @@ export default {
 
 <style scoped>
 .notice {
-  padding: 24px;
+  padding: 16px 20px;
   background-color: var(--background100);
   font-family: var(--secondary-font);
   font-size: 12px;

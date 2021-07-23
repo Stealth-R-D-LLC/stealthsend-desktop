@@ -100,8 +100,8 @@ export default {
 
 <style>
 .st-settings-child {
-  padding: 42px 10px 40px 64px;
-  height: calc(100vh - 101px);
+  padding: 42px 10px 33px 64px;
+  height: calc(100vh - 92px);
   width: 100%;
   box-sizing: border-box;
 }
