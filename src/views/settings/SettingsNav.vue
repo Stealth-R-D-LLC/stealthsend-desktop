@@ -158,8 +158,8 @@
           <p class="group-item__desc">View our Privacy Policy</p>
         </router-link>
       </ul>
-      <p class="group-title">
-        <span>Help</span>
+      <div class="group-title">
+        <h6 class="semi-bold">Help</h6>
         <svg
           width="18"
           height="18"
@@ -202,7 +202,7 @@
             stroke-width="2"
           />
         </svg>
-      </p>
+      </div>
       <ul class="group">
         <li class="group-item" @click="goTo('/settings/delete-app-data')">
           <p class="group-item__name">Delete App Data</p>
@@ -319,7 +319,7 @@ export default {
   transition: all 0.2s;
 }
 .group:last-child .group-item {
-  padding-bottom: 40px;
+  padding-bottom: 40px !important;
   border: none;
 }
 .group .group-item:last-child {
