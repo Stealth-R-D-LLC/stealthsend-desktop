@@ -188,37 +188,7 @@
               v-model="form.depositAddress.$value"
               placeholder="Enter address"
               color="dark"
-            >
-              <StTooltip
-                v-if="depositAddress"
-                :tooltip="
-                  copyPending ? 'Copied to clipboard!' : 'Click to copy'
-                "
-                position="bottom-right"
-              >
-                <StClipboard :content="depositAddress" @click="handleCopy">
-                  <svg
-                    width="15"
-                    height="19"
-                    viewBox="0 0 15 19"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10 5.5H1V17.5H10V5.5Z"
-                      stroke="#E5E4E8"
-                      stroke-width="2"
-                    />
-                    <path
-                      d="M14 14.5L14 0.500013"
-                      stroke="#E5E4E8"
-                      stroke-width="2"
-                    />
-                    <path d="M2 1.5L14 1.5" stroke="#E5E4E8" stroke-width="2" />
-                  </svg>
-                </StClipboard>
-              </StTooltip>
-            </StInput>
+            />
           </StFormItem>
         </div>
         <div class="form-item">
