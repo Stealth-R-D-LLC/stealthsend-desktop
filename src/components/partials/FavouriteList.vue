@@ -329,7 +329,7 @@ export default {
 .accounts-list {
   margin-top: 44px;
   overflow: auto;
-  max-height: calc(100vh - 280px);
+  max-height: calc(100vh - 265px);
   width: calc(100% + 5px);
   padding-right: 18px;
 }
@@ -403,5 +403,11 @@ export default {
   left: 0;
   right: 0;
   text-align: left;
+}
+:deep .multiselect__tags {
+  min-height: 50.5px;
+}
+:deep .multiselect__content-wrapper {
+  padding-top: 65px;
 }
 </style>
