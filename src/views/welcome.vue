@@ -2501,13 +2501,7 @@ export default {
         await wait(1000);
         isLoading.value = false;
         CryptoService.unlock(password.value);
-        /* setTimeout(() => {
-          isLoading.value = true;
-          setTimeout(() => {
-            isLoading.value = false;
-            CryptoService.unlock(password.value);
-          }, 4000);
-        }, 350); */
+        window.ipc.send('resize:other');
         // goToDashboard();
         resetFields();
       } catch (e) {
@@ -2568,6 +2562,7 @@ export default {
         isLoading.value = true;
         setTimeout(() => {
           isLoading.value = false;
+          window.ipc.send('resize:other');
           goToDashboard();
         }, 4000);
       }, 350);
