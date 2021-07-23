@@ -290,4 +290,7 @@ export default {
 .transactions-table :deep td:nth-child(7) {
   width: 121px;
 }
+:deep .overflow {
+  height: calc(100vh - 250px);
+}
 </style>
