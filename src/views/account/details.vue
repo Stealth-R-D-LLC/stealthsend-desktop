@@ -270,7 +270,9 @@ export default {
       getData();
     });
     emitter.on('transactions:refresh', () => {
-      getData();
+      setTimeout(() => {
+        getData();
+      }, 5000);
     });
     return {
       account,
@@ -302,12 +304,12 @@ export default {
   padding: 22px 28px 18px;
 }
 .account-details-container__body {
-  padding: 24px 10px 24px 24px;
+  padding: 24px 10px 0 24px;
   background: #ffffff;
 }
 .account-details-container__body--overflow {
   overflow: auto;
-  height: calc(100vh - 252px);
+  height: calc(100vh - 227px);
   width: calc(100% - 14px);
   padding-right: 14px;
   overflow-x: hidden;
