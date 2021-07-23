@@ -9,10 +9,10 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } },
 ]);
-
+let win = {}
 async function createWindow() {
   // Create the browser window.
-  const win = new BrowserWindow({
+   win = new BrowserWindow({
     width: 1152,
     height: 700,
     minWidth: 1152,
@@ -138,6 +138,16 @@ app.on('window-all-closed', () => {
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
     app.quit();
+  } else {
+    var forceQuit = false;
+    app.on('before-quit', function() {
+      forceQuit = true;
+    });
+    win.on('close', function(event) {
+      if (!forceQuit) {
+        event.preventDefault();
+      }
+    });
   }
 });
 
