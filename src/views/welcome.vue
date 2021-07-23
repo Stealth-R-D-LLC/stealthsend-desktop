@@ -1,7 +1,7 @@
 <template>
   <div class="welcome">
     <div class="left" :class="{ 'left-active': isAccount || isRecovery }">
-      <!-- <img src="@/assets/welcome.png" alt="welcome" /> -->
+      <!-- <img class="bgImage" src="@/assets/animationFrame.png" alt="welcome" /> -->
       <video
         id="bgAnimation"
         width="320"
@@ -2717,6 +2717,20 @@ export default {
   min-height: 158px;
   max-width: 197px;
   margin: 0 0 20px !important;
+}
+.left .bgImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left;
+  z-index: -3;
+  pointer-events: none;
 }
 .left video {
   position: absolute;
