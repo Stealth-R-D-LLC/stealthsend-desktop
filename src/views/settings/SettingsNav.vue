@@ -274,6 +274,9 @@ export default {
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid var(--grey100);
+  margin: 16px 0 16px 0;
+}
+.group-title:first-child {
   margin: 20px 0 16px 0;
 }
 .group-title h6 {
@@ -317,6 +320,10 @@ export default {
 }
 .group:last-child .group-item {
   padding-bottom: 40px;
+  border: none;
+}
+.group .group-item:last-child {
+  padding-bottom: 0;
   border: none;
 }
 </style>

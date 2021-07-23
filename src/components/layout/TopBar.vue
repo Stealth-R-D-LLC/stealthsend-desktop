@@ -1142,6 +1142,9 @@ export default {
   width: calc(100% - 392px);
   margin-left: auto;
 }
+.layout__header--settings .layout__header {
+  padding: 43px 0 22px !important;
+}
 .layout__header--is-grey {
   background: var(--background100);
 }

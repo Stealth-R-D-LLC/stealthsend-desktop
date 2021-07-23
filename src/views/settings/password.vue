@@ -210,7 +210,7 @@ export default {
   max-width: 424px;
 }
 .notice {
-  padding: 24px;
+  padding: 16px 20px;
   background-color: var(--background100);
   font-family: var(--secondary-font);
   font-size: 12px;
@@ -230,5 +230,11 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+:deep .st-input input {
+  padding: 4px 0 2.5px;
+}
+:deep .st-form-item:last-child {
+  margin-bottom: 0;
 }
 </style>
