@@ -348,7 +348,7 @@ export default {
   flex-direction: column;
   overflow: auto;
   width: 100%;
-  height: calc(100vh - 85px);
+  height: calc(100vh - 64px);
   padding-right: 18px;
 }
 .body::-webkit-scrollbar {
