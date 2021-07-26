@@ -1,7 +1,7 @@
 <template>
   <div class="lock-container">
-    <!-- <img src="@/assets/welcome.png" alt="welcome" /> -->
     <video
+      id="bgAnimation"
       width="320"
       height="240"
       poster="@/assets/animationFrame.png"
@@ -10,7 +10,7 @@
     >
       <source src="backgroundAnimation.mp4" type="video/mp4" />
     </video>
-    <div class="overlay"></div>
+    <div v-if="isVideoLoaded" class="overlay" />
     <div class="lock-container__inner">
       <svg
         v-if="isLock"
@@ -28,13 +28,7 @@
           fill="white"
         />
       </svg>
-      <lottie
-        v-else
-        :options="lottieOptions"
-        :height="158"
-        class="logo"
-        @animCreated="handleAnimation"
-      />
+      <img v-else class="logo" src="@/assets/logo.gif" alt="welcome" />
 
       <div class="box" :class="{ 'box-animated': isAnimated }">
         <template v-if="isAnimated">
@@ -192,15 +186,15 @@ import router from '@/router';
 import CryptoService from '@/services/crypto';
 import { useValidation } from 'vue3-form-validation';
 import db from '@/db';
-import Lottie from 'vue-lottie/src/lottie.vue';
-import * as animationData from '@/assets/animation/logo.json';
+/* import Lottie from 'vue-lottie/src/lottie.vue'; */
+/* import * as animationData from '@/assets/animation/logo.json'; */
 import { useMainStore } from '@/store';
 
 export default {
   name: 'StLock',
-  components: {
+  /* components: {
     Lottie,
-  },
+  }, */
   setup() {
     const isAnimated = ref(false);
     const password = ref('');
@@ -210,13 +204,14 @@ export default {
     const timeout = ref(null);
     const counterTimeout = ref(null);
     const counter = ref(6);
-    const animation = ref(null); // for saving the reference to the animation
+    const isVideoLoaded = ref(false);
+    /* const animation = ref(null); // for saving the reference to the animation
     const lottieOptions = ref({
       animationData: animationData.default,
       render: 'svg',
       loop: false,
       autoplay: true,
-    });
+    }); */
 
     const mainStore = useMainStore();
 
@@ -249,6 +244,11 @@ export default {
     });
 
     onMounted(() => {
+      let video = document.getElementById('bgAnimation');
+      video.addEventListener('loadeddata', () => {
+        isVideoLoaded.value = true;
+        setTimeout(() => mainStore.SET_IS_LOCK(true), 3180);
+      });
       mainStore.TOGGLE_DRAWER(false);
       mainStore.SET_OFF_CANVAS_DATA(null);
       if (isLock.value) {
@@ -312,9 +312,9 @@ export default {
       forgotPassword.value = false;
     }
 
-    function handleAnimation(anim) {
+    /* function handleAnimation(anim) {
       animation.value = anim;
-    }
+    } */
 
     return {
       counter,
@@ -327,9 +327,10 @@ export default {
       password,
       validatePassword,
       form,
-      handleAnimation,
-      lottieOptions,
+      /* handleAnimation,
+      lottieOptions, */
       isLock,
+      isVideoLoaded,
     };
   },
 };
@@ -350,8 +351,7 @@ export default {
   height: 100vh;
   width: 100%;
 }
-.lock-container video,
-.lock-container img {
+.lock-container video {
   position: absolute;
   top: 0;
   left: 0;
@@ -400,7 +400,7 @@ export default {
 .logo {
   min-height: 158px;
   max-width: 197px;
-  margin: 0 0 20px;
+  margin: -2px 0 0;
 }
 .lock-container .box-animated {
   height: 100%;
