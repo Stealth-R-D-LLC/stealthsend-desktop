@@ -306,7 +306,7 @@
             @click="toggleDrawer('favourite-list')"
             class="favourite-list"
             width="24"
-            height="25"
+            height="24"
             viewBox="0 0 24 25"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -1132,7 +1132,6 @@ export default {
 
 <style scoped>
 .layout__header {
-  min-height: 26px;
   border-bottom: 1px solid var(--grey100);
   display: flex;
   justify-content: space-between;
@@ -1150,7 +1149,7 @@ export default {
 }
 .layout__header--is-grey .layout__header {
   margin: 0 24px;
-  padding: 43px 0 29px;
+  padding: 41px 0 26px;
 }
 .header-left,
 .header-right {
@@ -1163,6 +1162,7 @@ export default {
 }
 .header-right {
   justify-content: flex-end;
+  min-height: 24px;
 }
 
 .header-left div + div,
