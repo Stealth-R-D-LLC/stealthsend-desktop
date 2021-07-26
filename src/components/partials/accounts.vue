@@ -157,7 +157,40 @@
                   >
                 </li>
                 <li>
-                  <a @click="archiveAccount(account)">Archive Account</a>
+                  <a @click="openArchiveAccountModal()">Archive Account</a>
+                  <StModal
+                    light
+                    :visible="archiveAccountModal"
+                    @close="archiveAccountModal = false"
+                  >
+                    <template #header>Archive Account</template>
+                    <template #body>
+                      <div class="archive-account">
+                        <div class="archive-account__content">
+                          <div class="desc">
+                            <p>
+                              Archive an account if you don't need to use it for a long time. Archived accounts
+                              are not monitored, and you cannot work with them while they are archived.
+                            </p>
+                          </div>
+                          <p>
+                            The account "{{ account.label }}" will be archived and available in your Archive. To activate archived accounts go to your Archive, select an account and activate.
+                          </p>
+                        </div>
+                      </div>
+                    </template>
+                    <template #footer>
+                      <div class="archive-account__actions">
+                        <div class="buttons">
+                          <StButton type="type-b" @click="archiveAccountModal = false">Cancel</StButton>
+                          <StButton
+                            @click="archiveAccount(account)"
+                          >Archive</StButton
+                          >
+                        </div>
+                      </div>
+                    </template>
+                  </StModal>
                 </li>
                 <li>
                   <a @click="openAccountDetails(account)">View Account</a>
@@ -202,7 +235,7 @@
                       >Cancel</StButton
                     >
                     <StButton @click="changeAccountName(account)"
-                      >Submit</StButton
+                      >Save</StButton
                     >
                   </template>
                 </StModal>
@@ -315,7 +348,34 @@
               </svg>
               <ul>
                 <li>
-                  <a @click="activateAccount(account)">Activate Account</a>
+                  <a @click="openActivateAccountModal(account)">Activate Account</a>
+                  <StModal
+                    light
+                    :visible="activateAccountModal"
+                    @close="activateAccountModal = false"
+                  >
+                    <template #header>Archive Account</template>
+                    <template #body>
+                      <div class="activate-account">
+                        <div class="activate-account__content">
+                          <p>
+                            Activate and return "{{ account.label }}" to Active Accounts.
+                          </p>
+                        </div>
+                      </div>
+                    </template>
+                    <template #footer>
+                      <div class="activate-account__actions">
+                        <div class="buttons">
+                          <StButton type="type-b" @click="activateAccountModal = false">Cancel</StButton>
+                          <StButton
+                            @click="activateAccount(account)"
+                          >Activate</StButton
+                          >
+                        </div>
+                      </div>
+                    </template>
+                  </StModal>
                 </li>
                 <li>
                   <a @click="openEditAccountNameModal(account)"
@@ -357,7 +417,7 @@
                       >Cancel</StButton
                     >
                     <StButton @click="changeAccountName(account)"
-                      >Submit</StButton
+                      >Save</StButton
                     >
                   </template>
                 </StModal>
@@ -395,6 +455,8 @@ export default {
     const accountName = ref('');
     const { formatAmount } = useHelpers();
     let editAccountNameModal = ref(false);
+    let activateAccountModal = ref(false);
+    let archiveAccountModal = ref(false);
     let accounts = ref([]);
 
     const {
@@ -436,6 +498,12 @@ export default {
     const XST_USD_RATE = computed(() => {
       return CryptoService.constraints.XST_USD || 1;
     });
+    function openActivateAccountModal() {
+      activateAccountModal.value = true;
+    }
+    function openArchiveAccountModal() {
+      archiveAccountModal.value = true;
+    }
     function toggleAccountOptions(name) {
       accountOptions.value = name;
     }
@@ -454,11 +522,13 @@ export default {
       emitter.emit('accounts:refresh');
     }
     async function archiveAccount(account) {
+      archiveAccountModal.value = false;
       await CryptoService.archiveAccount(account);
       accountOptions.value = '';
       emitter.emit('accounts:refresh');
     }
     async function activateAccount(account) {
+      activateAccountModal.value = false;
       await CryptoService.activateAccount(account);
       accountOptions.value = '';
       emitter.emit('accounts:refresh');
@@ -537,6 +607,8 @@ export default {
       accountOptions,
       accountName,
       editAccountNameModal,
+      archiveAccountModal,
+      activateAccountModal,
 
       // methods
       toggleAccountOptions,
@@ -548,6 +620,8 @@ export default {
       openReceiveModal,
       favouriteAccount,
       unfavouriteAccount,
+      openArchiveAccountModal,
+      openActivateAccountModal,
 
       formatAmount,
       XST_USD_RATE,
@@ -725,10 +799,25 @@ export default {
 .amount-container {
   margin: 24px 0;
 }
+.archive-account__actions, .activate-account__actions {
+  width: 100%;
+}
+.archive-account__actions .buttons, .activate-account__actions .buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+}
 .currency {
   font-size: 16px;
   line-height: 24px;
   letter-spacing: 0.12px;
+}
+.archive-account .desc {
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: var(--background100);
+  border-radius: 4px;
 }
 .grey {
   color: var(--grey500);
