@@ -1,7 +1,7 @@
 <template>
   <div class="transaction-details">
     <div class="top">
-      <h6>Transaction details</h6>
+      <h6>Transaction Details</h6>
       <div class="icons">
         <svg
           width="20"
@@ -71,7 +71,7 @@
           <StInput
             class="edit-label-input"
             v-model="form.label.$value"
-            placeholder="Please enter label"
+            placeholder="Please enter label text"
           ></StInput>
           <template #description>
             <span
@@ -80,7 +80,7 @@
               >Label too long</span
             >
             <span v-else
-              >Edit transaction label for better personal accounting</span
+              >Label your transaction</span
             >
           </template>
         </StFormItem>

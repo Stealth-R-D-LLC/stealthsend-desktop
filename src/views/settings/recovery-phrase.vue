@@ -28,7 +28,7 @@
     </StModal>
     <div class="st-settings-child__overflow">
       <h6 v-if="currentStep < 4 && !checkMnemonic" class="title">
-        Recovery Phrase Backup
+        Recovery Phrase
       </h6>
       <h6 v-if="checkMnemonic && currentStep !== 4" class="title">
         Checking Recovery Phrase
@@ -39,7 +39,7 @@
       <h6 v-if="currentStep === 4 && !isValidMnemonic" class="title">Error</h6>
       <template v-if="!checkMnemonic">
         <p v-if="currentStep === 1" class="subtitle">
-          View and store your Recovery Phrase offline
+          Backup your Recovery Phrase
         </p>
         <p v-else-if="currentStep === 2" class="subtitle">
           Carefully record all {{ walletMnemonic.length }} words
@@ -68,7 +68,7 @@
         <!-- RECOVERY PHRASE STEP 1 -->
         <template v-if="currentStep === 1">
           <div class="grey-box">
-            <p class="info bold">Important note</p>
+            <p class="info bold">Notice</p>
             <p class="info">
               You are about to backup the Recovery Phrase of your StealthSend
               application.
@@ -143,7 +143,7 @@
               <StInput
                 id="mnemonic"
                 v-model="mnemonic"
-                placeholder="Please enter word"
+                :placeholder="`Enter ${selectedMnemonic.length + 1}. word`"
                 @keyup.enter="selectWord(mnemonic)"
               >
                 <svg
