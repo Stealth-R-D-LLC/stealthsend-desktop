@@ -337,7 +337,6 @@ export default {
 }
 .item .item-link {
   word-break: break-all;
-  font-weight: 700;
   color: var(--marine500);
 }
 .item p svg {
@@ -370,6 +369,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 15px;
 }
 
 .pointer {
