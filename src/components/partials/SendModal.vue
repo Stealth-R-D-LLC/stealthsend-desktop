@@ -353,7 +353,7 @@
         <StButton @click="validateSecondStep" type="type-d">Proceed</StButton>
       </template>
       <template v-if="currentStep === 3">
-        <StButton type="type-d" @click="prepareSend">Confirm payment</StButton>
+        <StButton type="type-d" @click="prepareSend">Confirm Payment</StButton>
       </template>
       <template v-if="currentStep === 4">
         <StButton type="type-d" @click="cancelSend">Cancel</StButton>
