@@ -528,9 +528,13 @@ export default {
       mainStore.SET_ACCOUNT_DETAILS(account);
     }
     async function favouriteAccount(account) {
-      await CryptoService.favouriteAccount(account);
-      accountOptions.value = '';
-      emitter.emit('accounts:refresh');
+      if (account.utxo > 0) {
+        await CryptoService.favouriteAccount(account);
+        accountOptions.value = '';
+        emitter.emit('accounts:refresh');
+      } else {
+        accountOptions.value = '';
+      }
     }
     async function unfavouriteAccount(account) {
       await CryptoService.unfavouriteAccount(account);
