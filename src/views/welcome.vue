@@ -70,14 +70,14 @@
                     World’s first feeless,<br />private high performance<br />blockchain
                     protocol
                   </h3>
-                  <div class="app-version">StealthSend, v{{ version }}</div>
+                  <div class="app-version">StealthSend v{{ version }}</div>
                 </template>
                 <template v-if="isRecovery">
                   <h3 class="title">
                     World’s first feeless,<br />private high performance<br />blockchain
                     protocol
                   </h3>
-                  <div class="app-version">StealthSend, v{{ version }}</div>
+                  <div class="app-version">StealthSend v{{ version }}</div>
                 </template>
                 <template v-if="!isAccountFinished">
                   <div v-if="!isAccount && !isRecovery">
