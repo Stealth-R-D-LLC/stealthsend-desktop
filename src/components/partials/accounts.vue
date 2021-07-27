@@ -906,16 +906,23 @@ svg {
   bottom: 33px;
 }
 
-:deep .st-modal--container__archive-account .st-modal-container, :deep .st-modal--container__activate-account .st-modal-container  {
+:deep .st-modal--container__archive-account .st-modal-container,
+:deep .st-modal--container__activate-account .st-modal-container {
   min-height: 520px;
   width: 480px;
   box-sizing: border-box;
 }
 
-:deep .st-modal--container__archive-account .st-modal-container .st-modal__footer, :deep .st-modal--container__activate-account .st-modal-container .st-modal__footer {
+:deep
+  .st-modal--container__archive-account
+  .st-modal-container
+  .st-modal__footer,
+:deep
+  .st-modal--container__activate-account
+  .st-modal-container
+  .st-modal__footer {
   position: absolute;
   bottom: 32px;
   width: 416px;
 }
-
 </style>
