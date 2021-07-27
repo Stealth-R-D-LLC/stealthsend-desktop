@@ -237,6 +237,9 @@ export default {
 </script>
 
 <style scoped>
+:deep .layout__header {
+  padding: 39px 0 26px;
+}
 .controls {
   margin: 14px 24px 0;
   display: grid;
