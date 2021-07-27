@@ -169,12 +169,17 @@
                         <div class="archive-account__content">
                           <div class="desc">
                             <p>
-                              Archive an account if you don't need to use it for a long time. Archived accounts
-                              are not monitored, and you cannot work with them while they are archived.
+                              Archive an account if you don't need to use it for
+                              a long time. Archived accounts are not monitored,
+                              and you cannot work with them while they are
+                              archived.
                             </p>
                           </div>
                           <p>
-                            The account "{{ account.label }}" will be archived and available in your Archive. To activate archived accounts go to your Archive, select an account and activate.
+                            The account "{{ account.label }}" will be archived
+                            and available in your Archive. To activate archived
+                            accounts go to your Archive, select an account and
+                            activate.
                           </p>
                         </div>
                       </div>
@@ -182,10 +187,13 @@
                     <template #footer>
                       <div class="archive-account__actions">
                         <div class="buttons">
-                          <StButton type="type-b" @click="archiveAccountModal = false">Cancel</StButton>
                           <StButton
-                            @click="archiveAccount(account)"
-                          >Archive</StButton
+                            type="type-b"
+                            @click="archiveAccountModal = false"
+                            >Cancel</StButton
+                          >
+                          <StButton @click="archiveAccount(account)"
+                            >Archive</StButton
                           >
                         </div>
                       </div>
@@ -348,7 +356,9 @@
               </svg>
               <ul>
                 <li>
-                  <a @click="openActivateAccountModal(account)">Activate Account</a>
+                  <a @click="openActivateAccountModal(account)"
+                    >Activate Account</a
+                  >
                   <StModal
                     light
                     :visible="activateAccountModal"
@@ -359,7 +369,8 @@
                       <div class="activate-account">
                         <div class="activate-account__content">
                           <p>
-                            Activate and return "{{ account.label }}" to Active Accounts.
+                            Activate and return "{{ account.label }}" to Active
+                            Accounts.
                           </p>
                         </div>
                       </div>
@@ -367,10 +378,13 @@
                     <template #footer>
                       <div class="activate-account__actions">
                         <div class="buttons">
-                          <StButton type="type-b" @click="activateAccountModal = false">Cancel</StButton>
                           <StButton
-                            @click="activateAccount(account)"
-                          >Activate</StButton
+                            type="type-b"
+                            @click="activateAccountModal = false"
+                            >Cancel</StButton
+                          >
+                          <StButton @click="activateAccount(account)"
+                            >Activate</StButton
                           >
                         </div>
                       </div>
@@ -799,10 +813,12 @@ export default {
 .amount-container {
   margin: 24px 0;
 }
-.archive-account__actions, .activate-account__actions {
+.archive-account__actions,
+.activate-account__actions {
   width: 100%;
 }
-.archive-account__actions .buttons, .activate-account__actions .buttons {
+.archive-account__actions .buttons,
+.activate-account__actions .buttons {
   display: flex;
   align-items: center;
   justify-content: space-between;

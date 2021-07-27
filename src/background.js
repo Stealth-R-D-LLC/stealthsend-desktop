@@ -1,6 +1,14 @@
 'use strict';
 
-import { app, BrowserWindow, ipcMain, Menu, protocol, shell, globalShortcut } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  ipcMain,
+  Menu,
+  protocol,
+  shell,
+  globalShortcut,
+} from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -181,7 +189,7 @@ app.on('will-quit', () => {
   if (process.platform === 'darwin') {
     globalShortcut.unregister('Command+Q');
   }
-})
+});
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {

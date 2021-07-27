@@ -79,9 +79,7 @@
               class="error"
               >Label too long</span
             >
-            <span v-else
-              >Label your transaction</span
-            >
+            <span v-else>Label your transaction</span>
           </template>
         </StFormItem>
       </div>

@@ -14,9 +14,9 @@
       </div>
       <div class="content">
         <p class="notice">
-          <span class="bold">Notice:</span> Please be aware that if you
-          lose your password, the only access to your account will be through
-          the use of your Recovery Phrase.
+          <span class="bold">Notice:</span> Please be aware that if you lose
+          your password, the only access to your account will be through the use
+          of your Recovery Phrase.
         </p>
         <div class="set-password-container">
           <StFormItem
