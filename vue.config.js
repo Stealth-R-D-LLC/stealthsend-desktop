@@ -29,7 +29,7 @@ module.exports = {
         "appId": "org.stealthsend.desktop",
         "productName": "StealthSend",
         "copyright": "Copyright © 2021 ${author}",
-        /* "afterSign": "scripts/notarize.js", */
+        "afterSign": "scripts/notarize.js",
         "dmg": {
           "sign": false
         },
