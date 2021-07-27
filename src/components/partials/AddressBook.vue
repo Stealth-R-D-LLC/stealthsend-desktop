@@ -79,7 +79,7 @@
                 class="address-list__inner--redirect"
                 @click="prePopulateForm(item)"
               >
-                <p>
+                <p class="address-list__description">
                   <span class="bold medium">{{ item.name }}</span
                   ><span v-if="item.description"
                     >, {{ formatDescriptionString(item.description) }}</span
@@ -102,7 +102,7 @@
                 class="address-list__inner--redirect"
                 @click="prePopulateForm(item)"
               >
-                <p>
+                <p class="address-list__description">
                   <span class="bold medium">{{ item.name }}</span
                   >, {{ formatDescriptionString(item.description) }}
                 </p>
@@ -1002,5 +1002,9 @@ svg:hover circle {
 
 :deep .st-form-item__readonly .label {
   color: var(--grey1000);
+}
+
+.address-list__description {
+  font-size: 14px;
 }
 </style>
