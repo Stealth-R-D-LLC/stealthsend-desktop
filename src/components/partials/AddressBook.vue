@@ -81,7 +81,9 @@
               >
                 <p>
                   <span class="bold medium">{{ item.name }}</span
-                  ><span v-if="item.description">, {{ formatDescriptionString(item.description) }}</span>
+                  ><span v-if="item.description"
+                    >, {{ formatDescriptionString(item.description) }}</span
+                  >
                 </p>
                 <p class="medium">{{ item.address }}</p>
               </div>
@@ -678,7 +680,11 @@ export default {
     async function filterAlphabetically() {
       const addresses = await CryptoService.getAddressBook();
       addressList.value = addresses.sort((a, b) =>
-        a.name.toUpperCase() > b.name.toUpperCase() ? 1 : b.name.toUpperCase() > a.name.toUpperCase() ? -1 : 0
+        a.name.toUpperCase() > b.name.toUpperCase()
+          ? 1
+          : b.name.toUpperCase() > a.name.toUpperCase()
+          ? -1
+          : 0
       );
     }
 
@@ -792,7 +798,7 @@ export default {
 
     function formatDescriptionString(description) {
       if (description.length > 28) {
-        return `${description.slice(0, 27)}...`
+        return `${description.slice(0, 27)}...`;
       } else {
         return description;
       }
