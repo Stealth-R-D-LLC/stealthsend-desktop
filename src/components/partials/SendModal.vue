@@ -25,6 +25,22 @@
       <template v-if="currentStep === 7">Warning</template>
     </template>
     <template #body>
+      <StModal
+        v-show="isScaning"
+        class="qr-modal"
+        @close="isScaning = false"
+        :has-click-outside="false"
+        :visible="currentStep === 2"
+      >
+        <template #header>QR Code Scanner</template>
+        <template #body>
+          <div class="stream">
+            <qr-stream @decode="onDecode" class="mb">
+              <div class="frame" />
+            </qr-stream>
+          </div>
+        </template>
+      </StModal>
       <template v-if="currentStep === 1">
         <StFormItem
           color="dark"
@@ -188,7 +204,27 @@
               v-model="form.depositAddress.$value"
               placeholder="Enter address"
               color="dark"
-            />
+            >
+              <svg
+                @click="startScanner"
+                width="18"
+                height="18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  clip-rule="evenodd"
+                  d="M7 7H1V1h6v6z"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M11 0v3h3V1h3v4M7 18v-2H4v1H1v-3M11 18v-2h3v1h3v-3M11 13H7v-2H4M10 7h8M14 9v2h3V9M1 10v2M11 9v1.636"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+              </svg>
+            </StInput>
           </StFormItem>
         </div>
         <div class="form-item">
@@ -381,6 +417,7 @@ import { useValidation, ValidationError } from 'vue3-form-validation';
 import { useRoute } from 'vue-router';
 import { format, add, subtract } from 'mathjs';
 import emitter from '@/services/emitter';
+import { QrStream } from 'vue3-qr-reader';
 
 const sumOf = (x = 0, y = 0) => {
   let sum = add(x, y);
@@ -389,6 +426,9 @@ const sumOf = (x = 0, y = 0) => {
 };
 export default {
   name: 'StSendModal',
+  components: {
+    QrStream,
+  },
   setup() {
     const mainStore = useMainStore();
     const { formatAmount } = useHelpers();
@@ -406,6 +446,8 @@ export default {
     const counterTimeout = ref(null);
     const sendTimeout = ref(null);
     const label = ref('');
+    const isScaning = ref(false);
+    const QRData = ref(null);
 
     const pickedAccount = computed(() => {
       return mainStore.accountDetails;
@@ -765,6 +807,33 @@ export default {
       }
     }
 
+    /* function onScanSuccess(decodedText, decodedResult) {
+      // handle the scanned code as you like, for example:
+      console.log(`Code matched = ${decodedText}`, decodedResult);
+    }
+
+    function onScanFailure(error) {
+      // handle scan failure, usually better to ignore and keep scanning.
+      // for example:
+      console.warn(`Code scan error = ${error}`);
+    } */
+
+    async function startScanner() {
+      QRData.value = null;
+      isScaning.value = true;
+      // eslint-disable-next-line no-undef
+      /* let html5QrcodeScanner = new Html5QrcodeScanner("qrCodeScaner", { fps: 10, qrbox: 250 }, true);
+      html5QrcodeScanner.render(onScanSuccess, onScanFailure); */
+    }
+
+    function onDecode(data) {
+      QRData.value = data;
+      if (QRData.value) {
+        isScaning.value = false;
+        form.depositAddress.$value = data.split('?')[0];
+      }
+    }
+
     function preventRemove(acc) {
       setTimeout(() => {
         account.value = acc;
@@ -797,12 +866,16 @@ export default {
       prepareSend,
       cancelSend,
       formatValue,
+      startScanner,
+      isScaning,
 
       send,
       getUnspentOutputs,
       formatAmount,
       counter,
       minimumXSTForSend,
+      QRData,
+      onDecode,
 
       form,
       errors,
@@ -983,5 +1056,22 @@ export default {
 }
 .flex-space-between .amount {
   white-space: nowrap;
+}
+.qr-modal {
+  backdrop-filter: blur(0px) !important;
+  background-color: transparent !important;
+}
+.qr-modal .st-modal-wrapper .st-modal-container .st-modal__body {
+  height: 100%;
+}
+.qr-stream-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.frame {
+  border: 2px solid var(--marine500);
+  width: 200px;
+  height: 200px;
 }
 </style>

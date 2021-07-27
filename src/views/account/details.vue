@@ -453,4 +453,8 @@ export default {
 :deep .move-left {
   transform: translateX(-65px) !important;
 }
+:deep .button-normal {
+  padding: 5px 10px;
+  width: 120px;
+}
 </style>
