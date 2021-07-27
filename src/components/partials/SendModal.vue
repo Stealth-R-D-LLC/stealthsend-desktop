@@ -202,7 +202,7 @@
           >
             <StInput
               v-model="form.depositAddress.$value"
-              placeholder="Enter address"
+              placeholder="Enter a valid XST address"
               color="dark"
             >
               <svg
