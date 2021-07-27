@@ -418,7 +418,11 @@
         class="account-modal"
       >
         <template #header>{{
-          checkPassword ? 'Password Required' : ( account.isImported ? 'Account Keys' : 'Account Key')
+          checkPassword
+            ? 'Password Required'
+            : account.isImported
+            ? 'Account Keys'
+            : 'Account Key'
         }}</template>
         <template #body>
           <div v-if="!checkPassword" class="account-tabs">
