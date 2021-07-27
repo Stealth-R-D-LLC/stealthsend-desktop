@@ -29,7 +29,7 @@ module.exports = {
         "appId": "org.stealthsend.desktop",
         "productName": "StealthSend",
         "copyright": "Copyright © 2021 ${author}",
-        "afterSign": "scripts/notarize.js",
+        /* "afterSign": "scripts/notarize.js", */
         "dmg": {
           "sign": false
         },
@@ -49,9 +49,13 @@ module.exports = {
           "icon": "src/assets/icon.icns",
           "type": "distribution",
           "entitlements": "build/entitlements.mac.plist",
+          "entitlementsInherit": "build/entitlements.mac.plist",
           "extendInfo": {
             "NSCameraUsageDescription": "This app requires camera access to record video.",
-            "NSMicrophoneUsageDescription": "This app requires microphone access to record audio."
+            "NSMicrophoneUsageDescription": "This app requires microphone access to record audio.",
+            "NSAppTransportSecurity": {
+              "NSAllowsArbitraryLoads": true
+            }
           },
         }
       },
