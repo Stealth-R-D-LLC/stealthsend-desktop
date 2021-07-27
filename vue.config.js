@@ -48,6 +48,7 @@ module.exports = {
           "target": ['dmg'],
           "icon": "src/assets/icon.icns",
           "type": "distribution",
+          "entitlements": "build/entitlements.mac.plist",
           "extendInfo": {
             "NSCameraUsageDescription": "This app requires camera access to record video.",
             "NSMicrophoneUsageDescription": "This app requires microphone access to record audio."
