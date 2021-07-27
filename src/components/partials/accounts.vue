@@ -162,6 +162,7 @@
                     light
                     :visible="archiveAccountModal"
                     @close="archiveAccountModal = false"
+                    class="st-modal--container__archive-account"
                   >
                     <template #header>Archive Account</template>
                     <template #body>
@@ -363,8 +364,9 @@
                     light
                     :visible="activateAccountModal"
                     @close="activateAccountModal = false"
+                    class="st-modal--container__activate-account"
                   >
-                    <template #header>Archive Account</template>
+                    <template #header>Activate Account</template>
                     <template #body>
                       <div class="activate-account">
                         <div class="activate-account__content">
@@ -903,4 +905,17 @@ svg {
   right: 20px;
   bottom: 33px;
 }
+
+:deep .st-modal--container__archive-account .st-modal-container, :deep .st-modal--container__activate-account .st-modal-container  {
+  min-height: 520px;
+  width: 480px;
+  box-sizing: border-box;
+}
+
+:deep .st-modal--container__archive-account .st-modal-container .st-modal__footer, :deep .st-modal--container__activate-account .st-modal-container .st-modal__footer {
+  position: absolute;
+  bottom: 32px;
+  width: 416px;
+}
+
 </style>
