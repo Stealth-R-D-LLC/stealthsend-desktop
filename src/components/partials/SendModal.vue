@@ -807,30 +807,18 @@ export default {
       }
     }
 
-    /* function onScanSuccess(decodedText, decodedResult) {
-      // handle the scanned code as you like, for example:
-      console.log(`Code matched = ${decodedText}`, decodedResult);
-    }
-
-    function onScanFailure(error) {
-      // handle scan failure, usually better to ignore and keep scanning.
-      // for example:
-      console.warn(`Code scan error = ${error}`);
-    } */
-
-    async function startScanner() {
+    function startScanner() {
       QRData.value = null;
       isScaning.value = true;
-      // eslint-disable-next-line no-undef
-      /* let html5QrcodeScanner = new Html5QrcodeScanner("qrCodeScaner", { fps: 10, qrbox: 250 }, true);
-      html5QrcodeScanner.render(onScanSuccess, onScanFailure); */
+      form.depositAddress.$value = '';
     }
 
     function onDecode(data) {
       QRData.value = data;
       if (QRData.value) {
         isScaning.value = false;
-        form.depositAddress.$value = data.split('?')[0];
+        let address = QRData.value.split('?')[0].replace(/[^a-z0-9]/gi, '');
+        form.depositAddress.$value = address;
       }
     }
 
