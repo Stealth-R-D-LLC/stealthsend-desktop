@@ -48,6 +48,10 @@ module.exports = {
           "target": ['dmg'],
           "icon": "src/assets/icon.icns",
           "type": "distribution",
+          "extendInfo": {
+            "NSCameraUsageDescription": "This app requires camera access to record video.",
+          },
+          "hardenedRuntime": false
         }
       },
       // nodeIntegration: true,

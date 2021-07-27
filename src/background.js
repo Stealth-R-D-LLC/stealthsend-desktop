@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, BrowserWindow, ipcMain, Menu, protocol, shell, globalShortcut } from 'electron';
+import { app, BrowserWindow, globalShortcut, ipcMain, Menu, protocol, shell, systemPreferences } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -107,9 +107,9 @@ async function createWindow() {
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
 
-  /* systemPreferences.askForMediaAccess('camera').then((isAllowed) => {
+  systemPreferences.askForMediaAccess('camera').then((isAllowed) => {
       console.log('isAllowed', isAllowed);
-  }); */
+  });
 
   // webFrame.setZoomFactor(1);
   // webFrame.setVisualZoomLevelLimits(1, 1);
