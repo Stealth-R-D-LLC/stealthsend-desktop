@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, BrowserWindow, ipcMain, Menu, protocol, shell } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu, protocol, shell, globalShortcut } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -165,6 +165,11 @@ app.on('activate', () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
+  if (process.platform === 'darwin') {
+    globalShortcut.register('Command+Q', () => {
+      app.quit();
+    });
+  }
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     try {
@@ -175,6 +180,12 @@ app.on('ready', async () => {
   }
   createWindow();
 });
+
+app.on('will-quit', () => {
+  if (process.platform === 'darwin') {
+    globalShortcut.unregister('Command+Q');
+  }
+})
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
