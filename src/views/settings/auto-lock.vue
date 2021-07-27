@@ -1,11 +1,11 @@
 <template>
   <div class="st-settings-child st-password-container">
     <div class="st-settings-child__overflow">
-      <h2 class="title">Auto Lock</h2>
-      <p class="subtitle">Automatically lock StealthSend after inactivity.</p>
+      <h2 class="title">Auto-lock</h2>
+      <p class="subtitle">Automatically lock StealthSend after inactivity</p>
       <div class="content">
         <p class="notice">
-          <span class="bold">Note:</span> For enhanced security it is
+          <span class="bold">Notice:</span> For enhanced security it is
           recommended to enable Auto-lock. When enabled you will need your
           password to unlock your StealthSend app.
         </p>

@@ -23,15 +23,17 @@
       <ul class="group">
         <router-link to="/settings/password" class="group-item">
           <p class="group-item__name">Password</p>
-          <p class="group-item__desc">Authorise access to application</p>
+          <p class="group-item__desc">Set a new password</p>
         </router-link>
         <router-link to="/settings/recovery-phrase" class="group-item">
           <p class="group-item__name">Recovery Phrase</p>
-          <p class="group-item__desc">See and backup created seed</p>
+          <p class="group-item__desc">Backup your Recovery Phrase</p>
         </router-link>
         <router-link to="/settings/auto-lock" class="group-item">
           <p class="group-item__name">Auto-lock</p>
-          <p class="group-item__desc">Configure idle time in application</p>
+          <p class="group-item__desc">
+            Automatically lock StealthSend after inactivity
+          </p>
         </router-link>
       </ul>
       <!-- <p class="group-title">
