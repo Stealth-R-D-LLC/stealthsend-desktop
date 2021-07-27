@@ -929,4 +929,28 @@ svg {
   bottom: 32px;
   width: 416px;
 }
+
+:deep
+  .st-modal--container__archive-account
+  .st-modal-container
+  .st-modal__header,
+:deep
+  .st-modal--container__activate-account
+  .st-modal-container
+  .st-modal__header {
+    font-size: 20px;
+}
+
+:deep
+  .st-modal--container__activate-account
+  .st-modal-container
+  .st-modal__body,
+:deep
+  .st-modal--container__archive-account
+  .st-modal-container
+  .st-modal__body {
+    margin-top: 36px;
+}
+
+
 </style>
