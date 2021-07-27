@@ -30,7 +30,7 @@
         class="qr-modal"
         @close="isScaning = false"
         :has-click-outside="false"
-        :visible="currentStep === 2"
+        :visible="currentStep === 1"
       >
         <template #header>QR Code Scanner</template>
         <template #body>
@@ -86,164 +86,159 @@
             </template>
           </StMultiselect>
         </StFormItem>
-        <div class="form-item">
-          <StFormItem
+        <StFormItem
+          color="dark"
+          :filled="form.depositAddress.$value"
+          label="Address"
+          :error-message="form.depositAddress.$errors"
+        >
+          <StInput
+            v-model="form.depositAddress.$value"
+            placeholder="Enter address"
             color="dark"
-            size="lg"
-            :filled="form.amount.$value"
-            :error-message="form.amount.$errors"
-            label="Amount"
           >
-            <template #labelRight>
-              <a v-if="account" class="load-max" @click="loadMax(account)"
-                >Load max</a
-              >
-            </template>
-            <StAmount
-              v-if="inputAmountState === 'XST'"
-              v-model="form.amount.$value"
-              placeholder="Amount"
-              :options="{
-                locale: 'en',
-                currency: 'XST',
-                distractionFree: true,
-                valueAsInteger: false,
-                useGrouping: true,
-                precision: 6,
-                allowNegative: false,
-              }"
+            <svg
+              @click="startScanner"
+              width="18"
+              height="18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <svg
-                width="19"
-                height="16"
-                viewBox="0 0 19 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                @click="formatValue('USD')"
-              >
-                <path
-                  d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
-                  stroke="#E5E4E8"
-                  stroke-width="2"
-                />
-                <path
-                  d="M14.2222 14.2222L14.2222 1.77773"
-                  stroke="#E5E4E8"
-                  stroke-width="2"
-                />
-                <path
-                  d="M4.77777 1.77783V14.2223"
-                  stroke="#E5E4E8"
-                  stroke-width="2"
-                />
-                <path
-                  d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
-                  stroke="#E5E4E8"
-                  stroke-width="2"
-                />
-              </svg>
-            </StAmount>
-            <StAmount
-              v-else-if="inputAmountState === 'USD'"
-              v-model="form.amount.$value"
-              color="dark"
-              placeholder="Amount"
-              :options="{
-                locale: 'en',
-                currency: 'USD',
-                distractionFree: false,
-                valueAsInteger: false,
-                useGrouping: true,
-                precision: 4,
-                allowNegative: false,
-              }"
-            >
-              <svg
-                width="19"
-                height="16"
-                viewBox="0 0 19 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                @click="formatValue('XST')"
-              >
-                <path
-                  d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
-                  stroke="#E5E4E8"
-                  stroke-width="2"
-                />
-                <path
-                  d="M14.2222 14.2222L14.2222 1.77773"
-                  stroke="#E5E4E8"
-                  stroke-width="2"
-                />
-                <path
-                  d="M4.77777 1.77783V14.2223"
-                  stroke="#E5E4E8"
-                  stroke-width="2"
-                />
-                <path
-                  d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
-                  stroke="#E5E4E8"
-                  stroke-width="2"
-                />
-              </svg>
-            </StAmount>
-            <p class="form-desc">Minimum: {{ minimumXSTForSend }} XST</p>
-          </StFormItem>
-        </div>
+              <path
+                clip-rule="evenodd"
+                d="M7 7H1V1h6v6z"
+                stroke="#E5E4E8"
+                stroke-width="2"
+              />
+              <path
+                d="M11 0v3h3V1h3v4M7 18v-2H4v1H1v-3M11 18v-2h3v1h3v-3M11 13H7v-2H4M10 7h8M14 9v2h3V9M1 10v2M11 9v1.636"
+                stroke="#E5E4E8"
+                stroke-width="2"
+              />
+            </svg>
+          </StInput>
+          <template #description>Scan QR Code</template>
+        </StFormItem>
       </template>
       <template v-if="currentStep === 2">
-        <div class="form-item">
-          <StFormItem
-            color="dark"
-            :filled="form.depositAddress.$value"
-            label="Address"
-            :error-message="form.depositAddress.$errors"
-          >
-            <StInput
-              v-model="form.depositAddress.$value"
-              placeholder="Enter a valid XST address"
-              color="dark"
+        <StFormItem
+          label="Label"
+          :class="{ 'st-form-item__error': form.label.$value.length > 50 }"
+          :error-message="form.label.$errors"
+          :filled="form.label.$value"
+          color="dark"
+        >
+          <StInput
+            v-model="form.label.$value"
+            placeholder="Add a label to your transaction"
+          />
+          <template v-if="form.label.$value.length > 50" #description>
+            <span class="error">Label too long</span>
+          </template>
+        </StFormItem>
+        <StFormItem
+          color="dark"
+          size="lg"
+          :filled="form.amount.$value"
+          :error-message="form.amount.$errors"
+          label="Amount"
+        >
+          <template #labelRight>
+            <a v-if="account" class="load-max" @click="loadMax(account)"
+              >Load max</a
             >
-              <svg
-                @click="startScanner"
-                width="18"
-                height="18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  clip-rule="evenodd"
-                  d="M7 7H1V1h6v6z"
-                  stroke="#E5E4E8"
-                  stroke-width="2"
-                />
-                <path
-                  d="M11 0v3h3V1h3v4M7 18v-2H4v1H1v-3M11 18v-2h3v1h3v-3M11 13H7v-2H4M10 7h8M14 9v2h3V9M1 10v2M11 9v1.636"
-                  stroke="#E5E4E8"
-                  stroke-width="2"
-                />
-              </svg>
-            </StInput>
-          </StFormItem>
-        </div>
-        <div class="form-item">
-          <StFormItem
-            label="Label"
-            :class="{ 'st-form-item__error': form.label.$value.length > 50 }"
-            :error-message="form.label.$errors"
-            :filled="form.label.$value"
-            color="dark"
+          </template>
+          <StAmount
+            v-if="inputAmountState === 'XST'"
+            v-model="form.amount.$value"
+            placeholder="Amount"
+            :options="{
+              locale: 'en',
+              currency: 'XST',
+              distractionFree: true,
+              valueAsInteger: false,
+              useGrouping: true,
+              precision: 6,
+              allowNegative: false,
+            }"
           >
-            <StInput
-              v-model="form.label.$value"
-              placeholder="Add a label to your transaction"
-            />
-            <template v-if="form.label.$value.length > 50" #description>
-              <span class="error">Label too long</span>
-            </template>
-          </StFormItem>
-        </div>
+            <svg
+              width="19"
+              height="16"
+              viewBox="0 0 19 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              @click="formatValue('USD')"
+            >
+              <path
+                d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
+                stroke="#E5E4E8"
+                stroke-width="2"
+              />
+              <path
+                d="M14.2222 14.2222L14.2222 1.77773"
+                stroke="#E5E4E8"
+                stroke-width="2"
+              />
+              <path
+                d="M4.77777 1.77783V14.2223"
+                stroke="#E5E4E8"
+                stroke-width="2"
+              />
+              <path
+                d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
+                stroke="#E5E4E8"
+                stroke-width="2"
+              />
+            </svg>
+          </StAmount>
+          <StAmount
+            v-else-if="inputAmountState === 'USD'"
+            v-model="form.amount.$value"
+            color="dark"
+            placeholder="Amount"
+            :options="{
+              locale: 'en',
+              currency: 'USD',
+              distractionFree: false,
+              valueAsInteger: false,
+              useGrouping: true,
+              precision: 4,
+              allowNegative: false,
+            }"
+          >
+            <svg
+              width="19"
+              height="16"
+              viewBox="0 0 19 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              @click="formatValue('XST')"
+            >
+              <path
+                d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
+                stroke="#E5E4E8"
+                stroke-width="2"
+              />
+              <path
+                d="M14.2222 14.2222L14.2222 1.77773"
+                stroke="#E5E4E8"
+                stroke-width="2"
+              />
+              <path
+                d="M4.77777 1.77783V14.2223"
+                stroke="#E5E4E8"
+                stroke-width="2"
+              />
+              <path
+                d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
+                stroke="#E5E4E8"
+                stroke-width="2"
+              />
+            </svg>
+          </StAmount>
+          <p class="form-desc">Minimum: {{ minimumXSTForSend }} XST</p>
+        </StFormItem>
       </template>
       <template v-if="currentStep === 3">
         <div class="payment">
@@ -459,13 +454,13 @@ export default {
 
     watchEffect(() => {
       if (currentStep.value === 1) {
-        if (mainStore.redoAmount) {
-          amount.value = mainStore.redoAmount;
+        if (mainStore.sendAddress) {
+          depositAddress.value = mainStore.sendAddress;
         }
       }
       if (currentStep.value === 2) {
-        if (mainStore.sendAddress) {
-          depositAddress.value = mainStore.sendAddress;
+        if (mainStore.redoAmount) {
+          amount.value = mainStore.redoAmount;
         }
       }
       if (currentStep.value === 4) {
@@ -487,38 +482,27 @@ export default {
     const {
       form,
       errors,
-      add,
       remove,
+      add,
       // submitting,
       validateFields,
       resetFields,
     } = useValidation({
+      depositAddress: {
+        $value: depositAddress,
+        $rules: [
+          (depositAddress) =>
+            (!depositAddress ||
+              !CryptoService.isAddressValid(depositAddress.trim())) &&
+            'Please enter a valid XST address',
+        ],
+      },
       account: {
         $value: account,
         $rules: [
           (account) => {
             if (!account) {
               return 'Account is required';
-            }
-          },
-        ],
-      },
-      amount: {
-        $value: amount,
-        $rules: [
-          (amount) => {
-            let fee = findFee();
-            // subtract real fee from amount
-            const maxAmount = format(subtract(account.value.utxo, fee), {
-              precision: 8,
-            });
-            if (inputAmountState.value === 'XST') {
-              if (!amount || Number(amount) < minimumXSTForSend.value) {
-                return 'Minimum amount is ' + minimumXSTForSend.value + ' XST';
-              }
-              if (Number(amount) > maxAmount) {
-                return 'Insufficient funds on this account';
-              }
             }
           },
         ],
@@ -561,7 +545,7 @@ export default {
       label.value = '';
       clearTimeout(counterTimeout.value);
       counter.value = 5;
-      remove(['depositAddress']);
+      remove(['amount']);
       resetFields();
       if (currentRoute.value !== 'AccountDetails') {
         // because we don't want to mess up the account details screen if the modal is opened there
@@ -612,11 +596,6 @@ export default {
         res = await mainStore.rpc('getaddressoutputs', [acc.address]);
         unspentOutputs = res.filter((el) => el.isspent === 'false');
       }
-      //       const outputs = await mainStore.rpc('getaddressoutputs', [
-      //   acc.address,
-      //   1,
-      //   100,
-      // ]);
     }
 
     function findFee(fee = 0.01) {
@@ -750,13 +729,26 @@ export default {
       inputAmountState.value = 'XST';
       try {
         await validateFields();
-        add(['depositAddress'], {
-          $value: depositAddress,
+        add(['amount'], {
+          $value: amount,
           $rules: [
-            (depositAddress) =>
-              (!depositAddress ||
-                !CryptoService.isAddressValid(depositAddress.trim())) &&
-              'Please enter a valid XST address',
+            (amount) => {
+              let fee = findFee();
+              // subtract real fee from amount
+              const maxAmount = format(subtract(account.value.utxo, fee), {
+                precision: 8,
+              });
+              if (inputAmountState.value === 'XST') {
+                if (!amount || Number(amount) < minimumXSTForSend.value) {
+                  return (
+                    'Minimum amount is ' + minimumXSTForSend.value + ' XST'
+                  );
+                }
+                if (Number(amount) > maxAmount) {
+                  return 'Insufficient funds on this account';
+                }
+              }
+            },
           ],
         });
         changeStep(2);
@@ -773,7 +765,7 @@ export default {
       if (step === 1) {
         // if going back from step 2 to step 1
         // remove address from validation
-        remove(['depositAddress']);
+        remove(['amount']);
       }
     }
 
@@ -807,30 +799,30 @@ export default {
       }
     }
 
-    /* function onScanSuccess(decodedText, decodedResult) {
-      // handle the scanned code as you like, for example:
-      console.log(`Code matched = ${decodedText}`, decodedResult);
-    }
-
-    function onScanFailure(error) {
-      // handle scan failure, usually better to ignore and keep scanning.
-      // for example:
-      console.warn(`Code scan error = ${error}`);
-    } */
-
-    async function startScanner() {
+    function startScanner() {
       QRData.value = null;
       isScaning.value = true;
-      // eslint-disable-next-line no-undef
-      /* let html5QrcodeScanner = new Html5QrcodeScanner("qrCodeScaner", { fps: 10, qrbox: 250 }, true);
-      html5QrcodeScanner.render(onScanSuccess, onScanFailure); */
+      form.depositAddress.$value = '';
     }
 
     function onDecode(data) {
-      QRData.value = data;
+      QRData.value = data.split('?');
+      console.log('SCANNED ADDRESS: ', QRData.value);
+
       if (QRData.value) {
         isScaning.value = false;
-        form.depositAddress.$value = data.split('?')[0];
+        let address = QRData.value[0].replace(/[^a-z0-9]/gi, '');
+        let amount =
+          QRData.value.length > 1 ? QRData.value[1].replace('amount=', '') : 0;
+        form.depositAddress.$value = address;
+        if (QRData.value.length > 1) {
+          validateFirstStep();
+          setTimeout(() => {
+            form.amount.$value = amount;
+            setTimeout(() => (inputAmountState.value = 'USD'), 1);
+            setTimeout(() => (inputAmountState.value = 'XST'), 1);
+          }, 1);
+        }
       }
     }
 
