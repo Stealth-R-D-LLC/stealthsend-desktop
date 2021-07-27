@@ -239,10 +239,9 @@
           :filled="form.email.$value"
           :error-message="form.email.$errors"
         >
-          <StInput v-model="form.email.$value" placeholder="Email"></StInput>
+          <StInput v-model="form.email.$value" placeholder="Enter email address"></StInput>
           <p class="email-desc">
-            Using this option you will share receive details via default email
-            client
+            Share Payment Request
           </p>
         </StFormItem>
       </template>
