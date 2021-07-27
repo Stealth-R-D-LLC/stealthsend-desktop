@@ -31,7 +31,9 @@
         </router-link>
         <router-link to="/settings/auto-lock" class="group-item">
           <p class="group-item__name">Auto-lock</p>
-          <p class="group-item__desc">Automatically lock StealthSend after inactivity</p>
+          <p class="group-item__desc">
+            Automatically lock StealthSend after inactivity
+          </p>
         </router-link>
       </ul>
       <!-- <p class="group-title">
