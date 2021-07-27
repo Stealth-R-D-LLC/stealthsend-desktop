@@ -8,7 +8,7 @@ import {
   Menu,
   protocol,
   shell,
-  systemPreferences
+  systemPreferences,
 } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
@@ -146,22 +146,25 @@ async function createWindow() {
 }
 async function askForMediaAccess() {
   try {
-    if (process.platform !== "darwin") {
+    if (process.platform !== 'darwin') {
       return true;
     }
 
-    const status = await systemPreferences.getMediaAccessStatus("camera");
-    console.info("Current camera access status:", status);
+    const status = await systemPreferences.getMediaAccessStatus('camera');
+    console.info('Current camera access status:', status);
 
-    if (status === "not-determined") {
-      const success = await systemPreferences.askForMediaAccess("camera");
-      console.info("Result of camera access:", success.valueOf() ? "granted" : "denied");
+    if (status === 'not-determined') {
+      const success = await systemPreferences.askForMediaAccess('camera');
+      console.info(
+        'Result of camera access:',
+        success.valueOf() ? 'granted' : 'denied'
+      );
       return success.valueOf();
     }
 
-    return status === "granted";
+    return status === 'granted';
   } catch (error) {
-    console.error("Could not get camera permission:", error.message);
+    console.error('Could not get camera permission:', error.message);
   }
   return false;
 }
