@@ -107,6 +107,10 @@ async function createWindow() {
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
 
+  /* systemPreferences.askForMediaAccess('camera').then((isAllowed) => {
+      console.log('isAllowed', isAllowed);
+  }); */
+
   // webFrame.setZoomFactor(1);
   // webFrame.setVisualZoomLevelLimits(1, 1);
 
