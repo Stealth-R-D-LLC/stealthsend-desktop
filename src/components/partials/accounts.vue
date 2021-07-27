@@ -938,7 +938,7 @@ svg {
   .st-modal--container__activate-account
   .st-modal-container
   .st-modal__header {
-    font-size: 20px;
+  font-size: 20px;
 }
 
 :deep
@@ -949,8 +949,6 @@ svg {
   .st-modal--container__archive-account
   .st-modal-container
   .st-modal__body {
-    margin-top: 36px;
+  margin-top: 36px;
 }
-
-
 </style>
