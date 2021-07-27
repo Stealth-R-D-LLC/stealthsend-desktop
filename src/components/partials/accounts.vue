@@ -528,9 +528,13 @@ export default {
       mainStore.SET_ACCOUNT_DETAILS(account);
     }
     async function favouriteAccount(account) {
-      await CryptoService.favouriteAccount(account);
-      accountOptions.value = '';
-      emitter.emit('accounts:refresh');
+      if (account.utxo > 0) {
+        await CryptoService.favouriteAccount(account);
+        accountOptions.value = '';
+        emitter.emit('accounts:refresh');
+      } else {
+        accountOptions.value = '';
+      }
     }
     async function unfavouriteAccount(account) {
       await CryptoService.unfavouriteAccount(account);
@@ -924,5 +928,27 @@ svg {
   position: absolute;
   bottom: 32px;
   width: 416px;
+}
+
+:deep
+  .st-modal--container__archive-account
+  .st-modal-container
+  .st-modal__header,
+:deep
+  .st-modal--container__activate-account
+  .st-modal-container
+  .st-modal__header {
+  font-size: 20px;
+}
+
+:deep
+  .st-modal--container__activate-account
+  .st-modal-container
+  .st-modal__body,
+:deep
+  .st-modal--container__archive-account
+  .st-modal-container
+  .st-modal__body {
+  margin-top: 36px;
 }
 </style>
