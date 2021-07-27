@@ -239,10 +239,11 @@
           :filled="form.email.$value"
           :error-message="form.email.$errors"
         >
-          <StInput v-model="form.email.$value" placeholder="Enter email address"></StInput>
-          <p class="email-desc">
-            Share Payment Request
-          </p>
+          <StInput
+            v-model="form.email.$value"
+            placeholder="Enter email address"
+          ></StInput>
+          <p class="email-desc">Share Payment Request</p>
         </StFormItem>
       </template>
     </template>
