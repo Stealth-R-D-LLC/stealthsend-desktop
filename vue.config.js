@@ -51,7 +51,6 @@ module.exports = {
           "extendInfo": {
             "NSCameraUsageDescription": "This app requires camera access to record video.",
           },
-          "hardenedRuntime": false
         }
       },
       // nodeIntegration: true,
