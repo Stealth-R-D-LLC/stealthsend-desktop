@@ -5,7 +5,7 @@
         <div class="left">
           <h2 class="title">Set a new password</h2>
           <p class="subtitle">
-            Entering your password will unlock access to your wallet
+            Entering your password will unlock your StealthSend application
           </p>
         </div>
         <div class="right">
@@ -14,9 +14,9 @@
       </div>
       <div class="content">
         <p class="notice">
-          <span class="bold">Important note:</span> Please be aware that if you
-          lose your password, the only access to your account will be through
-          the use of Recovery Phrase.
+          <span class="bold">Notice:</span> Please be aware that if you lose
+          your password, the only access to your account will be through the use
+          of your Recovery Phrase.
         </p>
         <div class="set-password-container">
           <StFormItem
@@ -27,7 +27,7 @@
             <template #labelRight>Mandatory</template>
             <StInput
               type="password"
-              placeholder="Please enter current password"
+              placeholder="Please enter your current password"
               v-model="password"
             ></StInput>
             <template #description>
@@ -42,7 +42,7 @@
             <template #labelRight>Mandatory</template>
             <StInput
               type="password"
-              placeholder="Please enter new password"
+              placeholder="Please enter your new password"
               v-model="newPassword"
             ></StInput>
             <template #description>
@@ -58,7 +58,7 @@
             <template #labelRight>Mandatory</template>
             <StInput
               type="password"
-              placeholder="Please confirm new password"
+              placeholder="Re-enter the new password. Make sure the passwords are identical"
               v-model="confirmNewPassword"
             ></StInput>
             <template #description> Newly set password need to match </template>

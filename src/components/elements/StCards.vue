@@ -63,7 +63,7 @@
       </svg>
     </div>
     <div class="sidebar-header__content">
-      <h6>Total balance</h6>
+      <h6>Total Balance</h6>
       <h4>{{ isHiddenAmounts ? '•••' : steps[step].amountTop }}</h4>
       <h6 class="amount-fiat">
         <span class="amount-fiat__inner"

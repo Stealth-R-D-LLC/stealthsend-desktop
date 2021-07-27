@@ -1,9 +1,9 @@
 <template>
   <div class="address-book">
     <div class="top">
-      <h6 v-if="activeTab === 'address-book'">Address book</h6>
-      <h6 v-if="activeTab === 'contact-details'">Contact details</h6>
-      <h6 v-if="activeTab === 'add-contact'">Add contact</h6>
+      <h6 v-if="activeTab === 'address-book'">Address Book</h6>
+      <h6 v-if="activeTab === 'contact-details'">Contact Details</h6>
+      <h6 v-if="activeTab === 'add-contact'">Add Contact</h6>
       <h6 v-if="activeTab === 'edit-contact'">Edit contact</h6>
       <div class="icons">
         <svg
@@ -341,7 +341,7 @@
         >
           <StInput
             v-model="addContactForm.name"
-            placeholder="Please enter a contact name"
+            placeholder="Please enter a name"
           />
           <template v-if="addContactForm.name.length > 50" #description>
             <span class="error">Name too long</span>

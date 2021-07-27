@@ -33,7 +33,7 @@
       <StFormItem label="Range">
         <date-picker
           :class="{ 'mx-datepicker__filled': date.length }"
-          placeholder="Filter list using date range"
+          placeholder="Select start and end date"
           v-model="date"
           value-type="format"
           range
