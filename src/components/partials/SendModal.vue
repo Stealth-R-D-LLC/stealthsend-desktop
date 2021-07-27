@@ -596,11 +596,6 @@ export default {
         res = await mainStore.rpc('getaddressoutputs', [acc.address]);
         unspentOutputs = res.filter((el) => el.isspent === 'false');
       }
-      //       const outputs = await mainStore.rpc('getaddressoutputs', [
-      //   acc.address,
-      //   1,
-      //   100,
-      // ]);
     }
 
     function findFee(fee = 0.01) {
