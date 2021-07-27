@@ -3,11 +3,12 @@
 import {
   app,
   BrowserWindow,
+  globalShortcut,
   ipcMain,
   Menu,
   protocol,
   shell,
-  globalShortcut,
+  systemPreferences,
 } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
@@ -115,6 +116,10 @@ async function createWindow() {
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
 
+  /* systemPreferences.askForMediaAccess('camera').then((isAllowed) => {
+    console.log('isAllowed', isAllowed);
+  }); */
+
   // webFrame.setZoomFactor(1);
   // webFrame.setVisualZoomLevelLimits(1, 1);
 
@@ -138,6 +143,30 @@ async function createWindow() {
     event.preventDefault();
     shell.openExternal(url);
   });
+}
+async function askForMediaAccess() {
+  try {
+    if (process.platform !== 'darwin') {
+      return true;
+    }
+
+    const status = await systemPreferences.getMediaAccessStatus('camera');
+    console.info('Current camera access status:', status);
+
+    if (status === 'not-determined') {
+      const success = await systemPreferences.askForMediaAccess('camera');
+      console.info(
+        'Result of camera access:',
+        success.valueOf() ? 'granted' : 'denied'
+      );
+      return success.valueOf();
+    }
+
+    return status === 'granted';
+  } catch (error) {
+    console.error('Could not get camera permission:', error.message);
+  }
+  return false;
 }
 
 // Quit when all windows are closed.
@@ -183,6 +212,7 @@ app.on('ready', async () => {
     }
   }
   createWindow();
+  askForMediaAccess();
 });
 
 app.on('will-quit', () => {
