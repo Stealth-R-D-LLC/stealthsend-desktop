@@ -167,13 +167,15 @@ export default {
       let hdWallet = await CryptoService.scanWallet();
       accounts.value = hdWallet.accounts;
       // with this we will be able to have accounts with balance > 0 as favorites
-      await Promise.allSettled(accounts.value.map((account) => {
-        if(account.utxo <= 0 && account.isFavourite) {
-          return CryptoService.unfavouriteAccount(account);
-        } else {
-          return true;
-        }
-      }));
+      await Promise.allSettled(
+        accounts.value.map((account) => {
+          if (account.utxo <= 0 && account.isFavourite) {
+            return CryptoService.unfavouriteAccount(account);
+          } else {
+            return true;
+          }
+        })
+      );
       hdWallet = await CryptoService.scanWallet();
       accounts.value = hdWallet.accounts;
       favouritedAccounts.value = accounts.value
@@ -237,7 +239,7 @@ export default {
         await validateFields();
         if (!account.value || account.value.utxo === 0) {
           return;
-        };
+        }
         await CryptoService.favouriteAccount(account.value);
         const scannedAccounts = await CryptoService.scanWallet();
         accounts.value = scannedAccounts.accounts;
