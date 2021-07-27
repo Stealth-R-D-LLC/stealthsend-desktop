@@ -25,7 +25,7 @@
           the Stealth network. Sorry for the<br />inconvenience. We are looking
           into it.
         </h5>
-        <p class="app-version">StealthSend, v{{ version }}</p>
+        <p class="app-version">StealthSend v{{ version }}</p>
       </div>
       <img class="dragon" src="@/assets/WillisDragon.png" alt="Test gif" />
     </div>
