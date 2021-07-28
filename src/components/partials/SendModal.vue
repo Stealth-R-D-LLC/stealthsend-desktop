@@ -466,6 +466,9 @@ export default {
         if (mainStore.redoAmount) {
           amount.value = mainStore.redoAmount;
         }
+        amount.value = 0;
+        setTimeout(() => (inputAmountState.value = 'USD'), 1);
+        setTimeout(() => (inputAmountState.value = 'XST'), 1);
       }
       if (currentStep.value === 4) {
         sendTimeout.value = setTimeout(() => send(), 4900);
