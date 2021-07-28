@@ -46,7 +46,7 @@
           >
             <StInput
               v-model="form.accountName.$value"
-              placeholder="Please add Unique Account Name"
+              placeholder="Enter Account Name"
               :disabled="isLastAccountEmpty"
             ></StInput>
             <template v-if="form.accountName.$value.length > 50" #description>
