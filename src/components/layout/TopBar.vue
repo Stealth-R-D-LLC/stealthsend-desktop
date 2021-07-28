@@ -343,8 +343,8 @@
         </template>
       </div>
       <div class="header-right">
+        <p class="rpc-status">{{ rpcStatus }}</p>
         <StTooltip class="tooltip" tooltip="Connected to Mainnet">
-          <p class="rpc-status">{{ rpcStatus }}</p>
           <svg
             class="rpc-icon"
             width="22"
