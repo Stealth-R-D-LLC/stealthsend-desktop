@@ -162,35 +162,37 @@
               allowNegative: false,
             }"
           >
-            <svg
-              width="19"
-              height="16"
-              viewBox="0 0 19 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              @click="formatValue('USD')"
-            >
-              <path
-                d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M14.2222 14.2222L14.2222 1.77773"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M4.77777 1.77783V14.2223"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-            </svg>
+            <StTooltip class="tooltip" tooltip="Switch Currency">
+              <svg
+                width="19"
+                height="16"
+                viewBox="0 0 19 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                @click="formatValue('USD')"
+              >
+                <path
+                  d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M14.2222 14.2222L14.2222 1.77773"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M4.77777 1.77783V14.2223"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+              </svg>
+            </StTooltip>
           </StAmount>
           <StAmount
             v-else-if="inputAmountState === 'USD'"
@@ -207,35 +209,37 @@
               allowNegative: false,
             }"
           >
-            <svg
-              width="19"
-              height="16"
-              viewBox="0 0 19 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              @click="formatValue('XST')"
-            >
-              <path
-                d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M14.2222 14.2222L14.2222 1.77773"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M4.77777 1.77783V14.2223"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-            </svg>
+            <StTooltip class="tooltip" tooltip="Switch Currency">
+              <svg
+                width="19"
+                height="16"
+                viewBox="0 0 19 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                @click="formatValue('XST')"
+              >
+                <path
+                  d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M14.2222 14.2222L14.2222 1.77773"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M4.77777 1.77783V14.2223"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+              </svg>
+            </StTooltip>
           </StAmount>
           <p class="form-desc">Minimum: {{ minimumXSTForSend }} XST</p>
         </StFormItem>
