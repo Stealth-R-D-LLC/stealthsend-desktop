@@ -1263,7 +1263,8 @@
                   <StInput
                     :type="showConfirmPassword ? 'text' : 'password'"
                     v-model="form.confirmPassword.$value"
-                    placeholder="Please re-enter the password" >
+                    placeholder="Please re-enter the password"
+                  >
                     <svg
                       v-if="!showConfirmPassword"
                       @click="showConfirmPassword = true"
