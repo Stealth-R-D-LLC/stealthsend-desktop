@@ -51,7 +51,6 @@
       <StTooltip
         class="tooltip"
         :tooltip="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
-        position="bottom-right"
       >
         <StClipboard :content="depositAddress" @click="handleCopy"
           >Copy to Clipboard</StClipboard

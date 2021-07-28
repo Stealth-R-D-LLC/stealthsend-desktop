@@ -55,22 +55,24 @@
         <li @click="openModal('send')">
           <span class="item">
             <div class="icon">
-              <svg
-                width="18"
-                height="17"
-                viewBox="0 0 18 17"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M1 11V16H17V11" stroke="#FAF9FC" stroke-width="2" />
-                <path
-                  d="M12 5L9 2L6 5"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                  stroke-linecap="square"
-                />
-                <path d="M9 2L9 12" stroke="#FAF9FC" stroke-width="2" />
-              </svg>
+              <StTooltip class="tooltip" tooltip="Send XST" position="right">
+                <svg
+                  width="18"
+                  height="17"
+                  viewBox="0 0 18 17"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M1 11V16H17V11" stroke="#FAF9FC" stroke-width="2" />
+                  <path
+                    d="M12 5L9 2L6 5"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                    stroke-linecap="square"
+                  />
+                  <path d="M9 2L9 12" stroke="#FAF9FC" stroke-width="2" />
+                </svg>
+              </StTooltip>
             </div>
             <span class="item__span"> Send </span>
           </span>
@@ -78,22 +80,24 @@
         <li @click="openModal('receive')">
           <span class="item">
             <div class="icon">
-              <svg
-                width="18"
-                height="17"
-                viewBox="0 0 18 17"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M1 11V16H17V11" stroke="#FAF9FC" stroke-width="2" />
-                <path
-                  d="M6 8L9 11L12 8"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                  stroke-linecap="square"
-                />
-                <path d="M9 11V0" stroke="#FAF9FC" stroke-width="2" />
-              </svg>
+              <StTooltip class="tooltip" tooltip="Receive XST" position="right">
+                <svg
+                  width="18"
+                  height="17"
+                  viewBox="0 0 18 17"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M1 11V16H17V11" stroke="#FAF9FC" stroke-width="2" />
+                  <path
+                    d="M6 8L9 11L12 8"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                    stroke-linecap="square"
+                  />
+                  <path d="M9 11V0" stroke="#FAF9FC" stroke-width="2" />
+                </svg>
+              </StTooltip>
             </div>
             <span class="item__span"> Receive </span>
           </span>
@@ -101,62 +105,68 @@
         <li>
           <router-link class="item" to="/transactions">
             <div class="icon">
-              <svg
-                width="21"
-                height="18"
-                viewBox="0 0 21 18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+              <StTooltip
+                class="tooltip"
+                tooltip="Transactions"
+                position="right"
               >
-                <path
-                  d="M5 1.5H19"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M0 1.5H2"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M5 6.5H19"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M0 6.5H2"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M5 11.5H19"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M0 11.5H2"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M5 16.5H19"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M0 16.5H2"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-              </svg>
+                <svg
+                  width="21"
+                  height="18"
+                  viewBox="0 0 21 18"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 1.5H19"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M0 1.5H2"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M5 6.5H19"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M0 6.5H2"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M5 11.5H19"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M0 11.5H2"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M5 16.5H19"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M0 16.5H2"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </StTooltip>
             </div>
             <span class="item__span"> Transactions </span>
           </router-link>
@@ -164,20 +174,30 @@
         <li @click="openModal('account')">
           <span class="item">
             <div class="icon">
-              <svg
-                width="18"
-                height="17"
-                viewBox="0 0 18 17"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M10 13L18 13" stroke="#FAF9FC" stroke-width="2" />
-                <path d="M14 9V17" stroke="#FAF9FC" stroke-width="2" />
-                <path d="M0 6H8.09524" stroke="#FAF9FC" stroke-width="2" />
-                <path d="M0 2H8.09524" stroke="#FAF9FC" stroke-width="2" />
-                <path d="M7 10H1V16H7V10Z" stroke="#FAF9FC" stroke-width="2" />
-                <path d="M17 1H11V7H17V1Z" stroke="#FAF9FC" stroke-width="2" />
-              </svg>
+              <StTooltip class="tooltip" tooltip="Add Account" position="right">
+                <svg
+                  width="18"
+                  height="17"
+                  viewBox="0 0 18 17"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M10 13L18 13" stroke="#FAF9FC" stroke-width="2" />
+                  <path d="M14 9V17" stroke="#FAF9FC" stroke-width="2" />
+                  <path d="M0 6H8.09524" stroke="#FAF9FC" stroke-width="2" />
+                  <path d="M0 2H8.09524" stroke="#FAF9FC" stroke-width="2" />
+                  <path
+                    d="M7 10H1V16H7V10Z"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M17 1H11V7H17V1Z"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                  />
+                </svg>
+              </StTooltip>
             </div>
             <span class="item__span"> Add Account </span>
           </span>
@@ -185,20 +205,26 @@
         <li>
           <router-link class="item" to="/account/archived">
             <div class="icon">
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M10 16H18" stroke="#FAF9FC" stroke-width="2" />
-                <path d="M10 12L18 12" stroke="#FAF9FC" stroke-width="2" />
-                <path d="M7 11H1V17H7V11Z" stroke="#FAF9FC" stroke-width="2" />
-                <path d="M10 6H18" stroke="#FAF9FC" stroke-width="2" />
-                <path d="M10 2H18" stroke="#FAF9FC" stroke-width="2" />
-                <path d="M7 1H1V7H7V1Z" stroke="#FAF9FC" stroke-width="2" />
-              </svg>
+              <StTooltip class="tooltip" tooltip="Manager" position="right">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 18 18"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M10 16H18" stroke="#FAF9FC" stroke-width="2" />
+                  <path d="M10 12L18 12" stroke="#FAF9FC" stroke-width="2" />
+                  <path
+                    d="M7 11H1V17H7V11Z"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                  />
+                  <path d="M10 6H18" stroke="#FAF9FC" stroke-width="2" />
+                  <path d="M10 2H18" stroke="#FAF9FC" stroke-width="2" />
+                  <path d="M7 1H1V7H7V1Z" stroke="#FAF9FC" stroke-width="2" />
+                </svg>
+              </StTooltip>
             </div>
             <span class="item__span"> Manager </span>
           </router-link>
@@ -206,21 +232,37 @@
         <li @click="toggleDrawer('address-book')">
           <span class="item">
             <div class="icon">
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+              <StTooltip
+                class="tooltip"
+                tooltip="Address Book"
+                position="right"
               >
-                <path d="M12 13H18M14 9H18" stroke="#FAF9FC" stroke-width="2" />
-                <circle cx="8" cy="5" r="4" stroke="#FAF9FC" stroke-width="2" />
-                <path
-                  d="M8.3125 9C5.0625 9 9.9375 9 6.6875 9C3.4375 9 1 11.4 1 13.8C1 16.2 1 17 1 17H18"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                />
-              </svg>
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 18 18"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 13H18M14 9H18"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                  />
+                  <circle
+                    cx="8"
+                    cy="5"
+                    r="4"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M8.3125 9C5.0625 9 9.9375 9 6.6875 9C3.4375 9 1 11.4 1 13.8C1 16.2 1 17 1 17H18"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                  />
+                </svg>
+              </StTooltip>
             </div>
 
             <span class="item__span"> Address Book </span>
@@ -319,7 +361,7 @@ export default defineComponent({
 
 .layout__aside.width {
   width: 252px;
-  filter: drop-shadow(15px 0px 30px rgba(20, 4, 53, 0.15));
+  filter: drop-shadow(15px 0px 30px rgba(20, 4, 53, 0.32));
 }
 
 .layout__aside nav {
@@ -371,7 +413,7 @@ export default defineComponent({
   transform: rotate(-180deg);
 }
 
-.layout__aside .item span {
+.layout__aside .item span:not(.tooltip) {
   width: 100%;
   overflow: hidden;
   font-size: 16px;
