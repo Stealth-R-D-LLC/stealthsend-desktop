@@ -70,14 +70,14 @@
                     World’s first feeless,<br />private high performance<br />blockchain
                     protocol
                   </h3>
-                  <div class="app-version">StealthSend, v{{ version }}</div>
+                  <div class="app-version">StealthSend v{{ version }}</div>
                 </template>
                 <template v-if="isRecovery">
                   <h3 class="title">
                     World’s first feeless,<br />private high performance<br />blockchain
                     protocol
                   </h3>
-                  <div class="app-version">StealthSend, v{{ version }}</div>
+                  <div class="app-version">StealthSend v{{ version }}</div>
                 </template>
                 <template v-if="!isAccountFinished">
                   <div v-if="!isAccount && !isRecovery">
@@ -1210,7 +1210,7 @@
                     id="password"
                     :type="showPassword ? 'text' : 'password'"
                     v-model="form.password.$value"
-                    placeholder="Please enter password"
+                    placeholder="Please enter a password"
                   >
                     <svg
                       v-if="!showPassword"
@@ -1263,7 +1263,7 @@
                   <StInput
                     :type="showConfirmPassword ? 'text' : 'password'"
                     v-model="form.confirmPassword.$value"
-                    placeholder="Please repeat the Password to confirm"
+                    placeholder="Please re-enter the password"
                   >
                     <svg
                       v-if="!showConfirmPassword"
@@ -2007,7 +2007,7 @@
                   id="password"
                   :type="showPassword ? 'text' : 'password'"
                   v-model="form.password.$value"
-                  placeholder="Please enter password"
+                  placeholder="Please enter a password"
                 >
                   <svg
                     v-if="!showPassword"
@@ -2060,7 +2060,7 @@
                 <StInput
                   :type="showConfirmPassword ? 'text' : 'password'"
                   v-model="form.confirmPassword.$value"
-                  placeholder="Please repeat the Password to confirm"
+                  placeholder="Please re-enter the password"
                 >
                   <svg
                     v-if="!showConfirmPassword"
@@ -2584,7 +2584,7 @@ export default {
         }, 4000);
       }, 350);
       /* mainStore.START_GLOBAL_LOADING();
-      
+
       await CryptoService.storeWalletInDb(password.value);
       await CryptoService.storeMnemonicInWallet(selectedWords.value);
 

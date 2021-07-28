@@ -79,9 +79,11 @@
                 class="address-list__inner--redirect"
                 @click="prePopulateForm(item)"
               >
-                <p>
+                <p class="address-list__description">
                   <span class="bold medium">{{ item.name }}</span
-                  ><span v-if="item.description">, {{ item.description }}</span>
+                  ><span v-if="item.description"
+                    >, {{ formatDescriptionString(item.description) }}</span
+                  >
                 </p>
                 <p class="medium">{{ item.address }}</p>
               </div>
@@ -100,9 +102,9 @@
                 class="address-list__inner--redirect"
                 @click="prePopulateForm(item)"
               >
-                <p>
+                <p class="address-list__description">
                   <span class="bold medium">{{ item.name }}</span
-                  >, {{ item.description }}
+                  >, {{ formatDescriptionString(item.description) }}
                 </p>
                 <p class="medium">{{ item.address }}</p>
               </div>
@@ -671,15 +673,18 @@ export default {
       return groupBy(
         addressList.value.filter((obj) => !obj.favorite),
         (obj) => {
-          return obj.name.charAt(0);
+          return obj.name.charAt(0).toUpperCase();
         }
       );
     });
-
     async function filterAlphabetically() {
       const addresses = await CryptoService.getAddressBook();
       addressList.value = addresses.sort((a, b) =>
-        a.name > b.name ? 1 : b.name > a.name ? -1 : 0
+        a.name.toUpperCase() > b.name.toUpperCase()
+          ? 1
+          : b.name.toUpperCase() > a.name.toUpperCase()
+          ? -1
+          : 0
       );
     }
 
@@ -791,6 +796,13 @@ export default {
       changeTab('address-book');
     }
 
+    function formatDescriptionString(description) {
+      if (description.length > 28) {
+        return `${description.slice(0, 27)}...`;
+      } else {
+        return description;
+      }
+    }
     return {
       // Variables
       alphabet,
@@ -813,6 +825,7 @@ export default {
       deleteContact,
       prePopulateForm,
       editContact,
+      formatDescriptionString,
       confirmEdit,
       scrollToElement,
       viewTransactions,
@@ -850,12 +863,11 @@ svg:hover circle {
   stroke: var(--marine200);
 }
 .address-list {
-  display: grid;
-  grid-template-columns: 11fr 13px;
-  grid-gap: 0 10px;
+  position: relative;
+  width: 105%;
 }
 .overflow-address {
-  padding-right: 15px;
+  padding-right: 41px;
   height: calc(100vh - 86px);
   overflow: auto;
 }
@@ -887,6 +899,10 @@ svg:hover circle {
 }
 .alphabet {
   text-align: center;
+  position: absolute;
+  right: 15px;
+  top: 0;
+  height: 100%;
 }
 .alphabet .letter {
   cursor: pointer;
@@ -986,5 +1002,9 @@ svg:hover circle {
 
 :deep .st-form-item__readonly .label {
   color: var(--grey1000);
+}
+
+.address-list__description {
+  font-size: 14px;
 }
 </style>
