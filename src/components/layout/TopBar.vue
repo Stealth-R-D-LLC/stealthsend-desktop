@@ -1,6 +1,6 @@
 <template>
   <div :class="computedClass">
-    <header class="layout__header">
+    <header class="layout__header" :class="`layout__header-${currentRoute}`">
       <div class="header-left">
         <template v-if="checkVisibilityForRoute(['Dashboard'])">
           <div :class="{ nonclickable: !componentVisibility.txDashboard }">
@@ -1157,12 +1157,18 @@ export default {
   justify-content: space-between;
   align-items: center;
 }
+.layout__header-Dashboard {
+  padding: 41px 0 26px !important;
+}
+.layout__header-Transactions {
+  padding: 39px 0 26px !important;
+}
 .layout__header--settings {
   width: calc(100% - 392px);
   margin-left: auto;
 }
 .layout__header--settings .layout__header {
-  padding: 43px 0 22px !important;
+  padding: 43px 0 24px !important;
 }
 .layout__header--is-grey {
   background: var(--background100);
