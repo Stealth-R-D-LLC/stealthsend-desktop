@@ -374,10 +374,12 @@
             v-model="addContactForm.address"
             placeholder="Please enter a valid XST address"
           />
-          <template #description> Please enter a valid XST address </template>
+          <template #description>
+            Scan QR code or paste from clipboard
+          </template>
         </StFormItem>
         <StCheckbox class="custom-checkbox" v-model="addContactForm.favorite"
-          >Favorite list</StCheckbox
+          >Add to favorites</StCheckbox
         >
       </div>
       <div class="add-contact__bottom">

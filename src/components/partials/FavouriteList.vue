@@ -90,36 +90,44 @@
           </p>
         </div>
         <div class="account-icons">
-          <svg
-            @click="removeFromFavoriteList(acc)"
-            width="21"
-            height="20"
-            viewBox="0 0 21 20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+          <StPopper
+            content="Remove from Favorites"
+            hover="true"
+            placement="top"
           >
-            <path
-              d="M12 5.5L10.4164 2.5L8.12461 7.43769L3 8.22949L6.7082 12.0729L5.83282 17.5L10.4164 14.9377L15 17.5"
-              stroke="#A2A1A4"
-              stroke-width="2"
-            />
-            <path d="M19 10.5H12.5" stroke="#A2A1A4" stroke-width="2" />
-          </svg>
-          <svg
-            class="handle"
-            width="10"
-            height="15"
-            viewBox="0 0 10 15"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="1.5" cy="1.5" r="1.5" fill="#A2A1A4" />
-            <circle cx="7.5" cy="1.5" r="1.5" fill="#A2A1A4" />
-            <circle cx="1.5" cy="7.5" r="1.5" fill="#A2A1A4" />
-            <circle cx="7.5" cy="7.5" r="1.5" fill="#A2A1A4" />
-            <circle cx="1.5" cy="13.5" r="1.5" fill="#A2A1A4" />
-            <circle cx="7.5" cy="13.5" r="1.5" fill="#A2A1A4" />
-          </svg>
+            <svg
+              @click="removeFromFavoriteList(acc)"
+              width="21"
+              height="20"
+              viewBox="0 0 21 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 5.5L10.4164 2.5L8.12461 7.43769L3 8.22949L6.7082 12.0729L5.83282 17.5L10.4164 14.9377L15 17.5"
+                stroke="#A2A1A4"
+                stroke-width="2"
+              />
+              <path d="M19 10.5H12.5" stroke="#A2A1A4" stroke-width="2" />
+            </svg>
+          </StPopper>
+          <StPopper content="Drag to arrange" hover="true" placement="top">
+            <svg
+              class="handle"
+              width="10"
+              height="15"
+              viewBox="0 0 10 15"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="1.5" cy="1.5" r="1.5" fill="#A2A1A4" />
+              <circle cx="7.5" cy="1.5" r="1.5" fill="#A2A1A4" />
+              <circle cx="1.5" cy="7.5" r="1.5" fill="#A2A1A4" />
+              <circle cx="7.5" cy="7.5" r="1.5" fill="#A2A1A4" />
+              <circle cx="1.5" cy="13.5" r="1.5" fill="#A2A1A4" />
+              <circle cx="7.5" cy="13.5" r="1.5" fill="#A2A1A4" />
+            </svg>
+          </StPopper>
         </div>
       </div>
     </div>
@@ -386,8 +394,8 @@ export default {
 .account-icons .handle {
   cursor: move;
 }
-.account-icons svg + svg {
-  margin-left: 26px;
+.account-icons > div {
+  margin-left: 12px !important;
 }
 .account-icons svg path,
 .account-icons svg circle {
