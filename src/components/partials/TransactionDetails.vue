@@ -24,7 +24,11 @@
               stroke="#4E00F6"
               stroke-width="2"
             />
-            <path d="M5 12.5l3 3M13 4.5l2 2" stroke="#4E00F6" stroke-width="2" />
+            <path
+              d="M5 12.5l3 3M13 4.5l2 2"
+              stroke="#4E00F6"
+              stroke-width="2"
+            />
           </svg>
         </StTooltip>
         <StTooltip class="tooltip" tooltip="Resend Transaction">
@@ -37,7 +41,11 @@
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path d="M1 15V9a2 2 0 012-2h14" stroke="#4E00F6" stroke-width="2" />
+            <path
+              d="M1 15V9a2 2 0 012-2h14"
+              stroke="#4E00F6"
+              stroke-width="2"
+            />
             <path d="M11 13l6-6-6-6" stroke="#4E00F6" stroke-width="2" />
           </svg>
         </StTooltip>
