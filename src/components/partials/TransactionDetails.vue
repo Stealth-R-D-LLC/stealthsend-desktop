@@ -3,40 +3,52 @@
     <div class="top">
       <h6>Transaction Details</h6>
       <div class="icons">
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          @click="openEditMode"
-        >
-          <path
-            d="M0 6.5h6M0 2.5h9"
-            stroke="#4E00F6"
-            stroke-width="2"
-            stroke-linejoin="round"
-          />
-          <path
-            clip-rule="evenodd"
-            d="M18 4.5l-11 12-4 2-1-1 2-4 11-12 3 3z"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
-          <path d="M5 12.5l3 3M13 4.5l2 2" stroke="#4E00F6" stroke-width="2" />
-        </svg>
-        <svg
-          v-if="tx && tx.amount < 0"
-          @click="redoTransaction"
-          width="19"
-          height="15"
-          viewBox="0 0 19 15"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M1 15V9a2 2 0 012-2h14" stroke="#4E00F6" stroke-width="2" />
-          <path d="M11 13l6-6-6-6" stroke="#4E00F6" stroke-width="2" />
-        </svg>
+        <StTooltip class="tooltip" tooltip="Edit Label">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            @click="openEditMode"
+          >
+            <path
+              d="M0 6.5h6M0 2.5h9"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              clip-rule="evenodd"
+              d="M18 4.5l-11 12-4 2-1-1 2-4 11-12 3 3z"
+              stroke="#4E00F6"
+              stroke-width="2"
+            />
+            <path
+              d="M5 12.5l3 3M13 4.5l2 2"
+              stroke="#4E00F6"
+              stroke-width="2"
+            />
+          </svg>
+        </StTooltip>
+        <StTooltip class="tooltip" tooltip="Resend Transaction">
+          <svg
+            v-if="tx && tx.amount < 0"
+            @click="redoTransaction"
+            width="19"
+            height="15"
+            viewBox="0 0 19 15"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1 15V9a2 2 0 012-2h14"
+              stroke="#4E00F6"
+              stroke-width="2"
+            />
+            <path d="M11 13l6-6-6-6" stroke="#4E00F6" stroke-width="2" />
+          </svg>
+        </StTooltip>
         <svg
           width="18"
           height="18"
@@ -310,8 +322,11 @@ export default {
   align-items: center;
 }
 .top .icons svg {
-  margin-left: 24px;
   cursor: pointer;
+}
+.top .icons > svg,
+.top .icons .tooltip + .tooltip {
+  margin-left: 24px;
 }
 .item {
   font-family: var(--secondary-font);
