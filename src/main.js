@@ -25,6 +25,7 @@ import App from './App.vue';
 import directives from './directives/';
 import './index.css';
 import router from './router';
+import Popper from 'vue3-popper';
 
 const app = createApp(App);
 app.use(createPinia());
@@ -49,6 +50,7 @@ app.component('StLoading', StLoading);
 app.component('StCard', StCard);
 app.component('StTag', StTag);
 app.component('StFormItem', StFormItem);
+app.component('StPopper', Popper);
 // end global components
 
 // register all directives
