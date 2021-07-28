@@ -86,34 +86,38 @@
                 USD
               </p>
             </div>
-            <a
-              v-if="account.utxo === 0"
-              @click="openReceiveModal(account)"
-              :class="[
-                account.utxo === 0 && index === 0
-                  ? 'link-purple'
-                  : 'link-white',
-              ]"
-              >Receive XST</a
-            >
-            <a v-else-if="account.isFavourite" class="link">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+            <div class="card__footer">
+              <a
+                v-if="account.utxo === 0"
+                @click="openReceiveModal(account)"
+                :class="[
+                  account.utxo === 0 && index === 0
+                    ? 'link-purple'
+                    : 'link-white',
+                ]"
+                >Receive XST</a
               >
-                <path
-                  d="M8 1.85039L9.88593 4.78659C10.0214 4.99742 10.231 5.14973 10.4734 5.21337L13.8486 6.09966L11.6389 8.80063C11.4803 8.99457 11.4002 9.24102 11.4145 9.49118L11.6147 12.9751L8.36304 11.7082C8.12956 11.6173 7.87044 11.6173 7.63696 11.7082L4.38535 12.9751L4.58545 9.49118C4.59982 9.24102 4.51975 8.99457 4.36108 8.80063L2.15137 6.09966L5.52665 5.21337C5.76901 5.14973 5.97865 4.99742 6.11407 4.78659L8 1.85039Z"
-                  stroke="#C3A9FB"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              Favorite
-            </a>
-            <div v-if="account.isImported" class="imported" />
+              <a v-else-if="account.isFavourite" class="link">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M8 1.85039L9.88593 4.78659C10.0214 4.99742 10.231 5.14973 10.4734 5.21337L13.8486 6.09966L11.6389 8.80063C11.4803 8.99457 11.4002 9.24102 11.4145 9.49118L11.6147 12.9751L8.36304 11.7082C8.12956 11.6173 7.87044 11.6173 7.63696 11.7082L4.38535 12.9751L4.58545 9.49118C4.59982 9.24102 4.51975 8.99457 4.36108 8.80063L2.15137 6.09966L5.52665 5.21337C5.76901 5.14973 5.97865 4.99742 6.11407 4.78659L8 1.85039Z"
+                    stroke="#C3A9FB"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                Favorite
+              </a>
+              <StTooltip class="tooltip" tooltip="Imported Account">
+                <div v-if="account.isImported" class="imported" />
+              </StTooltip>
+            </div>
           </div>
           <transition name="fill">
             <div
@@ -762,6 +766,11 @@ export default {
 .card__inner {
   padding: 18px 20px 24px;
 }
+.card__inner .card__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .account-options {
   position: absolute;
   top: 0;
@@ -905,9 +914,9 @@ svg {
   height: 6px;
   border-radius: 6px;
   background-color: var(--red400);
-  position: absolute;
+  /* position: absolute;
   right: 20px;
-  bottom: 33px;
+  bottom: 33px; */
 }
 
 :deep .st-modal--container__archive-account .st-modal-container,

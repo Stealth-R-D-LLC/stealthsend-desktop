@@ -19,6 +19,7 @@
         </svg>
         <h4>Stealth <span>XST</span></h4>
       </div>
+      <StTooltip class="tooltip" :tooltip="isHiddenAmounts ? 'Show Values' : 'Hide Values'">
       <svg
         v-if="isHiddenAmounts"
         @click="toggleHiddenAmounts"
@@ -61,6 +62,7 @@
         <path d="M7 8L12 8" stroke="#4E00F6" stroke-width="2" />
         <path d="M19 1L5 15" stroke="#4E00F6" stroke-width="2" />
       </svg>
+      </StTooltip>
     </div>
     <div class="sidebar-header__content">
       <h6>Total Balance</h6>
