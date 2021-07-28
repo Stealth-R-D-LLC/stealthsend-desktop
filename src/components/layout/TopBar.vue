@@ -174,40 +174,42 @@
               <path d="M7 8L12 8" stroke="#4E00F6" stroke-width="2" />
               <path d="M19 1L5 15" stroke="#4E00F6" stroke-width="2" />
             </svg>
-            <svg
-              @click="isVisible = true"
-              width="23"
-              height="22"
-              viewBox="0 0 23 22"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12.6111 10.2529V12.2529"
-                stroke="#4E00F6"
-                stroke-width="2"
-              />
-              <path
-                d="M9.61108 10.2529V13.2529"
-                stroke="#4E00F6"
-                stroke-width="2"
-              />
-              <path
-                d="M16.6111 10.2529L8.61108 10.2529"
-                stroke="#4E00F6"
-                stroke-width="2"
-              />
-              <path
-                d="M18.1111 12.7529C19.4918 12.7529 20.6111 11.6336 20.6111 10.2529C20.6111 8.87222 19.4918 7.75293 18.1111 7.75293C16.7304 7.75293 15.6111 8.87222 15.6111 10.2529C15.6111 11.6336 16.7304 12.7529 18.1111 12.7529Z"
-                stroke="#4E00F6"
-                stroke-width="2"
-              />
-              <path
-                d="M16.6111 15.2532C14.2112 18.2532 11.6111 20.2532 11.6111 20.2532C11.6111 20.2532 9.11112 18.2532 6.61113 15.2532C4.11113 12.2532 3.61112 9.25314 3.61112 9.25314L11.6111 2.25315L15.6111 5.75315"
-                stroke="#4E00F6"
-                stroke-width="2"
-              />
-            </svg>
+            <StTooltip class="tooltip" tooltip="Account Keys">
+              <svg
+                @click="isVisible = true"
+                width="23"
+                height="22"
+                viewBox="0 0 23 22"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12.6111 10.2529V12.2529"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                />
+                <path
+                  d="M9.61108 10.2529V13.2529"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                />
+                <path
+                  d="M16.6111 10.2529L8.61108 10.2529"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                />
+                <path
+                  d="M18.1111 12.7529C19.4918 12.7529 20.6111 11.6336 20.6111 10.2529C20.6111 8.87222 19.4918 7.75293 18.1111 7.75293C16.7304 7.75293 15.6111 8.87222 15.6111 10.2529C15.6111 11.6336 16.7304 12.7529 18.1111 12.7529Z"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                />
+                <path
+                  d="M16.6111 15.2532C14.2112 18.2532 11.6111 20.2532 11.6111 20.2532C11.6111 20.2532 9.11112 18.2532 6.61113 15.2532C4.11113 12.2532 3.61112 9.25314 3.61112 9.25314L11.6111 2.25315L15.6111 5.75315"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                />
+              </svg>
+            </StTooltip>
           </div>
         </template>
         <template
@@ -341,29 +343,31 @@
         </template>
       </div>
       <div class="header-right">
-        <p class="rpc-status">{{ rpcStatus }}</p>
-        <svg
-          class="rpc-icon"
-          width="22"
-          height="22"
-          viewBox="0 0 22 22"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <circle cx="11" cy="11" r="11" fill="#E0D3FC" />
-          <path
-            d="M18 11C18 14.866 14.866 18 11 18C7.13401 18 4 14.866 4 11C4 7.13401 7.13401 4 11 4C12.0736 4 13.0907 4.24169 14 4.67363"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
-          <path d="M17 7L11 13L8 10" stroke="#4E00F6" stroke-width="2" />
-        </svg>
-
+        <StTooltip class="tooltip" tooltip="Connected to Mainnet">
+          <p class="rpc-status">{{ rpcStatus }}</p>
+          <svg
+            class="rpc-icon"
+            width="22"
+            height="22"
+            viewBox="0 0 22 22"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx="11" cy="11" r="11" fill="#E0D3FC" />
+            <path
+              d="M18 11C18 14.866 14.866 18 11 18C7.13401 18 4 14.866 4 11C4 7.13401 7.13401 4 11 4C12.0736 4 13.0907 4.24169 14 4.67363"
+              stroke="#4E00F6"
+              stroke-width="2"
+            />
+            <path d="M17 7L11 13L8 10" stroke="#4E00F6" stroke-width="2" />
+          </svg>
+        </StTooltip>
         <!-- <StIcon name="support"></StIcon> -->
         <!-- <StIcon
         name="notifications"
         @click="toggleDrawer('recent-notifications')"
       ></StIcon> -->
+      <StTooltip class="tooltip" tooltip="Quick Receive">
         <svg
           @click="openQuickDeposit"
           width="18"
@@ -388,6 +392,8 @@
           <path d="M1 10V12" stroke="#4E00F6" stroke-width="2" />
           <path d="M11 9V10.6364" stroke="#4E00F6" stroke-width="2" />
         </svg>
+      </StTooltip>
+      <StTooltip class="tooltip" tooltip="Settings">
         <svg
           @click="goto('/settings')"
           width="18"
@@ -410,6 +416,7 @@
           />
           <path d="M7 17H18" stroke="#4E00F6" stroke-width="2" />
         </svg>
+      </StTooltip>
       </div>
       <StModal
         light
@@ -453,9 +460,8 @@
                 <div>
                   <StTooltip
                     :tooltip="
-                      copyPending ? 'Copied to clipboard!' : 'Click to copy'
+                      copyPending ? 'Copied to clipboard!' : 'Copy to Clipboard'
                     "
-                    position="bottom-left"
                   >
                     <StClipboard :content="publicKey" @click="handleCopy">
                       <svg
@@ -485,8 +491,7 @@
                     ></StClipboard>
                   </StTooltip>
                   <StTooltip
-                    tooltip="Click to show QR code"
-                    position="bottom-left"
+                    tooltip="Show QR Code"
                   >
                     <svg
                       @click="generatePublicQr"
@@ -563,6 +568,7 @@
                     placeholder="Please enter your password"
                     :type="showPassword ? 'text' : 'password'"
                   >
+                  <StTooltip class="tooltip" :tooltip="!showPassword ? 'Show Password' : 'Hide Password'">
                     <svg
                       v-if="!showPassword"
                       @click="showPassword = true"
@@ -605,6 +611,7 @@
                       <path d="M7 8L12 8" stroke="#4E00F6" stroke-width="2" />
                       <path d="M19 1L5 15" stroke="#4E00F6" stroke-width="2" />
                     </svg>
+                  </StTooltip>
                   </StInput>
                 </StFormItem>
                 <StButton
@@ -756,20 +763,22 @@
                     class="account-card__content--icon"
                     @click="accountChanged(acc)"
                   >
-                    <svg
-                      width="18"
-                      height="16"
-                      viewBox="0 0 18 16"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M0 8H16" stroke="#4E00F6" stroke-width="2" />
-                      <path
-                        d="M10.3535 15L16.0006 8L10.3535 1"
-                        stroke="#4E00F6"
-                        stroke-width="2"
-                      />
-                    </svg>
+                    <StTooltip class="tooltip" tooltip="Apply">
+                      <svg
+                        width="18"
+                        height="16"
+                        viewBox="0 0 18 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M0 8H16" stroke="#4E00F6" stroke-width="2" />
+                        <path
+                          d="M10.3535 15L16.0006 8L10.3535 1"
+                          stroke="#4E00F6"
+                          stroke-width="2"
+                        />
+                      </svg>
+                    </StTooltip>
                   </div>
                 </transition>
               </div>
@@ -1170,7 +1179,7 @@ export default {
 }
 
 .header-left div + div,
-.header-right svg + svg {
+.header-right .tooltip + .tooltip {
   margin-left: 24px;
 }
 
@@ -1213,7 +1222,8 @@ export default {
   display: flex;
   align-items: center;
 }
-.icons-flex svg + svg {
+.icons-flex svg + svg,
+.icons-flex .tooltip {
   margin-left: 24px;
 }
 :deep .st-modal-container {

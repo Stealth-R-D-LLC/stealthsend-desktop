@@ -105,11 +105,15 @@
               class="move"
               :class="{ 'move-left': isExpanded === item.index }"
             >
-              {{
-                findLabelForTx(item.txid)
-                  ? formatLabel(findLabelForTx(item.txid))
-                  : 'No label'
-              }}
+              <template  v-if="findLabelForTx(item.txid)">
+                <StPopper :content="findLabelForTx(item.txid)" placement="top" hover="true">
+                  {{formatLabel(findLabelForTx(item.txid))}}
+                </StPopper>
+              </template>
+              <template v-else >
+
+                {{ 'No label' }}
+              </template>
             </div>
           </template>
           <template #amountFiat="{ item }">
