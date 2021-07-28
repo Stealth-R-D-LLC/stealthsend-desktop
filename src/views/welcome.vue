@@ -1210,7 +1210,7 @@
                     id="password"
                     :type="showPassword ? 'text' : 'password'"
                     v-model="form.password.$value"
-                    placeholder="Please enter password"
+                    placeholder="Please enter a password"
                   >
                     <svg
                       v-if="!showPassword"
@@ -1263,7 +1263,7 @@
                   <StInput
                     :type="showConfirmPassword ? 'text' : 'password'"
                     v-model="form.confirmPassword.$value"
-                    placeholder="Please repeat the Password to confirm"
+                    placeholder="Please re-enter the password"
                   >
                     <svg
                       v-if="!showConfirmPassword"
@@ -2584,7 +2584,7 @@ export default {
         }, 4000);
       }, 350);
       /* mainStore.START_GLOBAL_LOADING();
-      
+
       await CryptoService.storeWalletInDb(password.value);
       await CryptoService.storeMnemonicInWallet(selectedWords.value);
 
