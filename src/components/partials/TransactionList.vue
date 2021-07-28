@@ -105,13 +105,16 @@
               class="move"
               :class="{ 'move-left': isExpanded === item.index }"
             >
-              <template  v-if="findLabelForTx(item.txid)">
-                <StPopper :content="findLabelForTx(item.txid)" placement="top" hover="true">
-                  {{formatLabel(findLabelForTx(item.txid))}}
+              <template v-if="findLabelForTx(item.txid)">
+                <StPopper
+                  :content="findLabelForTx(item.txid)"
+                  placement="top"
+                  hover="true"
+                >
+                  {{ formatLabel(findLabelForTx(item.txid)) }}
                 </StPopper>
               </template>
-              <template v-else >
-
+              <template v-else>
                 {{ 'No label' }}
               </template>
             </div>

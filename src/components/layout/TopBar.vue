@@ -367,56 +367,56 @@
         name="notifications"
         @click="toggleDrawer('recent-notifications')"
       ></StIcon> -->
-      <StTooltip class="tooltip" tooltip="Quick Receive">
-        <svg
-          @click="openQuickDeposit"
-          width="18"
-          height="18"
-          viewBox="0 0 18 18"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M7 7H1V1H7V7Z"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
-          <path d="M11 0V3H14V1H17V5" stroke="#4E00F6" stroke-width="2" />
-          <path d="M7 18V16H4V17H1V14" stroke="#4E00F6" stroke-width="2" />
-          <path d="M11 18V16H14V17H17V14" stroke="#4E00F6" stroke-width="2" />
-          <path d="M11 13H7V11H4" stroke="#4E00F6" stroke-width="2" />
-          <path d="M10 7H18" stroke="#4E00F6" stroke-width="2" />
-          <path d="M14 9V11H17V9" stroke="#4E00F6" stroke-width="2" />
-          <path d="M1 10V12" stroke="#4E00F6" stroke-width="2" />
-          <path d="M11 9V10.6364" stroke="#4E00F6" stroke-width="2" />
-        </svg>
-      </StTooltip>
-      <StTooltip class="tooltip" tooltip="Settings">
-        <svg
-          @click="goto('/settings')"
-          width="18"
-          height="18"
-          viewBox="0 0 18 18"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M7 11L18 11" stroke="#4E00F6" stroke-width="2" />
-          <path
-            d="M4 14C5.65685 14 7 12.6569 7 11C7 9.34315 5.65685 8 4 8C2.34315 8 1 9.34315 1 11C1 12.6569 2.34315 14 4 14Z"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
-          <path d="M0 4H7" stroke="#4E00F6" stroke-width="2" />
-          <path
-            d="M14 7C15.6569 7 17 5.65685 17 4C17 2.34315 15.6569 1 14 1C12.3431 1 11 2.34315 11 4C11 5.65685 12.3431 7 14 7Z"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
-          <path d="M7 17H18" stroke="#4E00F6" stroke-width="2" />
-        </svg>
-      </StTooltip>
+        <StTooltip class="tooltip" tooltip="Quick Receive">
+          <svg
+            @click="openQuickDeposit"
+            width="18"
+            height="18"
+            viewBox="0 0 18 18"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M7 7H1V1H7V7Z"
+              stroke="#4E00F6"
+              stroke-width="2"
+            />
+            <path d="M11 0V3H14V1H17V5" stroke="#4E00F6" stroke-width="2" />
+            <path d="M7 18V16H4V17H1V14" stroke="#4E00F6" stroke-width="2" />
+            <path d="M11 18V16H14V17H17V14" stroke="#4E00F6" stroke-width="2" />
+            <path d="M11 13H7V11H4" stroke="#4E00F6" stroke-width="2" />
+            <path d="M10 7H18" stroke="#4E00F6" stroke-width="2" />
+            <path d="M14 9V11H17V9" stroke="#4E00F6" stroke-width="2" />
+            <path d="M1 10V12" stroke="#4E00F6" stroke-width="2" />
+            <path d="M11 9V10.6364" stroke="#4E00F6" stroke-width="2" />
+          </svg>
+        </StTooltip>
+        <StTooltip class="tooltip" tooltip="Settings">
+          <svg
+            @click="goto('/settings')"
+            width="18"
+            height="18"
+            viewBox="0 0 18 18"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M7 11L18 11" stroke="#4E00F6" stroke-width="2" />
+            <path
+              d="M4 14C5.65685 14 7 12.6569 7 11C7 9.34315 5.65685 8 4 8C2.34315 8 1 9.34315 1 11C1 12.6569 2.34315 14 4 14Z"
+              stroke="#4E00F6"
+              stroke-width="2"
+            />
+            <path d="M0 4H7" stroke="#4E00F6" stroke-width="2" />
+            <path
+              d="M14 7C15.6569 7 17 5.65685 17 4C17 2.34315 15.6569 1 14 1C12.3431 1 11 2.34315 11 4C11 5.65685 12.3431 7 14 7Z"
+              stroke="#4E00F6"
+              stroke-width="2"
+            />
+            <path d="M7 17H18" stroke="#4E00F6" stroke-width="2" />
+          </svg>
+        </StTooltip>
       </div>
       <StModal
         light
@@ -490,9 +490,7 @@
                         /></svg
                     ></StClipboard>
                   </StTooltip>
-                  <StTooltip
-                    tooltip="Show QR Code"
-                  >
+                  <StTooltip tooltip="Show QR Code">
                     <svg
                       @click="generatePublicQr"
                       width="22"
@@ -568,50 +566,59 @@
                     placeholder="Please enter your password"
                     :type="showPassword ? 'text' : 'password'"
                   >
-                  <StTooltip class="tooltip" :tooltip="!showPassword ? 'Show Password' : 'Hide Password'">
-                    <svg
-                      v-if="!showPassword"
-                      @click="showPassword = true"
-                      width="22"
-                      height="12"
-                      viewBox="0 0 22 12"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
+                    <StTooltip
+                      class="tooltip"
+                      :tooltip="
+                        !showPassword ? 'Show Password' : 'Hide Password'
+                      "
                     >
-                      <path
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
-                        d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
-                        stroke="#4E00F6"
-                        stroke-width="2"
-                      />
-                      <circle
-                        r="1"
-                        transform="matrix(-1 0 0 1 11 6)"
-                        fill="#4E00F6"
-                        stroke="#4E00F6"
-                        stroke-width="2"
-                      />
-                    </svg>
+                      <svg
+                        v-if="!showPassword"
+                        @click="showPassword = true"
+                        width="22"
+                        height="12"
+                        viewBox="0 0 22 12"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          clip-rule="evenodd"
+                          d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
+                          stroke="#4E00F6"
+                          stroke-width="2"
+                        />
+                        <circle
+                          r="1"
+                          transform="matrix(-1 0 0 1 11 6)"
+                          fill="#4E00F6"
+                          stroke="#4E00F6"
+                          stroke-width="2"
+                        />
+                      </svg>
 
-                    <svg
-                      v-else
-                      @click="showPassword = false"
-                      width="22"
-                      height="16"
-                      viewBox="0 0 22 16"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M11 3C7.68629 3 4.68629 4.66667 2 8C4.68629 11.3333 7.68629 13 11 13C14.3137 13 17.3137 11.3333 20 8C19.3945 7.24866 18.7731 6.58199 18.1357 6"
-                        stroke="#4E00F6"
-                        stroke-width="2"
-                      />
-                      <path d="M7 8L12 8" stroke="#4E00F6" stroke-width="2" />
-                      <path d="M19 1L5 15" stroke="#4E00F6" stroke-width="2" />
-                    </svg>
-                  </StTooltip>
+                      <svg
+                        v-else
+                        @click="showPassword = false"
+                        width="22"
+                        height="16"
+                        viewBox="0 0 22 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M11 3C7.68629 3 4.68629 4.66667 2 8C4.68629 11.3333 7.68629 13 11 13C14.3137 13 17.3137 11.3333 20 8C19.3945 7.24866 18.7731 6.58199 18.1357 6"
+                          stroke="#4E00F6"
+                          stroke-width="2"
+                        />
+                        <path d="M7 8L12 8" stroke="#4E00F6" stroke-width="2" />
+                        <path
+                          d="M19 1L5 15"
+                          stroke="#4E00F6"
+                          stroke-width="2"
+                        />
+                      </svg>
+                    </StTooltip>
                   </StInput>
                 </StFormItem>
                 <StButton
