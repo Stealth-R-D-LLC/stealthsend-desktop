@@ -7,46 +7,108 @@
         'active-container--no-archived': archivedAccounts.length === 0,
       }"
     >
-      <div class="accounts-container__inner--grid active-container__relative">
+      <div
+        id="activeAccounts"
+        class="accounts-container__inner--grid active-container__relative"
+        :class="{ 'active-container__disabled': isDraggedInactive }"
+      >
         <div
           v-for="(account, index) in activeAccounts"
           :key="account.address"
           class="card"
           :class="{ 'card-purple': account.utxo === 0 && index === 0 }"
         >
+          <StModal
+            v-if="accountOptions === `${account.label}_${index}`"
+            :has-click-outside="false"
+            light
+            :visible="archiveAccountModal"
+            @close="cancelArchiveActive"
+            class="st-modal--container__archive-account"
+          >
+            <template #header>Archive Account</template>
+            <template #body>
+              <div class="archive-account">
+                <div class="archive-account__content">
+                  <div class="desc">
+                    <p>
+                      Archive an account if you don't need to use it for a long
+                      time. Archived accounts are not monitored, and you cannot
+                      work with them while they are archived.
+                    </p>
+                  </div>
+                  <p>
+                    The account "{{ account.label }}" will be archived and
+                    available in your Archive. To activate archived accounts go
+                    to your Archive, select an account and activate.
+                  </p>
+                </div>
+              </div>
+            </template>
+            <template #footer>
+              <div class="archive-account__actions">
+                <div class="buttons">
+                  <StButton type="type-b" @click="cancelArchiveActive"
+                    >Cancel</StButton
+                  >
+                  <StButton @click="archiveAccount(account)">Archive</StButton>
+                </div>
+              </div>
+            </template>
+          </StModal>
           <div class="card__inner">
             <div class="card-header">
               <h5>{{ account.label }}</h5>
-              <svg
-                :class="[
-                  account.utxo === 0 && index === 0 ? 'info-purple' : 'info',
-                ]"
-                width="10"
-                height="10"
-                viewBox="0 0 10 10"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                @click="toggleAccountOptions(`${account.label}_${index}`)"
-              >
-                <path
-                  d="M0 1H7"
-                  stroke="#310296"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M0 5H10"
-                  stroke="#310296"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M0 9H10"
-                  stroke="#310296"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-              </svg>
+              <div class="action-icons">
+                <svg
+                  :class="[
+                    account.utxo === 0 && index === 0 ? 'info-purple' : 'info',
+                  ]"
+                  width="10"
+                  height="10"
+                  viewBox="0 0 10 10"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  @click="toggleAccountOptions(`${account.label}_${index}`)"
+                >
+                  <path
+                    d="M0 1H7"
+                    stroke="#310296"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M0 5H10"
+                    stroke="#310296"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M0 9H10"
+                    stroke="#310296"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <svg
+                  v-if="account.utxo !== 0 && index !== 0"
+                  @mousedown="isDraggedActive = true"
+                  @mouseup="isDraggedActive = false"
+                  class="handle"
+                  width="10"
+                  height="15"
+                  viewBox="0 0 10 15"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="1.5" cy="1.5" r="1.5" fill="#A2A1A4" />
+                  <circle cx="7.5" cy="1.5" r="1.5" fill="#A2A1A4" />
+                  <circle cx="1.5" cy="7.5" r="1.5" fill="#A2A1A4" />
+                  <circle cx="7.5" cy="7.5" r="1.5" fill="#A2A1A4" />
+                  <circle cx="1.5" cy="13.5" r="1.5" fill="#A2A1A4" />
+                  <circle cx="7.5" cy="13.5" r="1.5" fill="#A2A1A4" />
+                </svg>
+              </div>
             </div>
             <div class="amount-container">
               <p class="currency">
@@ -117,7 +179,7 @@
           </div>
           <transition name="fill">
             <div
-              v-if="accountOptions === `${account.label}_${index}`"
+              v-show="accountOptions === `${account.label}_${index}`"
               class="account-options"
             >
               <svg
@@ -158,48 +220,6 @@
                 </li>
                 <li>
                   <a @click="openArchiveAccountModal()">Archive Account</a>
-                  <StModal
-                    light
-                    :visible="archiveAccountModal"
-                    @close="archiveAccountModal = false"
-                    class="st-modal--container__archive-account"
-                  >
-                    <template #header>Archive Account</template>
-                    <template #body>
-                      <div class="archive-account">
-                        <div class="archive-account__content">
-                          <div class="desc">
-                            <p>
-                              Archive an account if you don't need to use it for
-                              a long time. Archived accounts are not monitored,
-                              and you cannot work with them while they are
-                              archived.
-                            </p>
-                          </div>
-                          <p>
-                            The account "{{ account.label }}" will be archived
-                            and available in your Archive. To activate archived
-                            accounts go to your Archive, select an account and
-                            activate.
-                          </p>
-                        </div>
-                      </div>
-                    </template>
-                    <template #footer>
-                      <div class="archive-account__actions">
-                        <div class="buttons">
-                          <StButton
-                            type="type-b"
-                            @click="archiveAccountModal = false"
-                            >Cancel</StButton
-                          >
-                          <StButton @click="archiveAccount(account)"
-                            >Archive</StButton
-                          >
-                        </div>
-                      </div>
-                    </template>
-                  </StModal>
                 </li>
                 <li>
                   <a @click="openAccountDetails(account)">View Account</a>
@@ -210,6 +230,7 @@
                   >
                 </li>
                 <StModal
+                  :has-click-outside="false"
                   light
                   :visible="editAccountNameModal"
                   @close="closeEditModal"
@@ -254,13 +275,16 @@
         </div>
       </div>
     </div>
-    <div class="archived-container">
+    <div
+      class="archived-container"
+      :class="{ 'archived-container__disabled': isDraggedActive }"
+    >
       <h4>Archived Accounts</h4>
       <h6 v-if="!archivedAccounts.length" class="no-archived">
         No archived accounts
       </h6>
       <div
-        v-if="archivedAccounts.length"
+        id="archivedAccounts"
         class="accounts-container__inner--grid"
         :class="{
           'has-archived': archivedAccounts.length,
@@ -271,37 +295,88 @@
           :key="account.address"
           class="card"
         >
+          <StModal
+            v-if="accountOptions === `${account.label}_${index}`"
+            :has-click-outside="false"
+            light
+            :visible="activateAccountModal"
+            @close="cancelArchiveActive"
+            class="st-modal--container__activate-account"
+          >
+            <template #header>Activate Account</template>
+            <template #body>
+              <div class="activate-account">
+                <div class="activate-account__content">
+                  <p>
+                    Activate and return "{{ account.label }}" to Active
+                    Accounts.
+                  </p>
+                </div>
+              </div>
+            </template>
+            <template #footer>
+              <div class="activate-account__actions">
+                <div class="buttons">
+                  <StButton type="type-b" @click="cancelArchiveActive"
+                    >Cancel</StButton
+                  >
+                  <StButton @click="activateAccount(account)"
+                    >Activate</StButton
+                  >
+                </div>
+              </div>
+            </template>
+          </StModal>
           <div class="card__inner">
             <div class="card-header">
               <h5>{{ account.label }}</h5>
-              <svg
-                class="info-grey"
-                width="10"
-                height="10"
-                viewBox="0 0 10 10"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                @click="toggleAccountOptions(`${account.label}_${index}`)"
-              >
-                <path
-                  d="M0 1H7"
-                  stroke="#A2A1A4"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M0 5H10"
-                  stroke="#A2A1A4"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M0 9H10"
-                  stroke="#A2A1A4"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-              </svg>
+              <div class="action-icons">
+                <svg
+                  class="info-grey"
+                  width="10"
+                  height="10"
+                  viewBox="0 0 10 10"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  @click="toggleAccountOptions(`${account.label}_${index}`)"
+                >
+                  <path
+                    d="M0 1H7"
+                    stroke="#A2A1A4"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M0 5H10"
+                    stroke="#A2A1A4"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M0 9H10"
+                    stroke="#A2A1A4"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <svg
+                  @mousedown="isDraggedInactive = true"
+                  @mouseup="isDraggedInactive = false"
+                  class="handle"
+                  width="10"
+                  height="15"
+                  viewBox="0 0 10 15"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="1.5" cy="1.5" r="1.5" fill="#A2A1A4" />
+                  <circle cx="7.5" cy="1.5" r="1.5" fill="#A2A1A4" />
+                  <circle cx="1.5" cy="7.5" r="1.5" fill="#A2A1A4" />
+                  <circle cx="7.5" cy="7.5" r="1.5" fill="#A2A1A4" />
+                  <circle cx="1.5" cy="13.5" r="1.5" fill="#A2A1A4" />
+                  <circle cx="7.5" cy="13.5" r="1.5" fill="#A2A1A4" />
+                </svg>
+              </div>
             </div>
             <div class="amount-container">
               <p class="currency">
@@ -360,38 +435,6 @@
                   <a @click="openActivateAccountModal(account)"
                     >Activate Account</a
                   >
-                  <StModal
-                    light
-                    :visible="activateAccountModal"
-                    @close="activateAccountModal = false"
-                    class="st-modal--container__activate-account"
-                  >
-                    <template #header>Activate Account</template>
-                    <template #body>
-                      <div class="activate-account">
-                        <div class="activate-account__content">
-                          <p>
-                            Activate and return "{{ account.label }}" to Active
-                            Accounts.
-                          </p>
-                        </div>
-                      </div>
-                    </template>
-                    <template #footer>
-                      <div class="activate-account__actions">
-                        <div class="buttons">
-                          <StButton
-                            type="type-b"
-                            @click="activateAccountModal = false"
-                            >Cancel</StButton
-                          >
-                          <StButton @click="activateAccount(account)"
-                            >Activate</StButton
-                          >
-                        </div>
-                      </div>
-                    </template>
-                  </StModal>
                 </li>
                 <li>
                   <a @click="openEditAccountNameModal(account)"
@@ -443,17 +486,32 @@
         </div>
       </div>
     </div>
+    <div
+      id="activeDropzone"
+      class="active-overlay"
+      :class="{ 'active-overlay__hidden': !isDraggedInactive }"
+    >
+      <h6>Drag and drop here to activate account</h6>
+    </div>
+    <div
+      id="archivedDropzone"
+      class="archived-overlay"
+      :class="{ 'archived-overlay__hidden': !isDraggedActive }"
+    >
+      <h6>Drag and drop here to archive account</h6>
+    </div>
   </div>
 </template>
 
 <script>
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { useMainStore } from '@/store';
 import useHelpers from '@/composables/useHelpers';
 import router from '@/router';
 import CryptoService from '../../services/crypto';
 import emitter from '@/services/emitter';
 import { useValidation, ValidationError } from 'vue3-form-validation';
+import Sortable from 'sortablejs';
 
 export default {
   name: 'StAccounts',
@@ -474,6 +532,8 @@ export default {
     let activateAccountModal = ref(false);
     let archiveAccountModal = ref(false);
     let accounts = ref([]);
+    let isDraggedActive = ref(false);
+    let isDraggedInactive = ref(false);
 
     const {
       form,
@@ -499,56 +559,181 @@ export default {
       },
     });
 
-    // const accounts = ref([]);
-
     const activeAccounts = computed(() => {
-      console.log(
-        'ACCOUNTS: ',
-        accounts.value.filter((obj) => obj.isFavourite)
-      );
       return accounts.value.filter((obj) => obj.isArchived === false);
     });
+
     const archivedAccounts = computed(() => {
       return accounts.value.filter((obj) => obj.isArchived === true);
     });
+
     const XST_USD_RATE = computed(() => {
       return CryptoService.constraints.XST_USD || 1;
     });
+
+    const archivedAcc = ref(null);
+    const activeAcc = ref(null);
+    const activeAccOldIndex = ref(null);
+    const archivedAccOldIndex = ref(null);
+    let isDragged = ref(false);
+
+    onMounted(() => {
+      var elActive = document.getElementById('activeAccounts');
+      var elArchived = document.getElementById('archivedAccounts');
+      var elArchivedDropzone = document.getElementById('archivedDropzone');
+      var elActiveDropzone = document.getElementById('activeDropzone');
+      console.log('elActive: ', elActive);
+      console.log('elArchived: ', elArchived);
+      new Sortable(elActive, {
+        group: {
+          name: 'accounts',
+        },
+        draggagle: '.card',
+        handle: '.handle',
+        animation: 150,
+        sort: false,
+        onEnd: function (evt) {
+          console.log('account dropped: ', evt.item);
+          console.log('dropped to group: ', evt.to);
+          console.log('dropped from group: ', evt.from);
+          console.log('isSame: ', evt.to === elArchived);
+          console.log('EVENT: ', evt.oldIndex);
+          console.log('ACTIVE ACC: ', activeAccounts.value[evt.oldIndex]);
+          isDragged.value = true;
+          activeAccOldIndex.value = evt.oldIndex;
+          archivedAcc.value = activeAccounts.value[evt.oldIndex];
+          if (evt.to === elArchivedDropzone) {
+            toggleAccountOptions(
+              `${activeAccounts.value[evt.oldIndex].label}_${evt.oldIndex}`
+            );
+            openArchiveAccountModal();
+          }
+          isDraggedActive.value = false;
+        },
+      });
+      new Sortable(elArchived, {
+        group: {
+          name: 'accounts',
+        },
+        draggagle: '.card',
+        handle: '.handle',
+        animation: 150,
+        sort: false,
+        onEnd: function (evt) {
+          console.log('account dropped: ', evt.item);
+          console.log('dropped to group: ', evt.to);
+          console.log('dropped from group: ', evt.from);
+          isDragged.value = true;
+          archivedAccOldIndex.value = evt.oldIndex;
+          activeAcc.value = archivedAccounts.value[evt.oldIndex];
+          if (evt.to === elActiveDropzone) {
+            toggleAccountOptions(
+              `${archivedAccounts.value[evt.oldIndex].label}_${evt.oldIndex}`
+            );
+            openActivateAccountModal();
+          }
+          isDraggedInactive.value = false;
+        },
+      });
+      new Sortable(elArchivedDropzone, {
+        group: {
+          name: 'accounts',
+        },
+      });
+      new Sortable(elActiveDropzone, {
+        group: {
+          name: 'accounts',
+        },
+      });
+    });
+
+    function cancelArchiveActive() {
+      accountOptions.value = '';
+      if (archiveAccountModal.value) {
+        archiveAccountModal.value = false;
+        activeAccounts.value.splice(activeAccOldIndex.value, 1);
+        setTimeout(() => {
+          activeAccounts.value.splice(
+            activeAccOldIndex.value,
+            0,
+            archivedAcc.value
+          );
+          setTimeout(() => {
+            isDraggedActive.value = true;
+            setTimeout(() => {
+              isDraggedActive.value = false;
+            }, 1);
+          }, 1);
+        }, 50);
+      }
+      if (activateAccountModal.value) {
+        activateAccountModal.value = false;
+        archivedAccounts.value.splice(archivedAccOldIndex.value, 1);
+        setTimeout(() => {
+          archivedAccounts.value.splice(
+            archivedAccOldIndex.value,
+            0,
+            activeAcc.value
+          );
+          setTimeout(() => {
+            isDraggedInactive.value = true;
+            setTimeout(() => {
+              isDraggedInactive.value = false;
+            }, 1);
+          }, 1);
+        }, 50);
+      }
+    }
+
     function openActivateAccountModal() {
       activateAccountModal.value = true;
     }
+
     function openArchiveAccountModal() {
       archiveAccountModal.value = true;
     }
+
     function toggleAccountOptions(name) {
       accountOptions.value = name;
     }
+
     function openReceiveModal(account) {
       mainStore.SET_MODAL_VISIBILITY('receive', true);
       mainStore.SET_ACCOUNT_DETAILS(account);
     }
+
     async function favouriteAccount(account) {
       await CryptoService.favouriteAccount(account);
       accountOptions.value = '';
       emitter.emit('accounts:refresh');
     }
+
     async function unfavouriteAccount(account) {
       await CryptoService.unfavouriteAccount(account);
       accountOptions.value = '';
       emitter.emit('accounts:refresh');
     }
+
     async function archiveAccount(account) {
+      if (isDragged.value) {
+        archivedAccounts.value.push(archivedAcc.value);
+      }
       archiveAccountModal.value = false;
       await CryptoService.archiveAccount(account);
       accountOptions.value = '';
       emitter.emit('accounts:refresh');
     }
+
     async function activateAccount(account) {
+      if (isDragged.value) {
+        activeAccounts.value.push(activeAcc.value);
+      }
       activateAccountModal.value = false;
       await CryptoService.activateAccount(account);
       accountOptions.value = '';
       emitter.emit('accounts:refresh');
     }
+
     async function changeAccountName(account) {
       try {
         await validateFields();
@@ -562,11 +747,13 @@ export default {
         emitter.emit('accounts:refresh');
       }
     }
+
     function openEditAccountNameModal(account) {
       resetFields();
       accountName.value = account.label;
       editAccountNameModal.value = true;
     }
+
     const openAccountDetails = (account) => {
       mainStore.SET_ACCOUNT_DETAILS(account);
 
@@ -625,6 +812,8 @@ export default {
       editAccountNameModal,
       archiveAccountModal,
       activateAccountModal,
+      isDraggedActive,
+      isDraggedInactive,
 
       // methods
       toggleAccountOptions,
@@ -638,6 +827,7 @@ export default {
       unfavouriteAccount,
       openArchiveAccountModal,
       openActivateAccountModal,
+      cancelArchiveActive,
 
       formatAmount,
       XST_USD_RATE,
@@ -718,6 +908,10 @@ export default {
   background-color: var(--background50);
   box-sizing: border-box;
 }
+.archived-container__disabled,
+.active-container__disabled {
+  pointer-events: none;
+}
 .archived-container h4 {
   text-align: left;
   margin-bottom: 28px;
@@ -725,6 +919,7 @@ export default {
 .archived-container .no-archived {
   text-align: center;
   margin-bottom: 28px;
+  grid-column: span 4;
 }
 .info-purple path {
   stroke: var(--marine700);
@@ -924,5 +1119,68 @@ svg {
   position: absolute;
   bottom: 32px;
   width: 416px;
+}
+.action-icons {
+  display: flex;
+  align-items: center;
+}
+.handle {
+  cursor: move;
+  margin-left: 24px;
+}
+.archived-overlay {
+  border-top: 1px solid var(--marine400);
+  background-color: rgba(221, 222, 242, 0.7);
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.active-overlay {
+  border-bottom: 1px solid var(--marine400);
+  background-color: rgba(221, 222, 242, 0.7);
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+}
+.archived-overlay__hidden,
+.active-overlay__hidden {
+  border-top: none;
+  background-color: transparent;
+  height: 0;
+  overflow: hidden;
+}
+.archived-overlay__hidden h6,
+.active-overlay__hidden h6 {
+  display: none;
+}
+.archived-overlay h6,
+.active-overlay h6 {
+  position: absolute;
+}
+.archived-overlay .card {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+.archived-overlay .card__inner,
+.active-overlay .card__inner {
+  opacity: 0;
+  height: 0;
+  padding: 0;
+  pointer-events: none;
+}
+.archived-overlay .account-options,
+.active-overlay .account-options {
+  opacity: 0;
 }
 </style>
