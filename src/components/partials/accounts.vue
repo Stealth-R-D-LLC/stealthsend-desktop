@@ -91,7 +91,7 @@
                   />
                 </svg>
                 <svg
-                  v-if="account.utxo !== 0 && index !== 0"
+                  v-if="account.utxo !== 0 || index !== 0"
                   @mousedown="isDraggedActive = true"
                   @mouseup="isDraggedActive = false"
                   class="handle"
@@ -623,9 +623,9 @@ export default {
           console.log('account dropped: ', evt.item);
           console.log('dropped to group: ', evt.to);
           console.log('dropped from group: ', evt.from);
-          isDragged.value = true;
           archivedAccOldIndex.value = evt.oldIndex;
           activeAcc.value = archivedAccounts.value[evt.oldIndex];
+          isDragged.value = true;
           if (evt.to === elActiveDropzone) {
             toggleAccountOptions(
               `${archivedAccounts.value[evt.oldIndex].label}_${evt.oldIndex}`
@@ -651,37 +651,41 @@ export default {
       accountOptions.value = '';
       if (archiveAccountModal.value) {
         archiveAccountModal.value = false;
-        activeAccounts.value.splice(activeAccOldIndex.value, 1);
-        setTimeout(() => {
-          activeAccounts.value.splice(
-            activeAccOldIndex.value,
-            0,
-            archivedAcc.value
-          );
+        if (isDragged.value) {
+          activeAccounts.value.splice(activeAccOldIndex.value, 1);
           setTimeout(() => {
-            isDraggedActive.value = true;
+            activeAccounts.value.splice(
+              activeAccOldIndex.value,
+              0,
+              archivedAcc.value
+            );
             setTimeout(() => {
-              isDraggedActive.value = false;
+              isDraggedActive.value = true;
+              setTimeout(() => {
+                isDraggedActive.value = false;
+              }, 1);
             }, 1);
-          }, 1);
-        }, 50);
+          }, 50);
+        }
       }
       if (activateAccountModal.value) {
         activateAccountModal.value = false;
-        archivedAccounts.value.splice(archivedAccOldIndex.value, 1);
-        setTimeout(() => {
-          archivedAccounts.value.splice(
-            archivedAccOldIndex.value,
-            0,
-            activeAcc.value
-          );
+        if (isDragged.value) {
+          archivedAccounts.value.splice(archivedAccOldIndex.value, 1);
           setTimeout(() => {
-            isDraggedInactive.value = true;
+            archivedAccounts.value.splice(
+              archivedAccOldIndex.value,
+              0,
+              activeAcc.value
+            );
             setTimeout(() => {
-              isDraggedInactive.value = false;
+              isDraggedInactive.value = true;
+              setTimeout(() => {
+                isDraggedInactive.value = false;
+              }, 1);
             }, 1);
-          }, 1);
-        }, 50);
+          }, 50);
+        }
       }
     }
 
@@ -898,6 +902,9 @@ export default {
   box-shadow: 0px 8px 24px -8px rgba(34, 3, 101, 0.1);
   border-radius: 2px;
 }
+.card:hover {
+  z-index: 10;
+}
 .card-purple {
   background: var(--marine300) !important;
   border: 1px solid var(--marine400) !important;
@@ -1101,6 +1108,10 @@ svg {
   bottom: 33px;
 }
 
+:deep .st-modal--container__archive-account .st-modal__body {
+  margin: 36px 0 65px 0;
+}
+
 :deep .st-modal--container__archive-account .st-modal-container,
 :deep .st-modal--container__activate-account .st-modal-container {
   min-height: 520px;
@@ -1154,7 +1165,7 @@ svg {
 }
 .archived-overlay__hidden,
 .active-overlay__hidden {
-  border-top: none;
+  border: none;
   background-color: transparent;
   height: 0;
   overflow: hidden;
@@ -1166,6 +1177,7 @@ svg {
 .archived-overlay h6,
 .active-overlay h6 {
   position: absolute;
+  z-index: 1;
 }
 .archived-overlay .card {
   background: transparent;
