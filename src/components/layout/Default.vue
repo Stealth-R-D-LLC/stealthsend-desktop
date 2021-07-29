@@ -1,5 +1,5 @@
 <template>
-  <div class="layout">
+  <div class="layout" v-if="layout ? false : true">
     <ReceiveModal />
     <QuickReceiveModal />
     <SendModal />
@@ -42,7 +42,7 @@ import SendModal from '@/components/partials/SendModal.vue';
 import AddAccount from '@/components/partials/AddAccount.vue';
 import OffCanvas from '@/components/elements/StOffCanvas.vue';
 import { useMainStore } from '@/store';
-import { computed, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 
 export default {
   name: 'StDefault',
@@ -73,11 +73,16 @@ export default {
         window.ipc.send('resize:other');
       }
     }, 10); */
+    const layout = ref(false);
 
     const menuExpanded = computed(() => {
       return mainStore.isMenuExpanded;
     });
     onMounted(() => {
+      if (!mainStore.layoutFlash) {
+        layout.value = true;
+      }
+      mainStore.SET_LAYOUT_FLASH(true);
       getExpandedMenu();
     });
 
@@ -91,6 +96,7 @@ export default {
     }
     return {
       menuExpanded,
+      layout,
     };
   },
 };
