@@ -91,7 +91,6 @@
           <StModal
             light
             v-show="isScanning"
-            :current-step="currentStep"
             :visible="currentStep === 2"
             @close="isScanning = false"
             class="scan-modal"
