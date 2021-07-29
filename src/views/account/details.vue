@@ -249,7 +249,6 @@ export default {
         .catch((err) => {
           return err;
         });
-      console.log('ACCOUNT: ', account.value);
       let publicKey = '';
       if (account.value.isImported) {
         const path = CryptoService.breakAccountPath(account.value.path);
