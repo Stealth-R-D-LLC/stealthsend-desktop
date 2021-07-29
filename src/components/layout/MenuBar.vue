@@ -1,6 +1,7 @@
 <template>
   <aside
     id="aside-menu"
+    ref="asideMenu"
     class="layout__aside"
     :class="[
       { width: isCollapsed || menuExpanded },
@@ -325,6 +326,7 @@
 import { ref, computed, defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMainStore } from '@/store';
+import { onClickOutside } from '@vueuse/core';
 
 export default defineComponent({
   name: 'StMenuBar',
@@ -332,9 +334,12 @@ export default defineComponent({
     const mainStore = useMainStore();
     const router = useRouter();
     const isCollapsed = ref(false);
+    const asideMenu = ref(null);
 
     router.afterEach(() => {
-      !isCollapsed.value ? (isCollapsed.value = false) : null;
+      if (isCollapsed.value) {
+        isCollapsed.value = false;
+      }
     });
 
     const menuExpanded = computed(() => {
@@ -346,9 +351,11 @@ export default defineComponent({
     }
 
     function openModal(modal) {
+      isCollapsed.value = false;
       mainStore.SET_MODAL_VISIBILITY(modal, true);
     }
     function toggleDrawer(canvas) {
+      isCollapsed.value = false;
       mainStore.SET_OFF_CANVAS_DATA({ addressBook: 'dummy' });
       mainStore.SET_CURRENT_CANVAS(canvas);
       mainStore.TOGGLE_DRAWER(true);
@@ -358,7 +365,14 @@ export default defineComponent({
       router.push('/lock');
     }
 
+    onClickOutside(asideMenu, () => {
+      if (isCollapsed.value) {
+        isCollapsed.value = false;
+      }
+    });
+
     return {
+      asideMenu,
       isCollapsed,
       menuExpanded,
       toggleMenu,
@@ -456,7 +470,7 @@ export default defineComponent({
 }
 
 .layout__aside .item.router-link-exact-active span {
-  color: var(--marine200);
+  color: var(--marine200) !important;
 }
 
 .layout__aside li svg path,
@@ -468,7 +482,7 @@ export default defineComponent({
 .layout__aside li:hover svg path,
 .layout__aside li:hover svg circle {
   stroke: var(--marine200);
-  color: var(--marine200);
+  color: var(--marine200) !important;
 }
 
 @keyframes animate-width {
@@ -489,5 +503,8 @@ export default defineComponent({
   100% {
     width: 280px;
   }
+}
+#right {
+  display: flex;
 }
 </style>
