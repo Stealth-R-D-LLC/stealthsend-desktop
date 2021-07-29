@@ -571,20 +571,8 @@ const CryptoService = {
       let newAccounts = [];
       for (let account of accounts) {
         let accUtxo = 0;
-        let publicKey = '';
-        if (account.isImported) {
-          const path = this.breakAccountPath(account.path);
-          const { xpub } = this.getKeysForAccount(
-            path.account,
-            path.change,
-            path.address
-          );
-          publicKey = xpub;
-        } else {
-          publicKey = account.xpub;
-        }
-        if (publicKey.length > 0) {
-          const hdAccount = await mainStore.rpc('gethdaccount', [publicKey]);
+        if (account.xpub?.length > 0) {
+          const hdAccount = await mainStore.rpc('gethdaccount', [account.xpub]);
           for (let tx of hdAccount) {
             accUtxo = add(accUtxo, tx.account_balance_change);
             accUtxo = format(accUtxo, { precision: 8 });
