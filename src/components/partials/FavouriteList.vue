@@ -90,11 +90,7 @@
           </p>
         </div>
         <div class="account-icons">
-          <StPopper
-            content="Remove from Favorites"
-            hover="true"
-            placement="top"
-          >
+          <StPopper content="Remove from Favorites" hover placement="top">
             <svg
               @click="removeFromFavoriteList(acc)"
               width="21"
@@ -111,7 +107,7 @@
               <path d="M19 10.5H12.5" stroke="#A2A1A4" stroke-width="2" />
             </svg>
           </StPopper>
-          <StPopper content="Drag to arrange" hover="true" placement="top">
+          <StPopper content="Drag to arrange" hover placement="top">
             <svg
               class="handle"
               width="10"

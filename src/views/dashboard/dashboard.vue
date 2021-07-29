@@ -79,7 +79,7 @@ export default {
 <style scoped>
 .dashboard-container {
   padding: 24px 10px 0 12px;
-  height: calc(100vh - 123px);
+  height: calc(100vh - 116px);
 }
 .dashboard-container__overflow {
   overflow: auto;
@@ -119,14 +119,30 @@ export default {
   -webkit-box-orient: vertical;
   word-break: break-all;
 }
-.dashboard-table :deep td:nth-child(4),
-.dashboard-table :deep td:nth-child(5) {
+.dashboard-table :deep td:nth-child(4) {
   display: none;
+}
+.dashboard-table :deep td:nth-child(5) {
+  white-space: inherit !important;
+  width: 240px;
+}
+.dashboard-table :deep td:nth-child(5) div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
 }
 .dashboard-table :deep td:nth-child(6) {
   width: 129px;
 }
 .dashboard-table :deep td:nth-child(7) {
   width: 94px;
+}
+@media only screen and (max-width: 1299px) {
+  .dashboard-table :deep td:nth-child(5) {
+    display: none;
+  }
 }
 </style>

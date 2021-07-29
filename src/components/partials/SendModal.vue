@@ -117,7 +117,7 @@
               />
             </svg>
           </StInput>
-          <template #description>Scan QR Code</template>
+          <template #description>Scan QR Code or paste from clipboard</template>
         </StFormItem>
       </template>
       <template v-if="currentStep === 2">
@@ -151,7 +151,7 @@
           <StAmount
             v-if="inputAmountState === 'XST'"
             v-model="form.amount.$value"
-            placeholder="Amount"
+            placeholder="XST 0.000000"
             :options="{
               locale: 'en',
               currency: 'XST',
@@ -164,6 +164,7 @@
           >
             <StTooltip class="tooltip" tooltip="Switch Currency">
               <svg
+                :class="{ 'switch-disabled': !form.amount.$value }"
                 width="19"
                 height="16"
                 viewBox="0 0 19 16"
@@ -196,9 +197,9 @@
           </StAmount>
           <StAmount
             v-else-if="inputAmountState === 'USD'"
-            v-model="form.amount.$value"
+            v-model="amountUSD"
             color="dark"
-            placeholder="Amount"
+            placeholder="$0.0000"
             :options="{
               locale: 'en',
               currency: 'USD',
@@ -437,7 +438,8 @@ export default {
     });
     const inputAmountState = ref('XST');
     const account = ref(null);
-    const amount = ref(0);
+    const amount = ref(null);
+    const amountUSD = ref(null);
     const depositAddress = ref('');
     const aproxFee = ref(null);
     const currentStep = ref(1);
@@ -466,6 +468,9 @@ export default {
         if (mainStore.redoAmount) {
           amount.value = mainStore.redoAmount;
         }
+        amount.value = null;
+        setTimeout(() => (inputAmountState.value = 'USD'), 1);
+        setTimeout(() => (inputAmountState.value = 'XST'), 1);
       }
       if (currentStep.value === 4) {
         sendTimeout.value = setTimeout(() => send(), 4900);
@@ -538,7 +543,7 @@ export default {
     function closeModal() {
       mainStore.SET_MODAL_VISIBILITY('send', false);
       mainStore.SET_SEND_ADDRESS('');
-      mainStore.SET_REDO_AMOUNT(0);
+      mainStore.SET_REDO_AMOUNT(null);
       // reset all variables
       inputAmountState.value = 'XST';
       // account.value = null;
@@ -725,12 +730,6 @@ export default {
       }
     }
     async function validateFirstStep() {
-      if (inputAmountState.value === 'USD') {
-        form.amount.$value = Math.abs(
-          form.amount.$value / CryptoService.constraints.XST_USD
-        );
-      }
-      inputAmountState.value = 'XST';
       try {
         await validateFields();
         add(['amount'], {
@@ -787,20 +786,11 @@ export default {
 
     function formatValue(value) {
       if (inputAmountState.value === 'XST') {
-        form.amount.$value = Math.abs(
+        amountUSD.value = Math.abs(
           form.amount.$value * CryptoService.constraints.XST_USD
-        );
-      } else {
-        form.amount.$value = Math.abs(
-          form.amount.$value / CryptoService.constraints.XST_USD
         );
       }
       inputAmountState.value = value;
-      if (inputAmountState.value === 'XST') {
-        if (form.amount.$value < 0.05) {
-          form.amount.$value = 0.05;
-        }
-      }
     }
 
     function startScanner() {
@@ -811,8 +801,6 @@ export default {
 
     function onDecode(data) {
       QRData.value = data.split('?');
-      console.log('SCANNED ADDRESS: ', QRData.value);
-
       if (QRData.value) {
         isScaning.value = false;
         let address = QRData.value[0].replace(/[^a-z0-9]/gi, '');
@@ -852,6 +840,7 @@ export default {
       depositAddress,
       label,
       aproxFee,
+      amountUSD,
       // changeAccount,
 
       currentStep,
@@ -940,6 +929,9 @@ export default {
 }
 .load-max:hover {
   color: var(--marine200);
+}
+.switch-disabled {
+  pointer-events: none;
 }
 .progress-animated {
   position: relative;
