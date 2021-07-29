@@ -30,7 +30,11 @@
         <li>
           <router-link class="item" to="/dashboard">
             <div class="icon">
-              <StTooltip class="tooltip" tooltip="Dashboard" position="right">
+              <StTooltip
+                class="tooltip"
+                :tooltip="!isCollapsed ? 'Dashboard' : ''"
+                position="right"
+              >
                 <svg
                   width="18"
                   height="18"
