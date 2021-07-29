@@ -417,7 +417,6 @@ export default {
 }
 .st-label:nth-child(2) {
   min-width: 149px;
-  margin-left: 20px;
 }
 .st-label:nth-child(3) {
   min-width: 140px;
