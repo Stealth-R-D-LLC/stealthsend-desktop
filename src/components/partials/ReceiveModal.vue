@@ -165,8 +165,9 @@
           <StInput v-model="depositAddress" placeholder="Loading..." readonly>
             <StTooltip
               v-if="depositAddress"
-              :tooltip="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
-              position="bottom-right"
+              :tooltip="
+                copyPending ? 'Copied to clipboard!' : 'Copy to Clipboard'
+              "
             >
               <StClipboard :content="depositAddress" @click="handleCopy">
                 <svg
@@ -230,8 +231,7 @@
         </StFormItem>
         <StTooltip
           class="tooltip"
-          :tooltip="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
-          position="bottom-right"
+          :tooltip="copyPending ? 'Copied to clipboard!' : 'Copy to Clipboard'"
         >
           <StClipboard :content="depositAddress" @click="handleCopy"
             >Copy to Clipboard</StClipboard
