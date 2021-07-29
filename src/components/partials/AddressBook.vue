@@ -1080,4 +1080,8 @@ svg:hover circle {
 .address-list__description {
   font-size: 14px;
 }
+.scan-address__modal :deep .st-modal-container {
+  width: 480px;
+  box-sizing: border-box;
+}
 </style>
