@@ -249,7 +249,20 @@ export default {
         .catch((err) => {
           return err;
         });
-      await mainStore.rpc('gethdaccount', [account.value.xpub]).then((res) => {
+      console.log('ACCOUNT: ', account.value);
+      let publicKey = '';
+      if (account.value.isImported) {
+        const path = CryptoService.breakAccountPath(account.value.path);
+        const { xpub } = CryptoService.getKeysForAccount(
+          path.account,
+          path.change,
+          path.address
+        );
+        publicKey = xpub;
+      } else {
+        publicKey = account.value.xpub;
+      }
+      await mainStore.rpc('gethdaccount', [publicKey]).then((res) => {
         let mappedAmounts = res.map((el) => {
           return {
             ...el,
@@ -262,7 +275,7 @@ export default {
       });
     }
 
-    if (Object.keys(account.value).length > 0) {
+    if (account.value && Object.keys(account.value).length > 0) {
       getData();
     }
     emitter.on('header:account-changed', (account) => {
@@ -405,6 +418,7 @@ export default {
 }
 .st-label:nth-child(2) {
   min-width: 149px;
+  margin-left: 20px;
 }
 .st-label:nth-child(3) {
   min-width: 140px;
