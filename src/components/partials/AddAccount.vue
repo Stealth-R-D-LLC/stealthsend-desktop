@@ -88,6 +88,23 @@
           </div>
         </template>
         <template v-if="currentStep === 2">
+          <StModal
+            light
+            v-show="isScanning"
+            :current-step="currentStep"
+            :visible="currentStep === 2"
+            @close="isScanning = false"
+            class="scan-modal"
+          >
+            <template #header>Scan Private Key</template>
+            <template #body>
+              <div class="stream">
+                <qr-stream @decode="onDecode" class="mb">
+                  <div class="frame" />
+                </qr-stream>
+              </div>
+            </template>
+          </StModal>
           <StFormItem
             label="Account Name"
             :filled="form.accountName.$value"
@@ -114,38 +131,26 @@
               v-model="form.privateKey.$value"
               placeholder="Scan or paste your private key"
             >
-              <StTooltip
-                position="bottom-left"
-                class="tooltip"
-                :tooltip="
-                  copyPending ? 'Copied to clipboard!' : 'Click to copy'
-                "
-              >
-                <StClipboard :content="privateKey" @click="handleCopy"
-                  ><svg
-                    width="19"
-                    height="19"
-                    viewBox="0 0 19 19"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M12.7692 5.29395H1V17.9998H12.7692V5.29395Z"
-                      stroke="#4E00F6"
-                      stroke-width="2"
-                    />
-                    <path
-                      d="M18 14.8232L18 -0.000279405"
-                      stroke="#4E00F6"
-                      stroke-width="2"
-                    />
-                    <path
-                      d="M2.30762 1.05859L17.9999 1.05859"
-                      stroke="#4E00F6"
-                      stroke-width="2"
-                    />
-                  </svg>
-                </StClipboard>
+              <StTooltip tooltip="Scan private key">
+                <svg
+                  @click="startScanner"
+                  width="18"
+                  height="18"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    clip-rule="evenodd"
+                    d="M7 7H1V1h6v6z"
+                    stroke="#6B2AF7"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M11 0v3h3V1h3v4M7 18v-2H4v1H1v-3M11 18v-2h3v1h3v-3M11 13H7v-2H4M10 7h8M14 9v2h3V9M1 10v2M11 9v1.636"
+                    stroke="#6B2AF7"
+                    stroke-width="2"
+                  />
+                </svg>
               </StTooltip>
             </StInput>
           </StFormItem>
@@ -173,9 +178,13 @@ import { computed, ref, watchEffect, watch } from 'vue';
 import CryptoService from '@/services/crypto';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import emitter from '@/services/emitter';
+import { QrStream } from 'vue3-qr-reader';
 
 export default {
   name: 'StAccountModal',
+  components: {
+    QrStream,
+  },
   setup() {
     // VARIABLES
     const mainStore = useMainStore();
@@ -185,6 +194,8 @@ export default {
     const understand = ref(false);
     const privateKey = ref('');
     const copyPending = ref(false);
+    const isScanning = ref(false);
+    const QRData = ref(null);
 
     const {
       form,
@@ -336,12 +347,6 @@ export default {
         }
       }
     }
-    function handleCopy() {
-      copyPending.value = true;
-      setTimeout(() => {
-        copyPending.value = false;
-      }, 2000);
-    }
 
     async function generateAccount() {
       let account = {};
@@ -384,6 +389,21 @@ export default {
       closeModal();
     }
 
+    function startScanner() {
+      QRData.value = null;
+      isScanning.value = true;
+      form.privateKey.$value = '';
+    }
+
+    function onDecode(data) {
+      QRData.value = data;
+      if (QRData.value) {
+        isScanning.value = false;
+        let privateKey = QRData.value.replace(/[^a-z0-9]/gi, '');
+        form.privateKey.$value = privateKey;
+      }
+    }
+
     return {
       // VARIABLES
       currentStep,
@@ -392,6 +412,7 @@ export default {
       understand,
       privateKey,
       copyPending,
+      isScanning,
 
       // COMPUTED
       isVisible,
@@ -402,8 +423,9 @@ export default {
       changeStep,
       nextStep,
       generateAccount,
-      handleCopy,
       accountImport,
+      startScanner,
+      onDecode,
 
       form,
       errors,
@@ -561,5 +583,9 @@ export default {
   left: 0;
   right: 0;
   text-align: left;
+}
+.scan-modal {
+  background-color: transparent;
+  backdrop-filter: unset;
 }
 </style>
