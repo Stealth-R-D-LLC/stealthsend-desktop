@@ -1,0 +1,10 @@
+.account-modal .st-modal-container {
+  display: flex;
+  flex-direction: column;
+}
+.account-modal .st-modal__footer {
+  margin-top: auto;
+}
+.account-modal .st-modal__stepper {
+  position: static;
+}
