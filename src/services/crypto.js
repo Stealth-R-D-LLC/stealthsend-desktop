@@ -475,8 +475,7 @@ const CryptoService = {
 
     let emptyInARow = 0;
     let freeAddresses = [];
-    let i = 0;
-    while (++i) {
+    for (let i = 0; i < Infinity; i++) {
       // derive the first account's node (index = 0)
       // derive the external chain node of this account
       const acc = this.getChildFromRoot(n, change, i);
