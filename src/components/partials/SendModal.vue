@@ -164,6 +164,7 @@
           >
             <StTooltip class="tooltip" tooltip="Switch Currency">
               <svg
+                :class="{ 'switch-disabled': !form.amount.$value }"
                 width="19"
                 height="16"
                 viewBox="0 0 19 16"
@@ -196,7 +197,7 @@
           </StAmount>
           <StAmount
             v-else-if="inputAmountState === 'USD'"
-            v-model="form.amount.$value"
+            v-model="amountUSD"
             color="dark"
             placeholder="Amount"
             :options="{
@@ -438,6 +439,7 @@ export default {
     const inputAmountState = ref('XST');
     const account = ref(null);
     const amount = ref(0);
+    const amountUSD = ref(0);
     const depositAddress = ref('');
     const aproxFee = ref(null);
     const currentStep = ref(1);
@@ -728,12 +730,6 @@ export default {
       }
     }
     async function validateFirstStep() {
-      if (inputAmountState.value === 'USD') {
-        form.amount.$value = Math.abs(
-          form.amount.$value / CryptoService.constraints.XST_USD
-        );
-      }
-      inputAmountState.value = 'XST';
       try {
         await validateFields();
         add(['amount'], {
@@ -790,20 +786,11 @@ export default {
 
     function formatValue(value) {
       if (inputAmountState.value === 'XST') {
-        form.amount.$value = Math.abs(
+        amountUSD.value = Math.abs(
           form.amount.$value * CryptoService.constraints.XST_USD
-        );
-      } else {
-        form.amount.$value = Math.abs(
-          form.amount.$value / CryptoService.constraints.XST_USD
         );
       }
       inputAmountState.value = value;
-      if (inputAmountState.value === 'XST') {
-        if (form.amount.$value < 0.05) {
-          form.amount.$value = 0.05;
-        }
-      }
     }
 
     function startScanner() {
@@ -814,8 +801,6 @@ export default {
 
     function onDecode(data) {
       QRData.value = data.split('?');
-      console.log('SCANNED ADDRESS: ', QRData.value);
-
       if (QRData.value) {
         isScaning.value = false;
         let address = QRData.value[0].replace(/[^a-z0-9]/gi, '');
@@ -855,6 +840,7 @@ export default {
       depositAddress,
       label,
       aproxFee,
+      amountUSD,
       // changeAccount,
 
       currentStep,
@@ -943,6 +929,9 @@ export default {
 }
 .load-max:hover {
   color: var(--marine200);
+}
+.switch-disabled {
+  pointer-events: none;
 }
 .progress-animated {
   position: relative;

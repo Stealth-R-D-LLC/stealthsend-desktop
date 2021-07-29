@@ -109,7 +109,7 @@
                 <StPopper
                   :content="findLabelForTx(item.txid)"
                   placement="top"
-                  hover="true"
+                  hover
                 >
                   {{ formatLabel(findLabelForTx(item.txid)) }}
                 </StPopper>
