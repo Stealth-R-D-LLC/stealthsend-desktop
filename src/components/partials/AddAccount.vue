@@ -115,10 +115,9 @@
               placeholder="Scan or paste your private key"
             >
               <StTooltip
-                position="bottom-left"
                 class="tooltip"
                 :tooltip="
-                  copyPending ? 'Copied to clipboard!' : 'Click to copy'
+                  copyPending ? 'Copied to clipboard!' : 'Copy to Clipboard'
                 "
               >
                 <StClipboard :content="privateKey" @click="handleCopy"

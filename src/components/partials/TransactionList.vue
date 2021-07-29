@@ -153,11 +153,7 @@
           </template>
           <template #actions="{ item }">
             <div class="icon-container">
-              <StTooltip
-                v-if="item.isFeeles"
-                tooltip="Feeless transaction"
-                position="top-left"
-              >
+              <StTooltip v-if="item.isFeeles" tooltip="Feeless transaction">
                 <svg
                   width="8"
                   height="12"
@@ -227,11 +223,7 @@
               :class="{ expanded__active: isExpanded === item.index }"
             >
               <div class="expanded__inner">
-                <StTooltip
-                  v-if="item.isFeeles"
-                  tooltip="Feeless transaction"
-                  position="top-left"
-                >
+                <StTooltip v-if="item.isFeeles" tooltip="Feeless transaction">
                   <svg
                     width="8"
                     height="12"
