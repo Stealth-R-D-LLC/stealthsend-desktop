@@ -17,12 +17,12 @@ export default function useHelpers() {
     minimumFractionDigits = 2
   ) {
     if (roundDecimals) {
-      return new Intl.NumberFormat('en-IN', {
+      return new Intl.NumberFormat('en-US', {
         minimumFractionDigits: minimumFractionDigits,
         maximumFractionDigits: 8,
       }).format(amount, decimals);
     }
-    return new Intl.NumberFormat('en-IN', {
+    return new Intl.NumberFormat('en-US', {
       minimumFractionDigits: minimumFractionDigits,
     }).format(round(amount, decimals));
   }
