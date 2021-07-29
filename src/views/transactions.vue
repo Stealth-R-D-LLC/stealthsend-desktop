@@ -290,6 +290,9 @@ export default {
 .transactions-table :deep td:nth-child(7) {
   width: 121px;
 }
+.transactions-table :deep td:nth-child(7) .move-left {
+  transform: translateX(-100px) !important;
+}
 :deep .overflow {
   height: calc(100vh - 241px);
 }
