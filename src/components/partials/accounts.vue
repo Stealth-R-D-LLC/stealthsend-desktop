@@ -212,7 +212,8 @@
                 <li
                   v-if="
                     !account.isFavourite &&
-                    accounts.filter((obj) => obj.isFavourite).length < 10
+                    accounts.filter((obj) => obj.isFavourite).length < 10 &&
+                    account.utxo > 0
                   "
                 >
                   <a @click="favouriteAccount(account)">Add to Favorites</a>
