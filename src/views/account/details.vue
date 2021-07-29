@@ -249,7 +249,6 @@ export default {
         .catch((err) => {
           return err;
         });
-      console.log('ACCOUNT: ', account.value);
       let publicKey = '';
       if (account.value.isImported) {
         const path = CryptoService.breakAccountPath(account.value.path);
@@ -418,6 +417,7 @@ export default {
 }
 .st-label:nth-child(2) {
   min-width: 149px;
+  margin-left: 20px;
 }
 .st-label:nth-child(3) {
   min-width: 140px;
