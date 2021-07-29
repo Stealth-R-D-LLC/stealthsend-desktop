@@ -319,42 +319,44 @@
               <path d="M19 1L5 15" stroke="#4E00F6" stroke-width="2" />
             </svg>
           </StTooltip>
-          <svg
-            @click="toggleDrawer('favourite-list')"
-            class="favourite-list"
-            width="24"
-            height="24"
-            viewBox="0 0 24 25"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M14.6218 6.61132L12.8885 3.14551L9.83282 9.33709L3 10.33L7.94427 15.1494L6.77709 21.9546L12.8885 18.7417L19 21.9546"
-              stroke="#4E00F6"
-              stroke-width="2"
-            />
-            <path
-              d="M22.4131 7.14551L18.4131 7.14551"
-              stroke="#4E00F6"
-              stroke-width="2"
-            />
-            <line
-              x1="22.4131"
-              y1="11.1455"
-              x2="14.4131"
-              y2="11.1455"
-              stroke="#4E00F6"
-              stroke-width="2"
-            />
-            <line
-              x1="22.4131"
-              y1="15.1455"
-              x2="14.4131"
-              y2="15.1455"
-              stroke="#4E00F6"
-              stroke-width="2"
-            />
-          </svg>
+          <StTooltip class="tooltip" tooltip="Favorite List">
+            <svg
+              @click="toggleDrawer('favourite-list')"
+              class="favourite-list"
+              width="24"
+              height="24"
+              viewBox="0 0 24 25"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M14.6218 6.61132L12.8885 3.14551L9.83282 9.33709L3 10.33L7.94427 15.1494L6.77709 21.9546L12.8885 18.7417L19 21.9546"
+                stroke="#4E00F6"
+                stroke-width="2"
+              />
+              <path
+                d="M22.4131 7.14551L18.4131 7.14551"
+                stroke="#4E00F6"
+                stroke-width="2"
+              />
+              <line
+                x1="22.4131"
+                y1="11.1455"
+                x2="14.4131"
+                y2="11.1455"
+                stroke="#4E00F6"
+                stroke-width="2"
+              />
+              <line
+                x1="22.4131"
+                y1="15.1455"
+                x2="14.4131"
+                y2="15.1455"
+                stroke="#4E00F6"
+                stroke-width="2"
+              />
+            </svg>
+          </StTooltip>
         </template>
       </div>
       <div class="header-right">
@@ -1211,7 +1213,11 @@ export default {
   right: calc(50% + 10px);
 }
 
-.favourite-list {
+/* .favourite-list {
+  margin-left: 24px;
+} */
+
+.header-left .tooltip + .tooltip {
   margin-left: 24px;
 }
 
