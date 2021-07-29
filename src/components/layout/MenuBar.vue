@@ -30,23 +30,33 @@
         <li>
           <router-link class="item" to="/dashboard">
             <div class="icon">
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M7 11H1V17H7V11Z" stroke="#FAF9FC" stroke-width="2" />
-                <path
-                  d="M17 11H11V17H17V11Z"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                />
-                <path d="M0 7H8" stroke="#FAF9FC" stroke-width="2" />
-                <path d="M0 3H8" stroke="#FAF9FC" stroke-width="2" />
-                <path d="M17 1H11V7H17V1Z" stroke="#FAF9FC" stroke-width="2" />
-              </svg>
+              <StTooltip class="tooltip" tooltip="Dashboard" position="right">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 18 18"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M7 11H1V17H7V11Z"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M17 11H11V17H17V11Z"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                  />
+                  <path d="M0 7H8" stroke="#FAF9FC" stroke-width="2" />
+                  <path d="M0 3H8" stroke="#FAF9FC" stroke-width="2" />
+                  <path
+                    d="M17 1H11V7H17V1Z"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                  />
+                </svg>
+              </StTooltip>
             </div>
 
             <span class="item__span"> Dashboard </span>
