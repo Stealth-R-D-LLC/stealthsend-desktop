@@ -463,8 +463,14 @@ export default {
 .details-table :deep td:nth-child(7) {
   width: 121px;
 }
+.details-table :deep td:nth-child(4) .move-left {
+  transform: translateX(-40px) !important;
+}
+.details-table :deep td:nth-child(5) .move-left {
+  transform: translateX(-70px) !important;
+}
 :deep .move-left {
-  transform: translateX(-65px) !important;
+  transform: translateX(-95px) !important;
 }
 :deep .button-normal {
   padding: 5px 10px;
