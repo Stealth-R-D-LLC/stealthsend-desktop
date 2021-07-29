@@ -16,6 +16,12 @@
       <div v-show="isLoading" class="xst-loader">
         <img src="../../static/xstloaderwhite.gif" alt="white gif" />
       </div>
+      <div v-show="isLoading" class="xst-loader">
+        <img src="../../static/xstloaderwhite.gif" alt="white gif" />
+      </div>
+      <div v-show="isLoading" class="xst-loader">
+        <img src="../../static/xstloaderwhite.gif" alt="white gif" />
+      </div>
       <div
         class="left__inner"
         :class="{
@@ -2809,6 +2815,9 @@ export default {
   align-items: center;
   justify-content: center;
   z-index: 5;
+}
+.xst-loader img {
+  height: 28px;
 }
 .left .box {
   width: 350px;
