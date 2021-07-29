@@ -547,7 +547,7 @@ export default {
 :deep .items-center {
   position: relative;
   text-align: center;
-  width: 100px;
+  width: 28px;
 }
 
 .icon-container {
@@ -638,7 +638,14 @@ export default {
 .move {
   transition: 0.3s;
 }
+.dashboard-container .ellipsis {
+  width: calc(100% - 85px);
+}
+.dashboard-container .move-left {
+  transform: translateX(-95px);
+}
 .move-left {
+  white-space: nowrap;
   transform: translateX(-58px);
 }
 :deep .table tr td:first-child {
