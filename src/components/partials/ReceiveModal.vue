@@ -60,7 +60,7 @@
           <StAmount
             v-if="inputAmountState === 'XST'"
             v-model="amount"
-            placeholder="Amount"
+            placeholder="XST 0.000000"
             :options="{
               locale: 'en',
               currency: 'XST',
@@ -111,7 +111,7 @@
             v-else-if="inputAmountState === 'USD'"
             v-model="amountFiat"
             @update:formattedValue="fiatKeyup"
-            placeholder="Amount"
+            placeholder="$0.0000"
             :options="{
               locale: 'en',
               currency: 'USD',
@@ -316,8 +316,8 @@ export default {
       inputAmountState.value = 'XST';
       account.value = null;
       accounts.value = [];
-      amount.value = 0;
-      amountFiat.value = 0;
+      amount.value = null;
+      amountFiat.value = null;
       currentStep.value = 1;
       depositAddress.value = '';
       qrSrc.value = '';
@@ -332,8 +332,8 @@ export default {
     const accounts = ref([]);
     const email = ref('');
     const account = ref(null);
-    const amount = ref(0);
-    const amountFiat = ref(0);
+    const amount = ref(null);
+    const amountFiat = ref(null);
 
     const {
       form,
