@@ -1257,7 +1257,7 @@ export default {
   align-items: center;
 }
 .icons-flex svg + svg,
-.icons-flex .tooltip {
+.icons-flex .tooltip + .tooltip {
   margin-left: 24px;
 }
 :deep .st-modal-container {
