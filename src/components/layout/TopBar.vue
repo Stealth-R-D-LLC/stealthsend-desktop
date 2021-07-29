@@ -393,7 +393,7 @@
             <path d="M11 9V10.6364" stroke="#4E00F6" stroke-width="2" />
           </svg>
         </StTooltip>
-        <StTooltip class="tooltip" tooltip="Settings">
+        <StTooltip class="tooltip tooltip-custom" tooltip="Settings">
           <svg
             @click="goto('/settings')"
             width="18"
@@ -1194,6 +1194,9 @@ export default {
 .header-left div + div,
 .header-right .tooltip + .tooltip {
   margin-left: 24px;
+}
+.header-right .tooltip-custom:before {
+  right: calc(50% + 10px);
 }
 
 .favourite-list {

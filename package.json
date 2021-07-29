@@ -42,7 +42,7 @@
     "pinia": "^2.0.0-alpha.13",
     "postcss-preset-env": "^6.7.0",
     "sortablejs": "^1.14.0",
-    "stealth-kit": "0.1.85",
+    "stealth-kit": "0.1.86",
     "vanillaqr": "^1.0.0",
     "vue": "3.0.0",
     "vue-lottie": "^0.2.1",
