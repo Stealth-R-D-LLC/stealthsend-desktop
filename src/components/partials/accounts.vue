@@ -91,7 +91,7 @@
                   />
                 </svg>
                 <svg
-                  v-if="account.utxo !== 0 || index !== 0"
+                  v-if="activeAccounts.length > 1"
                   @mousedown="isDraggedActive = true"
                   @mouseup="isDraggedActive = false"
                   class="handle"
