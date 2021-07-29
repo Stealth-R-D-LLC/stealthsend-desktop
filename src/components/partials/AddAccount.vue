@@ -396,7 +396,6 @@ export default {
     }
 
     function onDecode(data) {
-      console.log(data);
       QRData.value = data;
       if (QRData.value) {
         isScanning.value = false;
