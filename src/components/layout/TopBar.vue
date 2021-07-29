@@ -877,7 +877,6 @@ export default {
       } else {
         headerColor = 'default';
       }
-      console.log(headerStyle.value);
       console.log('This is header color' + headerColor);
       return {
         'layout__header--is-grey': headerStyle.value != headerColor,
