@@ -35,3 +35,7 @@ button {
 .error {
     color: var(--red300);
 }
+
+.tooltip:before {
+    padding: 4px 12px !important;
+}

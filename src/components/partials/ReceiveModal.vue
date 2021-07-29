@@ -60,7 +60,7 @@
           <StAmount
             v-if="inputAmountState === 'XST'"
             v-model="amount"
-            placeholder="Amount"
+            placeholder="XST 0.000000"
             :options="{
               locale: 'en',
               currency: 'XST',
@@ -71,42 +71,47 @@
               allowNegative: false,
             }"
           >
-            <div @click="changeCurrency('USD')">
-              <svg
-                width="19"
-                height="16"
-                viewBox="0 0 19 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+            <StTooltip tooltip="Switch Currency">
+              <div
+                :class="{ 'switch-disabled': !amount }"
+                @click="changeCurrency('USD')"
               >
-                <path
-                  d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
-                  stroke="#E5E4E8"
-                  stroke-width="2"
-                />
-                <path
-                  d="M14.2222 14.2222L14.2222 1.77773"
-                  stroke="#E5E4E8"
-                  stroke-width="2"
-                />
-                <path
-                  d="M4.77777 1.77783V14.2223"
-                  stroke="#E5E4E8"
-                  stroke-width="2"
-                />
-                <path
-                  d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
-                  stroke="#E5E4E8"
-                  stroke-width="2"
-                />
-              </svg>
-            </div>
+                <svg
+                  width="19"
+                  height="16"
+                  viewBox="0 0 19 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
+                    stroke="#E5E4E8"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M14.2222 14.2222L14.2222 1.77773"
+                    stroke="#E5E4E8"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M4.77777 1.77783V14.2223"
+                    stroke="#E5E4E8"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
+                    stroke="#E5E4E8"
+                    stroke-width="2"
+                  />
+                </svg>
+              </div>
+            </StTooltip>
           </StAmount>
           <StAmount
             v-else-if="inputAmountState === 'USD'"
             v-model="amountFiat"
             @update:formattedValue="fiatKeyup"
-            placeholder="Amount"
+            placeholder="$0.0000"
             :options="{
               locale: 'en',
               currency: 'USD',
@@ -117,36 +122,38 @@
               allowNegative: false,
             }"
           >
-            <div @click="changeCurrency('XST')">
-              <svg
-                width="19"
-                height="16"
-                viewBox="0 0 19 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
-                  stroke="#E5E4E8"
-                  stroke-width="2"
-                />
-                <path
-                  d="M14.2222 14.2222L14.2222 1.77773"
-                  stroke="#E5E4E8"
-                  stroke-width="2"
-                />
-                <path
-                  d="M4.77777 1.77783V14.2223"
-                  stroke="#E5E4E8"
-                  stroke-width="2"
-                />
-                <path
-                  d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
-                  stroke="#E5E4E8"
-                  stroke-width="2"
-                />
-              </svg>
-            </div>
+            <StTooltip tooltip="Switch Currency">
+              <div @click="changeCurrency('XST')">
+                <svg
+                  width="19"
+                  height="16"
+                  viewBox="0 0 19 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
+                    stroke="#E5E4E8"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M14.2222 14.2222L14.2222 1.77773"
+                    stroke="#E5E4E8"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M4.77777 1.77783V14.2223"
+                    stroke="#E5E4E8"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
+                    stroke="#E5E4E8"
+                    stroke-width="2"
+                  />
+                </svg>
+              </div>
+            </StTooltip>
           </StAmount>
         </StFormItem>
         <StFormItem
@@ -158,8 +165,9 @@
           <StInput v-model="depositAddress" placeholder="Loading..." readonly>
             <StTooltip
               v-if="depositAddress"
-              :tooltip="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
-              position="bottom-right"
+              :tooltip="
+                copyPending ? 'Copied to clipboard!' : 'Copy to Clipboard'
+              "
             >
               <StClipboard :content="depositAddress" @click="handleCopy">
                 <svg
@@ -223,8 +231,7 @@
         </StFormItem>
         <StTooltip
           class="tooltip"
-          :tooltip="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
-          position="bottom-right"
+          :tooltip="copyPending ? 'Copied to clipboard!' : 'Copy to Clipboard'"
         >
           <StClipboard :content="depositAddress" @click="handleCopy"
             >Copy to Clipboard</StClipboard
@@ -309,8 +316,8 @@ export default {
       inputAmountState.value = 'XST';
       account.value = null;
       accounts.value = [];
-      amount.value = 0;
-      amountFiat.value = 0;
+      amount.value = null;
+      amountFiat.value = null;
       currentStep.value = 1;
       depositAddress.value = '';
       qrSrc.value = '';
@@ -325,8 +332,8 @@ export default {
     const accounts = ref([]);
     const email = ref('');
     const account = ref(null);
-    const amount = ref(0);
-    const amountFiat = ref(0);
+    const amount = ref(null);
+    const amountFiat = ref(null);
 
     const {
       form,
@@ -444,7 +451,11 @@ export default {
     }
 
     function changeCurrency(currency) {
-      if (currency === 'XST') {
+      if (currency === 'USD') {
+        amountFiat.value = amount.value * XST_USD.value;
+      }
+      inputAmountState.value = currency;
+      /* if (currency === 'XST') {
         amount.value = amountFiat.value / XST_USD.value;
         inputAmountState.value = 'XST';
       } else if (currency === 'USD') {
@@ -457,7 +468,7 @@ export default {
         if (amount.value < 0.05) {
           amount.value = 0.05;
         }
-      }
+      } */
     }
 
     async function sendEmail() {
@@ -638,6 +649,9 @@ export default {
 }
 .flex-space-between .amount {
   white-space: nowrap;
+}
+.switch-disabled {
+  pointer-events: none;
 }
 </style>
 <style>

@@ -1,6 +1,6 @@
 <template>
   <div :class="computedClass">
-    <header class="layout__header">
+    <header class="layout__header" :class="`layout__header-${currentRoute}`">
       <div class="header-left">
         <template v-if="checkVisibilityForRoute(['Dashboard'])">
           <div :class="{ nonclickable: !componentVisibility.txDashboard }">
@@ -133,47 +133,52 @@
           </template>
         </StMultiselect> -->
           <div class="icons-flex">
-            <svg
-              v-if="isHiddenAmounts"
-              @click="toggleHiddenAmounts"
-              width="22"
-              height="12"
-              viewBox="0 0 22 12"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+            <StTooltip
+              class="tooltip"
+              :tooltip="isHiddenAmounts ? 'Show Values' : 'Hide Values'"
             >
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
-                stroke="#4E00F6"
-                stroke-width="2"
-              />
-              <circle
-                r="1"
-                transform="matrix(-1 0 0 1 11 6)"
-                fill="#4E00F6"
-                stroke="#4E00F6"
-                stroke-width="2"
-              />
-            </svg>
-            <svg
-              v-else
-              @click="toggleHiddenAmounts"
-              width="22"
-              height="16"
-              viewBox="0 0 22 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M11 3C7.68629 3 4.68629 4.66667 2 8C4.68629 11.3333 7.68629 13 11 13C14.3137 13 17.3137 11.3333 20 8C19.3945 7.24866 18.7731 6.58199 18.1357 6"
-                stroke="#4E00F6"
-                stroke-width="2"
-              />
-              <path d="M7 8L12 8" stroke="#4E00F6" stroke-width="2" />
-              <path d="M19 1L5 15" stroke="#4E00F6" stroke-width="2" />
-            </svg>
+              <svg
+                v-if="isHiddenAmounts"
+                @click="toggleHiddenAmounts"
+                width="22"
+                height="12"
+                viewBox="0 0 22 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                />
+                <circle
+                  r="1"
+                  transform="matrix(-1 0 0 1 11 6)"
+                  fill="#4E00F6"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                />
+              </svg>
+              <svg
+                v-else
+                @click="toggleHiddenAmounts"
+                width="22"
+                height="16"
+                viewBox="0 0 22 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M11 3C7.68629 3 4.68629 4.66667 2 8C4.68629 11.3333 7.68629 13 11 13C14.3137 13 17.3137 11.3333 20 8C19.3945 7.24866 18.7731 6.58199 18.1357 6"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                />
+                <path d="M7 8L12 8" stroke="#4E00F6" stroke-width="2" />
+                <path d="M19 1L5 15" stroke="#4E00F6" stroke-width="2" />
+              </svg>
+            </StTooltip>
             <StTooltip class="tooltip" tooltip="Account Keys">
               <svg
                 @click="isVisible = true"
@@ -219,6 +224,59 @@
           "
         >
           <div class="icons-flex">
+            <StTooltip
+              class="tooltip"
+              :tooltip="isHiddenAmounts ? 'Show Values' : 'Hide Values'"
+            >
+              <svg
+                v-if="isHiddenAmounts"
+                @click="toggleHiddenAmounts"
+                width="22"
+                height="12"
+                viewBox="0 0 22 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                />
+                <circle
+                  r="1"
+                  transform="matrix(-1 0 0 1 11 6)"
+                  fill="#4E00F6"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                />
+              </svg>
+              <svg
+                v-else
+                @click="toggleHiddenAmounts"
+                width="22"
+                height="16"
+                viewBox="0 0 22 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M11 3C7.68629 3 4.68629 4.66667 2 8C4.68629 11.3333 7.68629 13 11 13C14.3137 13 17.3137 11.3333 20 8C19.3945 7.24866 18.7731 6.58199 18.1357 6"
+                  stroke="#4E00F6"
+                  stroke-width="2"
+                />
+                <path d="M7 8L12 8" stroke="#4E00F6" stroke-width="2" />
+                <path d="M19 1L5 15" stroke="#4E00F6" stroke-width="2" />
+              </svg>
+            </StTooltip>
+          </div>
+        </template>
+        <template v-if="checkVisibilityForRoute(['ArchivedAccounts'])">
+          <StTooltip
+            class="tooltip"
+            :tooltip="isHiddenAmounts ? 'Show Values' : 'Hide Values'"
+          >
             <svg
               v-if="isHiddenAmounts"
               @click="toggleHiddenAmounts"
@@ -260,91 +318,50 @@
               <path d="M7 8L12 8" stroke="#4E00F6" stroke-width="2" />
               <path d="M19 1L5 15" stroke="#4E00F6" stroke-width="2" />
             </svg>
-          </div>
-        </template>
-        <template v-if="checkVisibilityForRoute(['ArchivedAccounts'])">
-          <svg
-            v-if="isHiddenAmounts"
-            @click="toggleHiddenAmounts"
-            width="22"
-            height="12"
-            viewBox="0 0 22 12"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
-              stroke="#4E00F6"
-              stroke-width="2"
-            />
-            <circle
-              r="1"
-              transform="matrix(-1 0 0 1 11 6)"
-              fill="#4E00F6"
-              stroke="#4E00F6"
-              stroke-width="2"
-            />
-          </svg>
-          <svg
-            v-else
-            @click="toggleHiddenAmounts"
-            width="22"
-            height="16"
-            viewBox="0 0 22 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M11 3C7.68629 3 4.68629 4.66667 2 8C4.68629 11.3333 7.68629 13 11 13C14.3137 13 17.3137 11.3333 20 8C19.3945 7.24866 18.7731 6.58199 18.1357 6"
-              stroke="#4E00F6"
-              stroke-width="2"
-            />
-            <path d="M7 8L12 8" stroke="#4E00F6" stroke-width="2" />
-            <path d="M19 1L5 15" stroke="#4E00F6" stroke-width="2" />
-          </svg>
-          <svg
-            @click="toggleDrawer('favourite-list')"
-            class="favourite-list"
-            width="24"
-            height="24"
-            viewBox="0 0 24 25"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M14.6218 6.61132L12.8885 3.14551L9.83282 9.33709L3 10.33L7.94427 15.1494L6.77709 21.9546L12.8885 18.7417L19 21.9546"
-              stroke="#4E00F6"
-              stroke-width="2"
-            />
-            <path
-              d="M22.4131 7.14551L18.4131 7.14551"
-              stroke="#4E00F6"
-              stroke-width="2"
-            />
-            <line
-              x1="22.4131"
-              y1="11.1455"
-              x2="14.4131"
-              y2="11.1455"
-              stroke="#4E00F6"
-              stroke-width="2"
-            />
-            <line
-              x1="22.4131"
-              y1="15.1455"
-              x2="14.4131"
-              y2="15.1455"
-              stroke="#4E00F6"
-              stroke-width="2"
-            />
-          </svg>
+          </StTooltip>
+          <StTooltip class="tooltip" tooltip="Favorite List">
+            <svg
+              @click="toggleDrawer('favourite-list')"
+              class="favourite-list"
+              width="24"
+              height="24"
+              viewBox="0 0 24 25"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M14.6218 6.61132L12.8885 3.14551L9.83282 9.33709L3 10.33L7.94427 15.1494L6.77709 21.9546L12.8885 18.7417L19 21.9546"
+                stroke="#4E00F6"
+                stroke-width="2"
+              />
+              <path
+                d="M22.4131 7.14551L18.4131 7.14551"
+                stroke="#4E00F6"
+                stroke-width="2"
+              />
+              <line
+                x1="22.4131"
+                y1="11.1455"
+                x2="14.4131"
+                y2="11.1455"
+                stroke="#4E00F6"
+                stroke-width="2"
+              />
+              <line
+                x1="22.4131"
+                y1="15.1455"
+                x2="14.4131"
+                y2="15.1455"
+                stroke="#4E00F6"
+                stroke-width="2"
+              />
+            </svg>
+          </StTooltip>
         </template>
       </div>
       <div class="header-right">
+        <p class="rpc-status">{{ rpcStatus }}</p>
         <StTooltip class="tooltip" tooltip="Connected to Mainnet">
-          <p class="rpc-status">{{ rpcStatus }}</p>
           <svg
             class="rpc-icon"
             width="22"
@@ -393,7 +410,7 @@
             <path d="M11 9V10.6364" stroke="#4E00F6" stroke-width="2" />
           </svg>
         </StTooltip>
-        <StTooltip class="tooltip" tooltip="Settings">
+        <StTooltip class="tooltip tooltip-custom" tooltip="Settings">
           <svg
             @click="goto('/settings')"
             width="18"
@@ -644,9 +661,10 @@
                   <div>
                     <StTooltip
                       :tooltip="
-                        copyPending ? 'Copied to clipboard!' : 'Click to copy'
+                        copyPending
+                          ? 'Copied to clipboard!'
+                          : 'Copy to Clipboard'
                       "
-                      position="bottom-left"
                     >
                       <StClipboard :content="privateKey" @click="handleCopy">
                         <svg
@@ -675,10 +693,7 @@
                           /></svg
                       ></StClipboard>
                     </StTooltip>
-                    <StTooltip
-                      tooltip="Click to show QR code"
-                      position="bottom-left"
-                    >
+                    <StTooltip tooltip="Show QR code">
                       <svg
                         @click="generatePrivateQr"
                         width="22"
@@ -864,7 +879,6 @@ export default {
       } else {
         headerColor = 'default';
       }
-      console.log(headerStyle.value);
       console.log('This is header color' + headerColor);
       return {
         'layout__header--is-grey': headerStyle.value != headerColor,
@@ -1157,12 +1171,18 @@ export default {
   justify-content: space-between;
   align-items: center;
 }
+.layout__header-Dashboard {
+  padding: 41px 0 26px !important;
+}
+.layout__header-Transactions {
+  padding: 39px 0 26px !important;
+}
 .layout__header--settings {
   width: calc(100% - 392px);
   margin-left: auto;
 }
 .layout__header--settings .layout__header {
-  padding: 43px 0 22px !important;
+  padding: 43px 0 24px !important;
 }
 .layout__header--is-grey {
   background: var(--background100);
@@ -1189,8 +1209,15 @@ export default {
 .header-right .tooltip + .tooltip {
   margin-left: 24px;
 }
+.header-right .tooltip-custom:before {
+  right: calc(50% + 10px);
+}
 
-.favourite-list {
+/* .favourite-list {
+  margin-left: 24px;
+} */
+
+.header-left .tooltip + .tooltip {
   margin-left: 24px;
 }
 
@@ -1230,7 +1257,7 @@ export default {
   align-items: center;
 }
 .icons-flex svg + svg,
-.icons-flex .tooltip {
+.icons-flex .tooltip + .tooltip {
   margin-left: 24px;
 }
 :deep .st-modal-container {
