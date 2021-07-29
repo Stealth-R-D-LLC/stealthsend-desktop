@@ -249,19 +249,7 @@ export default {
         .catch((err) => {
           return err;
         });
-      let publicKey = '';
-      if (account.value.isImported) {
-        const path = CryptoService.breakAccountPath(account.value.path);
-        const { xpub } = CryptoService.getKeysForAccount(
-          path.account,
-          path.change,
-          path.address
-        );
-        publicKey = xpub;
-      } else {
-        publicKey = account.value.xpub;
-      }
-      await mainStore.rpc('gethdaccount', [publicKey]).then((res) => {
+      await mainStore.rpc('gethdaccount', [account.value.xpub]).then((res) => {
         let mappedAmounts = res.map((el) => {
           return {
             ...el,
