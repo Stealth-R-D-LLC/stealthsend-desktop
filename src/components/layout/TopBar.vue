@@ -644,9 +644,10 @@
                   <div>
                     <StTooltip
                       :tooltip="
-                        copyPending ? 'Copied to clipboard!' : 'Click to copy'
+                        copyPending
+                          ? 'Copied to clipboard!'
+                          : 'Copy to Clipboard'
                       "
-                      position="bottom-left"
                     >
                       <StClipboard :content="privateKey" @click="handleCopy">
                         <svg
@@ -675,10 +676,7 @@
                           /></svg
                       ></StClipboard>
                     </StTooltip>
-                    <StTooltip
-                      tooltip="Click to show QR code"
-                      position="bottom-left"
-                    >
+                    <StTooltip tooltip="Show QR code">
                       <svg
                         @click="generatePrivateQr"
                         width="22"
