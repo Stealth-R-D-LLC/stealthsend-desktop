@@ -130,27 +130,25 @@
               v-model="form.privateKey.$value"
               placeholder="Scan or paste your private key"
             >
-              <StTooltip tooltip="Scan private key">
-                <svg
-                  @click="startScanner"
-                  width="18"
-                  height="18"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    clip-rule="evenodd"
-                    d="M7 7H1V1h6v6z"
-                    stroke="#6B2AF7"
-                    stroke-width="2"
-                  />
-                  <path
-                    d="M11 0v3h3V1h3v4M7 18v-2H4v1H1v-3M11 18v-2h3v1h3v-3M11 13H7v-2H4M10 7h8M14 9v2h3V9M1 10v2M11 9v1.636"
-                    stroke="#6B2AF7"
-                    stroke-width="2"
-                  />
-                </svg>
-              </StTooltip>
+              <svg
+                @click="startScanner"
+                width="18"
+                height="18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  clip-rule="evenodd"
+                  d="M7 7H1V1h6v6z"
+                  stroke="#6B2AF7"
+                  stroke-width="2"
+                />
+                <path
+                  d="M11 0v3h3V1h3v4M7 18v-2H4v1H1v-3M11 18v-2h3v1h3v-3M11 13H7v-2H4M10 7h8M14 9v2h3V9M1 10v2M11 9v1.636"
+                  stroke="#6B2AF7"
+                  stroke-width="2"
+                />
+              </svg>
             </StInput>
           </StFormItem>
           <div class="button button-import">
@@ -160,13 +158,70 @@
         <template v-if="currentStep === 3">
           <h5>Importing Private Key</h5>
           <p class="medium">Please be patient and don’t exit the application</p>
+          <div class="progress">
+            <svg
+              class="progress-animated"
+              version="1.1"
+              id="circle"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              viewBox="0 0 100 100"
+              xml:space="preserve"
+            >
+              <circle
+                fill="none"
+                stroke="#A67FFA"
+                stroke-width="1"
+                stroke-mitterlimit="0"
+                cx="50"
+                cy="50"
+                r="48"
+                stroke-dasharray="360"
+                stroke-linecap="round"
+                transform="rotate(-90 ) translate(-100 0)"
+              >
+                <animate
+                  attributeName="stroke-dashoffset"
+                  values="50;430"
+                  dur="5.2s"
+                ></animate>
+              </circle>
+            </svg>
+            <div class="overlay-progress"></div>
+          </div>
         </template>
         <template v-if="currentStep === 4">
           <h5>Success</h5>
           <p class="medium">Your account has been successfully imported.</p>
           <p class="medium">You may now access your funds.</p>
+          <div class="progress no-background">
+            <svg
+              width="102"
+              height="102"
+              viewBox="0 0 102 102"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle opacity=".3" cx="51" cy="51" r="50" stroke="#E0D3FC" />
+              <circle cx="51" cy="51" r="50" stroke="#E0D3FC" />
+              <path
+                d="M63.456 44.515l-16.97 16.97L38 53"
+                stroke="#4E00F6"
+                stroke-width="2"
+              />
+            </svg>
+          </div>
         </template>
       </div>
+    </template>
+    <template #footer class="flex-center-all">
+      <template v-if="currentStep === 4">
+        <StButton type="type-a" @click="openAccountDetails(account)"
+          >View Account</StButton
+        >
+      </template>
     </template>
   </StModal>
 </template>
@@ -178,6 +233,7 @@ import CryptoService from '@/services/crypto';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import emitter from '@/services/emitter';
 import { QrStream } from 'vue3-qr-reader';
+import router from '@/router';
 
 export default {
   name: 'StAccountModal',
@@ -255,13 +311,13 @@ export default {
           nextStep();
         }, 2000);
       }
-      if (currentStep.value === 4) {
-        setTimeout(() => {
-          currentStep.value = 1;
-          activeStep.value = 'add-account';
-          closeModal();
-        }, 2000);
-      }
+      // if (currentStep.value === 4) {
+      //   setTimeout(() => {
+      //     currentStep.value = 1;
+      //     activeStep.value = 'add-account';
+      //     closeModal();
+      //   }, 2000);
+      // }
     });
 
     // COMPUTED
@@ -403,6 +459,16 @@ export default {
       }
     }
 
+    async function openAccountDetails() {
+      const hdWallet = await CryptoService.scanWallet();
+      let account = hdWallet.accounts.filter(
+        (obj) => obj.label === accountName.value
+      );
+      mainStore.SET_ACCOUNT_DETAILS(account[0]);
+      router.push('/account/details');
+      closeModal();
+    }
+
     return {
       // VARIABLES
       currentStep,
@@ -425,6 +491,7 @@ export default {
       accountImport,
       startScanner,
       onDecode,
+      openAccountDetails,
 
       form,
       errors,
@@ -586,5 +653,40 @@ export default {
 .scan-modal {
   background-color: transparent;
   backdrop-filter: unset;
+}
+/* svg path,
+svg circle {
+  transition: 0.3s;
+} */
+.progress-animated {
+  position: relative;
+  top: -2px;
+  left: -2px;
+  width: 104px;
+  height: 104px;
+}
+.progress {
+  margin: 96px auto 44px;
+  position: relative;
+  width: 100px;
+  height: 100px;
+  /* background: rgba(195, 169, 251, 0.3); */
+  border-radius: 100px;
+}
+.overlay-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: 0.12px;
+  font-family: var(--secondary-font);
+  /* background-color: var(--white); */
+  border-radius: 100%;
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  bottom: 1px;
+  left: 1px;
 }
 </style>
