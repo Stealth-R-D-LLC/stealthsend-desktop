@@ -117,7 +117,7 @@
               />
             </svg>
           </StInput>
-          <template #description>Scan QR Code</template>
+          <template #description>Scan QR Code or paste from clipboard</template>
         </StFormItem>
       </template>
       <template v-if="currentStep === 2">
@@ -151,7 +151,7 @@
           <StAmount
             v-if="inputAmountState === 'XST'"
             v-model="form.amount.$value"
-            placeholder="Amount"
+            placeholder="XST 0.000000"
             :options="{
               locale: 'en',
               currency: 'XST',
@@ -199,7 +199,7 @@
             v-else-if="inputAmountState === 'USD'"
             v-model="amountUSD"
             color="dark"
-            placeholder="Amount"
+            placeholder="$0.0000"
             :options="{
               locale: 'en',
               currency: 'USD',
@@ -438,8 +438,8 @@ export default {
     });
     const inputAmountState = ref('XST');
     const account = ref(null);
-    const amount = ref(0);
-    const amountUSD = ref(0);
+    const amount = ref(null);
+    const amountUSD = ref(null);
     const depositAddress = ref('');
     const aproxFee = ref(null);
     const currentStep = ref(1);
@@ -468,7 +468,7 @@ export default {
         if (mainStore.redoAmount) {
           amount.value = mainStore.redoAmount;
         }
-        amount.value = 0;
+        amount.value = null;
         setTimeout(() => (inputAmountState.value = 'USD'), 1);
         setTimeout(() => (inputAmountState.value = 'XST'), 1);
       }
@@ -543,7 +543,7 @@ export default {
     function closeModal() {
       mainStore.SET_MODAL_VISIBILITY('send', false);
       mainStore.SET_SEND_ADDRESS('');
-      mainStore.SET_REDO_AMOUNT(0);
+      mainStore.SET_REDO_AMOUNT(null);
       // reset all variables
       inputAmountState.value = 'XST';
       // account.value = null;

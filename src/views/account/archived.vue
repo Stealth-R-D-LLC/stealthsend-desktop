@@ -69,11 +69,12 @@ export default {
 
 <style scoped>
 .accounts-container {
-  height: calc(100vh - 99px);
+  height: calc(100vh - 92px);
 }
 .accounts-container__overflow {
   height: 100%;
   overflow: auto;
+  overflow-x: hidden;
 }
 .accounts-container__overflow::-webkit-scrollbar {
   width: 4px;

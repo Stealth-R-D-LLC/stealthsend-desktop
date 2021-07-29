@@ -1,36 +1,40 @@
 <template>
-  <div class="card">
+  <div class="card" ref="card">
     <div class="card__inner" @click="$emit('click')">
       <div class="card-header">
         <h6 class="semi-bold">{{ account.label }}</h6>
-        <svg
-          class="info"
+        <div
+          class="info-container"
           @click.stop="toggleAccountOptions(account.label)"
-          width="12"
-          height="10"
-          viewBox="0 0 12 10"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
         >
-          <path
-            d="M0 1H8"
-            stroke="#4E00F6"
-            stroke-width="2"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M0 5H12"
-            stroke="#4E00F6"
-            stroke-width="2"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M0 9H12"
-            stroke="#4E00F6"
-            stroke-width="2"
-            stroke-linejoin="round"
-          />
-        </svg>
+          <svg
+            class="info"
+            width="12"
+            height="10"
+            viewBox="0 0 12 10"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M0 1H8"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M0 5H12"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M0 9H12"
+              stroke="#4E00F6"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
       </div>
       <div class="amount-container">
         <h6 class="currency" v-if="steps">
@@ -106,6 +110,7 @@ import useHelpers from '@/composables/useHelpers';
 import CryptoService from '@/services/crypto';
 import router from '@/router';
 import emitter from '@/services/emitter';
+import { onClickOutside } from '@vueuse/core';
 
 export default {
   name: 'StCard',
@@ -144,6 +149,7 @@ export default {
     const mainStore = useMainStore();
     const { formatAmount } = useHelpers();
     const accountOptions = ref('');
+    const card = ref(null);
 
     const steps = computed(() => {
       if (!props.rates) return [];
@@ -184,6 +190,7 @@ export default {
       router.push('/account/details');
     };
     function toggleModal(modal, account) {
+      accountOptions.value = '';
       mainStore.SET_ACCOUNT_DETAILS(account);
       openModal(modal);
     }
@@ -198,6 +205,10 @@ export default {
       }
     });
 
+    onClickOutside(card, () => {
+      accountOptions.value = '';
+    });
+
     return {
       accountOptions,
       toggleAccountOptions,
@@ -205,6 +216,7 @@ export default {
       toggleModal,
       handleClick,
       steps,
+      card,
       isHiddenAmounts: computed(() => mainStore.isAmountsHidden),
     };
   },
@@ -246,6 +258,12 @@ export default {
 }
 .archived {
   margin-top: 64px;
+}
+.info-container {
+  padding: 10px 12px;
+  position: absolute;
+  right: 8px;
+  top: 10px;
 }
 .info path {
   transition: 0.3s;
