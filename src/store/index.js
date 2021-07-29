@@ -37,9 +37,13 @@ export const useMainStore = defineStore({
     redoAmount: 0,
     isLock: false,
     isMenuExpanded: false,
+    layoutFlash: false,
   }),
   getters: {},
   actions: {
+    SET_LAYOUT_FLASH(payload) {
+      this.layoutFlash = payload;
+    },
     SET_IS_LOCK(payload) {
       this.isLock = payload;
     },
