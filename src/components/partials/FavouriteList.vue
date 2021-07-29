@@ -235,7 +235,9 @@ export default {
     );
 
     const unfavouritedAccounts = computed(() => {
-      return accounts.value.filter((el) => !el.isFavourite && !el.isArchived);
+      return accounts.value.filter(
+        (el) => !el.isFavourite && !el.isArchived && el.utxo > 0
+      );
     });
 
     async function addToFavouriteList() {

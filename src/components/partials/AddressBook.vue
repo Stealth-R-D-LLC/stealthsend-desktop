@@ -1,5 +1,21 @@
 <template>
   <div class="address-book">
+    <StModal
+      light
+      v-show="isScanning"
+      :visible="activeTab === 'add-contact'"
+      @close="isScanning = false"
+      class="scan-address__modal"
+    >
+      <template #header>Scan Private Key</template>
+      <template #body>
+        <div class="stream">
+          <qr-stream @decode="onDecode" class="mb">
+            <div class="frame" />
+          </qr-stream>
+        </div>
+      </template>
+    </StModal>
     <div class="top">
       <h6 v-if="activeTab === 'address-book'">Address Book</h6>
       <h6 v-if="activeTab === 'contact-details'">Contact Details</h6>
@@ -382,24 +398,27 @@
             v-model="addContactForm.address"
             placeholder="Please enter a valid XST address"
           >
-            <svg
-              width="18"
-              height="18"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                clip-rule="evenodd"
-                d="M7 7H1V1h6v6z"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-              <path
-                d="M11 0v3h3V1h3v4M7 18v-2H4v1H1v-3M11 18v-2h3v1h3v-3M11 13H7v-2H4M10 7h8M14 9v2h3V9M1 10v2M11 9v1.636"
-                stroke="#E5E4E8"
-                stroke-width="2"
-              />
-            </svg>
+            <StTooltip tooltip="Scan Address">
+              <svg
+                @click="startScanner"
+                width="18"
+                height="18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  clip-rule="evenodd"
+                  d="M7 7H1V1h6v6z"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+                <path
+                  d="M11 0v3h3V1h3v4M7 18v-2H4v1H1v-3M11 18v-2h3v1h3v-3M11 13H7v-2H4M10 7h8M14 9v2h3V9M1 10v2M11 9v1.636"
+                  stroke="#E5E4E8"
+                  stroke-width="2"
+                />
+              </svg>
+            </StTooltip>
           </StInput>
           <template #description>
             Scan QR code or paste from clipboard
@@ -446,9 +465,13 @@ import { useMainStore } from '@/store';
 import CryptoService from '../../services/crypto';
 import router from '@/router';
 import { useValidation } from 'vue3-form-validation';
+import { QrStream } from 'vue3-qr-reader';
 
 export default {
   name: 'AddressBook',
+  components: {
+    QrStream,
+  },
   setup() {
     const mainStore = useMainStore();
     const { groupBy } = useHelpers();
@@ -562,6 +585,8 @@ export default {
         letter: '#',
       },
     ]);
+    const isScanning = ref(false);
+    const QRData = ref(null);
     let addressList = ref([]);
     const isActive = ref('A');
     let addContactForm = ref({
@@ -832,6 +857,22 @@ export default {
         return description;
       }
     }
+
+    function startScanner() {
+      QRData.value = null;
+      isScanning.value = true;
+      addContactForm.value.address = '';
+    }
+
+    function onDecode(data) {
+      QRData.value = data;
+      if (QRData.value) {
+        isScanning.value = false;
+        let address = QRData.value.replace(/[^a-z0-9]/gi, '');
+        addContactForm.value.address = address;
+      }
+    }
+
     return {
       // Variables
       alphabet,
@@ -842,6 +883,7 @@ export default {
       addressList,
       addForm,
       editForm,
+      isScanning,
 
       // Computed
       orderByName,
@@ -859,6 +901,8 @@ export default {
       scrollToElement,
       viewTransactions,
       openModal,
+      startScanner,
+      onDecode,
       /* toggleFavorite */
     };
   },
