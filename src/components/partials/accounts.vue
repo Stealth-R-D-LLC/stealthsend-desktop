@@ -223,7 +223,7 @@
                     >Remove from Favorites</a
                   >
                 </li>
-                <li>
+                <li v-if="activeAccounts.length > 1">
                   <a @click="openArchiveAccountModal()">Archive Account</a>
                 </li>
                 <li>
