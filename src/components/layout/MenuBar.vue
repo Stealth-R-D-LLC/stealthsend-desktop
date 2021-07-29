@@ -55,7 +55,10 @@
         <li @click="openModal('send')">
           <span class="item">
             <div class="icon">
-              <StTooltip class="tooltip" tooltip="Send XST" position="right">
+              <StTooltip
+                :tooltip="!isCollapsed ? 'Send XST' : ''"
+                position="right"
+              >
                 <svg
                   width="18"
                   height="17"
@@ -80,7 +83,10 @@
         <li @click="openModal('receive')">
           <span class="item">
             <div class="icon">
-              <StTooltip class="tooltip" tooltip="Receive XST" position="right">
+              <StTooltip
+                :tooltip="!isCollapsed ? 'Receive XST' : ''"
+                position="right"
+              >
                 <svg
                   width="18"
                   height="17"
@@ -106,8 +112,7 @@
           <router-link class="item" to="/transactions">
             <div class="icon">
               <StTooltip
-                class="tooltip"
-                tooltip="Transactions"
+                :tooltip="!isCollapsed ? 'Transactions' : ''"
                 position="right"
               >
                 <svg
@@ -174,7 +179,10 @@
         <li @click="openModal('account')">
           <span class="item">
             <div class="icon">
-              <StTooltip class="tooltip" tooltip="Add Account" position="right">
+              <StTooltip
+                :tooltip="!isCollapsed ? 'Add Account' : ''"
+                position="right"
+              >
                 <svg
                   width="18"
                   height="17"
@@ -205,7 +213,10 @@
         <li>
           <router-link class="item" to="/account/archived">
             <div class="icon">
-              <StTooltip class="tooltip" tooltip="Manager" position="right">
+              <StTooltip
+                :tooltip="!isCollapsed ? 'Manager' : ''"
+                position="right"
+              >
                 <svg
                   width="18"
                   height="18"
@@ -233,8 +244,7 @@
           <span class="item">
             <div class="icon">
               <StTooltip
-                class="tooltip"
-                tooltip="Address Book"
+                :tooltip="!isCollapsed ? 'Address Book' : ''"
                 position="right"
               >
                 <svg
@@ -413,7 +423,7 @@ export default defineComponent({
   transform: rotate(-180deg);
 }
 
-.layout__aside .item span:not(.tooltip) {
+.layout__aside .item .item__span:not(.tooltip) {
   width: 100%;
   overflow: hidden;
   font-size: 16px;
