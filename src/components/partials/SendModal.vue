@@ -117,7 +117,7 @@
               />
             </svg>
           </StInput>
-          <template #description>Scan QR Code</template>
+          <template #description>Scan QR Code or paste from clipboard</template>
         </StFormItem>
       </template>
       <template v-if="currentStep === 2">
