@@ -80,12 +80,16 @@
                 @click="prePopulateForm(item)"
               >
                 <p class="address-list__description">
-                  <span class="bold medium">{{ item.name }}</span
+                  <span class="bold medium">{{
+                    formatDescriptionString(item.name)
+                  }}</span
                   ><span v-if="item.description"
                     >, {{ formatDescriptionString(item.description) }}</span
                   >
                 </p>
-                <p class="medium">{{ item.address }}</p>
+                <p class="medium">
+                  {{ formatDescriptionString(item.address) }}
+                </p>
               </div>
             </div>
           </div>
@@ -103,10 +107,14 @@
                 @click="prePopulateForm(item)"
               >
                 <p class="address-list__description">
-                  <span class="bold medium">{{ item.name }}</span
+                  <span class="bold medium">{{
+                    formatDescriptionString(item.name)
+                  }}</span
                   >, {{ formatDescriptionString(item.description) }}
                 </p>
-                <p class="medium">{{ item.address }}</p>
+                <p class="medium">
+                  {{ formatDescriptionString(item.address) }}
+                </p>
               </div>
             </div>
           </div>
@@ -817,9 +825,9 @@ export default {
       changeTab('address-book');
     }
 
-    function formatDescriptionString(description) {
-      if (description.length > 28) {
-        return `${description.slice(0, 27)}...`;
+    function formatDescriptionString(description, numOfCharacters = 35) {
+      if (description.length > numOfCharacters) {
+        return `${description.slice(0, numOfCharacters - 1)}...`;
       } else {
         return description;
       }
