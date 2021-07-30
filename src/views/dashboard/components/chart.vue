@@ -299,7 +299,10 @@ export default {
 
 <style scoped>
 .full-height .st-dashboard-chart {
-  height: calc(100vh - 285px);
+  height: calc(100vh - 230px);
+}
+.full-height__details .st-dashboard-chart {
+  height: calc(100vh - 385px);
 }
 .chart-container {
   min-height: 450px;
