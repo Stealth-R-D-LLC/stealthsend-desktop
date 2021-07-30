@@ -1084,4 +1084,10 @@ svg:hover circle {
   width: 480px;
   box-sizing: border-box;
 }
+:deep .contact-details .st-input__inner[readonly] {
+  padding-bottom: 16px;
+}
+:deep .contact-details .st-checkbox {
+  margin-bottom: 16px;
+}
 </style>
