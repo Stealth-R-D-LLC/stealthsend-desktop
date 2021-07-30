@@ -122,7 +122,14 @@
             </svg>
           </div>
         </div>
-        <Chart v-if="componentVisibility.chart"></Chart>
+        <template v-if="!refreshChart">
+          <Chart
+            v-if="componentVisibility.chart"
+            :class="{
+              'full-height__details': !componentVisibility.txDashboard,
+            }"
+          ></Chart>
+        </template>
         <TransactionList
           v-if="componentVisibility.txDashboard"
           class="details-table"
@@ -184,6 +191,10 @@ export default {
       return mainStore.accountDetails;
     });
 
+    const refreshChart = computed(() => {
+      return mainStore.resetChart;
+    });
+
     const addressInfo = ref({});
     const transactions = ref([]);
     // const qrSrc = ref('');
@@ -236,6 +247,10 @@ export default {
         component,
         !componentVisibility.value[component]
       );
+      if (component === 'txDashboard') {
+        mainStore.REFRESH_CHART(true);
+        setTimeout(() => mainStore.REFRESH_CHART(false), 1);
+      }
     }
 
     async function getData() {
@@ -289,6 +304,7 @@ export default {
       isHiddenAmounts: computed(() => mainStore.isAmountsHidden),
       componentVisibility,
       toggleComponentVisibility,
+      refreshChart,
     };
   },
 };
