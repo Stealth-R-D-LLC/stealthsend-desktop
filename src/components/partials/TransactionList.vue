@@ -109,7 +109,7 @@
                 <StPopper
                   :content="findLabelForTx(item.txid)"
                   placement="top"
-                  hover="true"
+                  hover
                 >
                   {{ formatLabel(findLabelForTx(item.txid)) }}
                 </StPopper>
@@ -153,11 +153,7 @@
           </template>
           <template #actions="{ item }">
             <div class="icon-container">
-              <StTooltip
-                v-if="item.isFeeles"
-                tooltip="Feeless transaction"
-                position="top-left"
-              >
+              <StTooltip v-if="item.isFeeles" tooltip="Feeless transaction">
                 <svg
                   width="8"
                   height="12"
@@ -227,11 +223,7 @@
               :class="{ expanded__active: isExpanded === item.index }"
             >
               <div class="expanded__inner">
-                <StTooltip
-                  v-if="item.isFeeles"
-                  tooltip="Feeless transaction"
-                  position="top-left"
-                >
+                <StTooltip v-if="item.isFeeles" tooltip="Feeless transaction">
                   <svg
                     width="8"
                     height="12"
@@ -555,7 +547,7 @@ export default {
 :deep .items-center {
   position: relative;
   text-align: center;
-  width: 100px;
+  width: 28px;
 }
 
 .icon-container {
@@ -646,7 +638,14 @@ export default {
 .move {
   transition: 0.3s;
 }
+.dashboard-container .ellipsis {
+  width: calc(100% - 85px);
+}
+.dashboard-container .move-left {
+  transform: translateX(-95px);
+}
 .move-left {
+  white-space: nowrap;
   transform: translateX(-58px);
 }
 :deep .table tr td:first-child {
