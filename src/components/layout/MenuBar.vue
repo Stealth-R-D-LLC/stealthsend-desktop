@@ -1,6 +1,7 @@
 <template>
   <aside
     id="aside-menu"
+    ref="asideMenu"
     class="layout__aside"
     :class="[
       { width: isCollapsed || menuExpanded },
@@ -30,23 +31,37 @@
         <li>
           <router-link class="item" to="/dashboard">
             <div class="icon">
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+              <StTooltip
+                class="tooltip"
+                :tooltip="!isCollapsed ? 'Dashboard' : ''"
+                position="right"
               >
-                <path d="M7 11H1V17H7V11Z" stroke="#FAF9FC" stroke-width="2" />
-                <path
-                  d="M17 11H11V17H17V11Z"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                />
-                <path d="M0 7H8" stroke="#FAF9FC" stroke-width="2" />
-                <path d="M0 3H8" stroke="#FAF9FC" stroke-width="2" />
-                <path d="M17 1H11V7H17V1Z" stroke="#FAF9FC" stroke-width="2" />
-              </svg>
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 18 18"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M7 11H1V17H7V11Z"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M17 11H11V17H17V11Z"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                  />
+                  <path d="M0 7H8" stroke="#FAF9FC" stroke-width="2" />
+                  <path d="M0 3H8" stroke="#FAF9FC" stroke-width="2" />
+                  <path
+                    d="M17 1H11V7H17V1Z"
+                    stroke="#FAF9FC"
+                    stroke-width="2"
+                  />
+                </svg>
+              </StTooltip>
             </div>
 
             <span class="item__span"> Dashboard </span>
@@ -55,7 +70,10 @@
         <li @click="openModal('send')">
           <span class="item">
             <div class="icon">
-              <StTooltip class="tooltip" tooltip="Send XST" position="right">
+              <StTooltip
+                :tooltip="!isCollapsed ? 'Send XST' : ''"
+                position="right"
+              >
                 <svg
                   width="18"
                   height="17"
@@ -80,7 +98,10 @@
         <li @click="openModal('receive')">
           <span class="item">
             <div class="icon">
-              <StTooltip class="tooltip" tooltip="Receive XST" position="right">
+              <StTooltip
+                :tooltip="!isCollapsed ? 'Receive XST' : ''"
+                position="right"
+              >
                 <svg
                   width="18"
                   height="17"
@@ -106,8 +127,7 @@
           <router-link class="item" to="/transactions">
             <div class="icon">
               <StTooltip
-                class="tooltip"
-                tooltip="Transactions"
+                :tooltip="!isCollapsed ? 'Transactions' : ''"
                 position="right"
               >
                 <svg
@@ -174,7 +194,10 @@
         <li @click="openModal('account')">
           <span class="item">
             <div class="icon">
-              <StTooltip class="tooltip" tooltip="Add Account" position="right">
+              <StTooltip
+                :tooltip="!isCollapsed ? 'Add Account' : ''"
+                position="right"
+              >
                 <svg
                   width="18"
                   height="17"
@@ -205,7 +228,10 @@
         <li>
           <router-link class="item" to="/account/archived">
             <div class="icon">
-              <StTooltip class="tooltip" tooltip="Manager" position="right">
+              <StTooltip
+                :tooltip="!isCollapsed ? 'Manager' : ''"
+                position="right"
+              >
                 <svg
                   width="18"
                   height="18"
@@ -233,8 +259,7 @@
           <span class="item">
             <div class="icon">
               <StTooltip
-                class="tooltip"
-                tooltip="Address Book"
+                :tooltip="!isCollapsed ? 'Address Book' : ''"
                 position="right"
               >
                 <svg
@@ -301,6 +326,7 @@
 import { ref, computed, defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMainStore } from '@/store';
+import { onClickOutside } from '@vueuse/core';
 
 export default defineComponent({
   name: 'StMenuBar',
@@ -308,9 +334,12 @@ export default defineComponent({
     const mainStore = useMainStore();
     const router = useRouter();
     const isCollapsed = ref(false);
+    const asideMenu = ref(null);
 
     router.afterEach(() => {
-      !isCollapsed.value ? (isCollapsed.value = false) : null;
+      if (isCollapsed.value) {
+        isCollapsed.value = false;
+      }
     });
 
     const menuExpanded = computed(() => {
@@ -322,9 +351,11 @@ export default defineComponent({
     }
 
     function openModal(modal) {
+      isCollapsed.value = false;
       mainStore.SET_MODAL_VISIBILITY(modal, true);
     }
     function toggleDrawer(canvas) {
+      isCollapsed.value = false;
       mainStore.SET_OFF_CANVAS_DATA({ addressBook: 'dummy' });
       mainStore.SET_CURRENT_CANVAS(canvas);
       mainStore.TOGGLE_DRAWER(true);
@@ -334,7 +365,14 @@ export default defineComponent({
       router.push('/lock');
     }
 
+    onClickOutside(asideMenu, () => {
+      if (isCollapsed.value) {
+        isCollapsed.value = false;
+      }
+    });
+
     return {
+      asideMenu,
       isCollapsed,
       menuExpanded,
       toggleMenu,
@@ -413,7 +451,7 @@ export default defineComponent({
   transform: rotate(-180deg);
 }
 
-.layout__aside .item span:not(.tooltip) {
+.layout__aside .item .item__span:not(.tooltip) {
   width: 100%;
   overflow: hidden;
   font-size: 16px;
@@ -432,7 +470,7 @@ export default defineComponent({
 }
 
 .layout__aside .item.router-link-exact-active span {
-  color: var(--marine200);
+  color: var(--marine200) !important;
 }
 
 .layout__aside li svg path,
@@ -444,7 +482,7 @@ export default defineComponent({
 .layout__aside li:hover svg path,
 .layout__aside li:hover svg circle {
   stroke: var(--marine200);
-  color: var(--marine200);
+  color: var(--marine200) !important;
 }
 
 @keyframes animate-width {
@@ -465,5 +503,8 @@ export default defineComponent({
   100% {
     width: 280px;
   }
+}
+#right {
+  display: flex;
 }
 </style>

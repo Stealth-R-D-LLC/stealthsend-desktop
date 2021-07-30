@@ -237,9 +237,6 @@ export default {
 </script>
 
 <style scoped>
-:deep .layout__header {
-  padding: 39px 0 26px;
-}
 .controls {
   margin: 14px 24px 0;
   display: grid;
@@ -293,7 +290,10 @@ export default {
 .transactions-table :deep td:nth-child(7) {
   width: 121px;
 }
+.transactions-table :deep td:nth-child(7) .move-left {
+  transform: translateX(-100px) !important;
+}
 :deep .overflow {
-  height: calc(100vh - 250px);
+  height: calc(100vh - 241px);
 }
 </style>

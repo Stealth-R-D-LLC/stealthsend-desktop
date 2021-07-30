@@ -475,7 +475,7 @@ const CryptoService = {
 
     let emptyInARow = 0;
     let freeAddresses = [];
-    for (let i = 0; i < GAP_LIMIT; i++) {
+    for (let i = 0; i < Infinity; i++) {
       // derive the first account's node (index = 0)
       // derive the external chain node of this account
       const acc = this.getChildFromRoot(n, change, i);
@@ -495,7 +495,7 @@ const CryptoService = {
       freeAddresses.push(acc.path);
 
       // If the software hits 20 unused addresses in a row, it expects there are no used addresses beyond this point and stops searching the address chain
-      if (emptyInARow >= 20) break;
+      if (emptyInARow >= GAP_LIMIT) break;
     }
     // Return free account addresses to the calling code
     return {

@@ -91,7 +91,7 @@
                   />
                 </svg>
                 <svg
-                  v-if="account.utxo !== 0 || index !== 0"
+                  v-if="activeAccounts.length > 1"
                   @mousedown="isDraggedActive = true"
                   @mouseup="isDraggedActive = false"
                   class="handle"
@@ -212,7 +212,8 @@
                 <li
                   v-if="
                     !account.isFavourite &&
-                    accounts.filter((obj) => obj.isFavourite).length < 10
+                    accounts.filter((obj) => obj.isFavourite).length < 10 &&
+                    account.utxo > 0
                   "
                 >
                   <a @click="favouriteAccount(account)">Add to Favorites</a>
@@ -222,7 +223,7 @@
                     >Remove from Favorites</a
                   >
                 </li>
-                <li>
+                <li v-if="activeAccounts.length > 1">
                   <a @click="openArchiveAccountModal()">Archive Account</a>
                 </li>
                 <li>
@@ -263,9 +264,7 @@
                     </StFormItem>
                   </template>
                   <template #footer>
-                    <StButton
-                      type="type-b"
-                      @click="editAccountNameModal = false"
+                    <StButton type="type-b" @click="closeEditModal"
                       >Cancel</StButton
                     >
                     <StButton @click="changeAccountName(account)"
@@ -405,7 +404,9 @@
                 USD
               </p>
             </div>
-            <div v-if="account.isImported" class="imported" />
+            <StTooltip class="tooltip" tooltip="Imported Account">
+              <div v-if="account.isImported" class="imported" />
+            </StTooltip>
           </div>
           <transition name="fill">
             <div
@@ -448,7 +449,7 @@
                 <StModal
                   light
                   :visible="editAccountNameModal"
-                  @close="editAccountNameModal = false"
+                  @close="closeEditModal"
                 >
                   <template #header> Account Wizard </template>
                   <template #body>
@@ -474,9 +475,7 @@
                     </StFormItem>
                   </template>
                   <template #footer>
-                    <StButton
-                      type="type-b"
-                      @click="editAccountNameModal = false"
+                    <StButton type="type-b" @click="closeEditModal"
                       >Cancel</StButton
                     >
                     <StButton @click="changeAccountName(account)"
@@ -751,6 +750,7 @@ export default {
         await validateFields();
         await CryptoService.changeAccountName(account, accountName.value);
         editAccountNameModal.value = false;
+        accountOptions.value = '';
       } catch (e) {
         if (e instanceof ValidationError) {
           console.log(e);
@@ -803,6 +803,7 @@ export default {
     }
 
     function closeEditModal() {
+      accountOptions.value = '';
       editAccountNameModal.value = false;
       resetFields();
     }
@@ -1109,6 +1110,11 @@ svg {
   left: 0;
   right: 0;
   text-align: left;
+}
+.tooltip {
+  position: absolute !important;
+  right: 20px;
+  bottom: 33px;
 }
 .imported {
   display: block;
