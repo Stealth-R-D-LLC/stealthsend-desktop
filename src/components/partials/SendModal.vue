@@ -467,10 +467,11 @@ export default {
       if (currentStep.value === 2) {
         if (mainStore.redoAmount) {
           amount.value = mainStore.redoAmount;
+        } else {
+          amount.value = null;
+          setTimeout(() => (inputAmountState.value = 'USD'), 1);
+          setTimeout(() => (inputAmountState.value = 'XST'), 1);
         }
-        amount.value = null;
-        setTimeout(() => (inputAmountState.value = 'USD'), 1);
-        setTimeout(() => (inputAmountState.value = 'XST'), 1);
       }
       if (currentStep.value === 4) {
         sendTimeout.value = setTimeout(() => send(), 4900);
