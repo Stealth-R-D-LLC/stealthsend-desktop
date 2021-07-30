@@ -473,7 +473,9 @@ export default {
   padding: 5px 64px !important;
 }
 :deep .st-modal .st-modal-wrapper .st-modal-container {
-  width: 416px;
+  box-sizing: border-box;
+  width: 480px;
+  height: 284px;
 }
 :deep .st-modal .st-modal-wrapper .st-modal-container .st-modal__header {
   font-weight: 400;
