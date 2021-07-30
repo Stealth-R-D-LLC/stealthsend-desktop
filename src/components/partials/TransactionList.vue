@@ -492,7 +492,7 @@ export default {
 
 <style scoped>
 .st-transaction-list {
-  padding: 16px 10px 16px 28px;
+  padding: 16px 10px 0px 28px;
   background-color: #ffffff;
 }
 .overflow {
