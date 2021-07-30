@@ -294,6 +294,6 @@ export default {
   transform: translateX(-100px) !important;
 }
 :deep .overflow {
-  height: calc(100vh - 241px);
+  height: calc(100vh - 225px);
 }
 </style>
