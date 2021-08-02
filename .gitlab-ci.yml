@@ -38,8 +38,8 @@ Build MacOS:
 Build Windows:
   script:
     - Set-Variable -name NODE_EXTRA_CA_CERTS -value C:\runner\bipa.crt
-    - Set-Variable -name WIN_CSC_LINK -value C:\Users\runner\barrage-codesigning.pfx
-    - Set-Variable -name WIN_CSC_KEY_PASSWORD -value $WINDOWS_CODESIGN_CERT_PASS
+    - Set-Variable -name CSC_LINK -value C:\Users\runner\barrage-codesigning.pfx
+    - Set-Variable -name CSC_KEY_PASSWORD -value $WINDOWS_CODESIGN_CERT_PASS
     - npm cache clean --force
     - npm install
     - npm run electron:build --windows
