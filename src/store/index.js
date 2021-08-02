@@ -110,17 +110,17 @@ export const useMainStore = defineStore({
               this.blocks = blocks;
             }
             if (!res || !blocks) {
-              router.push('/noconnection');
+              router.push('/rpcerror');
             }
             if (this.blocks > blocks) {
               this.SET_RPC_STATUS(false);
-              router.push('/noconnection');
+              router.push('/rpcerror');
             }
             resolve();
           })
           .catch((err) => {
             console.error('RPC offline: ', err);
-            router.push('/noconnection');
+            router.push('/rpcerror');
             reject(err);
           });
       });
