@@ -28,6 +28,8 @@ After cloning the repo from our git, do the following steps:
 
 ```bash
 # we have a separate repo (stealth-kit) for our reusable custom components, that lives on our nexus, so you have to do the following:
+# download cert from https://bipa1.barrage.net/ipa/config/ca.crt
+export NODE_EXTRA_CA_CERTS="path/to/cert/file"
 npm config set registry https://nexus.barrage.net/repository/npm.barrage.net/ --global
 # username&pass are bipa credentials
 # email is your work email
