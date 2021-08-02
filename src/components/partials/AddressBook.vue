@@ -168,34 +168,32 @@
     <!-- CONTACT DETAILS -->
     <div class="contact-details" v-if="activeTab === 'contact-details'">
       <div>
-        <StFormItem label="Name" :filled="addContactForm.name" readonly>
+        <StFormItem label="Name" :filled="editContactForm.name" readonly>
           <StInput
             readonly
-            v-model="addContactForm.name"
+            v-model="editContactForm.name"
             placeholder="Please enter a contact name"
           />
         </StFormItem>
         <StFormItem
           label="Description"
-          :filled="addContactForm.description"
+          :filled="editContactForm.description"
           readonly
         >
           <StInput
             readonly
-            v-model="addContactForm.description"
+            v-model="editContactForm.description"
             placeholder="Please enter a description"
           />
         </StFormItem>
-        <StFormItem label="Address" :filled="addContactForm.address" readonly>
+        <StFormItem label="Address" :filled="editContactForm.address" readonly>
           <StInput
             readonly
-            v-model="addContactForm.address"
+            v-model="editContactForm.address"
             placeholder="Please enter a valid XST address"
           />
         </StFormItem>
-        <StCheckbox
-          class="custom-checkbox disabled-checkbox"
-          v-model="addContactForm.favorite"
+        <StCheckbox class="custom-checkbox" v-model="editContactForm.favorite"
           >Favorite list</StCheckbox
         >
         <p @click="viewTransactions" class="transactions">
@@ -325,9 +323,6 @@
             placeholder="Please enter a valid XST address"
           />
         </StFormItem>
-        <StCheckbox class="custom-checkbox" v-model="editContactForm.favorite"
-          >Favorite list</StCheckbox
-        >
       </div>
       <div class="add-contact__bottom">
         <p @click="deleteContact">
@@ -459,7 +454,7 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import useHelpers from '@/composables/useHelpers';
 import { useMainStore } from '@/store';
 import CryptoService from '../../services/crypto';
@@ -711,6 +706,13 @@ export default {
       },
     });
 
+    watch(
+      () => editContactForm.value.favorite,
+      () => {
+        confirmEdit();
+      }
+    );
+
     onMounted(async () => {
       await filterAlphabetically();
     });
@@ -847,7 +849,8 @@ export default {
       addressList.value = await CryptoService.updateAddressBook(
         editContactForm.value
       );
-      changeTab('address-book');
+      console.log('AAAAAAA', editContactForm.value);
+      changeTab('contact-details');
     }
 
     function formatDescriptionString(description, numOfCharacters = 35) {
