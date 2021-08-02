@@ -777,6 +777,7 @@ export default {
       // get amount from account
       // check if amount is less than miminim amount for send
       // if not, find real fee
+      amount.value = 0;
       let fee = findFee();
       // subtract real fee from amount
       const maxAmount = format(subtract(item.utxo, fee), { precision: 8 });
