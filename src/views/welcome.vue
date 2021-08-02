@@ -93,51 +93,7 @@
                       Recovery Phrase?
                     </h5>
                   </div>
-                  <div v-if="isAccount || isRecovery" class="support">
-                    <!-- <svg
-                    width="22"
-                    height="22"
-                    viewBox="0 0 22 22"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M12 19.5V20.5H6V19.5H12Z"
-                      stroke="#FAF9FC"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                    />
-                    <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M21 15.5H18V9.5H21V15.5Z"
-                      stroke="#FAF9FC"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                    />
-                    <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M4 15.5H1L1 9.5H4V15.5Z"
-                      stroke="#FAF9FC"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                    />
-                    <path
-                      d="M2 8.5C2 5.5 5 1.5 10.9998 1.5C16.9996 1.5 20 4.5 20 8.5"
-                      stroke="#FAF9FC"
-                      stroke-width="2"
-                    />
-                    <path
-                      d="M5.00012 20.5H3.00008C2.00001 20.5 2.00009 20.5 2 19.5V16.5"
-                      stroke="#FAF9FC"
-                      stroke-width="2"
-                    />
-                  </svg>
-                  <p>Customer Support</p> -->
-                  </div>
+                  <div v-if="isAccount || isRecovery" class="support"></div>
                   <div class="buttons" v-else>
                     <StButton type="type-d" @click="isAccount = true"
                       >Create a New Account</StButton
@@ -1217,6 +1173,7 @@
                     :type="showPassword ? 'text' : 'password'"
                     v-model="form.password.$value"
                     placeholder="Please enter a password"
+                    @keyup.enter="handleSubmit"
                   >
                     <StTooltip
                       class="tooltip"
@@ -1278,6 +1235,7 @@
                   :error-message="form.confirmPassword.$errors"
                 >
                   <StInput
+                    @keyup.enter="handleSubmit"
                     :type="showConfirmPassword ? 'text' : 'password'"
                     v-model="form.confirmPassword.$value"
                     placeholder="Please re-enter the password"
@@ -1377,6 +1335,7 @@
                   label="Account Name"
                   :filled="form.account.$value"
                   :error-message="form.account.$errors"
+                  @keyup.enter="handleSubmit"
                 >
                   <StInput
                     id="account-name"
@@ -1834,6 +1793,7 @@
                 label="Account Name"
                 :filled="recoveryForm.account.$value"
                 :error-message="recoveryForm.account.$errors"
+                @keyup.enter="recoveryStepNext"
               >
                 <StInput
                   id="account-name"
@@ -2036,6 +1996,7 @@
                   :type="showPassword ? 'text' : 'password'"
                   v-model="form.password.$value"
                   placeholder="Please enter a password"
+                  @keyup.enter="recover"
                 >
                   <StTooltip
                     class="tooltip"
@@ -2094,6 +2055,7 @@
                   :type="showConfirmPassword ? 'text' : 'password'"
                   v-model="form.confirmPassword.$value"
                   placeholder="Please re-enter the password"
+                  @keyup.enter="recover"
                 >
                   <StTooltip
                     class="tooltip"
