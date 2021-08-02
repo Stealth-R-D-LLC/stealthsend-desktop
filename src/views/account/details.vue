@@ -264,17 +264,60 @@ export default {
         .catch((err) => {
           return err;
         });
-      await mainStore.rpc('gethdaccount', [account.value.xpub]).then((res) => {
-        let mappedAmounts = res.map((el) => {
-          return {
-            ...el,
-            account: account.value.label,
-            blocktime: el.txinfo.blocktime,
-            amount: el.account_balance_change,
+      let allTransactions = [];
+      if (account.value.isImported && account.value.wif) {
+        await mainStore.rpc('getaddressinputs', [account.value.address]).then(async(inputs) => {
+          let inputsTransactions = await Promise.all(inputs.map(tx => mainStore.rpc('gettransaction', [tx.txid])));
+          for (let txIndex in inputsTransactions) {
+            let indexOfDestination = inputsTransactions[txIndex].vout.findIndex((dest) => dest.scriptPubKey.addresses[0] !== account.value.address);
+            allTransactions.push({
+              ...inputs[txIndex],
+              account: account.value.label,
+              amount: -inputs[txIndex].amount,
+              txinfo: {
+                ...inputsTransactions[txIndex],
+              },
+              output: indexOfDestination === -1 ? [] : [inputsTransactions[txIndex].vout[indexOfDestination].scriptPubKey]
+            });
           };
         });
-        transactions.value = mappedAmounts;
-      });
+        await mainStore.rpc('getaddressoutputs', [account.value.address]).then(async(outputs) => {
+          let outputTransactions = await Promise.all(outputs.map(tx => mainStore.rpc('gettransaction', [tx.txid])));
+          for (let txIndex in outputTransactions) {
+            allTransactions.push({
+              ...outputs[txIndex],
+              account: account.value.label,
+              txinfo: {
+                ...outputTransactions[txIndex],
+              },
+              output: [outputTransactions[txIndex].vout[outputs[txIndex].vout].scriptPubKey]
+            });
+          };
+        });
+      } else {
+        await mainStore.rpc('gethdaccount', [account.value.xpub]).then((hdAccount) => {
+          for (let tx of hdAccount) {
+            let outputAddresses = tx.outputs.map(output => output.address);
+            let indexOfDestination;
+            if (tx.account_balance_change < 0) {
+              indexOfDestination = tx.txinfo.destinations.findIndex((dest) => outputAddresses.indexOf(dest.addresses[0]) === -1 );
+            } else {
+              indexOfDestination = tx.txinfo.destinations.findIndex((dest) => dest.amount === tx.account_balance_change );
+            }
+            if (indexOfDestination === -1) {
+              indexOfDestination = 0;
+            }
+            allTransactions.push({
+              ...tx,
+              output: [tx.txinfo.destinations[indexOfDestination]],
+              amount: tx.account_balance_change,
+              blocktime: tx.txinfo.blocktime,
+              account: account.value.label
+            });
+          }
+        });
+      }
+      transactions.value = allTransactions;
     }
 
     if (account.value && Object.keys(account.value).length > 0) {

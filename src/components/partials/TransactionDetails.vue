@@ -146,11 +146,11 @@
       <div class="item">
         <p class="bold">Receiving Address</p>
         <p
-          v-if="tx && tx.vout && tx.vout.length && tx.vout[0]"
+          v-if="tx && tx.vout && tx.vout.length && tx.vout[tx.position]"
           class="item-link pointer"
-          @click="openAddressExplorer(tx.vout[0].scriptPubKey.addresses[0])"
+          @click="openAddressExplorer(tx.vout[tx.position].scriptPubKey.addresses[0])"
         >
-          {{ tx.vout[0].scriptPubKey.addresses[0] }}
+          {{ tx.vout[tx.position].scriptPubKey.addresses[0] }}
         </p>
         <p v-else>-</p>
       </div>
@@ -283,8 +283,9 @@ export default {
     async function getTx(txid) {
       const res = await mainStore.rpc('gettransaction', [txid]);
       tx.value = {
-        ...res,
         ...mainStore.offCanvasData,
+        ...res,
+        position: mainStore.offCanvasData.vout? mainStore.offCanvasData.vout : 0 
       };
     }
 
