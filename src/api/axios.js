@@ -1,3 +1,4 @@
+import router from '@/router';
 import axios from 'axios';
 
 const API_CONFIG = {
@@ -31,7 +32,13 @@ API.interceptors.request.use(
 
 API.interceptors.response.use(
   (response) => {
-    return response;
+    if (response.status > 400 || response.status > 500) {
+      if (JSON.parse(response.config.data).method !== 'getinfo') {
+        router.push('/noconnection');
+      }
+    } else {
+      return response;
+    }
   },
   (error) => {
     return Promise.reject(error);

@@ -33,12 +33,37 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import pkgjson from '@/../package.json';
+import { useMainStore } from '@/store';
+import router from '@/router';
+import { useRoute } from 'vue-router';
 export default {
   name: 'StNoStealthConnection',
   setup() {
+    const mainStore = useMainStore();
+    const route = useRoute();
     const version = ref(pkgjson.version);
+    let reloadTime = ref(null);
+
+    onMounted(async () => {
+      checkRPC();
+    });
+
+    function killTimer() {
+      clearTimeout(reloadTime.value);
+      reloadTime.value = null;
+    }
+
+    async function checkRPC() {
+      const response = await mainStore.rpc('getinfo', []);
+      if (response.blocks > 0) {
+        router.push('/lock');
+      }
+      reloadTime.value = setTimeout(() => {
+        route.name === 'RpcError' ? checkRPC() : killTimer();
+      }, 10000);
+    }
 
     return {
       version,
