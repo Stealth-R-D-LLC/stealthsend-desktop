@@ -38,6 +38,8 @@ Build MacOS:
 Build Windows:
   script:
     - Set-Variable -name NODE_EXTRA_CA_CERTS -value C:\runner\bipa.crt
+    - $Env:CSC_LINK = "C:\Users\runner\barrage-codesigning.pfx"
+    - $Env:CSC_KEY_PASSWORD = "$env:WINDOWS_CODESIGN_CERT_PASS"
     - npm cache clean --force
     - npm install
     - npm run electron:build --windows
