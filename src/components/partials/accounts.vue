@@ -596,12 +596,6 @@ export default {
         animation: 150,
         sort: false,
         onEnd: function (evt) {
-          console.log('account dropped: ', evt.item);
-          console.log('dropped to group: ', evt.to);
-          console.log('dropped from group: ', evt.from);
-          console.log('isSame: ', evt.to === elArchived);
-          console.log('EVENT: ', evt.oldIndex);
-          console.log('ACTIVE ACC: ', activeAccounts.value[evt.oldIndex]);
           isDragged.value = true;
           activeAccOldIndex.value = evt.oldIndex;
           archivedAcc.value = activeAccounts.value[evt.oldIndex];
@@ -623,9 +617,6 @@ export default {
         animation: 150,
         sort: false,
         onEnd: function (evt) {
-          console.log('account dropped: ', evt.item);
-          console.log('dropped to group: ', evt.to);
-          console.log('dropped from group: ', evt.from);
           archivedAccOldIndex.value = evt.oldIndex;
           activeAcc.value = archivedAccounts.value[evt.oldIndex];
           isDragged.value = true;
@@ -726,6 +717,7 @@ export default {
     }
 
     async function archiveAccount(account) {
+      mainStore.START_GLOBAL_LOADING();
       if (isDragged.value) {
         archivedAccounts.value.push(archivedAcc.value);
       }
@@ -736,6 +728,7 @@ export default {
     }
 
     async function activateAccount(account) {
+      mainStore.START_GLOBAL_LOADING();
       if (isDragged.value) {
         activeAccounts.value.push(activeAcc.value);
       }
@@ -800,6 +793,7 @@ export default {
       }
 
       accounts.value = [...tmpAccounts];
+      mainStore.STOP_GLOBAL_LOADING();
     }
 
     function closeEditModal() {
