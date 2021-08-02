@@ -39,3 +39,7 @@ button {
 .tooltip:before {
     padding: 4px 12px !important;
 }
+
+.qr-stream-camera {
+    transform: rotateY(180deg);
+}
