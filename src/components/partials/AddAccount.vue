@@ -213,15 +213,11 @@
               />
             </svg>
           </div>
+          <StButton type="type-a" @click="openAccountDetails(account)"
+            >View Account</StButton
+          >
         </template>
       </div>
-    </template>
-    <template #footer class="flex-center-all">
-      <template v-if="currentStep === 4">
-        <StButton type="type-a" @click="openAccountDetails(account)"
-          >View Account</StButton
-        >
-      </template>
     </template>
   </StModal>
 </template>
@@ -504,12 +500,14 @@ export default {
 <style scoped>
 :deep .st-modal-container {
   width: 480px;
+  height: 520px;
   min-height: 520px;
   box-sizing: border-box;
 }
 :deep .st-modal__body {
   margin-top: 36px;
   margin-bottom: 0;
+  height: 100%;
 }
 .account-modal__hide-header :deep .st-modal__header {
   display: none;
@@ -517,6 +515,9 @@ export default {
 .account-modal__hide-header :deep .st-modal__body {
   margin-top: 0;
   text-align: center;
+}
+.account-modal :deep .st-modal__footer {
+  display: none;
 }
 .account-modal__hide-header h5 {
   margin-bottom: 36px;
@@ -534,7 +535,7 @@ export default {
   line-height: 24px;
   letter-spacing: 0.32px;
   color: var(--grey900);
-  padding-bottom: 12px;
+  padding-bottom: 9px;
   font-family: var(--secondary-font);
   border-bottom: 3px solid var(--grey200);
   transition: 0.3s;
@@ -577,6 +578,12 @@ export default {
 }
 .desc-red p {
   color: var(--red600);
+}
+.add-account__actions {
+  position: absolute;
+  left: 32px;
+  right: 32px;
+  bottom: 60px;
 }
 .add-account__actions .buttons button {
   margin: 0;
