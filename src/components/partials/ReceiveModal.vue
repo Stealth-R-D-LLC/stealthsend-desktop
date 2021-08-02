@@ -397,13 +397,11 @@ export default {
     const qrSrc = ref('');
     async function changeAccount(acc = accounts.value[0]) {
       depositAddress.value = '';
-      if (acc.isImported) {
+      if (acc.isImported && acc.wif) {
         depositAddress.value = acc.address;
       } else {
         const { account, change } = CryptoService.breakAccountPath(acc.path);
-        const discoveredAddresses = await CryptoService.accountDiscovery(
-          account
-        );
+        const discoveredAddresses = await CryptoService.accountDiscovery(account);
         let nextFreeAddress = CryptoService.nextToUse(
           discoveredAddresses.freeAddresses
         );
