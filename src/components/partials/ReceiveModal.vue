@@ -397,19 +397,25 @@ export default {
     const qrSrc = ref('');
     async function changeAccount(acc = accounts.value[0]) {
       depositAddress.value = '';
-      const { account, change } = CryptoService.breakAccountPath(acc.path);
-      const discoveredAddresses = await CryptoService.accountDiscovery(account);
-      let nextFreeAddress = CryptoService.nextToUse(
-        discoveredAddresses.freeAddresses
-      );
-      const next = CryptoService.breakAccountPath(nextFreeAddress);
+      if (acc.isImported) {
+        depositAddress.value = acc.address;
+      } else {
+        const { account, change } = CryptoService.breakAccountPath(acc.path);
+        const discoveredAddresses = await CryptoService.accountDiscovery(
+          account
+        );
+        let nextFreeAddress = CryptoService.nextToUse(
+          discoveredAddresses.freeAddresses
+        );
+        const next = CryptoService.breakAccountPath(nextFreeAddress);
 
-      const child = CryptoService.getChildFromRoot(
-        account,
-        change,
-        next.address
-      );
-      depositAddress.value = child.address;
+        const child = CryptoService.getChildFromRoot(
+          account,
+          change,
+          next.address
+        );
+        depositAddress.value = child.address;
+      }
       generateQR();
     }
 
@@ -559,9 +565,9 @@ export default {
   color: var(--grey50);
 }
 .qr-img {
-  margin: 33px auto 0;
+  margin: 30px auto 0;
   display: block;
-  max-width: 145px;
+  max-width: 165px;
 }
 .email-desc {
   margin-top: 10px;
