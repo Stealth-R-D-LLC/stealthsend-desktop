@@ -74,9 +74,9 @@
             on cookies and how they work can be found at:
             <a
               class="link"
-              href="http://www.allaboutcookies.org"
+              href="https://www.allaboutcookies.org"
               target="_blank"
-              >http://www.allaboutcookies.org</a
+              >https://www.allaboutcookies.org</a
             >.
           </p>
           <p class="desc">
