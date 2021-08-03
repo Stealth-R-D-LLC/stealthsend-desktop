@@ -32,9 +32,9 @@
                 <div class="archive-account__content">
                   <div class="desc">
                     <p>
-                      Archive an account if you don't need to use it for a long
-                      time. Archived accounts are not monitored, and you cannot
-                      work with them while they are archived.
+                      Archive an account if you don’t intend to use it for a
+                      long time. Archived accounts are not monitored, and you
+                      cannot work with them while they are archived.
                     </p>
                   </div>
                   <p>
