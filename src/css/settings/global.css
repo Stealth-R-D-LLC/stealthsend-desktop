@@ -12,6 +12,9 @@ button {
   width: fit-content;
   margin: 0 auto;
 }
+.type-d:disabled:hover {
+  color: var(--grey200) !important;
+}
 a {
   outline: none;
 }
