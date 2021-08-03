@@ -169,16 +169,19 @@ async function createWindow() {
     webContents.setVisualZoomLevelLimits(1, 1);
   });
   webContents.on('new-window', function (event, url) {
-    event.preventDefault();
     if (url.includes('https://stealthmonitor.org/')) {
       shell.openExternal(url);
     }
+    event.preventDefault();
   });
   webContents.on('will-navigate', (event, url) => {
-    event.preventDefault();
+    if (url.startsWith('mailto:')) {
+      shell.openExternal(url);
+    }
     if (url.includes('https://stealthmonitor.org/')) {
       shell.openExternal(url);
     }
+    event.preventDefault();
   });
 }
 async function askForMediaAccess() {
