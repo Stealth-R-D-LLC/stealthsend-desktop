@@ -8,6 +8,7 @@ import {
   Menu,
   protocol,
   shell,
+  session,
   systemPreferences,
 } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
@@ -170,18 +171,17 @@ async function createWindow() {
     console.log('-----------------1', url);
 
     event.preventDefault();
-    if (url.includes('https://stealthmonitor.org/') ) {
+    if (url.includes('https://stealthmonitor.org/')) {
       shell.openExternal(url);
     }
   });
   webContents.on('will-navigate', (event, url) => {
     console.log('----------------2-', url);
     event.preventDefault();
-    if (url.includes('https://stealthmonitor.org/') ) {
+    if (url.includes('https://stealthmonitor.org/')) {
       shell.openExternal(url);
     }
-      
-  })
+  });
 }
 async function askForMediaAccess() {
   try {
@@ -250,6 +250,32 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString());
     }
   }
+
+  session
+  .fromPartition('some-partition')
+  .setPermissionRequestHandler((webContents, permission, callback) => {
+    const url = webContents.getURL()
+
+    // https://www.electronjs.org/docs/api/session#sessetpermissionrequesthandlerhandler
+    const allowed = ['clipboard-read', 'media', 'openExternal'];
+    if (allowed.includes(permission)) {
+      // Approves the permissions request
+      callback(true)
+    }
+
+    const notAllowed = ['display-capture', 'mediaKeySystem', 'geolocation', 'notifications', 'midi', 'midiSysex', 'pointerLock', 'fullscreen', 'unknown']
+    if (notAllowed.includes(permission)) {
+      // Denies the permissions request
+      callback(false)
+    }
+
+    // // Verify URL
+    if (!url.startsWith('https://stealthmonitor.org/')) {
+      // Denies the permissions request
+      return callback(false)
+    }
+  })
+
   createWindow();
   askForMediaAccess();
 });
