@@ -181,18 +181,22 @@ async function createWindow() {
     webContents.setVisualZoomLevelLimits(1, 1);
   });
   webContents.on('new-window', function (event, url) {
-
-    if (allowedUrls.includes(url) || url.includes('https://stealthmonitor.org/')) {
+    if (
+      allowedUrls.includes(url) ||
+      url.includes('https://stealthmonitor.org/')
+    ) {
       shell.openExternal(url);
     }
     event.preventDefault();
   });
   webContents.on('will-navigate', (event, url) => {
-
     if (url.startsWith('mailto:')) {
       shell.openExternal(url);
     }
-    if (allowedUrls.includes(url) || url.includes('https://stealthmonitor.org/')) {
+    if (
+      allowedUrls.includes(url) ||
+      url.includes('https://stealthmonitor.org/')
+    ) {
       shell.openExternal(url);
     }
     event.preventDefault();
