@@ -32,9 +32,9 @@
                 <div class="archive-account__content">
                   <div class="desc">
                     <p>
-                      Archive an account if you don't need to use it for a long
-                      time. Archived accounts are not monitored, and you cannot
-                      work with them while they are archived.
+                      Archive an account if you don’t intend to use it for a
+                      long time. Archived accounts are not monitored, and you
+                      cannot work with them while they are archived.
                     </p>
                   </div>
                   <p>
@@ -899,11 +899,18 @@ export default {
   top: -60px;
 }
 .card {
+  box-sizing: border-box;
   position: relative;
-  background: #fefefe;
+  background: var(--background0);
   border: 1px solid var(--purple50);
   box-shadow: 0px 8px 24px -8px rgba(34, 3, 101, 0.1);
   border-radius: 2px;
+}
+.active-container .card {
+  min-height: 188px;
+}
+.archived-container .amount-container {
+  margin-bottom: 0;
 }
 .card:hover {
   z-index: 10;
@@ -961,6 +968,8 @@ export default {
   color: var(--grey50) !important;
 }
 .card__inner {
+  box-sizing: border-box;
+  height: 100%;
   padding: 18px 20px 24px;
 }
 .card__inner .card__footer {
