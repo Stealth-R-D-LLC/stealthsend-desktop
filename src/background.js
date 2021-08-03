@@ -80,6 +80,16 @@ async function createWindow() {
     },
   });
 
+  const allowedUrls = [
+    'https://www.allaboutcookies.org/',
+    'https://www.google.ch/policies/privacy/partners',
+    'https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.L_.2016.119.01.0001.01.ENG',
+    'https://www.admin.ch/opc/en/classified-compilation/19920153/index.html',
+    'https://www.admin.ch/opc/en/classified-compilation/19930159/index.html',
+    'https://github.com/Stealth-R-D-LLC/Stealth',
+    'https://coincap.io/',
+  ];
+
   // resize the window for the create process
   ipcMain.on('resize:create', () => {
     win.setBounds({
@@ -171,16 +181,18 @@ async function createWindow() {
     webContents.setVisualZoomLevelLimits(1, 1);
   });
   webContents.on('new-window', function (event, url) {
-    if (url.includes('https://stealthmonitor.org/')) {
+
+    if (allowedUrls.includes(url) || url.includes('https://stealthmonitor.org/')) {
       shell.openExternal(url);
     }
     event.preventDefault();
   });
   webContents.on('will-navigate', (event, url) => {
+
     if (url.startsWith('mailto:')) {
       shell.openExternal(url);
     }
-    if (url.includes('https://stealthmonitor.org/')) {
+    if (allowedUrls.includes(url) || url.includes('https://stealthmonitor.org/')) {
       shell.openExternal(url);
     }
     event.preventDefault();
