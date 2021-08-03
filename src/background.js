@@ -120,16 +120,16 @@ async function createWindow() {
   });
 
   const menuTemplate = [
-  {
-    label: 'StealthSend',
-    submenu: [
-      {
-        label: 'Quit StealthSend',
-        accelerator: 'CmdOrCtrl+Q',
-        role: 'close'
-      } 
-    ]
-  },
+    {
+      label: 'StealthSend',
+      submenu: [
+        {
+          label: 'Quit StealthSend',
+          accelerator: 'CmdOrCtrl+Q',
+          role: 'close',
+        },
+      ],
+    },
     {
       label: 'View',
       submenu: [
@@ -137,7 +137,7 @@ async function createWindow() {
         { role: 'forceReload' },
         { role: 'toggleDevTools' },
       ],
-    }
+    },
   ];
 
   const menu = Menu.buildFromTemplate(menuTemplate);
