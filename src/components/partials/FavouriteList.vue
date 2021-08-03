@@ -90,7 +90,7 @@
           </p>
         </div>
         <div class="account-icons">
-          <StPopper content="Remove from Favorites" hover placement="top">
+          <StTooltip tooltip="Remove from Favorites">
             <svg
               @click="removeFromFavoriteList(acc)"
               width="21"
@@ -106,8 +106,8 @@
               />
               <path d="M19 10.5H12.5" stroke="#A2A1A4" stroke-width="2" />
             </svg>
-          </StPopper>
-          <StPopper content="Drag to arrange" hover placement="top">
+          </StTooltip>
+          <StTooltip tooltip="Drag to rearrange">
             <svg
               class="handle"
               width="10"
@@ -123,7 +123,7 @@
               <circle cx="1.5" cy="13.5" r="1.5" fill="#A2A1A4" />
               <circle cx="7.5" cy="13.5" r="1.5" fill="#A2A1A4" />
             </svg>
-          </StPopper>
+          </StTooltip>
         </div>
       </div>
     </div>
@@ -208,7 +208,6 @@ export default {
             var el = document.getElementById('favouriteList');
             sortable = Sortable.create(el, {
               animation: 150,
-              easing: 'cubic-bezier(1, 0, 0, 1)',
               handle: '.handle',
               draggagle: '.account-grid',
               store: {
@@ -345,8 +344,14 @@ export default {
 :deep .multiselect-input > .multiselect-placeholder {
   color: var(--grey900);
 }
+:deep .st-form-item {
+  margin-bottom: 0;
+}
+:deep .tooltip:before {
+  right: calc(50% + 40px) !important;
+}
 .accounts-list {
-  margin-top: 44px;
+  padding-top: 44px;
   overflow: auto;
   max-height: calc(100vh - 265px);
   width: calc(100% + 5px);
@@ -392,8 +397,8 @@ export default {
 .account-icons .handle {
   cursor: move;
 }
-.account-icons > div {
-  margin-left: 12px !important;
+.account-icons > .tooltip:last-child {
+  margin-left: 26px !important;
 }
 .account-icons svg path,
 .account-icons svg circle {
