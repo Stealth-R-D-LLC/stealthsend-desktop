@@ -11,7 +11,6 @@ import {
   session,
   systemPreferences,
 } from 'electron';
-import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const os = require('os');
@@ -256,14 +255,6 @@ app.on('ready', async () => {
     globalShortcut.register('Command+Q', () => {
       app.quit();
     });
-  }
-  if (isDevelopment && !process.env.IS_TEST) {
-    // Install Vue Devtools
-    try {
-      await installExtension(VUEJS_DEVTOOLS);
-    } catch (e) {
-      console.error('Vue Devtools failed to install:', e.toString());
-    }
   }
 
   session
