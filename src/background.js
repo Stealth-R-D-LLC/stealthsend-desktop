@@ -10,6 +10,7 @@ import {
   shell,
   session,
   systemPreferences,
+  webviewTag
 } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
@@ -68,8 +69,8 @@ async function createWindow() {
     maximizable: false,
     fullscreenable: false,
     webPreferences: {
-      // nodeIntegration: true,
-      // nodeIntegrationInWorker: true
+      nodeIntegration: false,
+      nodeIntegrationInWorker: false,
       contextIsolation: true, // protect against prototype pollution
       enableRemoteModule: false, // turn off remote
       // eslint-disable-next-line no-undef
@@ -226,6 +227,22 @@ app.on('window-all-closed', () => {
     });
   }
 });
+
+app.on('web-contents-created', (event, contents) => {
+  contents.on('will-attach-webview', (event, webPreferences, params) => {
+    // Strip away preload scripts if unused or verify their location is legitimate
+    delete webPreferences.preload
+    delete webPreferences.preloadURL
+
+    // Disable Node.js integration
+    webPreferences.nodeIntegration = false
+
+    // Verify URL being loaded
+    if (!params.src.startsWith('https://stealthmonitor.org/')) {
+      event.preventDefault()
+    }
+  })
+})
 
 app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
