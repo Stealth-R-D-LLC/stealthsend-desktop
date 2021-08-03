@@ -283,7 +283,6 @@ import CryptoService from '@/services/crypto';
 import { useRoute } from 'vue-router';
 import useHelpers from '@/composables/useHelpers';
 import { useValidation, ValidationError } from 'vue3-form-validation';
-
 export default {
   name: 'StReceiveModal',
   setup() {
