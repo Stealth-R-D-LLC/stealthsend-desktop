@@ -252,29 +252,39 @@ app.on('ready', async () => {
   }
 
   session
-  .fromPartition('some-partition')
-  .setPermissionRequestHandler((webContents, permission, callback) => {
-    const url = webContents.getURL()
+    .fromPartition('some-partition')
+    .setPermissionRequestHandler((webContents, permission, callback) => {
+      const url = webContents.getURL();
 
-    // https://www.electronjs.org/docs/api/session#sessetpermissionrequesthandlerhandler
-    const allowed = ['clipboard-read', 'media', 'openExternal'];
-    if (allowed.includes(permission)) {
-      // Approves the permissions request
-      callback(true)
-    }
+      // https://www.electronjs.org/docs/api/session#sessetpermissionrequesthandlerhandler
+      const allowed = ['clipboard-read', 'media', 'openExternal'];
+      if (allowed.includes(permission)) {
+        // Approves the permissions request
+        callback(true);
+      }
 
-    const notAllowed = ['display-capture', 'mediaKeySystem', 'geolocation', 'notifications', 'midi', 'midiSysex', 'pointerLock', 'fullscreen', 'unknown']
-    if (notAllowed.includes(permission)) {
-      // Denies the permissions request
-      callback(false)
-    }
+      const notAllowed = [
+        'display-capture',
+        'mediaKeySystem',
+        'geolocation',
+        'notifications',
+        'midi',
+        'midiSysex',
+        'pointerLock',
+        'fullscreen',
+        'unknown',
+      ];
+      if (notAllowed.includes(permission)) {
+        // Denies the permissions request
+        callback(false);
+      }
 
-    // // Verify URL
-    if (!url.startsWith('https://stealthmonitor.org/')) {
-      // Denies the permissions request
-      return callback(false)
-    }
-  })
+      // // Verify URL
+      if (!url.startsWith('https://stealthmonitor.org/')) {
+        // Denies the permissions request
+        return callback(false);
+      }
+    });
 
   createWindow();
   askForMediaAccess();
