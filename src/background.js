@@ -8,9 +8,9 @@ import {
   Menu,
   protocol,
   shell,
+  session,
   systemPreferences,
 } from 'electron';
-import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const os = require('os');
@@ -67,10 +67,12 @@ async function createWindow() {
     maximizable: false,
     fullscreenable: false,
     webPreferences: {
-      // nodeIntegration: true,
-      // nodeIntegrationInWorker: true
+      nodeIntegration: false,
+      nodeIntegrationInWorker: false,
       contextIsolation: true, // protect against prototype pollution
       enableRemoteModule: false, // turn off remote
+      disableBlinkFeatures: 'Auxclick', // https://github.com/doyensec/electronegativity/wiki/AUXCLICK_JS_CHECK
+      sandbox: true, // https://github.com/doyensec/electronegativity/wiki/SANDBOX_JS_CHECK
       // eslint-disable-next-line no-undef
       preload: __static + '/preload.js',
     },
@@ -168,7 +170,15 @@ async function createWindow() {
   });
   webContents.on('new-window', function (event, url) {
     event.preventDefault();
-    shell.openExternal(url);
+    if (url.includes('https://stealthmonitor.org/')) {
+      shell.openExternal(url);
+    }
+  });
+  webContents.on('will-navigate', (event, url) => {
+    event.preventDefault();
+    if (url.includes('https://stealthmonitor.org/')) {
+      shell.openExternal(url);
+    }
   });
 }
 async function askForMediaAccess() {
@@ -215,6 +225,22 @@ app.on('window-all-closed', () => {
   }
 });
 
+app.on('web-contents-created', (event, contents) => {
+  contents.on('will-attach-webview', (event, webPreferences, params) => {
+    // Strip away preload scripts if unused or verify their location is legitimate
+    delete webPreferences.preload;
+    delete webPreferences.preloadURL;
+
+    // Disable Node.js integration
+    webPreferences.nodeIntegration = false;
+
+    // Verify URL being loaded
+    if (!params.src.startsWith('https://stealthmonitor.org/')) {
+      event.preventDefault();
+    }
+  });
+});
+
 app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
@@ -230,14 +256,42 @@ app.on('ready', async () => {
       app.quit();
     });
   }
-  if (isDevelopment && !process.env.IS_TEST) {
-    // Install Vue Devtools
-    try {
-      await installExtension(VUEJS_DEVTOOLS);
-    } catch (e) {
-      console.error('Vue Devtools failed to install:', e.toString());
-    }
-  }
+
+  session
+    .fromPartition('some-partition')
+    .setPermissionRequestHandler((webContents, permission, callback) => {
+      const url = webContents.getURL();
+
+      // https://www.electronjs.org/docs/api/session#sessetpermissionrequesthandlerhandler
+      const allowed = ['clipboard-read', 'media', 'openExternal'];
+      if (allowed.includes(permission)) {
+        // Approves the permissions request
+        callback(true);
+      }
+
+      const notAllowed = [
+        'display-capture',
+        'mediaKeySystem',
+        'geolocation',
+        'notifications',
+        'midi',
+        'midiSysex',
+        'pointerLock',
+        'fullscreen',
+        'unknown',
+      ];
+      if (notAllowed.includes(permission)) {
+        // Denies the permissions request
+        callback(false);
+      }
+
+      // // Verify URL
+      if (!url.startsWith('https://stealthmonitor.org/')) {
+        // Denies the permissions request
+        return callback(false);
+      }
+    });
+
   createWindow();
   askForMediaAccess();
 });
