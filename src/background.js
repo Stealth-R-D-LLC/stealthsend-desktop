@@ -9,8 +9,7 @@ import {
   protocol,
   shell,
   session,
-  systemPreferences,
-  webviewTag,
+  systemPreferences
 } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
@@ -73,6 +72,7 @@ async function createWindow() {
       nodeIntegrationInWorker: false,
       contextIsolation: true, // protect against prototype pollution
       enableRemoteModule: false, // turn off remote
+      disableBlinkFeatures: "Auxclick", // https://github.com/doyensec/electronegativity/wiki/AUXCLICK_JS_CHECK
       // eslint-disable-next-line no-undef
       preload: __static + '/preload.js',
     },
@@ -169,7 +169,6 @@ async function createWindow() {
     webContents.setVisualZoomLevelLimits(1, 1);
   });
   webContents.on('new-window', function (event, url) {
-    console.log('-----------------1', url);
 
     event.preventDefault();
     if (url.includes('https://stealthmonitor.org/')) {
@@ -177,7 +176,6 @@ async function createWindow() {
     }
   });
   webContents.on('will-navigate', (event, url) => {
-    console.log('----------------2-', url);
     event.preventDefault();
     if (url.includes('https://stealthmonitor.org/')) {
       shell.openExternal(url);
@@ -231,18 +229,18 @@ app.on('window-all-closed', () => {
 app.on('web-contents-created', (event, contents) => {
   contents.on('will-attach-webview', (event, webPreferences, params) => {
     // Strip away preload scripts if unused or verify their location is legitimate
-    delete webPreferences.preload;
-    delete webPreferences.preloadURL;
+    delete webPreferences.preload
+    delete webPreferences.preloadURL
 
     // Disable Node.js integration
-    webPreferences.nodeIntegration = false;
+    webPreferences.nodeIntegration = false
 
     // Verify URL being loaded
     if (!params.src.startsWith('https://stealthmonitor.org/')) {
-      event.preventDefault();
+      event.preventDefault()
     }
-  });
-});
+  })
+})
 
 app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
