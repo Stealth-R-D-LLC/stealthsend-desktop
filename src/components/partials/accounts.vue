@@ -585,8 +585,6 @@ export default {
       var elArchived = document.getElementById('archivedAccounts');
       var elArchivedDropzone = document.getElementById('archivedDropzone');
       var elActiveDropzone = document.getElementById('activeDropzone');
-      console.log('elActive: ', elActive);
-      console.log('elArchived: ', elArchived);
       new Sortable(elActive, {
         group: {
           name: 'accounts',
