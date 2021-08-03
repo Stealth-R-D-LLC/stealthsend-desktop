@@ -90,17 +90,32 @@
         <template v-if="currentStep === 2">
           <StModal
             light
-            v-show="isScanning"
-            :visible="currentStep === 2"
+            :visible="isScanning"
             @close="isScanning = false"
             class="scan-modal"
           >
             <template #header>Scan Private Key</template>
             <template #body>
-              <div class="stream">
-                <qr-stream @decode="onDecode" class="mb">
-                  <div class="frame" />
-                </qr-stream>
+              <div class="no-camera" v-show="!cameraAllowed">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512.005 512.005"
+                >
+                  <path
+                    d="M508.869 3.131c-4.16-4.16-10.923-4.16-15.083 0L3.12 493.797c-4.16 4.16-4.16 10.923 0 15.083a10.716 10.716 0 007.552 3.115c2.731 0 5.461-1.045 7.531-3.115L508.869 18.213c4.16-4.16 4.16-10.922 0-15.082zM352.005 106.661H53.339c-29.419 0-53.333 23.936-53.333 53.333v192c0 29.397 23.915 53.333 53.333 53.333h21.333c5.888 0 10.667-4.779 10.667-10.667s-4.779-10.667-10.667-10.667H53.339c-17.643 0-32-14.357-32-32v-192c0-17.643 14.357-32 32-32h298.667c5.888 0 10.667-4.779 10.667-10.667s-4.78-10.665-10.668-10.665zM507.312 129.829c-2.944-1.963-6.677-2.389-9.941-1.067l-92.032 36.821v-5.589c0-5.888-4.779-10.667-10.667-10.667s-10.667 4.779-10.667 10.667v21.333c0 3.541 1.749 6.848 4.693 8.832a10.769 10.769 0 009.941 1.067l92.032-36.821v203.179l-92.032-36.821a10.646 10.646 0 00-9.941 1.067 10.636 10.636 0 00-4.693 8.832v21.333c0 17.643-14.357 32-32 32h-192c-5.888 0-10.667 4.779-10.667 10.667s4.779 10.667 10.667 10.667h192c29.419 0 53.333-23.936 53.333-53.333v-5.589l92.032 36.821c3.285 1.301 7.019.917 9.941-1.067a10.636 10.636 0 004.693-8.832V138.661a10.633 10.633 0 00-4.692-8.832z"
+                  />
+                </svg>
+                <h6>There is no connected camera</h6>
+              </div>
+              <div v-show="isCameraLoading" class="loading-gif">
+                <img src="../../../static/xstloader.gif" alt="Test gif" />
+              </div>
+              <div v-show="!isCameraLoading">
+                <div v-show="cameraAllowed" class="stream">
+                  <qr-stream @decode="onDecode" class="mb">
+                    <div class="frame" />
+                  </qr-stream>
+                </div>
               </div>
             </template>
           </StModal>
@@ -247,6 +262,8 @@ export default {
     const copyPending = ref(false);
     const isScanning = ref(false);
     const QRData = ref(null);
+    const cameraAllowed = ref(false);
+    const isCameraLoading = ref(false);
 
     const {
       form,
@@ -441,6 +458,16 @@ export default {
     }
 
     function startScanner() {
+      navigator.mediaDevices.enumerateDevices().then((devices) => {
+        let camera = devices.filter((obj) => obj.kind === 'videoinput');
+        if (camera[0].kind === 'videoinput' && camera[0].label) {
+          cameraAllowed.value = true;
+          isCameraLoading.value = true;
+          setTimeout(() => (isCameraLoading.value = false), 2000);
+        } else {
+          cameraAllowed.value = false;
+        }
+      });
       QRData.value = null;
       isScanning.value = true;
       form.privateKey.$value = '';
@@ -474,6 +501,8 @@ export default {
       privateKey,
       copyPending,
       isScanning,
+      cameraAllowed,
+      isCameraLoading,
 
       // COMPUTED
       isVisible,
@@ -695,5 +724,35 @@ svg circle {
   right: 1px;
   bottom: 1px;
   left: 1px;
+}
+.no-camera {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100% - 80px);
+}
+.no-camera svg {
+  display: block;
+  margin: 0 auto 24px;
+  width: 140px;
+}
+.no-camera svg path {
+  fill: var(--gray900);
+}
+.loading-gif {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.loading-gif img {
+  display: block;
+  height: 28px;
+  position: absolute;
 }
 </style>
