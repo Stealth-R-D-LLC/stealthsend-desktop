@@ -121,28 +121,21 @@ async function createWindow() {
 
   const menuTemplate = [
     {
+      label: 'StealthSend',
+      submenu: [
+        {
+          label: 'Quit StealthSend',
+          accelerator: 'CmdOrCtrl+Q',
+          role: 'close',
+        },
+      ],
+    },
+    {
       label: 'View',
       submenu: [
         { role: 'reload' },
         { role: 'forceReload' },
         { role: 'toggleDevTools' },
-      ],
-    },
-    {
-      label: 'Window',
-      submenu: [{ role: 'close' }],
-    },
-    {
-      label: 'Edit',
-      submenu: [
-        { label: 'Cut', accelerator: 'CmdOrCtrl+X', selector: 'cut:' },
-        { label: 'Copy', accelerator: 'CmdOrCtrl+C', selector: 'copy:' },
-        { label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:' },
-        {
-          label: 'Select All',
-          accelerator: 'CmdOrCtrl+A',
-          selector: 'selectAll:',
-        },
       ],
     },
   ];
@@ -157,7 +150,7 @@ async function createWindow() {
   // webFrame.setZoomFactor(1);
   // webFrame.setVisualZoomLevelLimits(1, 1);
 
-  win.setMenu(null); // remove menu bar
+  // win.setMenu(null); // remove menu bar
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
