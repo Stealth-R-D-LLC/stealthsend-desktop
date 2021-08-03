@@ -167,9 +167,21 @@ async function createWindow() {
     webContents.setVisualZoomLevelLimits(1, 1);
   });
   webContents.on('new-window', function (event, url) {
+    console.log('-----------------1', url);
+
     event.preventDefault();
-    shell.openExternal(url);
+    if (url.includes('https://stealthmonitor.org/') ) {
+      shell.openExternal(url);
+    }
   });
+  webContents.on('will-navigate', (event, url) => {
+    console.log('----------------2-', url);
+    event.preventDefault();
+    if (url.includes('https://stealthmonitor.org/') ) {
+      shell.openExternal(url);
+    }
+      
+  })
 }
 async function askForMediaAccess() {
   try {
