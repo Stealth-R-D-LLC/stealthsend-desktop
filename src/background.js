@@ -71,6 +71,7 @@ async function createWindow() {
       nodeIntegrationInWorker: false,
       contextIsolation: true, // protect against prototype pollution
       enableRemoteModule: false, // turn off remote
+      webSecurity: true,
       disableBlinkFeatures: 'Auxclick', // https://github.com/doyensec/electronegativity/wiki/AUXCLICK_JS_CHECK
       sandbox: true, // https://github.com/doyensec/electronegativity/wiki/SANDBOX_JS_CHECK
       // eslint-disable-next-line no-undef
