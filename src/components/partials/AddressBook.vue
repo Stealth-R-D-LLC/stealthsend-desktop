@@ -138,7 +138,9 @@
                   <span class="bold medium">{{
                     formatDescriptionString(item.name)
                   }}</span
-                  >, {{ formatDescriptionString(item.description) }}
+                  ><span v-if="item.description"
+                    >, {{ formatDescriptionString(item.description) }}</span
+                  >
                 </p>
                 <p class="medium">
                   {{ formatDescriptionString(item.address) }}
@@ -205,8 +207,12 @@
             placeholder="Please enter a valid XST address"
           />
         </StFormItem>
-        <StCheckbox class="custom-checkbox" v-model="editContactForm.favorite"
-          >Favorite list</StCheckbox
+        <StCheckbox
+          class="custom-checkbox"
+          v-model="editContactForm.favorite"
+          >{{
+            editContactForm.favorite ? 'Favorite' : 'Add to Favorites'
+          }}</StCheckbox
         >
         <p @click="viewTransactions" class="transactions">
           <svg
@@ -253,7 +259,7 @@
               stroke-linejoin="round"
             />
           </svg>
-          View transactions
+          View Transactions
         </p>
       </div>
       <div class="add-contact__bottom">
@@ -432,7 +438,7 @@
           </template>
         </StFormItem>
         <StCheckbox class="custom-checkbox" v-model="addContactForm.favorite"
-          >Add to favorites</StCheckbox
+          >Add to Favorites</StCheckbox
         >
       </div>
       <div class="add-contact__bottom">
@@ -1093,6 +1099,9 @@ svg:hover circle {
 .add-contact__bottom p:hover svg path {
   stroke: var(--marine200);
 }
+.contact-details :deep .label {
+  margin-bottom: 0;
+}
 /* .input-container + .input-container {
   margin-top: 48px;
 } */
@@ -1115,7 +1124,7 @@ svg:hover circle {
   box-sizing: border-box;
 }
 :deep .contact-details .st-input__inner[readonly] {
-  padding-bottom: 16px;
+  padding-bottom: 12px;
 }
 :deep .contact-details .st-checkbox {
   margin-bottom: 16px;
