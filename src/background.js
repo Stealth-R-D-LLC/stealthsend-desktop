@@ -10,7 +10,7 @@ import {
   shell,
   session,
   systemPreferences,
-  webviewTag
+  webviewTag,
 } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
@@ -231,18 +231,18 @@ app.on('window-all-closed', () => {
 app.on('web-contents-created', (event, contents) => {
   contents.on('will-attach-webview', (event, webPreferences, params) => {
     // Strip away preload scripts if unused or verify their location is legitimate
-    delete webPreferences.preload
-    delete webPreferences.preloadURL
+    delete webPreferences.preload;
+    delete webPreferences.preloadURL;
 
     // Disable Node.js integration
-    webPreferences.nodeIntegration = false
+    webPreferences.nodeIntegration = false;
 
     // Verify URL being loaded
     if (!params.src.startsWith('https://stealthmonitor.org/')) {
-      event.preventDefault()
+      event.preventDefault();
     }
-  })
-})
+  });
+});
 
 app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
