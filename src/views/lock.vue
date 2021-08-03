@@ -94,11 +94,15 @@
                   </svg>
                 </StTooltip>
               </StInput>
-              <template #description>
-                <a class="forgot" @click="forgotPassword = true"
-                  >Forgot Password</a
-                >
-              </template>
+              <a
+                v-if="
+                  form.password.$errors &&
+                  !form.password.$errors.includes('Incorrect password.')
+                "
+                class="forgot"
+                @click="forgotPassword = true"
+                >Forgot Password</a
+              >
             </StFormItem>
             <StButton type="type-d" @click="validatePassword"
               >Continue</StButton
@@ -233,7 +237,7 @@ export default {
         $rules: [
           async (password) => {
             if (!password) {
-              return 'Password is required.';
+              return '';
             }
             let isValid = await CryptoService.validatePassword(password);
             if (!isValid) {
@@ -279,14 +283,14 @@ export default {
     });
 
     async function validatePassword() {
-      if (await validateFields()) {
-        try {
-          await CryptoService.unlock(password.value);
-          router.push('/dashboard');
-          resetFields();
-        } catch (e) {
-          console.log('e', e);
-        }
+      try {
+        await validateFields();
+        await CryptoService.unlock(password.value);
+        router.push('/dashboard');
+        resetFields();
+      } catch (e) {
+        setTimeout(() => (password.value = ''), 500);
+        console.log('e', e);
       }
     }
 
@@ -513,5 +517,8 @@ svg circle {
 .reset {
   text-align: center;
   margin-bottom: 128px;
+}
+:deep .st-form-item__error {
+  text-align: left;
 }
 </style>
