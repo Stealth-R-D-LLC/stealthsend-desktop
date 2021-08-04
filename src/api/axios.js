@@ -1,5 +1,6 @@
 import router from '@/router';
 import axios from 'axios';
+import { sanitizeUrl } from '@braintree/sanitize-url'
 
 const API_CONFIG = {
   baseURL: process.env.VUE_APP_API_URL,
@@ -23,6 +24,12 @@ const API_CONFIG = {
 export const API = axios.create(API_CONFIG);
 API.interceptors.request.use(
   (API_CONFIG) => {
+    API_CONFIG.baseURL = sanitizeUrl(API_CONFIG.baseURL);
+
+    if ( API_CONFIG.url && API_CONFIG.url.length > 0) {
+      API_CONFIG.url = sanitizeUrl(API_CONFIG.url)
+    }
+    
     return API_CONFIG;
   },
   (error) => {
