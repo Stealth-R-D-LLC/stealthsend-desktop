@@ -145,6 +145,7 @@
                 v-model="mnemonic"
                 :placeholder="`Enter ${selectedMnemonic.length + 1}. word`"
                 @keyup.enter="selectWord(mnemonic)"
+                @keydown.tab.prevent="selectTabWord(searchedWords)"
               >
                 <svg
                   @click="mnemonic = ''"
@@ -376,6 +377,10 @@ export default {
       );
       resetFields();
     }
+    function selectTabWord(words) {
+      let selectedWord = words && words[0];
+      if (words && words.length) selectWord(selectedWord);
+    }
 
     return {
       // VARIABLES
@@ -404,6 +409,7 @@ export default {
       removeSelectedWord,
       closeModal,
       openModal,
+      selectTabWord,
     };
   },
 };

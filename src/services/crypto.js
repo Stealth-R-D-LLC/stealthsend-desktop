@@ -244,10 +244,7 @@ const CryptoService = {
     let accounts = await db.getItem('accounts');
     if (accounts.length < 1) {
       console.error('Accounts do not exist');
-      return this.scanWallet();
-    } else if (accounts.filter((acc) => !acc.isArchived).length === 1) {
-      console.error('Cannot archive all accounts');
-      return this.scanWallet();
+      return;
     }
 
     const wantedIndex = accounts.findIndex(
@@ -265,8 +262,6 @@ const CryptoService = {
     accounts[wantedIndex].favouritePosition = null;
 
     await db.setItem('accounts', accounts);
-
-    return this.scanWallet();
   },
 
   async favouriteAccount(account) {
@@ -645,6 +640,7 @@ const CryptoService = {
         txs: txs, // all transactions,
         accounts: newAccounts,
       });
+      await db.setItem('accounts', newAccounts);
     });
   },
   nextToUse(freeAddresses) {

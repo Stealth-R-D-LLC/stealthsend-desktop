@@ -168,8 +168,8 @@ export default {
     });
 
     async function scanWallet() {
-      let hdWallet = await CryptoService.scanWallet();
-      accounts.value = hdWallet.accounts;
+      let hdWallet = await CryptoService.getAccounts();
+      accounts.value = hdWallet;
       // with this we will be able to have accounts with balance > 0 as favorites
       await Promise.allSettled(
         accounts.value.map((account) => {
@@ -180,8 +180,8 @@ export default {
           }
         })
       );
-      hdWallet = await CryptoService.scanWallet();
-      accounts.value = hdWallet.accounts;
+      hdWallet = await CryptoService.getAccounts();
+      accounts.value = hdWallet;
       favouritedAccounts.value = accounts.value
         .filter((el) => el.isFavourite)
         .sort((a, b) => a.favouritePosition - b.favouritePosition);
@@ -246,10 +246,14 @@ export default {
           return;
         }
         await CryptoService.favouriteAccount(account.value);
-        const scannedAccounts = await CryptoService.scanWallet();
-        accounts.value = scannedAccounts.accounts;
+        const scannedAccounts = await CryptoService.getAccounts();
+        /* const scannedAccounts = await CryptoService.scanWallet(); */
+        /* accounts.value = scannedAccounts.accounts; */
+        favouritedAccounts.value = scannedAccounts
+          .filter((el) => el.isFavourite)
+          .sort((a, b) => a.favouritePosition - b.favouritePosition);
         account.value = null;
-        emitter.emit('accounts:refresh');
+        emitter.emit('favorite:refresh');
       } catch (e) {
         if (e instanceof ValidationError) {
           console.log(e);
@@ -258,12 +262,14 @@ export default {
     }
     async function removeFromFavoriteList(account) {
       await CryptoService.unfavouriteAccount(account);
-      const scannedAccounts = await CryptoService.scanWallet();
-      accounts.value = scannedAccounts.accounts;
-      emitter.emit('accounts:refresh');
+      const scannedAccounts = await CryptoService.getAccounts();
+      favouritedAccounts.value = scannedAccounts
+        .filter((el) => el.isFavourite)
+        .sort((a, b) => a.favouritePosition - b.favouritePosition);
+      emitter.emit('favorite:refresh');
     }
 
-    emitter.on('accounts:refresh', () => {
+    emitter.on('favorite:refresh', () => {
       scanWallet();
     });
 

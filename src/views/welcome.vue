@@ -1899,6 +1899,7 @@
                 :placeholder="`Enter ${selectedRecoveryWords.length + 1}. word`"
                 v-model="recoveryWord"
                 @keyup.enter="selectRecoveryPhraseWord(recoveryWord)"
+                @keydown.tab.prevent="selectTabWord(searchWordlist)"
               >
                 <div @click="recoveryWord = ''" class="clear-icon">
                   <svg
@@ -2300,6 +2301,14 @@ export default {
     });
 
     watchEffect(async () => {
+      if (
+        (isAccount.value && currentStep.value === 0) ||
+        (isRecovery.value && recoveryStep.value === 0)
+      ) {
+        let video = document.getElementById('bgAnimation');
+        video.loop = true;
+        video.load();
+      }
       if (currentStep.value === 5) {
         setTimeout(
           () =>
@@ -2496,6 +2505,7 @@ export default {
         isAccount.value = false;
         isAccountFinished.value = true;
         let video = document.getElementById('bgAnimation');
+        video.loop = false;
         video.load();
         video.play();
         await wait(350);
@@ -2575,6 +2585,7 @@ export default {
       isAccount.value = false;
       isAccountFinished.value = true;
       let video = document.getElementById('bgAnimation');
+      video.loop = false;
       video.load();
       video.play();
       setTimeout(() => {
@@ -2610,6 +2621,11 @@ export default {
     function goBack() {
       recoveryStep.value = 0;
       resetRecoveryFields();
+    }
+
+    function selectTabWord(words) {
+      let selectedWord = words && words[0];
+      if (words && words.length) selectRecoveryPhraseWord(selectedWord);
     }
 
     /* function handleAnimation(anim) {
@@ -2679,6 +2695,7 @@ export default {
       createNewWallet,
       recoveryForm,
       goBack,
+      selectTabWord,
 
       version,
 
