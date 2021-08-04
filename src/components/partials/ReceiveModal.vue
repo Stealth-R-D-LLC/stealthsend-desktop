@@ -283,6 +283,8 @@ import CryptoService from '@/services/crypto';
 import { useRoute } from 'vue-router';
 import useHelpers from '@/composables/useHelpers';
 import { useValidation, ValidationError } from 'vue3-form-validation';
+import DOMPurify from 'dompurify';
+
 export default {
   name: 'StReceiveModal',
   setup() {
@@ -480,9 +482,9 @@ export default {
       try {
         await validateFields();
         if (amount.value > 0) {
-          window.location.href = `mailto:${email.value}?body=Please send ${amount.value} XST to my following address: ${depositAddress.value}.&subject=My XST address`;
+          window.location.href = DOMPurify.sanitize(`mailto:${email.value}?body=Please send ${amount.value} XST to my following address: ${depositAddress.value}.&subject=My XST address`);
         } else {
-          window.location.href = `mailto:${email.value}?body=${depositAddress.value}&subject=My XST address`;
+          window.location.href = DOMPurify.sanitize(`mailto:${email.value}?body=${depositAddress.value}&subject=My XST address`);
         }
         closeModal();
       } catch (e) {
