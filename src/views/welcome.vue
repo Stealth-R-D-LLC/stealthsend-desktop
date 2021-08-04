@@ -2301,6 +2301,14 @@ export default {
     });
 
     watchEffect(async () => {
+      if (
+        (isAccount.value && currentStep.value === 0) ||
+        (isRecovery.value && recoveryStep.value === 0)
+      ) {
+        let video = document.getElementById('bgAnimation');
+        video.loop = true;
+        video.load();
+      }
       if (currentStep.value === 5) {
         setTimeout(
           () =>
@@ -2497,6 +2505,7 @@ export default {
         isAccount.value = false;
         isAccountFinished.value = true;
         let video = document.getElementById('bgAnimation');
+        video.loop = false;
         video.load();
         video.play();
         await wait(350);
@@ -2576,6 +2585,7 @@ export default {
       isAccount.value = false;
       isAccountFinished.value = true;
       let video = document.getElementById('bgAnimation');
+      video.loop = false;
       video.load();
       video.play();
       setTimeout(() => {
