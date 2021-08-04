@@ -269,7 +269,7 @@ export default {
         await mainStore.rpc('getaddressinputs', [account.value.address]).then(async(inputs) => {
           let inputsTransactions = await Promise.all(inputs.map(tx => mainStore.rpc('gettransaction', [tx.txid])));
           for (let txIndex in inputsTransactions) {
-            let indexOfDestination = inputsTransactions[txIndex].vout.findIndex((dest) => dest.scriptPubKey.addresses[0] !== account.value.address);
+            let indexOfDestination = inputsTransactions[txIndex].vout.findIndex((dest) => dest.scriptPubKey.addresses && dest.scriptPubKey.addresses[0] !== account.value.address);
             allTransactions.push({
               ...inputs[txIndex],
               account: account.value.label,
