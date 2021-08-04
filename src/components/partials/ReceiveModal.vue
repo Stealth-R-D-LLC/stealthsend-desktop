@@ -283,6 +283,7 @@ import CryptoService from '@/services/crypto';
 import { useRoute } from 'vue-router';
 import useHelpers from '@/composables/useHelpers';
 import { useValidation, ValidationError } from 'vue3-form-validation';
+import DOMPurify from 'dompurify';
 
 export default {
   name: 'StReceiveModal',
@@ -397,13 +398,11 @@ export default {
     const qrSrc = ref('');
     async function changeAccount(acc = accounts.value[0]) {
       depositAddress.value = '';
-      if (acc.isImported) {
+      if (acc.isImported && acc.wif) {
         depositAddress.value = acc.address;
       } else {
         const { account, change } = CryptoService.breakAccountPath(acc.path);
-        const discoveredAddresses = await CryptoService.accountDiscovery(
-          account
-        );
+        const discoveredAddresses = await CryptoService.accountDiscovery(account);
         let nextFreeAddress = CryptoService.nextToUse(
           discoveredAddresses.freeAddresses
         );
@@ -481,9 +480,13 @@ export default {
       try {
         await validateFields();
         if (amount.value > 0) {
-          window.location.href = `mailto:${email.value}?body=Please send ${amount.value} XST to my following address: ${depositAddress.value}.&subject=My XST address`;
+          window.location.href = DOMPurify.sanitize(
+            `mailto:${email.value}?body=Please send ${amount.value} XST to my following address: ${depositAddress.value}.&subject=My XST address`
+          );
         } else {
-          window.location.href = `mailto:${email.value}?body=${depositAddress.value}&subject=My XST address`;
+          window.location.href = DOMPurify.sanitize(
+            `mailto:${email.value}?body=${depositAddress.value}&subject=My XST address`
+          );
         }
         closeModal();
       } catch (e) {
