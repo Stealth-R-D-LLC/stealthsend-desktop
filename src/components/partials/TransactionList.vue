@@ -76,11 +76,8 @@
               class="move"
               :class="{ 'move-left': isExpanded === item.index }"
             >
-              <span v-if="item.amount > 0">{{
-                item && item.outputs && item.outputs[0].address
-              }}</span>
-              <span v-if="item.amount < 0">{{
-                item && item.inputs && item.inputs[0].address
+              <span>{{
+                item && item.output && item.output[0]?.addresses[0]
               }}</span>
             </div>
           </template>
