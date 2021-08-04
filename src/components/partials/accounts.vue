@@ -802,6 +802,10 @@ export default {
 
     scanWallet();
 
+    emitter.on('favorite:refresh', () => {
+      console.log('HAHAHAHAHAHAHAHHAAHHA');
+    });
+
     emitter.on('accounts:refresh', () => {
       scanWallet();
     });
