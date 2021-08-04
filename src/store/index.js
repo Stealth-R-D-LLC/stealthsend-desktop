@@ -2,6 +2,7 @@ import { API } from '@/api/axios';
 import router from '@/router';
 import CryptoService from '@/services/crypto';
 import { defineStore } from 'pinia';
+import DOMPurify from 'dompurify';
 
 export const useMainStore = defineStore({
   // name of the store
@@ -145,6 +146,7 @@ export const useMainStore = defineStore({
       return new Promise((resolve, reject) => {
         API.get('https://api.stealth.org/api/market/info')
           .then((res) => {
+            res.data = JSON.parse(DOMPurify.sanitize(JSON.stringify(res.data)));
             CryptoService.constraints.XST_USD = res.data.priceUsd;
             CryptoService.constraints.XST_BTC = res.data.priceBTC;
             CryptoService.constraints.changePercent24Hr =
@@ -160,6 +162,7 @@ export const useMainStore = defineStore({
       return new Promise((resolve, reject) => {
         API.get(`https://api.stealth.org/api/charts/homepage?period=${payload}`)
           .then((res) => {
+            res.data = JSON.parse(DOMPurify.sanitize(JSON.stringify(res.data)));
             resolve(res.data);
           })
           .catch((err) => {

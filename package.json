@@ -36,6 +36,7 @@
     "core-js": "^3.13.0",
     "crypto-js": "^4.0.0",
     "date-fns": "^2.21.3",
+    "dompurify": "^2.3.0",
     "electron-notarize": "^1.0.0",
     "localforage": "^1.9.0",
     "mathjs": "^9.4.1",
