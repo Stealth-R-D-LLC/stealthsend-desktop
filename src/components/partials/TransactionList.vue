@@ -654,4 +654,11 @@ export default {
 :deep .table tr td:last-child {
   padding: 18px 0 18px 10px;
 }
+.dashboard-container .table tr td:nth-child(5) .move-left {
+  transform: translateX(-50px);
+}
+.dashboard-container .table tr td:nth-child(6) .move,
+.dashboard-container .table tr td:nth-child(7) .move {
+  white-space: nowrap;
+}
 </style>

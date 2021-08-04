@@ -537,6 +537,7 @@ export default {
     let accounts = ref([]);
     let isDraggedActive = ref(false);
     let isDraggedInactive = ref(false);
+    let isFavoriteRefresh = ref(false);
 
     const {
       form,
@@ -702,7 +703,7 @@ export default {
       if (account.utxo > 0) {
         await CryptoService.favouriteAccount(account);
         accountOptions.value = '';
-        emitter.emit('accounts:refresh');
+        emitter.emit('favorite:refresh');
       } else {
         accountOptions.value = '';
       }
@@ -711,29 +712,27 @@ export default {
     async function unfavouriteAccount(account) {
       await CryptoService.unfavouriteAccount(account);
       accountOptions.value = '';
-      emitter.emit('accounts:refresh');
+      emitter.emit('favorite:refresh');
     }
 
     async function archiveAccount(account) {
-      mainStore.START_GLOBAL_LOADING();
+      accountOptions.value = '';
       if (isDragged.value) {
         archivedAccounts.value.push(archivedAcc.value);
       }
       archiveAccountModal.value = false;
       await CryptoService.archiveAccount(account);
-      accountOptions.value = '';
-      emitter.emit('accounts:refresh');
+      emitter.emit('favorite:refresh');
     }
 
     async function activateAccount(account) {
-      mainStore.START_GLOBAL_LOADING();
+      accountOptions.value = '';
       if (isDragged.value) {
         activeAccounts.value.push(activeAcc.value);
       }
       activateAccountModal.value = false;
       await CryptoService.activateAccount(account);
-      accountOptions.value = '';
-      emitter.emit('accounts:refresh');
+      emitter.emit('favorite:refresh');
     }
 
     async function changeAccountName(account) {
@@ -764,11 +763,15 @@ export default {
     };
 
     async function scanWallet() {
-      const hdWallet = await CryptoService.scanWallet();
+      let hdWallet = [];
+      if (isFavoriteRefresh.value) {
+        hdWallet = await CryptoService.getAccounts();
+      } else {
+        let wallet = await CryptoService.scanWallet();
+        hdWallet = wallet.accounts;
+      }
       // accounts.value = hdWallet.accounts;
-      let activeAccounts = hdWallet.accounts.filter(
-        (obj) => obj.isArchived === false
-      );
+      let activeAccounts = hdWallet.filter((obj) => obj.isArchived === false);
 
       // find first account with 0 balance
       let firstZeroAccount = null;
@@ -782,16 +785,15 @@ export default {
       let tmpAccounts = [];
       if (firstZeroAccount) {
         tmpAccounts = [firstZeroAccount];
-        for (let acc of hdWallet.accounts) {
+        for (let acc of hdWallet) {
           if (acc.address === firstZeroAccount.address) continue;
           tmpAccounts.push(acc);
         }
       } else {
-        tmpAccounts = tmpAccounts.concat(hdWallet.accounts);
+        tmpAccounts = tmpAccounts.concat(hdWallet);
       }
 
       accounts.value = [...tmpAccounts];
-      mainStore.STOP_GLOBAL_LOADING();
     }
 
     function closeEditModal() {
@@ -803,10 +805,12 @@ export default {
     scanWallet();
 
     emitter.on('favorite:refresh', () => {
-      console.log('HAHAHAHAHAHAHAHHAAHHA');
+      isFavoriteRefresh.value = true;
+      scanWallet();
     });
 
     emitter.on('accounts:refresh', () => {
+      isFavoriteRefresh.value = false;
       scanWallet();
     });
 
