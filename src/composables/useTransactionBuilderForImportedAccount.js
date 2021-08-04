@@ -3,28 +3,28 @@ import CryptoService from '@/services/crypto';
 import { useMainStore } from '@/store';
 import * as bitcoin from 'bitcoinjs-lib';
 import { Buffer } from 'buffer';
-import { add, format, subtract, multiply, round } from 'mathjs';
+import { add, format, subtract, multiply } from 'mathjs';
 
 export default async function useTransactionBuilder(utxo, sendForm) {
   const mainStore = useMainStore();
 
   const { fee } = useFeeEstimator(utxo.length);
-
+  
   const sumOf = (x = 0, y = 0) => {
-    let sum = round(add(x, y));
-    sum = format(sum, { precision: 8 });
+    let sum = add(x, y);
+    sum = format(sum, { precision: 14 });
     return Number(sum);
   };
 
   const subtractOf = (x = 0, y = 0) => {
-    let diff = round(subtract(x, y), 8);
-    // diff = format(diff, { precision: 8 });
+    let diff = subtract(x, y);
+    diff = format(diff, { precision: 14 });
     return Number(diff);
   };
 
   const multiplyOf = (x = 0, y = 0) => {
-    let result = round(multiply(x, y), 8);
-    // result = format(result, { precision: 8 });
+    let result = multiply(x, y);
+    result = format(result, { precision: 8 });
     return Number(result);
   };
 

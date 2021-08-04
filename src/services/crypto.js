@@ -143,13 +143,11 @@ const CryptoService = {
       };
     }
     const keypair = this.master.derivePath(
-      `m/44'/${
-        process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
+      `m/44'/${process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
       }'/${account}'/${change}/${address}`
     );
     let acc = this.master.derivePath(
-      `m/44'/${
-        process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
+      `m/44'/${process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
       }'/${account}'`
     );
 
@@ -166,13 +164,11 @@ const CryptoService = {
     // which enables watch-only wallets.
     // With hardened child keys, you cannot prove that a child public key is linked to a parent public key.
     const keypair = this.master.derivePath(
-      `m/44'/${
-        process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
+      `m/44'/${process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
       }'/${account}'/${change}/${address}`
     );
     let acc = this.master.derivePath(
-      `m/44'/${
-        process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
+      `m/44'/${process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
       }'/${account}'`
     );
     return {
@@ -575,8 +571,16 @@ const CryptoService = {
           for (let tx of hdAccount) {
             accUtxo = add(accUtxo, tx.account_balance_change);
             accUtxo = format(accUtxo, { precision: 8 });
+            let outputAddresses = tx.outputs.map(output => output.address);
+            let indexOfDestination = 0;
+            if (tx.amount < 0) {
+              indexOfDestination = tx.txinfo.destinations.findIndex((dest) => outputAddresses.indexOf(dest.addresses[0]) !== -1 );
+            } else {
+              indexOfDestination = tx.txinfo.destinations.findIndex((dest) => dest.amount === tx.account_balance_change );
+            }
             txs.push({
-              outputs: tx.outputs,
+              outputs: tx.ouptuts,
+              output: [tx.txinfo.destinations[indexOfDestination]],
               amount: tx.account_balance_change,
               txid: tx.txid,
               blocktime: tx.txinfo.blocktime,
@@ -594,6 +598,31 @@ const CryptoService = {
             'getaddressbalance',
             [account.address]
           );
+          const inputs = await mainStore.rpc(
+            'getaddressinputs',
+            [account.address]
+          );
+          const outputs = await mainStore.rpc(
+            'getaddressoutputs',
+            [account.address]
+          );
+          
+          for (let tx of inputs) {
+            txs.push({
+              ...tx,
+              account: account.label,
+              amount: -tx.amount,
+              txinfo: {},
+              
+            });
+          };    
+          for (let tx of outputs) {
+            txs.push({
+              ...tx,
+              account: account.label,
+              txinfo: {},
+            });
+          };
           accUtxo = add(accUtxo, importedAccountBalance);
           accUtxo = format(accUtxo, { precision: 8 });
 
@@ -683,6 +712,7 @@ const CryptoService = {
       asset: 'XST',
       wif: encryptedWIF,
       favouritePosition: null,
+      publicKey: keypair.publicKey.toString('hex')
     });
 
     await db.setItem('accounts', accounts);

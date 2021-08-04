@@ -470,10 +470,11 @@
                   balances, but does not allow sending of funds.
                 </p>
               </div>
-              <p class="bold">xpub</p>
+              <p class="bold" v-if="!account.isImported">xpub</p>
+              <p class="bold" v-else>Public Key</p>
               <p class="key">{{ publicKey }}</p>
               <div class="copy-key">
-                <p>Copy xpub to clipboard or show QR code</p>
+                <p>Copy <span v-if="!account.isImported">xpub</span> <span v-else>public key</span> to clipboard or show QR code</p>
                 <div>
                   <StTooltip
                     :tooltip="
@@ -555,7 +556,7 @@
                   </StTooltip>
                 </div>
               </div>
-              <p @click="openBlockExplorer" class="view-more bold">
+              <p v-if="!account.isImported && !account.wif" @click="openBlockExplorer" class="view-more bold">
                 View on StealthMonitor
               </p>
             </template>
@@ -823,6 +824,7 @@ import { multiply } from 'mathjs';
 import emitter from '@/services/emitter';
 import VanillaQR from 'vanillaqr';
 import { useValidation } from 'vue3-form-validation';
+import db from '../../db';
 
 export default {
   setup() {
@@ -946,23 +948,41 @@ export default {
 
     function getPublicKey() {
       if (!account.value) return;
-      const path = CryptoService.breakAccountPath(account.value.path);
-      const { xpub } = CryptoService.getKeysForAccount(
-        path.account,
-        path.change,
-        path.address
-      );
-      publicKey.value = xpub;
+      if (account.value.isImported && account.value.wif) {
+        publicKey.value = account.value.publicKey;
+      } else {
+        const path = CryptoService.breakAccountPath(account.value.path);
+        const { xpub } = CryptoService.getKeysForAccount(
+          path.account,
+          path.change,
+          path.address
+        );
+        publicKey.value = xpub;
+      }
     }
 
-    function getPrivateKey() {
-      const path = CryptoService.breakAccountPath(account.value.path);
-      const { secretKey } = CryptoService.getKeysForAccount(
-        path.account,
-        path.change,
-        path.address
-      );
-      privateKey.value = secretKey;
+    async function getPrivateKey() {
+      if (account.value.isImported) {
+        const wallet = await db.getItem('wallet');
+        try {
+          const secretKey =  await CryptoService.AESDecrypt(
+            account.value.wif,
+            wallet.password
+          );
+          privateKey.value = secretKey;
+        } catch (e) {
+          console.error(e);
+          privateKey.value = '';
+        }
+      } else {
+        const path = CryptoService.breakAccountPath(account.value.path);
+        const { secretKey } = CryptoService.getKeysForAccount(
+          path.account,
+          path.change,
+          path.address
+        );
+        privateKey.value = secretKey;
+      }
     }
 
     async function changeStep(step) {
