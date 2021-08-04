@@ -1899,6 +1899,7 @@
                 :placeholder="`Enter ${selectedRecoveryWords.length + 1}. word`"
                 v-model="recoveryWord"
                 @keyup.enter="selectRecoveryPhraseWord(recoveryWord)"
+                @keydown.tab.prevent="selectTabWord(searchWordlist)"
               >
                 <div @click="recoveryWord = ''" class="clear-icon">
                   <svg
@@ -2612,6 +2613,11 @@ export default {
       resetRecoveryFields();
     }
 
+    function selectTabWord(words) {
+      let selectedWord = words && words[0];
+      if (words && words.length) selectRecoveryPhraseWord(selectedWord);
+    }
+
     /* function handleAnimation(anim) {
       animation.value = anim;
     } */
@@ -2679,6 +2685,7 @@ export default {
       createNewWallet,
       recoveryForm,
       goBack,
+      selectTabWord,
 
       version,
 
