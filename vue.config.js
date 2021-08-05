@@ -7,6 +7,16 @@ module.exports = {
     requireModuleExtension: true
   },
   configureWebpack: {
+    module: {
+      noParse: /\.wasm$/,
+      rules: [
+          {
+              test: /\.wasm$/,
+              loaders: ['base64-loader'],
+              type: 'javascript/auto'
+          }
+      ]
+    },
     resolve: {
       alias: {
         "@": path.resolve(__dirname, vueSrc)

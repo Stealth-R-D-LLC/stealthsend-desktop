@@ -1,14 +1,17 @@
-import useFeeEstimator from '@/composables/useFeeEstimator';
+//import useFeeEstimator from '@/composables/useFeeEstimator';
 import CryptoService from '@/services/crypto';
+import createFeeworkAndFeelessScriptPubkey from '@/services/createFeeworkAndFeelessScriptPubkey';
 import { useMainStore } from '@/store';
 import * as bitcoin from 'bitcoinjs-lib';
 import { Buffer } from 'buffer';
 import { add, format, subtract, floor } from 'mathjs';
+//import { raw } from 'core-js/core/string';
 
 export default async function useTransactionBuilder(utxo, sendForm) {
   const mainStore = useMainStore();
 
-  const { fee } = useFeeEstimator(utxo.length);
+  // const { fee } = useFeeEstimator(utxo.length);
+  const fee = 0;
 
   console.log('TRANSACTION BUILDER: latest fee:', fee);
 
@@ -38,15 +41,15 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         // similar logic like in accountDiscovery
         const acc = CryptoService.getChildFromRoot(accountIndex, j, i);
         if (acc.address === address) {
-          console.log('tu');
+          //console.log('tu');
           let path = CryptoService.breakAccountPath(
             `${accountIndex}'/${j}/${i}`
           );
           return path;
         }
-        console.log('nisam tu');
+        //console.log('nisam tu');
       }
-      console.log('NISAM TU 2');
+      //console.log('NISAM TU 2');
     }
   }
 
@@ -116,6 +119,28 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     // Outputs - inputs = transaction fee, so always double-check your math!
     if (change.amount > 0) {
       rawTransaction.addOutput(change.address, change.amount);
+    }
+
+    // create feework and feeless scriptPubkey and add output for feeless trx
+    if (fee === 0) {
+      rawTransaction.setVersion(4);
+      const bestBlock = await mainStore.rpc('getbestblock', []);
+      const feelessScriptPubkey = await createFeeworkAndFeelessScriptPubkey(
+        rawTransaction,
+        bestBlock
+      );
+      console.log(
+        'TRANSACTION BUILDER: feeless script sig key: ',
+        feelessScriptPubkey
+      );
+      console.log(
+        'TRANSACTION BUILDER: feeless script sig key hex: ',
+        feelessScriptPubkey.toString('hex')
+      );
+      rawTransaction.addOutput(feelessScriptPubkey, 0);
+      console.log(
+        'TRANSACTION BUILDER: added output with zero amount and opcode OP_FEEWORK'
+      );
     }
 
     for (let i = 0; i < utxo.length; i++) {
