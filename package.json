@@ -29,6 +29,8 @@
     "@vueuse/core": "^4.11.1",
     "@vueuse/integrations": "^4.11.1",
     "apexcharts": "^3.26.3",
+    "argon2-browser": "^1.18.0",
+    "base64-loader": "^1.0.0",
     "bip32": "^2.0.6",
     "bip39": "^3.0.4",
     "bitcoinjs-lib": "^5.2.0",
@@ -41,6 +43,7 @@
     "localforage": "^1.9.0",
     "mathjs": "^9.4.1",
     "mitt": "^2.1.0",
+    "module": "^1.2.5",
     "pinia": "2.0.0-alpha.13",
     "postcss-preset-env": "^6.7.0",
     "sortablejs": "^1.14.0",
@@ -53,7 +56,8 @@
     "vue2-datepicker": "^4.0.0-beta.2",
     "vue3-form-validation": "^3.2.0",
     "vue3-popper": "^1.2.0",
-    "vue3-qr-reader": "^1.0.0"
+    "vue3-qr-reader": "^1.0.0",
+    "xorshift.js": "^1.0.5"
   },
   "devDependencies": {
     "@types/mathjs": "^6.0.11",

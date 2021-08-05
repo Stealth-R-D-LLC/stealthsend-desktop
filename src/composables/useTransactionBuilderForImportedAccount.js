@@ -9,7 +9,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
   const mainStore = useMainStore();
 
   const { fee } = useFeeEstimator(utxo.length);
-  
+
   const sumOf = (x = 0, y = 0) => {
     let sum = add(x, y);
     sum = format(sum, { precision: 14 });
