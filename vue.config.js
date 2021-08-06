@@ -7,6 +7,9 @@ module.exports = {
     requireModuleExtension: true
   },
   configureWebpack: {
+    node: {
+      global: true
+    },
     module: {
       noParse: /\.wasm$/,
       rules: [
