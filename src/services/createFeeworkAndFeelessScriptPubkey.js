@@ -17,6 +17,14 @@ export default function createFeeworkAndFeelessScriptPubkey(
       throw new Error('value has a fractional component');
   }
 
+  function readUInt64BE(buffer, offset) {
+    const small = buffer.readUInt32BE(offset + 4);
+    let big = buffer.readUInt32BE(offset);
+    big *= 0x100000000;
+    verifuint(big + small, 0xffffffffffffffff);
+    return big + small;
+  }
+
   function writeUInt64BE(buffer, value, offset) {
     verifuint(value, 0xffffffffffffffff);
     buffer.writeInt32BE(value & -1, offset + 4);
@@ -38,16 +46,8 @@ export default function createFeeworkAndFeelessScriptPubkey(
     const MCOST = Math.min(...mcosts);
     console.log('COST :', COST);
     console.log('MCOST:', MCOST);
-
     return MCOST;
   }
-
-  // function getDataHexFromTxAndHash(hash){
-  //   const txUnsignedHex = rawTransaction.buildIncomplete().toHex();
-  //   const dataHex = hash + txUnsignedHex;
-  //   console.log('DATA HEX: ', dataHex);
-  //   return dataHex;
-  // }
 
   function getDataBytesFromTxAndHash(hash) {
     const txUnsignedHex = rawTransaction.buildIncomplete().toHex();
@@ -58,31 +58,39 @@ export default function createFeeworkAndFeelessScriptPubkey(
     return DATA;
   }
 
+  async function getOutputWithArgon2(data, salt, mcost){
+    const output = await argon2.hash({
+      pass: data,
+      salt: salt,
+      time: 1,
+      mem: mcost,
+      hashLen: 8,
+      parallelism: 1,
+      type: argon2.ArgonType.Argon2d,
+    });
+    return parseInt(output.hashHex, 16);
+  }
+
   async function getWinningSalt(data, mcost) {
     console.log('crunching winning salt...');
     let OUTPUT = 0;
-    let SALT = 0;
-    // let outputCondition = 1970324836974591;
-    let outputCondition = Buffer.allocUnsafe(8);
-    writeUInt64BE(outputCondition, 1970324836974591, 0);
-    let prng = new XorShift1024Star(Date.now().toString(16));
+    let SALT;
+    const outputCondition = 1970324836974591;
+    const prng = new XorShift1024Star(Date.now().toString(16));
     do {
-      SALT = prng.randomBytes(8);
-      let output = await argon2.hash({
-        pass: data,
-        salt: SALT,
-        time: 1,
-        mem: mcost,
-        hashLen: 8,
-        parallelism: 1,
-        type: argon2.ArgonType.Argon2d,
-      });
-      OUTPUT = parseInt(output.hashHex, 16);
-      OUTPUT = Buffer.allocUnsafe(8);
-      writeUInt64BE(OUTPUT, parseInt(output.hashHex, 16), 0);
+      try{
+        SALT = prng.randomBytes(8);
+        OUTPUT = await getOutputWithArgon2(data, SALT, mcost);
+      } catch(e){
+        console.log(`Error in crunching the salt %s`, e.message);
+        break;
+      }
     } while (OUTPUT > outputCondition);
 
-    SALT = SALT.readUInt32BE(0);
+    console.log('SALT random bytes:', SALT);
+    console.log('SALT hexadecimal', SALT.toString('hex'));
+    SALT = readUInt64BE(SALT, 0);
+    console.log('SALT UInt64BE:', SALT);
     console.log('WINNING SALT   :', SALT);
     console.log('WINNING OUTPUT :', OUTPUT);
     return SALT;
@@ -92,11 +100,12 @@ export default function createFeeworkAndFeelessScriptPubkey(
     let height = bestBlock.height;
     let size = parseInt(bestBlock.size, 10);
     let hash = bestBlock.hash;
+
     console.time('mcost');
     let MCOST = getMcostFromSize(size);
     console.timeEnd('mcost');
-    // let DATA = getDataHexFromTxAndHash(hash);
     let DATA = getDataBytesFromTxAndHash(hash);
+
     console.time('salt');
     let SALT = await getWinningSalt(DATA, MCOST);
     console.timeEnd('salt');
@@ -110,7 +119,7 @@ export default function createFeeworkAndFeelessScriptPubkey(
     console.log('DATA   :', DATA);
     console.log('SALT   :', SALT);
 
-    const OP_FEEWORK = 209; // 0xd1
+    const OP_FEEWORK = 209; // 0xd1 or 209
     const FEEWORK_SIZE = 18;
     const HEIGHT_OFFSET = 1;
     const MCOST_OFFSET = 5;
