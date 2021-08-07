@@ -1,57 +1,42 @@
 import argon2 from 'argon2-browser';
+// import { argon2d } from 'hash-wasm';
 import { XorShift1024Star } from 'xorshift.js';
-const readUInt64BE = require('readuint64be');
-import { toBufferBE } from 'bigint-buffer';
+// import { toBufferBE } from 'bigint-buffer';
+import { Buffer } from 'buffer/index.js'
+
+
+
 
 export default function createFeeworkAndFeelessScriptPubkey(
   rawTransaction,
   bestBlock
 ) {
   async function createFeelessScriptPubkey() {
-    let height = bestBlock.height;
-    let size = parseInt(bestBlock.size, 10);
-    let hash = bestBlock.hash;
+    const HEIGHT = bestBlock.height;
+    const SIZE = parseInt(bestBlock.size, 10);
+    const BLOCKHASH = bestBlock.hash;
 
     console.time('mcost');
-    let MCOST = getMcostFromSize(size);
+    const MCOST = _getMcostFromSize(SIZE);
     console.timeEnd('mcost');
-    let DATA = getDataBytesFromTxAndHash(hash);
+
+    const DATA = _getDataBytesFromTxAndHash(BLOCKHASH);
 
     console.time('salt');
-    let SALT = await getWinningSalt(DATA, MCOST);
+    const SALT = await _getWinningSalt(DATA, MCOST);
     console.timeEnd('salt');
 
-    console.log('HEIGHT :', height);
-    console.log('SIZE   :', size);
-    console.log('HASH   :', hash);
-    console.log('MCOST  :', MCOST);
-    console.log('DATA   :', DATA);
-    console.log('SALT   :', SALT);
+    console.log('HEIGHT     :', HEIGHT);
+    console.log('SIZE       :', SIZE);
+    console.log('BLOCKHASH  :', BLOCKHASH);
+    console.log('MCOST      :', MCOST);
+    console.log('DATA       :', DATA);
+    console.log('SALT       :', SALT);
 
-    return writeScriptPubkey(height, MCOST, SALT);
+    return _writeScriptPubkey(HEIGHT, MCOST, SALT);
   }
 
-  function verifuint(value, max) {
-    if (typeof value !== 'number')
-      throw new Error('cannot write a non-number as a number');
-    if (value < 0)
-      throw new Error(
-        'specified a negative value for writing an unsigned value'
-      );
-    if (value > max) throw new Error('RangeError: value out of range');
-    if (Math.floor(value) !== value)
-      throw new Error('value has a fractional component');
-  }
-
-  function readUInt64BE_2(buffer, offset) {
-    const small = buffer.readUInt32BE(offset + 4);
-    let big = buffer.readUInt32BE(offset);
-    big *= 0x100000000;
-    verifuint(big + small, 0xffffffffffffffff);
-    return big + small;
-  }
-
-  function getMcostFromSize(size) {
+  function _getMcostFromSize(size) {
     const M = 1000 * 110;
     const BASE = 256;
     let COST = (1 + size / 1000) * BASE;
@@ -62,13 +47,13 @@ export default function createFeeworkAndFeelessScriptPubkey(
       i += 1;
     }
     const mcosts = [COST, 4608];
-    const MCOST = Math.min(...mcosts);
+    const MCOST = Number(Math.ceil(Math.min(...mcosts)));
     console.log('COST :', COST);
     console.log('MCOST:', MCOST);
-    return MCOST;
+    return 256;
   }
 
-  function getDataBytesFromTxAndHash(hash) {
+  function _getDataBytesFromTxAndHash(hash) {
     const txUnsignedHex = rawTransaction.buildIncomplete().toHex();
     const HASH = Buffer.from(hash, 'hex');
     const TXBYTES = Buffer.from(txUnsignedHex, 'hex');
@@ -77,8 +62,33 @@ export default function createFeeworkAndFeelessScriptPubkey(
     return DATA;
   }
 
-  async function getOutputWithArgon2(data, salt, mcost) {
-    const output = await argon2.hash({
+  async function _getWinningSalt(data, mcost) {
+    console.log('crunching winning salt...');
+    let OUTPUT;
+    let SALT;
+    const outputCondition = _hexToBn('0006ffffffffffff');
+    do {
+      try {
+        const seedDate = Date.now();
+        const seed = seedDate.toString(16);
+        const prng = new XorShift1024Star(seed);
+        SALT = prng.randomBytes(8);
+        OUTPUT = await _getOutputWithArgon2(data, SALT, mcost);
+      } catch (e) {
+        console.log(`Error in crunching the salt`, e);
+        throw new Error(e);
+      }
+    } while (OUTPUT > outputCondition);
+
+    console.log('WINNING SALT hex  :', SALT.toString('hex'))
+    SALT = _hexToBn(SALT.toString('hex'));
+    console.log('WINNING SALT   :', SALT);
+    console.log('WINNING OUTPUT :', OUTPUT);
+    return SALT;
+  }
+
+  async function _getOutputWithArgon2(data, salt, mcost) {
+    let output = await argon2.hash({
       pass: data,
       salt: salt,
       time: 1,
@@ -87,84 +97,22 @@ export default function createFeeworkAndFeelessScriptPubkey(
       parallelism: 1,
       type: argon2.ArgonType.Argon2d,
     });
-    return parseInt(output.hashHex, 16);
+    output = output.hashHex;
+
+    // const output = await argon2d({
+    //   password: data,
+    //   salt: salt,
+    //   parallelism: 1,
+    //   iterations: 1,
+    //   memorySize: mcost,
+    //   hashLength: 8,
+    //   outputType: 'hex',
+    // });
+
+    return _hexToBn(output);
   }
 
-  async function getWinningSalt(data, mcost) {
-    console.log('crunching winning salt...');
-    let OUTPUT = 0;
-    let SALT;
-    const outputCondition = 1970324836974591;
-    do {
-      try {
-        const seedDate = Date.now();
-        const seed = seedDate.toString(16);
-        const prng = new XorShift1024Star(seed);
-        SALT = prng.randomBytes(8);
-        OUTPUT = await getOutputWithArgon2(data, SALT, mcost);
-      } catch (e) {
-        console.log(`Error in crunching the salt %s`, e.message);
-        break;
-      }
-    } while (OUTPUT > outputCondition);
-
-    console.log('SALT random bytes:', SALT);
-    const SALT_hex = SALT.toString('hex');
-    console.log('SALT hexadecimal', SALT_hex);
-    console.log('SALT UInt64BE:', readUInt64BE(SALT));
-    console.log('SALT UInt64BE_2:', readUInt64BE_2(SALT, 0));
-
-    SALT = parseInt(SALT.toString('hex'), 16);
-    console.log('WINNING SALT           :', SALT);
-    const bn = BigInt.asUintN(64, BigInt(SALT));
-    const bnHex = bnToHex(bn);
-    console.log('WINNING SALT BufferBE  :', toBufferBE(bnHex, 8));
-    console.log('WINNING SALT BigInt    :', bn);
-    console.log('WINNING OUTPUT         :', OUTPUT);
-    return bnHex;
-  }
-
-  function bnToHex(bn) {
-    bn = BigInt(bn);
-
-    var pos = true;
-    if (bn < 0) {
-      pos = false;
-      bn = bitnot(bn);
-    }
-
-    var hex = bn.toString(16);
-    if (hex.length % 2) {
-      hex = '0' + hex;
-    }
-
-    if (pos && 0x80 & parseInt(hex.slice(0, 2), 16)) {
-      hex = '00' + hex;
-    }
-
-    return hex;
-  }
-
-  function bitnot(bn) {
-    bn = -bn;
-    var bin = bn.toString(2);
-    var prefix = '';
-    while (bin.length % 8) {
-      bin = '0' + bin;
-    }
-    if ('1' === bin[0] && -1 !== bin.slice(1).indexOf('1')) {
-      prefix = '11111111';
-    }
-    bin = bin
-      .split('')
-      .map(function (i) {
-        return '0' === i ? '1' : '0';
-      })
-      .join('');
-    return BigInt('0b' + prefix + bin) + BigInt(1);
-  }
-
-  function writeScriptPubkey(height, mcost, salt) {
+  function _writeScriptPubkey(height, mcost, salt) {
     const OP_FEEWORK = 209; // 0xd1 or 209
     const FEEWORK_SIZE = 18;
     const HEIGHT_OFFSET = 1;
@@ -174,13 +122,18 @@ export default function createFeeworkAndFeelessScriptPubkey(
 
     const scriptPubkey = Buffer.allocUnsafe(FEEWORK_SIZE);
 
-    scriptPubkey.writeUInt8(0x10, 0);
+    scriptPubkey.writeUInt8(16, 0); // 0x10 or 16
     scriptPubkey.writeUInt32BE(height, HEIGHT_OFFSET);
     scriptPubkey.writeUInt32BE(mcost, MCOST_OFFSET);
-    scriptPubkey.fill(toBufferBE(salt, 8), SALT_OFFSET);
+    scriptPubkey.writeBigUInt64BE(salt, SALT_OFFSET);
     scriptPubkey.writeUInt8(OP_FEEWORK, OPCODE_OFFSET);
 
     return scriptPubkey;
+  }
+
+  function _hexToBn(hex){
+    if (hex.length % 2) { hex = '0' + hex; }
+    return BigInt('0x' + hex);
   }
 
   return createFeelessScriptPubkey();
