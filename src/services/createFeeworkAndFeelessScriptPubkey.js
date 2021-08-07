@@ -1,11 +1,6 @@
 import argon2 from 'argon2-browser';
-// import { argon2d } from 'hash-wasm';
 import { XorShift1024Star } from 'xorshift.js';
-// import { toBufferBE } from 'bigint-buffer';
-import { Buffer } from 'buffer/index.js'
-
-
-
+import { Buffer } from 'buffer/index.js';
 
 export default function createFeeworkAndFeelessScriptPubkey(
   rawTransaction,
@@ -40,6 +35,7 @@ export default function createFeeworkAndFeelessScriptPubkey(
     const M = 1000 * 110;
     const BASE = 256;
     let COST = (1 + size / 1000) * BASE;
+    console.log('SIZE: ', size);
     console.log('Starting COST: ', COST);
     let i = 2;
     while (i <= (31 * size) / 204800) {
@@ -50,7 +46,7 @@ export default function createFeeworkAndFeelessScriptPubkey(
     const MCOST = Number(Math.ceil(Math.min(...mcosts)));
     console.log('COST :', COST);
     console.log('MCOST:', MCOST);
-    return 256;
+    return MCOST;
   }
 
   function _getDataBytesFromTxAndHash(hash) {
@@ -80,10 +76,10 @@ export default function createFeeworkAndFeelessScriptPubkey(
       }
     } while (OUTPUT > outputCondition);
 
-    console.log('WINNING SALT hex  :', SALT.toString('hex'))
+    console.log('WINNING SALT hex :', SALT.toString('hex'));
     SALT = _hexToBn(SALT.toString('hex'));
-    console.log('WINNING SALT   :', SALT);
-    console.log('WINNING OUTPUT :', OUTPUT);
+    console.log('WINNING SALT     :', SALT);
+    console.log('WINNING OUTPUT   :', OUTPUT);
     return SALT;
   }
 
@@ -98,17 +94,6 @@ export default function createFeeworkAndFeelessScriptPubkey(
       type: argon2.ArgonType.Argon2d,
     });
     output = output.hashHex;
-
-    // const output = await argon2d({
-    //   password: data,
-    //   salt: salt,
-    //   parallelism: 1,
-    //   iterations: 1,
-    //   memorySize: mcost,
-    //   hashLength: 8,
-    //   outputType: 'hex',
-    // });
-
     return _hexToBn(output);
   }
 
@@ -131,8 +116,10 @@ export default function createFeeworkAndFeelessScriptPubkey(
     return scriptPubkey;
   }
 
-  function _hexToBn(hex){
-    if (hex.length % 2) { hex = '0' + hex; }
+  function _hexToBn(hex) {
+    if (hex.length % 2) {
+      hex = '0' + hex;
+    }
     return BigInt('0x' + hex);
   }
 
