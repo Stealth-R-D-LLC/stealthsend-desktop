@@ -1173,6 +1173,7 @@
                     :type="showPassword ? 'text' : 'password'"
                     v-model="form.password.$value"
                     placeholder="Please enter a password"
+                    @input="handleSubmit"
                     @keyup.enter="handleSubmit"
                   >
                     <StTooltip
@@ -1998,6 +1999,7 @@
                   v-model="form.password.$value"
                   placeholder="Please enter a password"
                   @keyup.enter="recover"
+                  @input="form.password.$onBlur()"
                 >
                   <StTooltip
                     class="tooltip"
@@ -2133,6 +2135,7 @@ import _cloneDeep from 'lodash/cloneDeep';
 /* import Lottie from 'vue-lottie/src/lottie.vue'; */
 /* import * as animationData from '@/assets/animation/logo.json'; */
 import pkgjson from '@/../package.json';
+import zxcvbn from 'zxcvbn';
 
 export default {
   name: 'StWelcome',
@@ -2193,7 +2196,26 @@ export default {
           $value: password,
           $rules: [
             {
-              rule: () => password.value.length || 'Password is required',
+              rule: () => {
+                let details = zxcvbn(password.value);
+                if (details.feedback.warning.length) {
+                  return details.feedback.warning;
+                } 
+                if (details.feedback.suggestions.length) {
+                  if ('Add another word or two. Uncommon words are better.' === details.feedback.suggestions[0]) {
+                    // replace with
+                    return 'Use a longer keyboard pattern with more turns.';
+                  }
+                  return details.feedback.suggestions[0];
+                } else {
+                  if (details.score < 3) {
+                    return 'Use a longer keyboard pattern with more turns.';
+                  } else {
+                    return true;
+                  }
+                }
+              }
+              
             },
             {
               key: 'pw',
