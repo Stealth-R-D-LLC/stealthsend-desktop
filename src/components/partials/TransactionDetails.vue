@@ -148,7 +148,9 @@
         <p
           v-if="tx && tx.vout && tx.vout.length && tx.vout[tx.position]"
           class="item-link pointer"
-          @click="openAddressExplorer(tx.vout[tx.position].scriptPubKey.addresses[0])"
+          @click="
+            openAddressExplorer(tx.vout[tx.position].scriptPubKey.addresses[0])
+          "
         >
           {{ tx.vout[tx.position].scriptPubKey.addresses[0] }}
         </p>
@@ -285,7 +287,9 @@ export default {
       tx.value = {
         ...mainStore.offCanvasData,
         ...res,
-        position: mainStore.offCanvasData.vout? mainStore.offCanvasData.vout : 0 
+        position: mainStore.offCanvasData.vout
+          ? mainStore.offCanvasData.vout
+          : 0,
       };
     }
 

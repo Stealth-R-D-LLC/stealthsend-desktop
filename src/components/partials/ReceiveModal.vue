@@ -402,7 +402,9 @@ export default {
         depositAddress.value = acc.address;
       } else {
         const { account, change } = CryptoService.breakAccountPath(acc.path);
-        const discoveredAddresses = await CryptoService.accountDiscovery(account);
+        const discoveredAddresses = await CryptoService.accountDiscovery(
+          account
+        );
         let nextFreeAddress = CryptoService.nextToUse(
           discoveredAddresses.freeAddresses
         );

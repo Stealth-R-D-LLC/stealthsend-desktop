@@ -474,7 +474,10 @@
               <p class="bold" v-else>Public Key</p>
               <p class="key">{{ publicKey }}</p>
               <div class="copy-key">
-                <p>Copy <span v-if="!account.isImported">xpub</span> <span v-else>public key</span> to clipboard or show QR code</p>
+                <p>
+                  Copy <span v-if="!account.isImported">xpub</span>
+                  <span v-else>public key</span> to clipboard or show QR code
+                </p>
                 <div>
                   <StTooltip
                     :tooltip="
@@ -556,7 +559,11 @@
                   </StTooltip>
                 </div>
               </div>
-              <p v-if="!account.isImported && !account.wif" @click="openBlockExplorer" class="view-more bold">
+              <p
+                v-if="!account.isImported && !account.wif"
+                @click="openBlockExplorer"
+                class="view-more bold"
+              >
                 View on StealthMonitor
               </p>
             </template>
@@ -965,7 +972,7 @@ export default {
       if (account.value.isImported) {
         const wallet = await db.getItem('wallet');
         try {
-          const secretKey =  await CryptoService.AESDecrypt(
+          const secretKey = await CryptoService.AESDecrypt(
             account.value.wif,
             wallet.password
           );
