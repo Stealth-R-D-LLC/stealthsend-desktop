@@ -233,27 +233,30 @@ export default {
       // submitting,
       validateFields,
       resetFields,
-    } = useValidation({
-      password: {
-        $value: password,
-        $rules: [
-          async (password) => {
-            console.log('validirma', wrongAttempts.value);
-            if (wrongAttempts.value >= 5) {
-              return `Too many attempts. Try again in 30 seconds.`
-            }
-            if (!password) {
-              return '';
-            }
-            console.log('tu validira valjda');
-            let isValid = await CryptoService.validatePassword(password);
-            if (!isValid) {
-              return 'Incorrect password.';
-            }
-          },
-        ],
+    } = useValidation(
+      {
+        password: {
+          $value: password,
+          $rules: [
+            async (password) => {
+              console.log('validirma', wrongAttempts.value);
+              if (wrongAttempts.value >= 5) {
+                return `Too many attempts. Try again in 30 seconds.`;
+              }
+              if (!password) {
+                return '';
+              }
+              console.log('tu validira valjda');
+              let isValid = await CryptoService.validatePassword(password);
+              if (!isValid) {
+                return 'Incorrect password.';
+              }
+            },
+          ],
+        },
       },
-    }, false);
+      false
+    );
 
     const isLock = computed(() => {
       return mainStore.isLock;
@@ -270,9 +273,9 @@ export default {
               cooldown.value -= 1;
               if (cooldown.value === 0) {
                 wrongAttempts.value = 0;
+              }
             }
-            }
-          }, 1000)
+          }, 1000);
         }
       }
     );
@@ -327,7 +330,10 @@ export default {
         wrongAttempts.value += 1;
         setTimeout(() => {
           password.value = '';
-          document.getElementById('password').getElementsByClassName('st-input__inner')[0].focus();
+          document
+            .getElementById('password')
+            .getElementsByClassName('st-input__inner')[0]
+            .focus();
         }, 500);
         console.log('e', e);
       }

@@ -2200,9 +2200,12 @@ export default {
                 let details = zxcvbn(password.value);
                 if (details.feedback.warning.length) {
                   return details.feedback.warning;
-                } 
+                }
                 if (details.feedback.suggestions.length) {
-                  if ('Add another word or two. Uncommon words are better.' === details.feedback.suggestions[0]) {
+                  if (
+                    'Add another word or two. Uncommon words are better.' ===
+                    details.feedback.suggestions[0]
+                  ) {
                     // replace with
                     return 'Use a longer keyboard pattern with more turns.';
                   }
@@ -2214,8 +2217,7 @@ export default {
                     return true;
                   }
                 }
-              }
-              
+              },
             },
             {
               key: 'pw',
