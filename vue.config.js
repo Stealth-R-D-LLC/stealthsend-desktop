@@ -34,6 +34,7 @@ module.exports = {
           "sign": false
         },
         "linux": {
+          "productName": "StealthSend",
           "target": ["deb", "AppImage"],
           "maintainer": "Stealth R&D LLC",
           "icon": "src/assets/logo.png",
