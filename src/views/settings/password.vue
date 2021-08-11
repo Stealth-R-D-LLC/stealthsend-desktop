@@ -76,6 +76,7 @@ import cryptoJs from 'crypto-js';
 import db from '../../db';
 import { useValidation } from 'vue3-form-validation';
 import router from '@/router';
+import zxcvbn from 'zxcvbn';
 
 export default {
   name: 'StSettingsPassword',
@@ -103,7 +104,28 @@ export default {
         $value: newPassword,
         $rules: [
           {
-            rule: () => newPassword.value.length || 'New password is required',
+            rule: () => {
+              let details = zxcvbn(newPassword.value);
+              if (details.feedback.warning.length) {
+                return details.feedback.warning;
+              }
+              if (details.feedback.suggestions.length) {
+                if (
+                  'Add another word or two. Uncommon words are better.' ===
+                  details.feedback.suggestions[0]
+                ) {
+                  // replace with
+                  return 'Use a longer keyboard pattern with more turns.';
+                }
+                return details.feedback.suggestions[0];
+              } else {
+                if (details.score < 3) {
+                  return 'Use a longer keyboard pattern with more turns.';
+                } else {
+                  return true;
+                }
+              }
+            },
           },
           {
             key: 'pw',
