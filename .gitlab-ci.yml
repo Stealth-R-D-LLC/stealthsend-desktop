@@ -48,3 +48,4 @@ Build Windows:
   artifacts:
     paths:
       - dist_electron/*.msi
+      - dist_electron/*.nsis
