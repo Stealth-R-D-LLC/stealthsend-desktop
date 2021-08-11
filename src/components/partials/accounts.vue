@@ -915,6 +915,9 @@ export default {
 .active-container .card {
   min-height: 188px;
 }
+.archived-container .card {
+  min-height: 188px;
+}
 .archived-container .amount-container {
   margin-bottom: 0;
 }
