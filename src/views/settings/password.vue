@@ -105,27 +105,27 @@ export default {
         $rules: [
           {
             rule: () => {
-                let details = zxcvbn(newPassword.value);
-                if (details.feedback.warning.length) {
-                  return details.feedback.warning;
+              let details = zxcvbn(newPassword.value);
+              if (details.feedback.warning.length) {
+                return details.feedback.warning;
+              }
+              if (details.feedback.suggestions.length) {
+                if (
+                  'Add another word or two. Uncommon words are better.' ===
+                  details.feedback.suggestions[0]
+                ) {
+                  // replace with
+                  return 'Use a longer keyboard pattern with more turns.';
                 }
-                if (details.feedback.suggestions.length) {
-                  if (
-                    'Add another word or two. Uncommon words are better.' ===
-                    details.feedback.suggestions[0]
-                  ) {
-                    // replace with
-                    return 'Use a longer keyboard pattern with more turns.';
-                  }
-                  return details.feedback.suggestions[0];
+                return details.feedback.suggestions[0];
+              } else {
+                if (details.score < 3) {
+                  return 'Use a longer keyboard pattern with more turns.';
                 } else {
-                  if (details.score < 3) {
-                    return 'Use a longer keyboard pattern with more turns.';
-                  } else {
-                    return true;
-                  }
+                  return true;
                 }
-              },
+              }
+            },
           },
           {
             key: 'pw',
