@@ -108,7 +108,7 @@
                   placement="top"
                   hover
                 >
-                  {{ formatLabel(findLabelForTx(item.txid)) }}
+                  {{ findLabelForTx(item.txid) }}
                 </StPopper>
               </template>
               <template v-else>
@@ -439,14 +439,6 @@ export default {
       return mainStore.txWithLabels[tx];
     }
 
-    function formatLabel(label) {
-      if (label.length > 20) {
-        return label.slice(0, 20) + '...';
-      } else {
-        return label;
-      }
-    }
-
     onMounted(async () => {
       orderTransactions();
       await CryptoService.getTxWithLabels();
@@ -474,7 +466,6 @@ export default {
       formatAmount,
       filterByDirection,
       filterByPeriod,
-      formatLabel,
       todayOrYesterday,
       XST_USD_RATE,
       txDates,
