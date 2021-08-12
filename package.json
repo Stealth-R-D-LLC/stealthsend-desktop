@@ -68,7 +68,7 @@
     "babel-eslint": "^10.1.0",
     "electron": "^13.1.9",
     "electron-devtools-installer": "^3.2.0",
-    "eslint": "^7.32.0",
+    "eslint": "^6.7.2",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-vue": "^7.16.0",
     "husky": "^7.0.1",
