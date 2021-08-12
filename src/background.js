@@ -322,8 +322,8 @@ app.on('ready', async () => {
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     const contentSecurityPolicyHeaders = {
       'content-security-policy': [
-        "style-src 'unsafe-inline' 'self' https://fonts.googleapis.com;",
-        "style-src-elem 'unsafe-inline' https://fonts.googleapis.com 'self' https://fonts.googleapis.com;",
+        "style-src 'unsafe-inline' 'self' https://fonts.googleapis.com app:;",
+        "style-src-elem 'unsafe-inline' https://fonts.googleapis.com 'self' https://fonts.googleapis.com app:;",
         "font-src https://fonts.gstatic.com 'self';",
         "connect-src 'self' https://api-mainnet.stealthmonitor.xyz https://api.stealth.org 172.20.10.112:8080;",
         "script-src 'unsafe-inline' 'unsafe-eval' 'self' app: blob:;",
