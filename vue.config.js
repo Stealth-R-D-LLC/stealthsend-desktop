@@ -35,6 +35,7 @@ module.exports = {
           "sign": false
         },
         "linux": {
+          "artifactName": "${productName}-${version}.${ext}",
           "target": ["deb", "AppImage"],
           "maintainer": "Stealth R&D LLC",
           "icon": "src/assets/logo.png",
