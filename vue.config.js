@@ -6,6 +6,7 @@ module.exports = {
   css: {
     requireModuleExtension: true
   },
+  chainWebpack: config => config.resolve.symlinks(false),
   configureWebpack: {
     resolve: {
       alias: {
