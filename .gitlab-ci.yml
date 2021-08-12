@@ -4,10 +4,13 @@ Build Linux:
     - apt-get update ; apt-get --yes install rsync
     - cp -R ./ /project
     - cd /project
-    - npm install --only=prod --no-package-lock
+    - node -v
+    - nvm use 14
+    - npm install --only=prod --no-package-lock --legacy-peer-deps
     - npm run electron:build --linux
     - cd $CI_PROJECT_DIR
     - rsync -r /project/dist_electron ./
+    - nvm use default
   tags:
     - docker-executor
   artifacts:
