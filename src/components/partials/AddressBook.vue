@@ -6,7 +6,7 @@
       @close="isScanning = false"
       class="scan-address__modal"
     >
-      <template #header>Scan Private Key</template>
+      <template #header>Scan XST Address</template>
       <template #body>
         <div class="no-camera" v-show="!cameraAllowed">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.005 512.005">
@@ -294,7 +294,7 @@
             <path d="M13 5L15 7" stroke="#4E00F6" stroke-width="2" />
           </svg>
 
-          Edit contact
+          Edit Contact
         </p>
         <StButton @click="openModal('send')">Send</StButton>
       </div>
@@ -364,7 +364,7 @@
               stroke-linejoin="round"
             />
           </svg>
-          Delete contact
+          Delete Contact
         </p>
         <StButton @click="confirmEdit">Save</StButton>
       </div>
@@ -869,7 +869,6 @@ export default {
       addressList.value = await CryptoService.updateAddressBook(
         editContactForm.value
       );
-      console.log('AAAAAAA', editContactForm.value);
       changeTab('contact-details');
     }
 
@@ -1041,6 +1040,12 @@ svg:hover circle {
   border-radius: 4px;
   width: 16px;
   height: 16px;
+}
+:deep .custom-checkbox .st-checkbox__label {
+  font-size: 12px;
+  letter-spacing: 0.12px;
+  line-height: 24px;
+  font-family: var(--secondary-font);
 }
 :deep .custom-checkbox .st-checkbox__checkmark .check {
   top: 2px;
