@@ -88,6 +88,7 @@ async function createWindow() {
     'https://www.admin.ch/opc/en/classified-compilation/19930159/index.html',
     'https://github.com/Stealth-R-D-LLC/Stealth',
     'https://coincap.io/',
+    'https://stealth.org/'
   ];
 
   // resize the window for the create process
@@ -180,15 +181,16 @@ async function createWindow() {
     webContents.setZoomFactor(1);
     webContents.setVisualZoomLevelLimits(1, 1);
   });
-  webContents.on('new-window', function (event, url) {
-    if (
+  webContents.setWindowOpenHandler((details) => { // new-window has been replaced with this
+    const url = details.url;
+        if (
       allowedUrls.includes(url) ||
       url.includes('https://stealthmonitor.org/')
     ) {
       shell.openExternal(url);
     }
-    event.preventDefault();
-  });
+    return { action: 'deny' }
+  })
   webContents.on('will-navigate', (event, url) => {
     if (url.startsWith('mailto:')) {
       shell.openExternal(url);
@@ -199,7 +201,6 @@ async function createWindow() {
     ) {
       shell.openExternal(url);
     }
-    event.preventDefault();
   });
 }
 async function askForMediaAccess() {
