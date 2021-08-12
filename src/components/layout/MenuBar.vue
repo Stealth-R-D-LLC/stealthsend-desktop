@@ -33,7 +33,7 @@
             <div class="icon">
               <StTooltip
                 class="tooltip"
-                :tooltip="!isCollapsed ? 'Dashboard' : ''"
+                :tooltip="!isCollapsed ? 'Dashboard' : null"
                 position="right"
               >
                 <svg
@@ -71,7 +71,7 @@
           <span class="item">
             <div class="icon">
               <StTooltip
-                :tooltip="!isCollapsed ? 'Send XST' : ''"
+                :tooltip="!isCollapsed ? 'Send XST' : null"
                 position="right"
               >
                 <svg
@@ -99,7 +99,7 @@
           <span class="item">
             <div class="icon">
               <StTooltip
-                :tooltip="!isCollapsed ? 'Receive XST' : ''"
+                :tooltip="!isCollapsed ? 'Receive XST' : null"
                 position="right"
               >
                 <svg
@@ -127,7 +127,7 @@
           <router-link class="item" to="/transactions">
             <div class="icon">
               <StTooltip
-                :tooltip="!isCollapsed ? 'Transactions' : ''"
+                :tooltip="!isCollapsed ? 'Transactions' : null"
                 position="right"
               >
                 <svg
@@ -195,7 +195,7 @@
           <span class="item">
             <div class="icon">
               <StTooltip
-                :tooltip="!isCollapsed ? 'Add Account' : ''"
+                :tooltip="!isCollapsed ? 'Add Account' : null"
                 position="right"
               >
                 <svg
@@ -229,7 +229,7 @@
           <router-link class="item" to="/account/archived">
             <div class="icon">
               <StTooltip
-                :tooltip="!isCollapsed ? 'Manager' : ''"
+                :tooltip="!isCollapsed ? 'Manager' : null"
                 position="right"
               >
                 <svg
@@ -259,7 +259,7 @@
           <span class="item">
             <div class="icon">
               <StTooltip
-                :tooltip="!isCollapsed ? 'Address Book' : ''"
+                :tooltip="!isCollapsed ? 'Address Book' : null"
                 position="right"
               >
                 <svg

@@ -30,9 +30,6 @@
               placeholder="Please enter your current password"
               v-model="password"
             ></StInput>
-            <template #description>
-              Please enter a password you are using to access the application
-            </template>
           </StFormItem>
           <StFormItem
             label="New password"
@@ -45,10 +42,6 @@
               placeholder="Please enter your new password"
               v-model="newPassword"
             ></StInput>
-            <template #description>
-              Please enter a unique and unused password for accessing the
-              application
-            </template>
           </StFormItem>
           <StFormItem
             label="Confirm password"
@@ -61,7 +54,6 @@
               placeholder="Re-enter the new password. Make sure the passwords are identical"
               v-model="confirmNewPassword"
             ></StInput>
-            <template #description> Newly set password need to match </template>
           </StFormItem>
         </div>
       </div>

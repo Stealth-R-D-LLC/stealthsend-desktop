@@ -275,6 +275,12 @@ export default {
 }
 .transactions-table :deep td:nth-child(5) {
   width: 230px;
+  /* overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  word-break: break-all; */
 }
 .transactions-table :deep td:nth-child(5) div {
   overflow: hidden;
