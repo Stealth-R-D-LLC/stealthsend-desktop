@@ -143,6 +143,8 @@ async function createWindow() {
           accelerator: 'CmdOrCtrl+Q',
           role: 'close',
         },
+        { label: 'Copy', accelerator: 'CmdOrCtrl+C', selector: 'copy:' },
+        { label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:' },
       ],
     },
     {
@@ -316,7 +318,27 @@ app.on('ready', async () => {
     });
 
   createWindow();
-  askForMediaAccess();
+  if (process.env.IS_TEST) askForMediaAccess();
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    const contentSecurityPolicyHeaders = {
+      'content-security-policy': [
+        "style-src 'unsafe-inline' 'self' https://fonts.googleapis.com;",
+        "style-src-elem 'unsafe-inline' https://fonts.googleapis.com 'self' https://fonts.googleapis.com;",
+        "font-src https://fonts.gstatic.com 'self';",
+        "connect-src 'self' https://api-mainnet.stealthmonitor.xyz https://api.stealth.org 172.20.10.112:8080;",
+        "script-src 'unsafe-inline' 'unsafe-eval' 'self' app: blob:;",
+        "script-src-elem 'unsafe-inline' 'self' app:;",
+        "img-src 'self' app: data:;",
+        "object-src 'none';",
+        "manifest-src 'none';",
+      ],
+      ...details.responseHeaders,
+    };
+
+    callback({
+      responseHeaders: contentSecurityPolicyHeaders,
+    });
+  });
 });
 
 app.on('will-quit', () => {
