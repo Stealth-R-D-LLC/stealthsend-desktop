@@ -6,20 +6,24 @@ module.exports = {
   css: {
     requireModuleExtension: true
   },
+  chainWebpack: webpackConfig => {
+    webpackConfig.module
+     .rule('wasm')
+       .test(/.wasm$/)
+       .use('wasm-loader')
+       .loader('wasm-loader')
+  },
   configureWebpack: {
-    node: {
-      global: true
-    },
-    module: {
-      noParse: /\.wasm$/,
-      rules: [
-          {
-              test: /\.wasm$/,
-              loaders: ['base64-loader'],
-              type: 'javascript/auto'
-          }
-      ]
-    },
+    // module: {
+    //   noParse: /\.wasm$/,
+    //   rules: [
+    //       {
+    //           test: /\.wasm$/,
+    //           loaders: ['wasm-loader'],
+    //           type: 'javascript/auto'
+    //       }
+    //   ]
+    // },
     resolve: {
       alias: {
         "@": path.resolve(__dirname, vueSrc)
