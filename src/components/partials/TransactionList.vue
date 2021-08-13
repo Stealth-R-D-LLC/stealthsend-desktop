@@ -137,13 +137,13 @@
               <template v-else>
                 {{
                   isHiddenAmounts
-                    ? '$•••'
+                    ? '$•••  USD'
                     : `$${formatAmount(
                         Math.abs(item.amount * XST_USD_RATE),
                         false,
                         4,
                         4
-                      )}`
+                      )} USD`
                 }}
               </template>
             </div>
