@@ -148,9 +148,9 @@ export default {
       try {
         await validateFields();
         changePassword();
-      } catch(e) {
-        console.log(e)
-      }finally {
+      } catch (e) {
+        console.log(e);
+      } finally {
         for (const formField of formFields.value.values()) {
           if (formField.name === 'password') {
             formField.touched = false;

@@ -1054,7 +1054,7 @@ export default {
         copyPending.value = false;
       }, 2000);
     }
-async function scanWallet() {
+    async function scanWallet() {
       // eslint-disable-next-line no-async-promise-executor
       return new Promise(async (resolve) => {
         const hdWallet = await CryptoService.scanWallet();
