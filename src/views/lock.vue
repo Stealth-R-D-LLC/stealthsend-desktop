@@ -231,6 +231,7 @@ export default {
       // errors,
       // add,
       // submitting,
+      formFields,
       validateFields,
       resetFields,
     } = useValidation(
@@ -239,14 +240,12 @@ export default {
           $value: password,
           $rules: [
             async (password) => {
-              console.log('validirma', wrongAttempts.value);
               if (wrongAttempts.value >= 5) {
                 return `Too many attempts. Try again in 30 seconds.`;
               }
               if (!password) {
                 return '';
               }
-              console.log('tu validira valjda');
               let isValid = await CryptoService.validatePassword(password);
               if (!isValid) {
                 return 'Incorrect password.';
@@ -265,7 +264,6 @@ export default {
     watch(
       () => wrongAttempts.value,
       () => {
-        console.log('ha!', wrongAttempts.value);
         if (wrongAttempts.value === 5) {
           cooldown.value = 30;
           setInterval(() => {
@@ -312,13 +310,17 @@ export default {
     });
 
     async function validatePassword() {
-      console.log('aaaaa');
       if (wrongAttempts.value >= 5) {
         try {
           await validateFields();
         } catch (e) {
-          console.log('e', e);
+          console.log(e);
+        } finally {
+          for (const formField of formFields.value.values()) {
+            formField.touched = false;
+          }
         }
+
         return;
       }
       try {
@@ -335,7 +337,11 @@ export default {
             .getElementsByClassName('st-input__inner')[0]
             .focus();
         }, 500);
-        console.log('e', e);
+        console.log(e);
+      } finally {
+        for (const formField of formFields.value.values()) {
+          formField.touched = false;
+        }
       }
     }
 

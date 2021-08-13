@@ -166,7 +166,7 @@
             <StTooltip
               v-if="depositAddress"
               :tooltip="
-                copyPending ? 'Copied to clipboard!' : 'Copy to Clipboard'
+                copyPending ? 'Copied to Clipboard!' : 'Copy to Clipboard'
               "
             >
               <StClipboard :content="depositAddress" @click="handleCopy">
@@ -231,7 +231,7 @@
         </StFormItem>
         <StTooltip
           class="tooltip"
-          :tooltip="copyPending ? 'Copied to clipboard!' : 'Copy to Clipboard'"
+          :tooltip="copyPending ? 'Copied to Clipboard!' : 'Copy to Clipboard'"
         >
           <StClipboard :content="depositAddress" @click="handleCopy"
             >Copy to Clipboard</StClipboard
@@ -493,7 +493,7 @@ export default {
         closeModal();
       } catch (e) {
         if (e instanceof ValidationError) {
-          console.log('Email validation error: ', e);
+          console.log(e);
         }
       }
     }

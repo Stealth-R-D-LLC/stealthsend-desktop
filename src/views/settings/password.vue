@@ -77,7 +77,7 @@ export default {
     const newPassword = ref('');
     const confirmNewPassword = ref('');
 
-    const { form, validateFields } = useValidation({
+    const { form, formFields, validateFields } = useValidation({
       password: {
         $value: password,
         $rules: [
@@ -145,9 +145,18 @@ export default {
     });
 
     async function validatePasswords() {
-      await validateFields();
-
-      return changePassword();
+      try {
+        await validateFields();
+        changePassword();
+      } catch(e) {
+        console.log(e)
+      }finally {
+        for (const formField of formFields.value.values()) {
+          if (formField.name === 'password') {
+            formField.touched = false;
+          }
+        }
+      }
     }
 
     async function changePassword() {
