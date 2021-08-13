@@ -200,7 +200,6 @@ export default {
         $rules: [
           {
             rule: () => {
-              console.log(label.value);
               return label.value.length > 50 && 'Label too long';
             },
           },

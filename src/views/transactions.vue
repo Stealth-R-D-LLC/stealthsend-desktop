@@ -163,7 +163,6 @@ export default {
     watchEffect(() => {
       if (currentRoute.value === 'TransactionsQuery') {
         query.value = route.params.address;
-        console.log('QUERY: ', query.value);
       } else {
         query.value = route.params.address;
       }

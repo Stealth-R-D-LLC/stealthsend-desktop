@@ -137,7 +137,7 @@
               <template v-else>
                 {{
                   isHiddenAmounts
-                    ? '$•••  USD'
+                    ? '$••• USD'
                     : `$${formatAmount(
                         Math.abs(item.amount * XST_USD_RATE),
                         false,
@@ -452,7 +452,6 @@ export default {
     );
 
     /* emitter.on('transactions:refresh', () => {
-      console.log('REFRESH')
       orderTransactions();
       CryptoService.getTxWithLabels();
     }); */

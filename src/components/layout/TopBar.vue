@@ -481,7 +481,7 @@
                 <div>
                   <StTooltip
                     :tooltip="
-                      copyPending ? 'Copied to clipboard!' : 'Copy to Clipboard'
+                      copyPending ? 'Copied to Clipboard!' : 'Copy to Clipboard'
                     "
                   >
                     <StClipboard :content="publicKey" @click="handleCopy">
@@ -670,7 +670,7 @@
                     <StTooltip
                       :tooltip="
                         copyPending
-                          ? 'Copied to clipboard!'
+                          ? 'Copied to Clipboard!'
                           : 'Copy to Clipboard'
                       "
                     >
@@ -888,7 +888,6 @@ export default {
       } else {
         headerColor = 'default';
       }
-      console.log('This is header color' + headerColor);
       return {
         'layout__header--is-grey': headerStyle.value != headerColor,
         'layout__header--settings': route.path.split('/').includes('settings'),
@@ -1055,7 +1054,6 @@ export default {
         copyPending.value = false;
       }, 2000);
     }
-
     async function scanWallet() {
       // eslint-disable-next-line no-async-promise-executor
       return new Promise(async (resolve) => {
@@ -1202,7 +1200,7 @@ export default {
   padding: 41px 0 26px !important;
 }
 .layout__header-Transactions {
-  padding: 39px 0 26px !important;
+  padding: 44px 0 26px !important;
 }
 .layout__header--settings {
   width: calc(100% - 392px);
