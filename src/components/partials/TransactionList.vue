@@ -73,7 +73,7 @@
           </template>
           <template #recipient="{ item }">
             <div
-              class="move"
+              class="move amount-fixed"
               :class="{ 'move-left': isExpanded === item.index }"
             >
               <span>{{
@@ -86,7 +86,7 @@
           </template>
           <template #amount="{ item }">
             <div
-              class="move"
+              class="move amount-fixed"
               :class="{ 'move-left': isExpanded === item.index }"
             >
               {{ item.amount > 0 ? '+' : '-' }}
@@ -118,7 +118,7 @@
           </template>
           <template #amountFiat="{ item }">
             <div
-              class="move"
+              class="move amount-fixed"
               :class="{ 'move-left': isExpanded === item.index }"
             >
               {{ item.amount > 0 ? '+' : '-' }}
@@ -525,6 +525,10 @@ export default {
 
 .blocktime span {
   margin-left: 16px;
+}
+
+.amount-fixed {
+  width: 168px;
 }
 
 :deep .table .table__row:hover {
