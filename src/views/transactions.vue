@@ -191,10 +191,10 @@ export default {
             String(el.amount).indexOf(q) > -1 ||
             el?.txid?.toLowerCase().indexOf(q) > -1 ||
             findLabelForTx(el.txid)?.toLowerCase().indexOf(q) > -1 ||
-            el.outputs.some(
+            el.outputs?.some(
               (el) => el?.address?.toLowerCase().indexOf(q) > -1
             ) ||
-            el.txinfo.destinations.some((el) =>
+            el.txinfo.destinations?.some((el) =>
               el.addresses.some((addr) => addr?.toLowerCase().indexOf(q) > -1)
             )
           );
