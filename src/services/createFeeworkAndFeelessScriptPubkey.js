@@ -1,7 +1,7 @@
 // import argon2 from 'argon2-browser';
 // import { XorShift1024Star } from 'xorshift.js';
 // import { Buffer } from 'buffer/index.js';
-import * as stealthWasmFeeless from "./stealth-wasm-feeless/stealth_rust_feeless"
+import * as stealthWasmFeeless from './stealth-wasm-feeless/stealth_rust_feeless';
 
 // Pseudo Code
 
@@ -25,12 +25,12 @@ import * as stealthWasmFeeless from "./stealth-wasm-feeless/stealth_rust_feeless
 // Q6: Feework data is catenated: DATA = HASH + TXBYTES
 
 // Q7: Create starting SALT = XORShift1024*.next()
-// The object XORShift1024* is a PRNG (https://arxiv.org/abs/1810.05313) available in 
-// many programming languages. It’s next() function returns a new pseudo-random number 
-// every time it is called. Initialize with time as a seed. There is no need to worry 
+// The object XORShift1024* is a PRNG (https://arxiv.org/abs/1810.05313) available in
+// many programming languages. It’s next() function returns a new pseudo-random number
+// every time it is called. Initialize with time as a seed. There is no need to worry
 // about cryptographic security for these random numbers.
 
-// Q8: Calculate feework 8 byte OUTPUT using Argon2d (https://github.com/P-H-C/phc-winner-argon2) 
+// Q8: Calculate feework 8 byte OUTPUT using Argon2d (https://github.com/P-H-C/phc-winner-argon2)
 // OUTPUT = Argon2d(MCOST, DATA, SALT, TCOST=1, PARALLELISM=1)
 // Calculate feework 8 byte OUTPUT using
 // if OUTPUT > 0x0006ffffffffffff:
@@ -45,11 +45,11 @@ import * as stealthWasmFeeless from "./stealth-wasm-feeless/stealth_rust_feeless
 // SALT is 8 bytes (created by PRNG as 64 bit unsigned int, big endian)
 // OP_FEEWORK is 0xd1 (209) as 32 bit int, big endian
 
-// FEEWORK is the scriptPubKey for an output with 0 value. Append this 0 value output 
-// to the raw transaction and sign the whole transaction. Feework transactions 
-// MUST be version 4, so the hash of the unsigned transaction needs to be prepended 
-// to calculate the sighash, which is signed as part of the input signature. This is 
-// not done in any standard library, so a custom signature routine needs to be created 
+// FEEWORK is the scriptPubKey for an output with 0 value. Append this 0 value output
+// to the raw transaction and sign the whole transaction. Feework transactions
+// MUST be version 4, so the hash of the unsigned transaction needs to be prepended
+// to calculate the sighash, which is signed as part of the input signature. This is
+// not done in any standard library, so a custom signature routine needs to be created
 // for this part.
 
 export default function createFeeworkAndFeelessScriptPubkey(
