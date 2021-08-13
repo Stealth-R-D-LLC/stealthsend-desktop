@@ -148,7 +148,7 @@
       }"
     ></Card>
     <StTooltip
-      :tooltip="copyPending ? 'Copied to clipboard!' : 'Copy to Clipboard'"
+      :tooltip="copyPending ? 'Copied to Clipboard!' : 'Copy to Clipboard'"
     >
     </StTooltip>
   </div>

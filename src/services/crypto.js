@@ -80,10 +80,9 @@ const CryptoService = {
         this.network
       );
     } catch (e) {
-      console.log('e', e);
+      console.log(e);
       router.push('/lock');
     }
-    console.log('master: ', this.master);
     router.push('/dashboard');
   },
   WIFtoPK(wif) {

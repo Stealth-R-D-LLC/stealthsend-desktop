@@ -32,7 +32,7 @@
       <h6 v-if="activeTab === 'address-book'">Address Book</h6>
       <h6 v-if="activeTab === 'contact-details'">Contact Details</h6>
       <h6 v-if="activeTab === 'add-contact'">Add Contact</h6>
-      <h6 v-if="activeTab === 'edit-contact'">Edit contact</h6>
+      <h6 v-if="activeTab === 'edit-contact'">Edit Contact</h6>
       <div class="icons">
         <svg
           v-if="activeTab === 'address-book'"

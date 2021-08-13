@@ -358,7 +358,6 @@ export default {
           existingAccounts = accounts;
           wallet = await CryptoService.getWalletFromDb();
           isLastAccountEmpty.value = accounts.some((el) => el.utxo === 0);
-          // console.log('exx', existingAccounts);
           // let next = await CryptoService.getNextAccountPath();
           // // get current last existing account
           // const { xpub: lastAccountPk } = CryptoService.getChildFromRoot(

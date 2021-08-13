@@ -26,6 +26,7 @@
   "dependencies": {
     "@beyonk/google-fonts-webpack-plugin": "^1.7.0",
     "@braintree/sanitize-url": "^5.0.2",
+    "@sentry/electron": "^2.5.1",
     "@vueuse/core": "^5.3.0",
     "@vueuse/integrations": "^5.3.0",
     "apexcharts": "^3.27.3",
@@ -51,7 +52,7 @@
     "vue-multiselect": "^3.0.0-alpha.2",
     "vue-router": "^4.0.0-0",
     "vue2-datepicker": "^4.0.0-beta.2",
-    "vue3-form-validation": "^3.2.0",
+    "vue3-form-validation": "^4.1.1",
     "vue3-popper": "^1.2.1",
     "vue3-qr-reader": "^1.0.0",
     "zxcvbn": "^4.4.2"
