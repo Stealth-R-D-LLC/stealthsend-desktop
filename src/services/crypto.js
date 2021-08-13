@@ -581,7 +581,7 @@ const CryptoService = {
               );
             }
             txs.push({
-              outputs: tx.ouptuts,
+              outputs: tx.outputs,
               output: [tx.txinfo.destinations[indexOfDestination]],
               amount: tx.account_balance_change,
               txid: tx.txid,
