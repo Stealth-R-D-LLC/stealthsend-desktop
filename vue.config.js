@@ -1,29 +1,24 @@
 const path = require("path");
 const vueSrc = "./src";
 // const GoogleFontsPlugin = require("@beyonk/google-fonts-webpack-plugin")
+const WasmPackPlugin = require('@wasm-tool/wasm-pack-plugin');
+
 module.exports = {
   runtimeCompiler: true,
   css: {
     requireModuleExtension: true
   },
-  chainWebpack: webpackConfig => {
-    webpackConfig.module
-     .rule('wasm')
-       .test(/.wasm$/)
-       .use('wasm-loader')
-       .loader('wasm-loader')
-  },
   configureWebpack: {
-    // module: {
-    //   noParse: /\.wasm$/,
-    //   rules: [
-    //       {
-    //           test: /\.wasm$/,
-    //           loaders: ['wasm-loader'],
-    //           type: 'javascript/auto'
-    //       }
-    //   ]
-    // },
+    module: {
+      noParse: /argon2\.wasm$/,
+      rules: [
+          {
+              test: /argon2\.wasm$/,
+              loaders: ['base64-loader'],
+              type: 'javascript/auto'
+          }
+      ]
+    },
     resolve: {
       alias: {
         "@": path.resolve(__dirname, vueSrc)
@@ -31,6 +26,9 @@ module.exports = {
       extensions: ['.js', '.vue', '.json']
     },
     plugins: [
+      new WasmPackPlugin({
+        crateDirectory: __dirname + '/stealth-feeless-rust-wasm', // Define where the root of the rust code is located (where the cargo.toml file is located)
+      }),
      /*  new GoogleFontsPlugin({
           fonts: [
               { family: "Source Sans Pro", variants: [ "300", "400", "600", "700", "900" ] },
