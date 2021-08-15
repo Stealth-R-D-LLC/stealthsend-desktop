@@ -6,7 +6,6 @@ import * as bitcoin from 'bitcoinjs-lib';
 import { Buffer } from 'buffer';
 import { add, format, subtract, floor } from 'mathjs';
 
-
 export default async function useTransactionBuilder(utxo, sendForm) {
   const mainStore = useMainStore();
 
@@ -120,13 +119,14 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     if (change.amount > 0) {
       rawTransaction.addOutput(change.address, change.amount);
     }
-    
-    
+
     // create feework and feeless scriptPubkey and add output for feeless trx
     if (fee === 0) {
       rawTransaction.setVersion(4);
       const bestBlock = await mainStore.rpc('getbestblock', []);
-      const feeless = await import('../../stealth-feeless-rust-wasm/pkg/index.js');
+      const feeless = await import(
+        '../../stealth-feeless-rust-wasm/pkg/index.js'
+      );
 
       const txUnsignedHex = rawTransaction.buildIncomplete().toHex();
       console.log('FEELESS txUnsignedHex: ', txUnsignedHex);
@@ -145,7 +145,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         txUnsignedHex,
         bestBlock.height,
         bestBlock.size,
-        bestBlock.hash,
+        bestBlock.hash
       );
 
       console.timeEnd('FEELESS create_feework_and_script_pubkey');
@@ -161,14 +161,18 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       //   bestBlock.hash,
       //   feelessScriptPubkey.toString('hex')
       // );
-      const testFeelessScriptPubkey = feeless.test_create_feework_and_script_pubkey(
-        txUnsignedHex,
-        bestBlock.height,
-        bestBlock.size,
-        bestBlock.hash,
-        feelessScriptPubkey.toString('hex')
+      const testFeelessScriptPubkey =
+        feeless.test_create_feework_and_script_pubkey(
+          txUnsignedHex,
+          bestBlock.height,
+          bestBlock.size,
+          bestBlock.hash,
+          feelessScriptPubkey.toString('hex')
+        );
+      console.log(
+        'FEELESS test results for script pubkey: ',
+        testFeelessScriptPubkey
       );
-      console.log('FEELESS test results for script pubkey: ', testFeelessScriptPubkey);
       rawTransaction.addOutput(Buffer.from(feelessScriptPubkey, 'hex'), 0);
       console.log(
         'TRANSACTION BUILDER: added output with zero amount and opcode OP_FEEWORK'

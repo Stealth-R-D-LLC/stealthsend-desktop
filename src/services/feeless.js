@@ -2,8 +2,6 @@ import argon2 from 'argon2-browser';
 import { XorShift1024Star } from 'xorshift.js';
 import { Buffer } from 'buffer/index.js';
 
-
-
 // Pseudo Code
 
 // Q2: HEIGHT = Get current chain height (e.g. getbestblock RPC), big endian 32 bit unsigned int
@@ -54,143 +52,156 @@ import { Buffer } from 'buffer/index.js';
 // for this part.
 
 const FeelessJS = {
-    async createFeeworkAndScriptPubkey(txUnsignedHex, blockHeight, blockSize, blockHash) {
-      const HEIGHT = blockHeight;
-      const SIZE = parseInt(blockSize, 10);
-      const BLOCKHASH = blockHash;
-  
-      const MCOST = this._getMcostFromSize(SIZE);
-  
-      const DATA = this._getDataBytesFromTxAndHash(txUnsignedHex, BLOCKHASH);
-      const SALT = await this._getWinningSalt(DATA, MCOST);
-  
-      // console.log('HEIGHT     :', HEIGHT);
-      // console.log('SIZE       :', SIZE);
-      // console.log('BLOCKHASH  :', BLOCKHASH);
-      // console.log('MCOST      :', MCOST);
-      // console.log('DATA       :', DATA);
-      // console.log('SALT       :', SALT);
-  
-      const scriptPubkeyBuffer = this._writeScriptPubkey(HEIGHT, MCOST, SALT);
-      return scriptPubkeyBuffer.toString('hex');
-    },
-  
-    _getMcostFromSize(size) {
-      const M = 1000 * 110;
-      const BASE = 256;
-      let COST = (1 + size / 1000) * BASE;
-      let i = 2;
-      while (i <= (31 * size) / 204800) {
-        COST = parseFloat(parseFloat(COST * M) / 100000);
-        i += 1;
-      }
-      const mcosts = [COST, 4608];
-      const MCOST = Number(Math.ceil(Math.min(...mcosts)));
-      return MCOST;
-    },
-  
-    _getDataBytesFromTxAndHash(txUnsignedHex, hash) {
-      const HASH = Buffer.from(hash, 'hex');
-      const TXBYTES = Buffer.from(txUnsignedHex, 'hex');
-      const DATA = Buffer.concat([HASH, TXBYTES]);
-      // console.log('DATA BYTES: ', DATA);
-      // console.log('DATA Hex: ', DATA.toString('hex'));
-      return DATA;
-    },
+  async createFeeworkAndScriptPubkey(
+    txUnsignedHex,
+    blockHeight,
+    blockSize,
+    blockHash
+  ) {
+    const HEIGHT = blockHeight;
+    const SIZE = parseInt(blockSize, 10);
+    const BLOCKHASH = blockHash;
 
-    _getOutputCondition() {
-      return this._hexToBn('0006ffffffffffff');
-    },
-  
-    async _getWinningSalt(data, mcost) {
-      let OUTPUT;
-      let SALT;
-      const outputCondition = this._getOutputCondition();
-      do {
-        try {
-          const seedDate = Date.now();
-          const seed = seedDate.toString(16);
-          const prng = new XorShift1024Star(seed);
-          SALT = prng.randomBytes(8);
-          OUTPUT = await this._getOutputWithArgon2(data, SALT, mcost);
-        } catch (e) {
-          console.log(`FEELESS: Error in crunching the salt`, e);
-          throw new Error(e);
-        }
-      } while (OUTPUT > outputCondition);
-  
-      SALT = this._hexToBn(SALT.toString('hex'));
-      // OUTPUT = this._hexToBn(OUTPUT);
-      return SALT;
-    },
-  
-    async _getOutputWithArgon2(data, salt, mcost) {
-      let output = await argon2.hash({
-        pass: data,
-        salt: salt,
-        time: 1,
-        mem: mcost,
-        hashLen: 8,
-        parallelism: 1,
-        type: argon2.ArgonType.Argon2d,
-      });
-      output = output.hashHex;
-      return this._hexToBn(output);
-    },
-  
-    _writeScriptPubkey(height, mcost, salt) {
-      const OP_FEEWORK = 209; // 0xd1 or 209
-      const FEEWORK_SIZE = 18;
-      const HEIGHT_OFFSET = 1;
-      const MCOST_OFFSET = 5;
-      const SALT_OFFSET = 9;
-      const OPCODE_OFFSET = 17;
-  
-      const scriptPubkey = Buffer.allocUnsafe(FEEWORK_SIZE);
-      
-      scriptPubkey.writeUInt8(16, 0); // 0x10 or 16
-      scriptPubkey.writeUInt32BE(height, HEIGHT_OFFSET);
-      scriptPubkey.writeUInt32BE(mcost, MCOST_OFFSET);
-      scriptPubkey.writeBigUInt64BE(salt, SALT_OFFSET);
-      scriptPubkey.writeUInt8(OP_FEEWORK, OPCODE_OFFSET);
-  
-      return scriptPubkey;
-    },
-  
-    _hexToBn(hex) {
-      if (hex.length % 2) {
-        hex = '0' + hex;
-      }
-      return BigInt('0x' + hex);
-    },
+    const MCOST = this._getMcostFromSize(SIZE);
 
-    async testCreateFeeworkAndScriptPubkey(txUnsignedHex, blockHeight, blockSize, blockHash, scriptPubkeyHex) {
-      let scriptPubkeyBytes = Buffer.from(scriptPubkeyHex, 'hex');
-      let salt = Buffer.allocUnsafe(8);
-      salt.writeUint8(scriptPubkeyBytes[9]);
-      salt.writeUint8(scriptPubkeyBytes[10]);
-      salt.writeUint8(scriptPubkeyBytes[11]);
-      salt.writeUint8(scriptPubkeyBytes[12]);
-      salt.writeUint8(scriptPubkeyBytes[13]);
-      salt.writeUint8(scriptPubkeyBytes[14]);
-      salt.writeUint8(scriptPubkeyBytes[15]);
-      salt.writeUint8(scriptPubkeyBytes[16]);
-    
-      let data = this._getDataBytesFromTxAndHash(txUnsignedHex, blockHash);
-      let mcost = this._getMcostFromSize(blockSize);
-      let output = await this._getOutputWithArgon2(data, salt, mcost);
-      let outputCondition = this._getOutputCondition();
-      let conditionText = "LESS THAN";
-      if(output > outputCondition){
-        conditionText = "GREATER THAN"
-      }
+    const DATA = this._getDataBytesFromTxAndHash(txUnsignedHex, BLOCKHASH);
+    const SALT = await this._getWinningSalt(DATA, MCOST);
 
-      let result = `ScriptPubkey length is ${Buffer.byteLength(scriptPubkeyBytes)}, 1st element is ${scriptPubkeyBytes[0]}, `;
-      result += `18th element is ${scriptPubkeyBytes[17]}. Output is ${output}, which is ${conditionText} `;
-      result += `of output condition ${outputCondition}.`;
+    // console.log('HEIGHT     :', HEIGHT);
+    // console.log('SIZE       :', SIZE);
+    // console.log('BLOCKHASH  :', BLOCKHASH);
+    // console.log('MCOST      :', MCOST);
+    // console.log('DATA       :', DATA);
+    // console.log('SALT       :', SALT);
 
-      return result;
+    const scriptPubkeyBuffer = this._writeScriptPubkey(HEIGHT, MCOST, SALT);
+    return scriptPubkeyBuffer.toString('hex');
+  },
+
+  _getMcostFromSize(size) {
+    const M = 1000 * 110;
+    const BASE = 256;
+    let COST = (1 + size / 1000) * BASE;
+    let i = 2;
+    while (i <= (31 * size) / 204800) {
+      COST = parseFloat(parseFloat(COST * M) / 100000);
+      i += 1;
     }
+    const mcosts = [COST, 4608];
+    const MCOST = Number(Math.ceil(Math.min(...mcosts)));
+    return MCOST;
+  },
+
+  _getDataBytesFromTxAndHash(txUnsignedHex, hash) {
+    const HASH = Buffer.from(hash, 'hex');
+    const TXBYTES = Buffer.from(txUnsignedHex, 'hex');
+    const DATA = Buffer.concat([HASH, TXBYTES]);
+    // console.log('DATA BYTES: ', DATA);
+    // console.log('DATA Hex: ', DATA.toString('hex'));
+    return DATA;
+  },
+
+  _getOutputCondition() {
+    return this._hexToBn('0006ffffffffffff');
+  },
+
+  async _getWinningSalt(data, mcost) {
+    let OUTPUT;
+    let SALT;
+    const outputCondition = this._getOutputCondition();
+    do {
+      try {
+        const seedDate = Date.now();
+        const seed = seedDate.toString(16);
+        const prng = new XorShift1024Star(seed);
+        SALT = prng.randomBytes(8);
+        OUTPUT = await this._getOutputWithArgon2(data, SALT, mcost);
+      } catch (e) {
+        console.log(`FEELESS: Error in crunching the salt`, e);
+        throw new Error(e);
+      }
+    } while (OUTPUT > outputCondition);
+
+    SALT = this._hexToBn(SALT.toString('hex'));
+    // OUTPUT = this._hexToBn(OUTPUT);
+    return SALT;
+  },
+
+  async _getOutputWithArgon2(data, salt, mcost) {
+    let output = await argon2.hash({
+      pass: data,
+      salt: salt,
+      time: 1,
+      mem: mcost,
+      hashLen: 8,
+      parallelism: 1,
+      type: argon2.ArgonType.Argon2d,
+    });
+    output = output.hashHex;
+    return this._hexToBn(output);
+  },
+
+  _writeScriptPubkey(height, mcost, salt) {
+    const OP_FEEWORK = 209; // 0xd1 or 209
+    const FEEWORK_SIZE = 18;
+    const HEIGHT_OFFSET = 1;
+    const MCOST_OFFSET = 5;
+    const SALT_OFFSET = 9;
+    const OPCODE_OFFSET = 17;
+
+    const scriptPubkey = Buffer.allocUnsafe(FEEWORK_SIZE);
+
+    scriptPubkey.writeUInt8(16, 0); // 0x10 or 16
+    scriptPubkey.writeUInt32BE(height, HEIGHT_OFFSET);
+    scriptPubkey.writeUInt32BE(mcost, MCOST_OFFSET);
+    scriptPubkey.writeBigUInt64BE(salt, SALT_OFFSET);
+    scriptPubkey.writeUInt8(OP_FEEWORK, OPCODE_OFFSET);
+
+    return scriptPubkey;
+  },
+
+  _hexToBn(hex) {
+    if (hex.length % 2) {
+      hex = '0' + hex;
+    }
+    return BigInt('0x' + hex);
+  },
+
+  async testCreateFeeworkAndScriptPubkey(
+    txUnsignedHex,
+    blockHeight,
+    blockSize,
+    blockHash,
+    scriptPubkeyHex
+  ) {
+    let scriptPubkeyBytes = Buffer.from(scriptPubkeyHex, 'hex');
+    let salt = Buffer.allocUnsafe(8);
+    salt.writeUint8(scriptPubkeyBytes[9]);
+    salt.writeUint8(scriptPubkeyBytes[10]);
+    salt.writeUint8(scriptPubkeyBytes[11]);
+    salt.writeUint8(scriptPubkeyBytes[12]);
+    salt.writeUint8(scriptPubkeyBytes[13]);
+    salt.writeUint8(scriptPubkeyBytes[14]);
+    salt.writeUint8(scriptPubkeyBytes[15]);
+    salt.writeUint8(scriptPubkeyBytes[16]);
+
+    let data = this._getDataBytesFromTxAndHash(txUnsignedHex, blockHash);
+    let mcost = this._getMcostFromSize(blockSize);
+    let output = await this._getOutputWithArgon2(data, salt, mcost);
+    let outputCondition = this._getOutputCondition();
+    let conditionText = 'LESS THAN';
+    if (output > outputCondition) {
+      conditionText = 'GREATER THAN';
+    }
+
+    let result = `ScriptPubkey length is ${Buffer.byteLength(
+      scriptPubkeyBytes
+    )}, 1st element is ${scriptPubkeyBytes[0]}, `;
+    result += `18th element is ${scriptPubkeyBytes[17]}. Output is ${output}, which is ${conditionText} `;
+    result += `of output condition ${outputCondition}.`;
+
+    return result;
+  },
 };
 
 export default FeelessJS;
