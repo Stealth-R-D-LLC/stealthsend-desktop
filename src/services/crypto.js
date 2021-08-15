@@ -8,7 +8,6 @@ import cryptoJs from 'crypto-js';
 import { add, format } from 'mathjs';
 import db from '../db';
 
-
 let networkConfig = {
   messagePrefix: 'unused',
   bip32: {
