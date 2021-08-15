@@ -28,6 +28,7 @@
     "@braintree/sanitize-url": "^5.0.2",
     "@vueuse/core": "^4.11.1",
     "@vueuse/integrations": "^4.11.1",
+    "@wasm-tool/wasm-pack-plugin": "^1.5.0",
     "apexcharts": "^3.26.3",
     "argon2-browser": "^1.18.0",
     "base64-loader": "^1.0.0",
