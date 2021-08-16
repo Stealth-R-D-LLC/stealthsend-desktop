@@ -22,6 +22,7 @@
 import { ref } from 'vue';
 import pkgjson from '@/../package.json';
 import SvgIcon from '../partials/SvgIcon.vue';
+
 export default {
   name: 'StNoConnection',
   components: {
