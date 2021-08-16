@@ -190,7 +190,7 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import router from '@/router';
 import CryptoService from '@/services/crypto';
 import { useValidation } from 'vue3-form-validation';
@@ -214,6 +214,8 @@ export default {
     const counterTimeout = ref(null);
     const counter = ref(6);
     const isVideoLoaded = ref(false);
+    const wrongAttempts = ref(0);
+    const cooldown = ref(0);
     /* const animation = ref(null); // for saving the reference to the animation
     const lottieOptions = ref({
       animationData: animationData.default,
@@ -229,28 +231,52 @@ export default {
       // errors,
       // add,
       // submitting,
+      formFields,
       validateFields,
       resetFields,
-    } = useValidation({
-      password: {
-        $value: password,
-        $rules: [
-          async (password) => {
-            if (!password) {
-              return '';
-            }
-            let isValid = await CryptoService.validatePassword(password);
-            if (!isValid) {
-              return 'Incorrect password.';
-            }
-          },
-        ],
+    } = useValidation(
+      {
+        password: {
+          $value: password,
+          $rules: [
+            async (password) => {
+              if (wrongAttempts.value >= 5) {
+                return `Too many attempts. Try again in 30 seconds.`;
+              }
+              if (!password) {
+                return '';
+              }
+              let isValid = await CryptoService.validatePassword(password);
+              if (!isValid) {
+                return 'Incorrect password.';
+              }
+            },
+          ],
+        },
       },
-    });
+      false
+    );
 
     const isLock = computed(() => {
       return mainStore.isLock;
     });
+
+    watch(
+      () => wrongAttempts.value,
+      () => {
+        if (wrongAttempts.value === 5) {
+          cooldown.value = 30;
+          setInterval(() => {
+            if (cooldown.value > 0) {
+              cooldown.value -= 1;
+              if (cooldown.value === 0) {
+                wrongAttempts.value = 0;
+              }
+            }
+          }, 1000);
+        }
+      }
+    );
 
     onMounted(() => {
       let video = document.getElementById('bgAnimation');
@@ -258,6 +284,7 @@ export default {
         isVideoLoaded.value = true;
         setTimeout(() => mainStore.SET_IS_LOCK(true), 3180);
       });
+      wrongAttempts.value = 0;
       mainStore.TOGGLE_DRAWER(false);
       mainStore.SET_OFF_CANVAS_DATA(null);
       if (isLock.value) {
@@ -283,14 +310,38 @@ export default {
     });
 
     async function validatePassword() {
+      if (wrongAttempts.value >= 5) {
+        try {
+          await validateFields();
+        } catch (e) {
+          console.log(e);
+        } finally {
+          for (const formField of formFields.value.values()) {
+            formField.touched = false;
+          }
+        }
+
+        return;
+      }
       try {
         await validateFields();
         await CryptoService.unlock(password.value);
         router.push('/dashboard');
         resetFields();
       } catch (e) {
-        setTimeout(() => (password.value = ''), 500);
-        console.log('e', e);
+        wrongAttempts.value += 1;
+        setTimeout(() => {
+          password.value = '';
+          document
+            .getElementById('password')
+            .getElementsByClassName('st-input__inner')[0]
+            .focus();
+        }, 500);
+        console.log(e);
+      } finally {
+        for (const formField of formFields.value.values()) {
+          formField.touched = false;
+        }
       }
     }
 
