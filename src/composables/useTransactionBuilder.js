@@ -1,6 +1,6 @@
 //import useFeeEstimator from '@/composables/useFeeEstimator';
 import CryptoService from '@/services/crypto';
-// import FeelessJS from '@/services/feeless'
+import FeelessJS from '@/services/feeless';
 import { useMainStore } from '@/store';
 import * as bitcoin from 'bitcoinjs-lib';
 import { Buffer } from 'buffer';
@@ -124,9 +124,9 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     if (fee === 0) {
       rawTransaction.setVersion(4);
       const bestBlock = await mainStore.rpc('getbestblock', []);
-      const feeless = await import(
-        '../../stealth-feeless-rust-wasm/pkg/index.js'
-      );
+      // const feeless = await import(
+      //   '../../stealth-feeless-rust-wasm/pkg/index.js'
+      // );
 
       const txUnsignedHex = rawTransaction.buildIncomplete().toHex();
       console.log('FEELESS txUnsignedHex: ', txUnsignedHex);
@@ -135,18 +135,18 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       console.log('FEELESS hash: ', bestBlock.hash);
       console.time('FEELESS create_feework_and_script_pubkey');
 
-      // const feelessScriptPubkey = await FeelessJS.createFeeworkAndScriptPubkey(
-      //   txUnsignedHex,
-      //   bestBlock.height,
-      //   bestBlock.size,
-      //   bestBlock.hash,
-      // );
-      const feelessScriptPubkey = feeless.create_feework_and_script_pubkey(
+      const feelessScriptPubkey = await FeelessJS.createFeeworkAndScriptPubkey(
         txUnsignedHex,
         bestBlock.height,
         bestBlock.size,
         bestBlock.hash
       );
+      // const feelessScriptPubkey = feeless.create_feework_and_script_pubkey(
+      //   txUnsignedHex,
+      //   bestBlock.height,
+      //   bestBlock.size,
+      //   bestBlock.hash
+      // );
 
       console.timeEnd('FEELESS create_feework_and_script_pubkey');
 
@@ -154,21 +154,22 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         'TRANSACTION BUILDER: feeless script sig key hex: ',
         feelessScriptPubkey.toString('hex')
       );
-      // const testFeelessScriptPubkey = await FeelessJS.testCreateFeeworkAndScriptPubkey(
-      //   txUnsignedHex,
-      //   bestBlock.height,
-      //   bestBlock.size,
-      //   bestBlock.hash,
-      //   feelessScriptPubkey.toString('hex')
-      // );
       const testFeelessScriptPubkey =
-        feeless.test_create_feework_and_script_pubkey(
+        await FeelessJS.testCreateFeeworkAndScriptPubkey(
           txUnsignedHex,
           bestBlock.height,
           bestBlock.size,
           bestBlock.hash,
           feelessScriptPubkey.toString('hex')
         );
+      // const testFeelessScriptPubkey =
+      //   feeless.test_create_feework_and_script_pubkey(
+      //     txUnsignedHex,
+      //     bestBlock.height,
+      //     bestBlock.size,
+      //     bestBlock.hash,
+      //     feelessScriptPubkey.toString('hex')
+      //   );
       console.log(
         'FEELESS test results for script pubkey: ',
         testFeelessScriptPubkey

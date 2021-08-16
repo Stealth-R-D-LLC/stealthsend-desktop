@@ -66,19 +66,27 @@ pub fn create_feework_and_script_pubkey(tx_unsigned_hex: String, block_height: u
     // DATA
     let data = get_data_from_tx_and_block_hash(tx_unsigned_hex, block_hash);
 
-    // SALT
-    let output_condition = get_output_condition();
-    let mut salt = create_salt();
+    // WORK
+    let mut now = Utc::now().timestamp_millis() as u64;
+    let mut sm: SplitMix64 = SeedableRng::from_seed(now);
+    let mut rng: Xorshift1024 = Rand::rand(&mut sm);
+    let mut work = rng.next_u64().to_be_bytes().to_vec();
+
     let config = get_argon2_config(mcost);
-    let mut output = hash_data_with_salt(&data, &salt, &config);
+
+    let mut hash_denary = create_work(&data, &work, &config);
+    let limit_denary = get_limit_denary();
     
-    while output > output_condition {
-        salt = create_salt();
-        output = hash_data_with_salt(&data, &salt, &config);
+    while hash_denary > limit_denary {
+        now = Utc::now().timestamp_millis() as u64;
+        sm = SeedableRng::from_seed(now);
+        rng = Rand::rand(&mut sm);
+        work = rng.next_u64().to_be_bytes().to_vec();
+        hash_denary = create_work(&data, &work, &config);
     }
 
     // script pubkey
-    get_script_pubkey(block_height, mcost, &salt)
+    get_script_pubkey(block_height, mcost, &work)
 }
 
 #[wasm_bindgen]
@@ -101,8 +109,8 @@ pub fn test_create_feework_and_script_pubkey(
     // check the salt
     let mcost = get_mcost_from_size(block_size);
     let data = get_data_from_tx_and_block_hash(tx_unsigned_hex, block_hash);
-    let output_condition = get_output_condition();
-    let salt = vec![
+    let limit_denary = get_limit_denary();
+    let work = vec![
         script_pubkey_decoded[9],
         script_pubkey_decoded[10],
         script_pubkey_decoded[11],
@@ -113,10 +121,9 @@ pub fn test_create_feework_and_script_pubkey(
         script_pubkey_decoded[16]
     ];
     let config = get_argon2_config(mcost);
-    let output = hash_data_with_salt(&data, &salt, &config);
-    let is_output_less_than_output_condition = output > output_condition;
+    let hash_denary = create_work(&data, &work, &config);
     let mut condition_text = "GREATER THAN";
-    if !is_output_less_than_output_condition {
+    if !(hash_denary > limit_denary) {
         condition_text = "LESS THAN";
     }
     
@@ -125,9 +132,9 @@ pub fn test_create_feework_and_script_pubkey(
         script_pubkey_decoded.len(),
         script_pubkey_decoded[0],
         script_pubkey_decoded[17],
-        output,
+        hash_denary,
         condition_text,
-        output_condition,
+        limit_denary,
     )
 }
 
@@ -147,15 +154,8 @@ fn get_data_from_tx_and_block_hash(tx_unsigned_hex: String, block_hash: String) 
     (format!("{}{}", block_hash, tx_unsigned_hex)).as_bytes().to_vec()
 }
 
-fn get_output_condition() -> u64 {
+fn get_limit_denary() -> u64 {
     BigEndian::read_u64(&0x0006ffffffffffff_u64.to_be_bytes())
-}
-
-fn create_salt() -> Vec<u8> {
-    let now_salt = Utc::now().timestamp_millis() as u64;
-    let mut sm_salt: SplitMix64 = SeedableRng::from_seed(now_salt);
-    let mut rng_salt: Xorshift1024 = Rand::rand(&mut sm_salt);
-    rng_salt.next_u64().to_be_bytes().to_vec()
 }
 
 fn get_argon2_config(mcost: u32) -> Config<'static> {
@@ -168,20 +168,20 @@ fn get_argon2_config(mcost: u32) -> Config<'static> {
     config
 }
 
-fn hash_data_with_salt(data: &Vec<u8>, salt: &Vec<u8>, config: &Config) -> u64{
-    let output_hash = match argon2::hash_raw(&data, &salt, &config) {
+fn create_work(data: &Vec<u8>, work: &Vec<u8>, config: &Config) -> u64{
+    let hash = match argon2::hash_raw(&data, &work, &config) {
         Ok(hash) => hash,
         Err(err) =>  err.to_string().as_bytes().to_vec()
     };
-    BigEndian::read_u64(&output_hash)
+    BigEndian::read_u64(&hash)
 }
 
 
-fn get_script_pubkey(height: u32, mcost: u32, salt: &[u8]) -> String {
+fn get_script_pubkey(height: u32, mcost: u32, work: &[u8]) -> String {
     let op_feework = 209; // 0xd1 or 209
     let height_offset = 1;
     let mcost_offset = 5;
-    let salt_offset = 9;
+    let work_offset = 9;
     let opcode_offset = 17;
 
     let mut buffer = ByteBuffer::new();
@@ -191,8 +191,8 @@ fn get_script_pubkey(height: u32, mcost: u32, salt: &[u8]) -> String {
     buffer.write_u32(height);
     buffer.set_wpos(mcost_offset);
     buffer.write_u32(mcost);
-    buffer.set_wpos(salt_offset);
-    buffer.write_bytes(&salt);
+    buffer.set_wpos(work_offset);
+    buffer.write_bytes(&work);
     buffer.set_wpos(opcode_offset);
     buffer.write_u8(op_feework);
 
@@ -226,11 +226,11 @@ mod tests {
         assert_eq!(script_pubkey_decoded[0], 16);
         assert_eq!(script_pubkey_decoded[17], 209);
 
-        // check the salt
+        // check the work
         let mcost = get_mcost_from_size(block_size);
         let data = get_data_from_tx_and_block_hash(tx_unsigned_hex, block_hash);
-        let output_condition = get_output_condition();
-        let salt = vec![
+        let limit_denary = get_limit_denary();
+        let work = vec![
             script_pubkey_decoded[9],
             script_pubkey_decoded[10],
             script_pubkey_decoded[11],
@@ -241,7 +241,7 @@ mod tests {
             script_pubkey_decoded[16]
         ];
         let config = get_argon2_config(mcost);
-        let output = hash_data_with_salt(&data, &salt, &config);
-        assert_eq!(output > output_condition, false);
+        let output = create_work(&data, &work, &config);
+        assert_eq!(output > limit_denary, false);
     }
 }
