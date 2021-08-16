@@ -94,7 +94,7 @@
             @close="isScanning = false"
             class="scan-modal"
           >
-            <template #header>Scan Private Key</template>
+            <template #header>Scan XST Address</template>
             <template #body>
               <div class="no-camera" v-show="!cameraAllowed">
                 <svg
