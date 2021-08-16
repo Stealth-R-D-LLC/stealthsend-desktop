@@ -1,0 +1,32 @@
+<svg
+  width="16"
+  height="18"
+  viewBox="0 0 16 18"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M2 18V7"
+    stroke="#4E00F6"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M6 18V9"
+    stroke="#4E00F6"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M10 18V0"
+    stroke="#4E00F6"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M14 18V4"
+    stroke="#4E00F6"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+</svg>

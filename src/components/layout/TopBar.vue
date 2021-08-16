@@ -4,90 +4,22 @@
       <div class="header-left">
         <template v-if="checkVisibilityForRoute(['Dashboard'])">
           <div :class="{ nonclickable: !componentVisibility.txDashboard }">
-            <svg
+            <SvgIcon
+              name="icon-chart"
               :class="{ inactive: !componentVisibility.chart }"
               @click="toggleComponentVisibility('chart')"
-              width="16"
-              height="18"
-              viewBox="0 0 16 18"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M2 18V7"
-                stroke="#4E00F6"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M6 18V9"
-                stroke="#4E00F6"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M10 18V0"
-                stroke="#4E00F6"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M14 18V4"
-                stroke="#4E00F6"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-            </svg>
+            />
           </div>
+
           <div :class="{ nonclickable: !componentVisibility.chart }">
-            <svg
+            <SvgIcon
+              name="icon-dashboard-transactions"
               :class="{ inactive: !componentVisibility.txDashboard }"
               @click="toggleComponentVisibility('txDashboard')"
-              width="18"
-              height="12"
-              viewBox="0 0 18 12"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M4 1H18"
-                stroke="#4E00F6"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M0 1H2"
-                stroke="#4E00F6"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M4 6H18"
-                stroke="#4E00F6"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M0 6H2"
-                stroke="#4E00F6"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M4 11H18"
-                stroke="#4E00F6"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M0 11H2"
-                stroke="#4E00F6"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-            </svg>
+            />
           </div>
         </template>
+
         <template v-if="checkVisibilityForRoute(['AccountDetails'])">
           <div
             v-if="account"
@@ -95,16 +27,10 @@
             @click="openAccountModal"
           >
             <h6>{{ account && account.label }}</h6>
-            <svg
-              width="8"
-              height="7"
-              viewBox="0 0 8 7"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M8 0.5H0L4 6.5L8 0.5Z" fill="#4E00F6" />
-            </svg>
+
+            <SvgIcon name="icon-arrow-down" />
           </div>
+
           <!-- <StMultiselect
           v-model="account"
           :class="{ 'multiselect-filled': account }"
@@ -132,309 +58,101 @@
             </div>
           </template>
         </StMultiselect> -->
+
           <div class="icons-flex">
             <StTooltip
               class="tooltip"
               :tooltip="isHiddenAmounts ? 'Show Values' : 'Hide Values'"
             >
-              <svg
+              <SvgIcon
+                name="icon-eye-opened"
                 v-if="isHiddenAmounts"
                 @click="toggleHiddenAmounts"
-                width="22"
-                height="12"
-                viewBox="0 0 22 12"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
-                  stroke="#4E00F6"
-                  stroke-width="2"
-                />
-                <circle
-                  r="1"
-                  transform="matrix(-1 0 0 1 11 6)"
-                  fill="#4E00F6"
-                  stroke="#4E00F6"
-                  stroke-width="2"
-                />
-              </svg>
-              <svg
+              />
+
+              <SvgIcon
+                name="icon-eye-closed"
                 v-else
                 @click="toggleHiddenAmounts"
-                width="22"
-                height="16"
-                viewBox="0 0 22 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M11 3C7.68629 3 4.68629 4.66667 2 8C4.68629 11.3333 7.68629 13 11 13C14.3137 13 17.3137 11.3333 20 8C19.3945 7.24866 18.7731 6.58199 18.1357 6"
-                  stroke="#4E00F6"
-                  stroke-width="2"
-                />
-                <path d="M7 8L12 8" stroke="#4E00F6" stroke-width="2" />
-                <path d="M19 1L5 15" stroke="#4E00F6" stroke-width="2" />
-              </svg>
+              />
             </StTooltip>
+
             <StTooltip class="tooltip" tooltip="Account Keys">
-              <svg
-                @click="isVisible = true"
-                width="23"
-                height="22"
-                viewBox="0 0 23 22"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12.6111 10.2529V12.2529"
-                  stroke="#4E00F6"
-                  stroke-width="2"
-                />
-                <path
-                  d="M9.61108 10.2529V13.2529"
-                  stroke="#4E00F6"
-                  stroke-width="2"
-                />
-                <path
-                  d="M16.6111 10.2529L8.61108 10.2529"
-                  stroke="#4E00F6"
-                  stroke-width="2"
-                />
-                <path
-                  d="M18.1111 12.7529C19.4918 12.7529 20.6111 11.6336 20.6111 10.2529C20.6111 8.87222 19.4918 7.75293 18.1111 7.75293C16.7304 7.75293 15.6111 8.87222 15.6111 10.2529C15.6111 11.6336 16.7304 12.7529 18.1111 12.7529Z"
-                  stroke="#4E00F6"
-                  stroke-width="2"
-                />
-                <path
-                  d="M16.6111 15.2532C14.2112 18.2532 11.6111 20.2532 11.6111 20.2532C11.6111 20.2532 9.11112 18.2532 6.61113 15.2532C4.11113 12.2532 3.61112 9.25314 3.61112 9.25314L11.6111 2.25315L15.6111 5.75315"
-                  stroke="#4E00F6"
-                  stroke-width="2"
-                />
-              </svg>
+              <SvgIcon name="icon-account-keys" @click="isVisible = true" />
             </StTooltip>
           </div>
         </template>
+
         <template
           v-if="
             checkVisibilityForRoute(['Transactions']) ||
             checkVisibilityForRoute(['TransactionsQuery'])
           "
         >
-          <div class="icons-flex">
+          <div class="icons-flex" role="presentation">
             <StTooltip
               class="tooltip"
               :tooltip="isHiddenAmounts ? 'Show Values' : 'Hide Values'"
             >
-              <svg
+              <SvgIcon
+                name="icon-eye-opened"
                 v-if="isHiddenAmounts"
                 @click="toggleHiddenAmounts"
-                width="22"
-                height="12"
-                viewBox="0 0 22 12"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
-                  stroke="#4E00F6"
-                  stroke-width="2"
-                />
-                <circle
-                  r="1"
-                  transform="matrix(-1 0 0 1 11 6)"
-                  fill="#4E00F6"
-                  stroke="#4E00F6"
-                  stroke-width="2"
-                />
-              </svg>
-              <svg
+              />
+
+              <SvgIcon
+                name="icon-eye-closed"
                 v-else
                 @click="toggleHiddenAmounts"
-                width="22"
-                height="16"
-                viewBox="0 0 22 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M11 3C7.68629 3 4.68629 4.66667 2 8C4.68629 11.3333 7.68629 13 11 13C14.3137 13 17.3137 11.3333 20 8C19.3945 7.24866 18.7731 6.58199 18.1357 6"
-                  stroke="#4E00F6"
-                  stroke-width="2"
-                />
-                <path d="M7 8L12 8" stroke="#4E00F6" stroke-width="2" />
-                <path d="M19 1L5 15" stroke="#4E00F6" stroke-width="2" />
-              </svg>
+              />
             </StTooltip>
           </div>
         </template>
+
         <template v-if="checkVisibilityForRoute(['ArchivedAccounts'])">
           <StTooltip
             class="tooltip"
             :tooltip="isHiddenAmounts ? 'Show Values' : 'Hide Values'"
           >
-            <svg
+            <SvgIcon
+              name="icon-eye-opened"
               v-if="isHiddenAmounts"
               @click="toggleHiddenAmounts"
-              width="22"
-              height="12"
-              viewBox="0 0 22 12"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
-                stroke="#4E00F6"
-                stroke-width="2"
-              />
-              <circle
-                r="1"
-                transform="matrix(-1 0 0 1 11 6)"
-                fill="#4E00F6"
-                stroke="#4E00F6"
-                stroke-width="2"
-              />
-            </svg>
-            <svg
+            />
+
+            <SvgIcon
+              name="icon-eye-closed"
               v-else
               @click="toggleHiddenAmounts"
-              width="22"
-              height="16"
-              viewBox="0 0 22 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M11 3C7.68629 3 4.68629 4.66667 2 8C4.68629 11.3333 7.68629 13 11 13C14.3137 13 17.3137 11.3333 20 8C19.3945 7.24866 18.7731 6.58199 18.1357 6"
-                stroke="#4E00F6"
-                stroke-width="2"
-              />
-              <path d="M7 8L12 8" stroke="#4E00F6" stroke-width="2" />
-              <path d="M19 1L5 15" stroke="#4E00F6" stroke-width="2" />
-            </svg>
+            />
           </StTooltip>
+
           <StTooltip class="tooltip" tooltip="Favorite List">
-            <svg
+            <SvgIcon
+              name="icon-favorite-list"
               @click="toggleDrawer('favourite-list')"
               class="favourite-list"
-              width="24"
-              height="24"
-              viewBox="0 0 24 25"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M14.6218 6.61132L12.8885 3.14551L9.83282 9.33709L3 10.33L7.94427 15.1494L6.77709 21.9546L12.8885 18.7417L19 21.9546"
-                stroke="#4E00F6"
-                stroke-width="2"
-              />
-              <path
-                d="M22.4131 7.14551L18.4131 7.14551"
-                stroke="#4E00F6"
-                stroke-width="2"
-              />
-              <line
-                x1="22.4131"
-                y1="11.1455"
-                x2="14.4131"
-                y2="11.1455"
-                stroke="#4E00F6"
-                stroke-width="2"
-              />
-              <line
-                x1="22.4131"
-                y1="15.1455"
-                x2="14.4131"
-                y2="15.1455"
-                stroke="#4E00F6"
-                stroke-width="2"
-              />
-            </svg>
+            />
           </StTooltip>
         </template>
       </div>
+
       <div class="header-right">
         <p class="rpc-status">{{ rpcStatus }}</p>
+
         <StTooltip class="tooltip" tooltip="Connected to Mainnet">
-          <svg
-            class="rpc-icon"
-            width="22"
-            height="22"
-            viewBox="0 0 22 22"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="11" cy="11" r="11" fill="#E0D3FC" />
-            <path
-              d="M18 11C18 14.866 14.866 18 11 18C7.13401 18 4 14.866 4 11C4 7.13401 7.13401 4 11 4C12.0736 4 13.0907 4.24169 14 4.67363"
-              stroke="#4E00F6"
-              stroke-width="2"
-            />
-            <path d="M17 7L11 13L8 10" stroke="#4E00F6" stroke-width="2" />
-          </svg>
+          <SvgIcon name="icon-rpc-mainnet" class="rpc-icon" />
         </StTooltip>
-        <!-- <StIcon name="support"></StIcon> -->
-        <!-- <StIcon
-        name="notifications"
-        @click="toggleDrawer('recent-notifications')"
-      ></StIcon> -->
+
         <StTooltip class="tooltip" tooltip="Quick Receive">
-          <svg
-            @click="openQuickDeposit"
-            width="18"
-            height="18"
-            viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="M7 7H1V1H7V7Z"
-              stroke="#4E00F6"
-              stroke-width="2"
-            />
-            <path d="M11 0V3H14V1H17V5" stroke="#4E00F6" stroke-width="2" />
-            <path d="M7 18V16H4V17H1V14" stroke="#4E00F6" stroke-width="2" />
-            <path d="M11 18V16H14V17H17V14" stroke="#4E00F6" stroke-width="2" />
-            <path d="M11 13H7V11H4" stroke="#4E00F6" stroke-width="2" />
-            <path d="M10 7H18" stroke="#4E00F6" stroke-width="2" />
-            <path d="M14 9V11H17V9" stroke="#4E00F6" stroke-width="2" />
-            <path d="M1 10V12" stroke="#4E00F6" stroke-width="2" />
-            <path d="M11 9V10.6364" stroke="#4E00F6" stroke-width="2" />
-          </svg>
+          <SvgIcon name="icon-qr-code" @click="openQuickDeposit" />
         </StTooltip>
+
         <StTooltip class="tooltip tooltip-custom" tooltip="Settings">
-          <svg
-            @click="goto('/settings')"
-            width="18"
-            height="18"
-            viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M7 11L18 11" stroke="#4E00F6" stroke-width="2" />
-            <path
-              d="M4 14C5.65685 14 7 12.6569 7 11C7 9.34315 5.65685 8 4 8C2.34315 8 1 9.34315 1 11C1 12.6569 2.34315 14 4 14Z"
-              stroke="#4E00F6"
-              stroke-width="2"
-            />
-            <path d="M0 4H7" stroke="#4E00F6" stroke-width="2" />
-            <path
-              d="M14 7C15.6569 7 17 5.65685 17 4C17 2.34315 15.6569 1 14 1C12.3431 1 11 2.34315 11 4C11 5.65685 12.3431 7 14 7Z"
-              stroke="#4E00F6"
-              stroke-width="2"
-            />
-            <path d="M7 17H18" stroke="#4E00F6" stroke-width="2" />
-          </svg>
+          <SvgIcon name="icon-settings" @click="goto('/settings')" />
         </StTooltip>
       </div>
+
       <StModal
         light
         :visible="isVisible"
@@ -485,77 +203,15 @@
                     "
                   >
                     <StClipboard :content="publicKey" @click="handleCopy">
-                      <svg
-                        width="18"
-                        height="22"
-                        viewBox="0 0 18 22"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M13 6H1V21H13V6Z"
-                          stroke="#4E00F6"
-                          stroke-width="2"
-                        />
-                        <line
-                          x1="17"
-                          y1="18"
-                          x2="17"
-                          stroke="#4E00F6"
-                          stroke-width="2"
-                        />
-                        <path
-                          d="M3 1L18 1"
-                          stroke="#4E00F6"
-                          stroke-width="2"
-                        /></svg
-                    ></StClipboard>
+                      <SvgIcon name="icon-clipboard" />
+                    </StClipboard>
                   </StTooltip>
+
                   <StTooltip tooltip="Show QR Code">
-                    <svg
+                    <SvgIcon
+                      name="icon-generate-qr-code"
                       @click="generatePublicQr"
-                      width="22"
-                      height="22"
-                      viewBox="0 0 22 22"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
-                        d="M9 9H1V1H9V9Z"
-                        stroke="#4E00F6"
-                        stroke-width="2"
-                      />
-                      <path
-                        d="M13 0V4H17V1H21V6"
-                        stroke="#4E00F6"
-                        stroke-width="2"
-                      />
-                      <path
-                        d="M9 22V19H5V21H1V17"
-                        stroke="#4E00F6"
-                        stroke-width="2"
-                      />
-                      <path
-                        d="M13 22V18H17V21H21V18"
-                        stroke="#4E00F6"
-                        stroke-width="2"
-                      />
-                      <path
-                        d="M11 15H8V13H4"
-                        stroke="#4E00F6"
-                        stroke-width="2"
-                      />
-                      <path d="M12 9H22" stroke="#4E00F6" stroke-width="2" />
-                      <path
-                        d="M17 11V14H21V11"
-                        stroke="#4E00F6"
-                        stroke-width="2"
-                      />
-                      <path d="M1 12V15" stroke="#4E00F6" stroke-width="2" />
-                      <path d="M13 11V13" stroke="#4E00F6" stroke-width="2" />
-                    </svg>
+                    />
                   </StTooltip>
                 </div>
               </div>
@@ -597,52 +253,17 @@
                         !showPassword ? 'Show Password' : 'Hide Password'
                       "
                     >
-                      <svg
+                      <SvgIcon
+                        name="icon-eye-opened"
                         v-if="!showPassword"
                         @click="showPassword = true"
-                        width="22"
-                        height="12"
-                        viewBox="0 0 22 12"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          d="M11 11C14.3137 11 17.3137 9.33333 20 6C17.3137 2.66667 14.3137 1 11 1C7.68629 1 4.68629 2.66667 2 6C4.68629 9.33333 7.68629 11 11 11Z"
-                          stroke="#4E00F6"
-                          stroke-width="2"
-                        />
-                        <circle
-                          r="1"
-                          transform="matrix(-1 0 0 1 11 6)"
-                          fill="#4E00F6"
-                          stroke="#4E00F6"
-                          stroke-width="2"
-                        />
-                      </svg>
+                      />
 
-                      <svg
+                      <SvgIcon
+                        name="icon-eye-closed"
                         v-else
                         @click="showPassword = false"
-                        width="22"
-                        height="16"
-                        viewBox="0 0 22 16"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M11 3C7.68629 3 4.68629 4.66667 2 8C4.68629 11.3333 7.68629 13 11 13C14.3137 13 17.3137 11.3333 20 8C19.3945 7.24866 18.7731 6.58199 18.1357 6"
-                          stroke="#4E00F6"
-                          stroke-width="2"
-                        />
-                        <path d="M7 8L12 8" stroke="#4E00F6" stroke-width="2" />
-                        <path
-                          d="M19 1L5 15"
-                          stroke="#4E00F6"
-                          stroke-width="2"
-                        />
-                      </svg>
+                      />
                     </StTooltip>
                   </StInput>
                 </StFormItem>
@@ -675,77 +296,14 @@
                       "
                     >
                       <StClipboard :content="privateKey" @click="handleCopy">
-                        <svg
-                          width="18"
-                          height="22"
-                          viewBox="0 0 18 22"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M13 6H1V21H13V6Z"
-                            stroke="#4E00F6"
-                            stroke-width="2"
-                          />
-                          <line
-                            x1="17"
-                            y1="18"
-                            x2="17"
-                            stroke="#4E00F6"
-                            stroke-width="2"
-                          />
-                          <path
-                            d="M3 1L18 1"
-                            stroke="#4E00F6"
-                            stroke-width="2"
-                          /></svg
-                      ></StClipboard>
+                        <SvgIcon name="icon-clipboard" />
+                      </StClipboard>
                     </StTooltip>
                     <StTooltip tooltip="Show QR code">
-                      <svg
+                      <SvgIcon
+                        name="icon-generate-qr-code"
                         @click="generatePrivateQr"
-                        width="22"
-                        height="22"
-                        viewBox="0 0 22 22"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          d="M9 9H1V1H9V9Z"
-                          stroke="#4E00F6"
-                          stroke-width="2"
-                        />
-                        <path
-                          d="M13 0V4H17V1H21V6"
-                          stroke="#4E00F6"
-                          stroke-width="2"
-                        />
-                        <path
-                          d="M9 22V19H5V21H1V17"
-                          stroke="#4E00F6"
-                          stroke-width="2"
-                        />
-                        <path
-                          d="M13 22V18H17V21H21V18"
-                          stroke="#4E00F6"
-                          stroke-width="2"
-                        />
-                        <path
-                          d="M11 15H8V13H4"
-                          stroke="#4E00F6"
-                          stroke-width="2"
-                        />
-                        <path d="M12 9H22" stroke="#4E00F6" stroke-width="2" />
-                        <path
-                          d="M17 11V14H21V11"
-                          stroke="#4E00F6"
-                          stroke-width="2"
-                        />
-                        <path d="M1 12V15" stroke="#4E00F6" stroke-width="2" />
-                        <path d="M13 11V13" stroke="#4E00F6" stroke-width="2" />
-                      </svg>
+                      />
                     </StTooltip>
                   </div>
                 </div>
@@ -760,6 +318,7 @@
           </div>
         </template>
       </StModal>
+
       <StModal
         light
         :visible="accountVisible"
@@ -794,20 +353,10 @@
                     @click="accountChanged(acc)"
                   >
                     <StTooltip class="tooltip" tooltip="Apply">
-                      <svg
-                        width="18"
-                        height="16"
-                        viewBox="0 0 18 16"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M0 8H16" stroke="#4E00F6" stroke-width="2" />
-                        <path
-                          d="M10.3535 15L16.0006 8L10.3535 1"
-                          stroke="#4E00F6"
-                          stroke-width="2"
-                        />
-                      </svg>
+                      <SvgIcon
+                        name="icon-arrow-right"
+                        class="icon-arrow-right"
+                      />
                     </StTooltip>
                   </div>
                 </transition>
@@ -832,8 +381,12 @@ import emitter from '@/services/emitter';
 import VanillaQR from 'vanillaqr';
 import { useValidation } from 'vue3-form-validation';
 import db from '../../db';
+import SvgIcon from '../partials/SvgIcon.vue';
 
 export default {
+  components: {
+    SvgIcon,
+  },
   setup() {
     const mainStore = useMainStore();
     const { formatAmount } = useHelpers();
@@ -1469,6 +1022,9 @@ export default {
 .account-card .account-card__content .account-card__content--icon {
   display: flex;
   align-items: flex-end;
+}
+.account-card :deep .icon-arrow-right path {
+  stroke: #4e00f6;
 }
 .radio {
   width: 20px;
