@@ -59,22 +59,22 @@ const FeelessJS = {
     blockHash
   ) {
     const HEIGHT = blockHeight;
-    const SIZE = parseInt(blockSize, 10);
+    const SIZE = blockSize;
     const BLOCKHASH = blockHash;
 
     const MCOST = this._getMcostFromSize(SIZE);
 
     const DATA = this._getDataBytesFromTxAndHash(txUnsignedHex, BLOCKHASH);
-    const SALT = await this._getWinningSalt(DATA, MCOST);
+    const WORK = await this._createWork(DATA, MCOST);
 
     // console.log('HEIGHT     :', HEIGHT);
     // console.log('SIZE       :', SIZE);
     // console.log('BLOCKHASH  :', BLOCKHASH);
     // console.log('MCOST      :', MCOST);
     // console.log('DATA       :', DATA);
-    // console.log('SALT       :', SALT);
+    // console.log('WORK       :', WORK);
 
-    const scriptPubkeyBuffer = this._writeScriptPubkey(HEIGHT, MCOST, SALT);
+    const scriptPubkeyBuffer = this._writeScriptPubkey(HEIGHT, MCOST, WORK);
     return scriptPubkeyBuffer.toString('hex');
   },
 
@@ -84,7 +84,7 @@ const FeelessJS = {
     let COST = (1 + size / 1000) * BASE;
     let i = 2;
     while (i <= (31 * size) / 204800) {
-      COST = parseFloat(parseFloat(COST * M) / 100000);
+      COST = (COST * M) / 100000;
       i += 1;
     }
     const mcosts = [COST, 4608];
@@ -101,47 +101,55 @@ const FeelessJS = {
     return DATA;
   },
 
-  _getOutputCondition() {
+  _getLimitDenary() {
     return this._hexToBn('0006ffffffffffff');
   },
 
-  async _getWinningSalt(data, mcost) {
-    let OUTPUT;
-    let SALT;
-    const outputCondition = this._getOutputCondition();
+  async _createWork(data, mcost) {
+    let HASH_DENARY;
+    let WORK;
+    const LIMIT_DENARY = this._getLimitDenary();
     do {
       try {
         const seedDate = Date.now();
         const seed = seedDate.toString(16);
         const prng = new XorShift1024Star(seed);
-        SALT = prng.randomBytes(8);
-        OUTPUT = await this._getOutputWithArgon2(data, SALT, mcost);
+        const randomBytes = prng.randomBytes(8);
+        WORK = Buffer.from(randomBytes);
+        HASH_DENARY = await this._getHashWithArgon2(data, WORK, mcost);
       } catch (e) {
-        console.log(`FEELESS: Error in crunching the salt`, e);
+        console.log(`FEELESS: Error in crunching the WORK`, e);
         throw new Error(e);
       }
-    } while (OUTPUT > outputCondition);
-
-    SALT = this._hexToBn(SALT.toString('hex'));
-    // OUTPUT = this._hexToBn(OUTPUT);
-    return SALT;
+    } while (HASH_DENARY > LIMIT_DENARY);
+    console.log('HASH_DENARY', HASH_DENARY);
+    console.log('LIMIT_DENARY', LIMIT_DENARY);
+    console.log('WORK bytes', WORK);
+    console.log('WORK bytes readBigUInt64BE', WORK.readBigUInt64BE());
+    console.log(
+      'WORK bytes readBigUInt64BE',
+      this._hexToBn(WORK.toString('hex'))
+    );
+    WORK = WORK.readBigUInt64BE();
+    console.log('WORK hex', WORK);
+    return WORK;
   },
 
-  async _getOutputWithArgon2(data, salt, mcost) {
-    let output = await argon2.hash({
+  async _getHashWithArgon2(data, work, mcost) {
+    let hash = await argon2.hash({
       pass: data,
-      salt: salt,
+      salt: work,
       time: 1,
       mem: mcost,
       hashLen: 8,
       parallelism: 1,
       type: argon2.ArgonType.Argon2d,
     });
-    output = output.hashHex;
-    return this._hexToBn(output);
+    hash = hash.hashHex;
+    return this._hexToBn(hash);
   },
 
-  _writeScriptPubkey(height, mcost, salt) {
+  _writeScriptPubkey(height, mcost, work) {
     const OP_FEEWORK = 209; // 0xd1 or 209
     const FEEWORK_SIZE = 18;
     const HEIGHT_OFFSET = 1;
@@ -154,7 +162,7 @@ const FeelessJS = {
     scriptPubkey.writeUInt8(16, 0); // 0x10 or 16
     scriptPubkey.writeUInt32BE(height, HEIGHT_OFFSET);
     scriptPubkey.writeUInt32BE(mcost, MCOST_OFFSET);
-    scriptPubkey.writeBigUInt64BE(salt, SALT_OFFSET);
+    scriptPubkey.writeBigUInt64BE(work, SALT_OFFSET);
     scriptPubkey.writeUInt8(OP_FEEWORK, OPCODE_OFFSET);
 
     return scriptPubkey;
@@ -175,30 +183,31 @@ const FeelessJS = {
     scriptPubkeyHex
   ) {
     let scriptPubkeyBytes = Buffer.from(scriptPubkeyHex, 'hex');
-    let salt = Buffer.allocUnsafe(8);
-    salt.writeUint8(scriptPubkeyBytes[9]);
-    salt.writeUint8(scriptPubkeyBytes[10]);
-    salt.writeUint8(scriptPubkeyBytes[11]);
-    salt.writeUint8(scriptPubkeyBytes[12]);
-    salt.writeUint8(scriptPubkeyBytes[13]);
-    salt.writeUint8(scriptPubkeyBytes[14]);
-    salt.writeUint8(scriptPubkeyBytes[15]);
-    salt.writeUint8(scriptPubkeyBytes[16]);
+    let work = Buffer.allocUnsafe(8);
+    work.writeUint8(scriptPubkeyBytes[9], 0);
+    work.writeUint8(scriptPubkeyBytes[10], 1);
+    work.writeUint8(scriptPubkeyBytes[11], 2);
+    work.writeUint8(scriptPubkeyBytes[12], 3);
+    work.writeUint8(scriptPubkeyBytes[13], 4);
+    work.writeUint8(scriptPubkeyBytes[14], 5);
+    work.writeUint8(scriptPubkeyBytes[15], 6);
+    work.writeUint8(scriptPubkeyBytes[16], 7);
 
     let data = this._getDataBytesFromTxAndHash(txUnsignedHex, blockHash);
     let mcost = this._getMcostFromSize(blockSize);
-    let output = await this._getOutputWithArgon2(data, salt, mcost);
-    let outputCondition = this._getOutputCondition();
+    let hashDenary = await this._getHashWithArgon2(data, work, mcost);
+    let limitDenary = this._getLimitDenary();
     let conditionText = 'LESS THAN';
-    if (output > outputCondition) {
+    if (hashDenary > limitDenary) {
       conditionText = 'GREATER THAN';
     }
 
+    let workDenary = this._hexToBn(work.toString('hex'));
     let result = `ScriptPubkey length is ${Buffer.byteLength(
       scriptPubkeyBytes
     )}, 1st element is ${scriptPubkeyBytes[0]}, `;
-    result += `18th element is ${scriptPubkeyBytes[17]}. Output is ${output}, which is ${conditionText} `;
-    result += `of output condition ${outputCondition}.`;
+    result += `18th element is ${scriptPubkeyBytes[17]}. Hash denary is ${hashDenary}, which is ${conditionText} `;
+    result += `of limit denary ${limitDenary}. Work denary is ${workDenary}`;
 
     return result;
   },
