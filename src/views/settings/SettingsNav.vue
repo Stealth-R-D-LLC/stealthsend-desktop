@@ -105,17 +105,6 @@
       <div class="group-title">
         <h6 class="semi-bold">About</h6>
         <SvgIcon name="icon-info" />
-        <!-- <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <circle cx="10" cy="10" r="9" stroke="#4E00F6" stroke-width="2" />
-          <circle cx="10" cy="7" r="1" fill="#4E00F6" />
-          <path stroke="#4E00F6" stroke-width="2" d="M10 9v5" />
-        </svg> -->
       </div>
 
       <ul class="group">
