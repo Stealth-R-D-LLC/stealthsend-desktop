@@ -26,36 +26,7 @@
         <template v-else>
           <div class="progress-container">
             <div class="progress">
-              <svg
-                class="progress-animated"
-                version="1.1"
-                id="circle"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                x="0px"
-                y="0px"
-                viewBox="0 0 100 100"
-                xml:space="preserve"
-              >
-                <circle
-                  fill="none"
-                  stroke="#A67FFA"
-                  stroke-width="1"
-                  stroke-mitterlimit="0"
-                  cx="50"
-                  cy="50"
-                  r="48"
-                  stroke-dasharray="360"
-                  stroke-linecap="round"
-                  transform="rotate(-90 ) translate(-100 0)"
-                >
-                  <animate
-                    attributeName="stroke-dashoffset"
-                    values="50;430"
-                    dur="5.6s"
-                  ></animate>
-                </circle>
-              </svg>
+              <SvgIcon name="icon-loader" class="progress-animated" />
               <div class="overlay-progress">{{ counter }}s</div>
             </div>
           </div>
@@ -75,7 +46,12 @@
 import { ref } from 'vue';
 import db from '@/db';
 import router from '@/router';
+import SvgIcon from '../../components/partials/SvgIcon.vue';
+
 export default {
+  components: {
+    SvgIcon,
+  },
   setup() {
     const isCleared = ref(false);
     const timeout = ref(null);
