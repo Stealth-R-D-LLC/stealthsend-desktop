@@ -27,41 +27,12 @@
           <template #status="{ item }">
             <div class="flex-center-vertical">
               <template v-if="item.amount > 0">
-                <svg
-                  width="24"
-                  height="24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <circle cx="12" cy="12" r="12" fill="#D6F8F0" />
-                  <path d="M7 14v3h10v-3" stroke="#07AC82" stroke-width="2" />
-                  <path
-                    d="M10 11l2 2 2-2"
-                    stroke="#07AC82"
-                    stroke-width="2"
-                    stroke-linecap="square"
-                  />
-                  <path d="M12 6v7" stroke="#07AC82" stroke-width="2" />
-                </svg>
+                <SvgIcon name="icon-transactions-received" />
                 <template v-if="$route.name !== 'Dashboard'">Received</template>
               </template>
+
               <template v-else-if="item.amount < 0">
-                <svg
-                  width="24"
-                  height="24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <circle cx="12" cy="12" r="12" fill="#E5E4E8" />
-                  <path d="M7 13v3h10v-3" stroke="#8B8A8D" stroke-width="2" />
-                  <path
-                    d="M14 8l-2-2-2 2"
-                    stroke="#8B8A8D"
-                    stroke-width="2"
-                    stroke-linecap="square"
-                  />
-                  <path d="M12 6v7" stroke="#8B8A8D" stroke-width="2" />
-                </svg>
+                <SvgIcon name="icon-transactions-sent" />
                 <template v-if="$route.name !== 'Dashboard'">Sent</template>
               </template>
             </div>
@@ -324,12 +295,14 @@ import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
 import { ref, computed, watch, onMounted } from 'vue';
 import CryptoService from '@/services/crypto';
 import { useMainStore } from '@/store';
+import SvgIcon from '../partials/SvgIcon.vue';
 /* import emitter from '@/services/emitter'; */
 
 export default {
   name: 'StTransactionList',
   components: {
     Filters,
+    SvgIcon,
   },
   props: {
     transactions: {
