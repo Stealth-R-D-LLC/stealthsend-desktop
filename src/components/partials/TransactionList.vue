@@ -529,6 +529,7 @@ export default {
 
 .amount-fixed {
   width: 168px;
+  display: inline-block;
 }
 
 :deep .table .table__row:hover {
