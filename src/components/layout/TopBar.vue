@@ -1197,17 +1197,20 @@ export default {
   align-items: center;
 }
 .layout__header-Dashboard {
-  padding: 41px 0 26px !important;
+  padding: 44px 0 26px !important;
 }
 .layout__header-Transactions {
-  padding: 44px 0 26px !important;
+  padding: 48px 0 26px !important;
+}
+.layout__header-ArchivedAccounts {
+  padding: 45px 0 26px !important;
 }
 .layout__header--settings {
   width: calc(100% - 392px);
   margin-left: auto;
 }
 .layout__header--settings .layout__header {
-  padding: 43px 0 24px !important;
+  padding: 45px 0 24px !important;
 }
 .layout__header--is-grey {
   background: var(--background100);
