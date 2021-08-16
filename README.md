@@ -47,11 +47,18 @@ npm run dev
 
 ### Building
 
-Builds for desktop apps are still in research state and this is yet to be documented.
+```
+npm run electron:build --linux
+```
 
 ### Deploying / Publishing
 
-Deploys for desktop apps are still in research state and this is yet to be documented.
+Artifacts for all platforms are created automatically on develop and all feature branches.
+
+### Captain's log
+* buffer has to stay on version 5.7.x (do not upgrade to 6.x.x) because transactions would need refactoring.
+* bitcoinjs-lib has to stay on 5.2.x because TransactionBuilder will later be deprecated
+* eslint has to stay on 6.7.x because it messes up the linux build process
 
 ### Contributing
 

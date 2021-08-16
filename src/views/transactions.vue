@@ -163,7 +163,6 @@ export default {
     watchEffect(() => {
       if (currentRoute.value === 'TransactionsQuery') {
         query.value = route.params.address;
-        console.log('QUERY: ', query.value);
       } else {
         query.value = route.params.address;
       }
@@ -191,10 +190,10 @@ export default {
             String(el.amount).indexOf(q) > -1 ||
             el?.txid?.toLowerCase().indexOf(q) > -1 ||
             findLabelForTx(el.txid)?.toLowerCase().indexOf(q) > -1 ||
-            el.outputs.some(
+            el.outputs?.some(
               (el) => el?.address?.toLowerCase().indexOf(q) > -1
             ) ||
-            el.txinfo.destinations.some((el) =>
+            el.txinfo.destinations?.some((el) =>
               el.addresses.some((addr) => addr?.toLowerCase().indexOf(q) > -1)
             )
           );
@@ -275,6 +274,12 @@ export default {
 }
 .transactions-table :deep td:nth-child(5) {
   width: 230px;
+  /* overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  word-break: break-all; */
 }
 .transactions-table :deep td:nth-child(5) div {
   overflow: hidden;

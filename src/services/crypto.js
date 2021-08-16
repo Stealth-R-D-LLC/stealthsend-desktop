@@ -80,10 +80,9 @@ const CryptoService = {
         this.network
       );
     } catch (e) {
-      console.log('e', e);
+      console.log(e);
       router.push('/lock');
     }
-    console.log('master: ', this.master);
     router.push('/dashboard');
   },
   WIFtoPK(wif) {
@@ -582,7 +581,7 @@ const CryptoService = {
               );
             }
             txs.push({
-              outputs: tx.ouptuts,
+              outputs: tx.outputs,
               output: [tx.txinfo.destinations[indexOfDestination]],
               amount: tx.account_balance_change,
               txid: tx.txid,

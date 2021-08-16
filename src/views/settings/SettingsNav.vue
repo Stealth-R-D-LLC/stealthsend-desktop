@@ -225,7 +225,7 @@ export default {
       router.push(path);
     }
     function openWebsite() {
-      window.open('https://stealth.org/', '_blank').focus();
+      window.open('https://stealth.org/', '_blank');
     }
     return {
       goTo,

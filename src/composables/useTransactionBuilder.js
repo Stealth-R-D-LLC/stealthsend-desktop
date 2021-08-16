@@ -38,15 +38,12 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         // similar logic like in accountDiscovery
         const acc = CryptoService.getChildFromRoot(accountIndex, j, i);
         if (acc.address === address) {
-          console.log('tu');
           let path = CryptoService.breakAccountPath(
             `${accountIndex}'/${j}/${i}`
           );
           return path;
         }
-        console.log('nisam tu');
       }
-      console.log('NISAM TU 2');
     }
   }
 

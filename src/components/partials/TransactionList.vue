@@ -73,7 +73,7 @@
           </template>
           <template #recipient="{ item }">
             <div
-              class="move"
+              class="move amount-fixed"
               :class="{ 'move-left': isExpanded === item.index }"
             >
               <span>{{
@@ -86,7 +86,7 @@
           </template>
           <template #amount="{ item }">
             <div
-              class="move"
+              class="move amount-fixed"
               :class="{ 'move-left': isExpanded === item.index }"
             >
               {{ item.amount > 0 ? '+' : '-' }}
@@ -108,7 +108,7 @@
                   placement="top"
                   hover
                 >
-                  {{ formatLabel(findLabelForTx(item.txid)) }}
+                  {{ findLabelForTx(item.txid) }}
                 </StPopper>
               </template>
               <template v-else>
@@ -118,7 +118,7 @@
           </template>
           <template #amountFiat="{ item }">
             <div
-              class="move"
+              class="move amount-fixed"
               :class="{ 'move-left': isExpanded === item.index }"
             >
               {{ item.amount > 0 ? '+' : '-' }}
@@ -137,13 +137,13 @@
               <template v-else>
                 {{
                   isHiddenAmounts
-                    ? '$•••'
+                    ? '$••• USD'
                     : `$${formatAmount(
                         Math.abs(item.amount * XST_USD_RATE),
                         false,
                         4,
                         4
-                      )}`
+                      )} USD`
                 }}
               </template>
             </div>
@@ -439,14 +439,6 @@ export default {
       return mainStore.txWithLabels[tx];
     }
 
-    function formatLabel(label) {
-      if (label.length > 20) {
-        return label.slice(0, 20) + '...';
-      } else {
-        return label;
-      }
-    }
-
     onMounted(async () => {
       orderTransactions();
       await CryptoService.getTxWithLabels();
@@ -460,7 +452,6 @@ export default {
     );
 
     /* emitter.on('transactions:refresh', () => {
-      console.log('REFRESH')
       orderTransactions();
       CryptoService.getTxWithLabels();
     }); */
@@ -474,7 +465,6 @@ export default {
       formatAmount,
       filterByDirection,
       filterByPeriod,
-      formatLabel,
       todayOrYesterday,
       XST_USD_RATE,
       txDates,
@@ -535,6 +525,10 @@ export default {
 
 .blocktime span {
   margin-left: 16px;
+}
+
+.amount-fixed {
+  width: 168px;
 }
 
 :deep .table .table__row:hover {

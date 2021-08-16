@@ -30,9 +30,6 @@
               placeholder="Please enter your current password"
               v-model="password"
             ></StInput>
-            <template #description>
-              Please enter a password you are using to access the application
-            </template>
           </StFormItem>
           <StFormItem
             label="New password"
@@ -45,10 +42,6 @@
               placeholder="Please enter your new password"
               v-model="newPassword"
             ></StInput>
-            <template #description>
-              Please enter a unique and unused password for accessing the
-              application
-            </template>
           </StFormItem>
           <StFormItem
             label="Confirm password"
@@ -61,7 +54,6 @@
               placeholder="Re-enter the new password. Make sure the passwords are identical"
               v-model="confirmNewPassword"
             ></StInput>
-            <template #description> Newly set password need to match </template>
           </StFormItem>
         </div>
       </div>
@@ -76,6 +68,7 @@ import cryptoJs from 'crypto-js';
 import db from '../../db';
 import { useValidation } from 'vue3-form-validation';
 import router from '@/router';
+import zxcvbn from 'zxcvbn';
 
 export default {
   name: 'StSettingsPassword',
@@ -84,7 +77,7 @@ export default {
     const newPassword = ref('');
     const confirmNewPassword = ref('');
 
-    const { form, validateFields } = useValidation({
+    const { form, formFields, validateFields } = useValidation({
       password: {
         $value: password,
         $rules: [
@@ -103,7 +96,28 @@ export default {
         $value: newPassword,
         $rules: [
           {
-            rule: () => newPassword.value.length || 'New password is required',
+            rule: () => {
+              let details = zxcvbn(newPassword.value);
+              if (details.feedback.warning.length) {
+                return details.feedback.warning;
+              }
+              if (details.feedback.suggestions.length) {
+                if (
+                  'Add another word or two. Uncommon words are better.' ===
+                  details.feedback.suggestions[0]
+                ) {
+                  // replace with
+                  return 'Use a longer keyboard pattern with more turns.';
+                }
+                return details.feedback.suggestions[0];
+              } else {
+                if (details.score < 3) {
+                  return 'Use a longer keyboard pattern with more turns.';
+                } else {
+                  return true;
+                }
+              }
+            },
           },
           {
             key: 'pw',
@@ -131,9 +145,18 @@ export default {
     });
 
     async function validatePasswords() {
-      await validateFields();
-
-      return changePassword();
+      try {
+        await validateFields();
+        changePassword();
+      } catch (e) {
+        console.log(e);
+      } finally {
+        for (const formField of formFields.value.values()) {
+          if (formField.name === 'password') {
+            formField.touched = false;
+          }
+        }
+      }
     }
 
     async function changePassword() {
