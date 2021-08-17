@@ -1,7 +1,11 @@
 extern crate wasm_bindgen;
+extern crate argonautica;
+
 use wasm_bindgen::prelude::*;
 
-use argon2::{self, Config, Variant};
+// use argon2::{self, Config, Variant, Version, ThreadMode};
+use argonautica::Hasher;
+use argonautica::config::{Variant};
 use bytebuffer::ByteBuffer;
 use byteorder::{BigEndian, ByteOrder};
 use xorshift::{Rand, Rng, SeedableRng, SplitMix64, Xorshift1024};
@@ -72,9 +76,9 @@ pub fn create_feework_and_script_pubkey(tx_unsigned_hex: String, block_height: u
     let mut rng: Xorshift1024 = Rand::rand(&mut sm);
     let mut work = rng.next_u64().to_be_bytes().to_vec();
 
-    let config = get_argon2_config(mcost);
+    //let config = get_argon2_config(mcost);
 
-    let mut hash_denary = create_work(&data, &work, &config);
+    let mut hash_denary = create_work(&data, &work, &mcost);
     let limit_denary = get_limit_denary();
     
     while hash_denary > limit_denary {
@@ -82,7 +86,7 @@ pub fn create_feework_and_script_pubkey(tx_unsigned_hex: String, block_height: u
         sm = SeedableRng::from_seed(now);
         rng = Rand::rand(&mut sm);
         work = rng.next_u64().to_be_bytes().to_vec();
-        hash_denary = create_work(&data, &work, &config);
+        hash_denary = create_work(&data, &work, &mcost);
     }
 
     // script pubkey
@@ -120,8 +124,8 @@ pub fn test_create_feework_and_script_pubkey(
         script_pubkey_decoded[15],
         script_pubkey_decoded[16]
     ];
-    let config = get_argon2_config(mcost);
-    let hash_denary = create_work(&data, &work, &config);
+    //let config = get_argon2_config(mcost);
+    let hash_denary = create_work(&data, &work, &mcost);
     let mut condition_text = "GREATER THAN";
     if !(hash_denary > limit_denary) {
         condition_text = "LESS THAN";
@@ -158,22 +162,38 @@ fn get_limit_denary() -> u64 {
     BigEndian::read_u64(&0x0006ffffffffffff_u64.to_be_bytes())
 }
 
-fn get_argon2_config(mcost: u32) -> Config<'static> {
-    let mut config = Config::default();
-    config.variant = Variant::Argon2d;
-    config.lanes = 1;
-    config.time_cost = 1;
-    config.mem_cost = mcost;
-    config.hash_length = 8;
-    config
-}
+// fn get_argon2_config(mcost: u32) -> Config<'static> {
+//     let mut config = Config::default();
+//     config.variant = Variant::Argon2d;
+//     config.version = Version::Version13;
+//     config.thread_mode = ThreadMode::Sequential;
+//     config.lanes = 1;
+//     config.time_cost = 1;
+//     config.mem_cost = mcost;
+//     config.hash_length = 8;
+//     config
+// }
 
-fn create_work(data: &Vec<u8>, work: &Vec<u8>, config: &Config) -> u64{
-    let hash = match argon2::hash_raw(&data, &work, &config) {
-        Ok(hash) => hash,
-        Err(err) =>  err.to_string().as_bytes().to_vec()
-    };
-    BigEndian::read_u64(&hash)
+fn create_work(data: &Vec<u8>, work: &Vec<u8>, mcost: &u32) -> u64{
+    // let hash = match argon2::hash_raw(&data, &work, &config) {
+    //     Ok(hash) => hash,
+    //     Err(err) =>  err.to_string().as_bytes().to_vec()
+    // };
+    let mut hasher = Hasher::default();
+    let raw_hash = hasher
+        .configure_hash_len(8)
+        .configure_iterations(1)
+        .configure_lanes(1)
+        .configure_memory_size(*mcost)
+        .configure_threads(1)
+        .configure_variant(Variant::Argon2d)
+        .with_password(data)
+        .with_salt(encode(work))
+        .opt_out_of_secret_key(true)
+        .hash_raw()
+        .unwrap();
+
+    BigEndian::read_u64(raw_hash.raw_hash_bytes())
 }
 
 
@@ -208,7 +228,7 @@ mod tests {
     fn test_create_feework_and_script_pubkey() {
         let tx_unsigned_hex = "0400000002210ecf588314e42044779cdd3ae4d261de6f74da964e3ff371e4aeb3dc6ef6a40000000000ffffffffd47cac8d822b969c65901407614c5abd089b46df6091f9c6bd2e01409c418f290000000000ffffffff02f0490200000000001976a91497ffe061435ece8dcf7431d226583711c1c5611c88acf09c0900000000001976a914631bcbe2e0de22e1b7f5e7464ba1667432c796e288ac00000000".to_string();
         let _block_height = 4995442_u32;
-        let block_size = 161_u32;
+        // let block_size = 161_u32;
         let block_hash = "85041572fdd397dc78a0a444300c6d978a41ad64841530675c54090eb330b4f6".to_string();
         let script_pubkey_hex = "10004c3972000001003fd0b1cd71d6a0ead1".to_string();
 
@@ -222,7 +242,8 @@ mod tests {
         assert_eq!(script_pubkey_decoded[17], 209);
 
         // check the work
-        let mcost = get_mcost_from_size(block_size);
+        // let mut mcost = get_mcost_from_size(block_size);
+        let mcost = 256;
         let data = get_data_from_tx_and_block_hash(tx_unsigned_hex, block_hash);
         let limit_denary = get_limit_denary();
         let work = vec![
@@ -235,11 +256,11 @@ mod tests {
             script_pubkey_decoded[15],
             script_pubkey_decoded[16]
         ];
-        let config = get_argon2_config(mcost);
-        let hash_denary = create_work(&data, &work, &config);
+        //let config = get_argon2_config(mcost);
+        let hash_denary = create_work(&data, &work, &mcost);
         let work_denary = BigEndian::read_u64(&work);
         println!("hash denary is {}, limit denary is {}, work denary is {}", &hash_denary, &limit_denary, &work_denary);
-        assert_eq!(hash_denary > limit_denary, false);
+        assert_eq!(hash_denary < limit_denary, true);
     }
 
     
