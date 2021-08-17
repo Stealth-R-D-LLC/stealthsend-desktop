@@ -122,69 +122,22 @@
           <template #actions="{ item }">
             <div class="icon-container">
               <StTooltip v-if="item.isFeeles" tooltip="Feeless transaction">
-                <svg
-                  width="8"
-                  height="12"
-                  viewBox="0 0 8 12"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M5 5L6 0L0 7H3L2 12L8 5H5Z" fill="#4E00F6" />
-                </svg>
+                <SvgIcon name="icon-feeles" />
               </StTooltip>
-              <svg
+
+              <SvgIcon
+                name="icon-hamburger-menu-light"
                 v-if="isExpanded !== item.index"
                 class="icon"
                 @click="expandIcons(item.index)"
-                width="12"
-                height="10"
-                viewBox="0 0 12 10"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M0 1H8"
-                  stroke="#A2A1A4"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M0 5H12"
-                  stroke="#A2A1A4"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M0 9H12"
-                  stroke="#A2A1A4"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              <svg
-                @click="expandIcons(item.index)"
+              />
+
+              <SvgIcon
+                name="icon-close-primary"
                 v-else
                 class="icon"
-                :class="{ 'icon-active': isExpanded === item.index }"
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M3 3L15 15"
-                  stroke="#6B2AF7"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M3 15L15 3"
-                  stroke="#6B2AF7"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-              </svg>
+                @click="expandIcons(item.index)"
+              />
             </div>
             <div
               class="expanded"
@@ -192,86 +145,20 @@
             >
               <div class="expanded__inner">
                 <StTooltip v-if="item.isFeeles" tooltip="Feeless transaction">
-                  <svg
-                    width="8"
-                    height="12"
-                    viewBox="0 0 8 12"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M5 5L6 0L0 7H3L2 12L8 5H5Z" fill="#4E00F6" />
-                  </svg>
+                  <SvgIcon name="icon-feeles" />
                 </StTooltip>
-                <svg
+
+                <SvgIcon
+                  name="icon-transaction-details"
+                  class="icon-expanded"
                   @click="openTransaction(item)"
+                />
+
+                <SvgIcon
+                  name="icon-edit"
                   class="icon-expanded"
-                  width="19"
-                  height="20"
-                  viewBox="0 0 19 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M13 14L18 19"
-                    stroke="#6B2AF7"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M0 5H6"
-                    stroke="#6B2AF7"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M0 9H9"
-                    stroke="#6B2AF7"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M0 13H9"
-                    stroke="#6B2AF7"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M5 16.4185C5.92643 16.7935 6.9391 17 8 17C12.4183 17 16 13.4183 16 9C16 4.58172 12.4183 1 8 1C6.9391 1 5.92643 1.20651 5 1.58152"
-                    stroke="#6B2AF7"
-                    stroke-width="2"
-                  />
-                </svg>
-                <svg
                   @click="openTransaction(item, true)"
-                  class="icon-expanded"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M0 6.5H6"
-                    stroke="#6B2AF7"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M0 2.5H9"
-                    stroke="#6B2AF7"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M18 4.5L7 16.5L3 18.5L2 17.5L4 13.5L15 1.5L18 4.5Z"
-                    stroke="#6B2AF7"
-                    stroke-width="2"
-                  />
-                  <path d="M5 12.5L8 15.5" stroke="#6B2AF7" stroke-width="2" />
-                  <path d="M13 4.5L15 6.5" stroke="#6B2AF7" stroke-width="2" />
-                </svg>
+                />
               </div>
             </div>
           </template>
@@ -492,7 +379,7 @@ export default {
 :deep .status-text {
   width: 106px;
 }
-.status-text svg {
+.status-text :deep svg {
   margin-right: 16px;
 }
 
