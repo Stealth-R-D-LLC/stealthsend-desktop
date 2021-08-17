@@ -60,54 +60,21 @@
             <div class="card-header">
               <h5>{{ account.label }}</h5>
               <div class="action-icons">
-                <svg
+                <SvgIcon
+                  name="icon-hamburger-menu-primary"
                   :class="[
                     account.utxo === 0 && index === 0 ? 'info-purple' : 'info',
                   ]"
-                  width="10"
-                  height="10"
-                  viewBox="0 0 10 10"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
                   @click="toggleAccountOptions(`${account.label}_${index}`)"
-                >
-                  <path
-                    d="M0 1H7"
-                    stroke="#310296"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M0 5H10"
-                    stroke="#310296"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M0 9H10"
-                    stroke="#310296"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-                <svg
+                />
+
+                <SvgIcon
+                  name="icon-options"
+                  class="handle"
                   v-if="activeAccounts.length > 1"
                   @mousedown="isDraggedActive = true"
                   @mouseup="isDraggedActive = false"
-                  class="handle"
-                  width="10"
-                  height="15"
-                  viewBox="0 0 10 15"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <circle cx="1.5" cy="1.5" r="1.5" fill="#A2A1A4" />
-                  <circle cx="7.5" cy="1.5" r="1.5" fill="#A2A1A4" />
-                  <circle cx="1.5" cy="7.5" r="1.5" fill="#A2A1A4" />
-                  <circle cx="7.5" cy="7.5" r="1.5" fill="#A2A1A4" />
-                  <circle cx="1.5" cy="13.5" r="1.5" fill="#A2A1A4" />
-                  <circle cx="7.5" cy="13.5" r="1.5" fill="#A2A1A4" />
-                </svg>
+                />
               </div>
             </div>
             <div class="amount-container">
@@ -160,20 +127,7 @@
                 >Receive XST</a
               >
               <a v-else-if="account.isFavourite" class="link">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M8 1.85039L9.88593 4.78659C10.0214 4.99742 10.231 5.14973 10.4734 5.21337L13.8486 6.09966L11.6389 8.80063C11.4803 8.99457 11.4002 9.24102 11.4145 9.49118L11.6147 12.9751L8.36304 11.7082C8.12956 11.6173 7.87044 11.6173 7.63696 11.7082L4.38535 12.9751L4.58545 9.49118C4.59982 9.24102 4.51975 8.99457 4.36108 8.80063L2.15137 6.09966L5.52665 5.21337C5.76901 5.14973 5.97865 4.99742 6.11407 4.78659L8 1.85039Z"
-                    stroke="#C3A9FB"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                </svg>
+                <SvgIcon name="icon-favorite" />
                 Favorite
               </a>
               <StTooltip class="tooltip" tooltip="Imported Account">
@@ -186,28 +140,11 @@
               v-show="accountOptions === `${account.label}_${index}`"
               class="account-options"
             >
-              <svg
+              <SvgIcon
+                name="icon-close"
                 class="close"
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
                 @click="accountOptions = ''"
-              >
-                <path
-                  d="M3 3L15 15"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M3 15L15 3"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-              </svg>
+              />
               <ul>
                 <li
                   v-if="
@@ -330,55 +267,23 @@
               </div>
             </template>
           </StModal>
+
           <div class="card__inner">
             <div class="card-header">
               <h5>{{ account.label }}</h5>
               <div class="action-icons">
-                <svg
+                <SvgIcon
+                  name="icon-hamburger-menu-primary"
                   class="info-grey"
-                  width="10"
-                  height="10"
-                  viewBox="0 0 10 10"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
                   @click="toggleAccountOptions(`${account.label}_${index}`)"
-                >
-                  <path
-                    d="M0 1H7"
-                    stroke="#A2A1A4"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M0 5H10"
-                    stroke="#A2A1A4"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M0 9H10"
-                    stroke="#A2A1A4"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-                <svg
+                />
+
+                <SvgIcon
+                  name="icon-options"
+                  class="handle"
                   @mousedown="isDraggedInactive = true"
                   @mouseup="isDraggedInactive = false"
-                  class="handle"
-                  width="10"
-                  height="15"
-                  viewBox="0 0 10 15"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <circle cx="1.5" cy="1.5" r="1.5" fill="#A2A1A4" />
-                  <circle cx="7.5" cy="1.5" r="1.5" fill="#A2A1A4" />
-                  <circle cx="1.5" cy="7.5" r="1.5" fill="#A2A1A4" />
-                  <circle cx="7.5" cy="7.5" r="1.5" fill="#A2A1A4" />
-                  <circle cx="1.5" cy="13.5" r="1.5" fill="#A2A1A4" />
-                  <circle cx="7.5" cy="13.5" r="1.5" fill="#A2A1A4" />
-                </svg>
+                />
               </div>
             </div>
             <div class="amount-container">
@@ -413,28 +318,11 @@
               v-if="accountOptions === `${account.label}_${index}`"
               class="account-options"
             >
-              <svg
+              <SvgIcon
+                name="icon-close"
                 class="close"
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
                 @click="accountOptions = ''"
-              >
-                <path
-                  d="M3 3L15 15"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M3 15L15 3"
-                  stroke="#FAF9FC"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-              </svg>
+              />
               <ul>
                 <li>
                   <a @click="openActivateAccountModal(account)"
@@ -515,9 +403,13 @@ import CryptoService from '../../services/crypto';
 import emitter from '@/services/emitter';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import Sortable from 'sortablejs';
+import SvgIcon from '../partials/SvgIcon.vue';
 
 export default {
   name: 'StAccounts',
+  components: {
+    SvgIcon,
+  },
   // props: {
   //   accounts: {
   //     type: Array,
