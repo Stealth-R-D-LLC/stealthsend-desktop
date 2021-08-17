@@ -94,13 +94,13 @@
                   </svg>
                 </StTooltip>
               </StInput>
-              <a
+              <p
                 v-if="
                   form.password.$errors &&
-                  !form.password.$errors.includes('Incorrect password.')
+                  !form.password.$errors.includes('Incorrect Password.')
                 "
-                class="forgot"
-                @click="forgotPassword = true"
+              ></p>
+              <a class="forgot" @click="forgotPassword = true"
                 >Forgot Password</a
               >
             </StFormItem>
@@ -248,7 +248,7 @@ export default {
               }
               let isValid = await CryptoService.validatePassword(password);
               if (!isValid) {
-                return 'Incorrect password.';
+                return 'Incorrect Password.';
               }
             },
           ],
@@ -482,6 +482,18 @@ h5 {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+.form fieldset {
+  display: flex;
+  flex-direction: column;
+}
+
+.form fieldset .forgot {
+  order: 2;
+}
+
+.form fieldset .st-form-item__error {
+  order: 1;
 }
 svg path,
 svg circle {
