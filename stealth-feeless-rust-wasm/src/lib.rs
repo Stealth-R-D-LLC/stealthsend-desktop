@@ -206,17 +206,12 @@ mod tests {
 
     #[test]
     fn test_create_feework_and_script_pubkey() {
-        let tx_unsigned_hex = "0400000001006d4ef66e08d592fb3eb80bed7f0497db5bb684ef8904637042120ad4a1a6210100000000ffffffff0100c40900000000001976a914631bcbe2e0de22e1b7f5e7464ba1667432c796e288ac00000000".to_string();
-        let block_height = 4862990_u32;
+        let tx_unsigned_hex = "0400000002210ecf588314e42044779cdd3ae4d261de6f74da964e3ff371e4aeb3dc6ef6a40000000000ffffffffd47cac8d822b969c65901407614c5abd089b46df6091f9c6bd2e01409c418f290000000000ffffffff02f0490200000000001976a91497ffe061435ece8dcf7431d226583711c1c5611c88acf09c0900000000001976a914631bcbe2e0de22e1b7f5e7464ba1667432c796e288ac00000000".to_string();
+        let _block_height = 4995442_u32;
         let block_size = 161_u32;
-        let block_hash = "f565ef5502eec02c9f3dd3065b48903bdb7c98e9db8b5526f26359f52b4c46a0".to_string();
+        let block_hash = "85041572fdd397dc78a0a444300c6d978a41ad64841530675c54090eb330b4f6".to_string();
+        let script_pubkey_hex = "10004c3972000001003fd0b1cd71d6a0ead1".to_string();
 
-        let script_pubkey_hex = create_feework_and_script_pubkey(
-            tx_unsigned_hex.clone(),
-            block_height,
-            block_size,
-            block_hash.clone()
-        );
         let script_pubkey_decoded = match decode(&script_pubkey_hex){
             Ok(val) => val,
             Err(_err) => vec![0_u8]
@@ -241,7 +236,11 @@ mod tests {
             script_pubkey_decoded[16]
         ];
         let config = get_argon2_config(mcost);
-        let output = create_work(&data, &work, &config);
-        assert_eq!(output > limit_denary, false);
+        let hash_denary = create_work(&data, &work, &config);
+        let work_denary = BigEndian::read_u64(&work);
+        println!("hash denary is {}, limit denary is {}, work denary is {}", &hash_denary, &limit_denary, &work_denary);
+        assert_eq!(hash_denary > limit_denary, false);
     }
+
+    
 }
