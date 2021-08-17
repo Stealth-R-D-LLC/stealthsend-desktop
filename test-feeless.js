@@ -93,8 +93,8 @@ const FeelessJS = {
   },
 
   _getDataBytesFromTxAndHash(txUnsignedHex, hash) {
-    const HASH = Buffer.from(hash, 'hex');
-    const TXBYTES = Buffer.from(txUnsignedHex, 'hex');
+    const HASH = Buffer.from(hash);
+    const TXBYTES = Buffer.from(txUnsignedHex);
     const DATA = Buffer.concat([HASH, TXBYTES]);
     // console.log('DATA BYTES: ', DATA);
     // console.log('DATA Hex: ', DATA.toString('hex'));
@@ -222,6 +222,7 @@ const FeelessJS = {
 
       // check the work
       let mcost = this._getMcostFromSize(block_size);
+      mcost = 256;
       let data = this._getDataBytesFromTxAndHash(tx_unsigned_hex, block_hash);
       let limit_denary = this._getLimitDenary();
       let scriptPubkeyBytes = Buffer.from(script_pubkey_hex, 'hex');
@@ -234,17 +235,18 @@ const FeelessJS = {
       work.writeUint8(scriptPubkeyBytes[14], 5);
       work.writeUint8(scriptPubkeyBytes[15], 6);
       work.writeUint8(scriptPubkeyBytes[16], 7);
-      let hash_denary = await this._getHashWithArgon2(data, work, mcost);
+      console.log('work hex', work.toString('hex'));
+      let hash_denary = await this._getHashWithArgon2(data, work.toString('hex'), mcost);
+      // let hash_hex = Buffer.from(hash_denary).toString('hex');
       let work_denary = work.readBigUInt64BE();
       console.log("hash denary is %s, limit denary is %s, work denary is %s", hash_denary, limit_denary, work_denary);
-      return work_denary;
+      return hash_denary;
   }
 };
 
 
 async function main() {
   console.log('calling FeelessJS.test_create_feework_and_script_pubkey');
-  
   const result = await FeelessJS.test_create_feework_and_script_pubkey();
   console.log(result);
 }
