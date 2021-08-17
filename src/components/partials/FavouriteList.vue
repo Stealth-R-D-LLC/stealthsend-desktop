@@ -2,28 +2,7 @@
   <div class="favourite-list">
     <div class="top">
       <span class="title">Favorite List</span>
-      <svg
-        @click="closeCanvas"
-        class="close"
-        width="18"
-        height="18"
-        viewBox="0 0 18 18"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M3 3L15 15"
-          stroke="#4E00F6"
-          stroke-width="2"
-          stroke-linejoin="round"
-        />
-        <path
-          d="M3 15L15 3"
-          stroke="#4E00F6"
-          stroke-width="2"
-          stroke-linejoin="round"
-        />
-      </svg>
+      <SvgIcon name="icon-close-primary" class="close" @click="closeCanvas" />
     </div>
     <p v-if="favouritedAccounts.length" class="paragraph">
       Arrange up to 10 favorite accounts
@@ -91,38 +70,13 @@
         </div>
         <div class="account-icons">
           <StTooltip tooltip="Remove from Favorites">
-            <svg
+            <SvgIcon
+              name="icon-favorite-remove"
               @click="removeFromFavoriteList(acc)"
-              width="21"
-              height="20"
-              viewBox="0 0 21 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12 5.5L10.4164 2.5L8.12461 7.43769L3 8.22949L6.7082 12.0729L5.83282 17.5L10.4164 14.9377L15 17.5"
-                stroke="#A2A1A4"
-                stroke-width="2"
-              />
-              <path d="M19 10.5H12.5" stroke="#A2A1A4" stroke-width="2" />
-            </svg>
+            />
           </StTooltip>
           <StTooltip tooltip="Drag to rearrange">
-            <svg
-              class="handle"
-              width="10"
-              height="15"
-              viewBox="0 0 10 15"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle cx="1.5" cy="1.5" r="1.5" fill="#A2A1A4" />
-              <circle cx="7.5" cy="1.5" r="1.5" fill="#A2A1A4" />
-              <circle cx="1.5" cy="7.5" r="1.5" fill="#A2A1A4" />
-              <circle cx="7.5" cy="7.5" r="1.5" fill="#A2A1A4" />
-              <circle cx="1.5" cy="13.5" r="1.5" fill="#A2A1A4" />
-              <circle cx="7.5" cy="13.5" r="1.5" fill="#A2A1A4" />
-            </svg>
+            <SvgIcon name="icon-options" class="handle" />
           </StTooltip>
         </div>
       </div>
@@ -138,9 +92,13 @@ import { useMainStore } from '@/store';
 import emitter from '@/services/emitter';
 import Sortable from 'sortablejs';
 import { useValidation, ValidationError } from 'vue3-form-validation';
+import SvgIcon from '../partials/SvgIcon.vue';
 
 export default {
   name: 'FavouriteList',
+  components: {
+    SvgIcon,
+  },
   setup() {
     const mainStore = useMainStore();
     const account = ref(null);
@@ -303,14 +261,14 @@ export default {
 .paragraph {
   margin-bottom: 32px;
 }
-.close {
+:deep .close {
   cursor: pointer;
 }
-.close path {
+:deep .close path {
   cursor: pointer;
   transition: 0.3s;
 }
-.close:hover path {
+:deep .close:hover path {
   stroke: var(--marine200);
 }
 /* .multiselect-single-label {
@@ -406,14 +364,14 @@ export default {
 .account-icons > .tooltip:last-child {
   margin-left: 26px !important;
 }
-.account-icons svg path,
-.account-icons svg circle {
+.account-icons :deep svg path,
+.account-icons :deep svg circle {
   transition: 0.3s;
 }
-.account-icons svg:hover path {
+.account-icons :deep svg:hover path {
   stroke: var(--marine500);
 }
-.account-icons svg:hover circle {
+.account-icons :deep svg:hover circle {
   fill: var(--marine500);
 }
 .flex-space-between .option {
