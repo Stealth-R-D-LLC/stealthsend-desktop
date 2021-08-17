@@ -283,12 +283,25 @@ export default {
 
     async function getTx(txid) {
       const res = await mainStore.rpc('gettransaction', [txid]);
+      let position = 0;
+      let outputAddresses = mainStore.offCanvasData.outputs?.map((output) => output.address) || [];
+      if (mainStore.account_balance_change < 0) {
+        position = mainStore.offCanvasData.txinfo.destinations?.findIndex(
+          (dest) => outputAddresses.indexOf(dest.addresses[0]) === -1) || 0;
+      } else {
+        position = mainStore.offCanvasData.txinfo.destinations?.findIndex(
+          (dest) => dest.amount === mainStore.offCanvasData.account_balance_change) || 0;
+      }
+      if (position === -1) {
+        position = 0;
+      }
+      if (typeof(mainStore.offCanvasData.vout) === "number") {
+        position = mainStore.offCanvasData.vout;
+      }
       tx.value = {
         ...mainStore.offCanvasData,
         ...res,
-        position: mainStore.offCanvasData.vout
-          ? mainStore.offCanvasData.vout
-          : 0,
+        position
       };
     }
 
