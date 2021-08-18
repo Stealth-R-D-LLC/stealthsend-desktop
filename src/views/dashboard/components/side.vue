@@ -87,8 +87,12 @@ export default {
     const sortedAccounts = computed(() => {
       // sort logic: by favorite position (imported or regular), then regular unfavorited accounts, then imported accounts
       let tmpAccounts = accounts.value;
-      const favourite = tmpAccounts.filter(el => el.isFavourite).sort((a, b) => a.favouritePosition - b.favouritePosition);
-      const rest = tmpAccounts.filter(el => !el.isFavourite).sort((a, b) => {
+      const favourite = tmpAccounts
+        .filter((el) => el.isFavourite)
+        .sort((a, b) => a.favouritePosition - b.favouritePosition);
+      const rest = tmpAccounts
+        .filter((el) => !el.isFavourite)
+        .sort((a, b) => {
           return a.isImported === b.isImported ? 0 : a.isImported ? 1 : -1;
         });
       return favourite.concat(rest);
