@@ -148,6 +148,10 @@ export default {
     const route = useRoute();
     const mainStore = useMainStore();
 
+    const currentRoute = computed(() => {
+      return route.name;
+    });
+
     onMounted(() => {
       query.value = '';
 
@@ -157,9 +161,15 @@ export default {
     });
 
     watchEffect(() => {
-      setTimeout(() => {
-        query.value = route.params.address;
-      }, 1);
+      if (currentRoute.value === 'TransactionsQuery') {
+        setTimeout(() => {
+          query.value = route.params.address;
+        }, 1);
+      } else {
+        setTimeout(() => {
+          query.value = route.params.address;
+        }, 1);
+      }
     });
 
     function findLabelForTx(tx) {
