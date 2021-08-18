@@ -62,11 +62,11 @@ export default {
       // CTRL + ESCAPE combo
       console.log('event 4 stef: ', event);
       console.log('event.ctrlKey: ', event.ctrlKey);
-      console.log('event.key: ', event.key);
+      console.log('event.event.metaKey: ', event.metaKey);
       console.log('event.code: ', event.code);
       if (
         (event.ctrlKey && event.code === 'Escape') ||
-        (event.key === 'Meta' && event.code === 'Escape')
+        (event.metaKey && event.code === 'Escape')
       ) {
         mainStore.SET_IS_LOCK(true);
         router.push('/lock');
