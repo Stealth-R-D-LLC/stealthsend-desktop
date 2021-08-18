@@ -60,7 +60,14 @@ export default {
     document.addEventListener('keydown', function (event) {
       if (router.name === 'Lock') return; // don't handle if already on lock screen
       // CTRL + ESCAPE combo
-      if (event.ctrlKey && event.code === 'Escape') {
+      console.log('event 4 stef: ', event);
+      console.log('event.ctrlKey: ', event.ctrlKey);
+      console.log('event.event.metaKey: ', event.metaKey);
+      console.log('event.code: ', event.code);
+      if (
+        (event.ctrlKey && event.code === 'Escape') ||
+        (event.metaKey && event.code === 'Escape')
+      ) {
         mainStore.SET_IS_LOCK(true);
         router.push('/lock');
       }
