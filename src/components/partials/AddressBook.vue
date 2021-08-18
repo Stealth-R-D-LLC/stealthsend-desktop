@@ -1128,6 +1128,9 @@ svg:hover circle {
   height: 520px;
   box-sizing: border-box;
 }
+:deep .contact-details .st-input__inner {
+  padding-top: 8px;
+}
 :deep .contact-details .st-input__inner[readonly] {
   padding-bottom: 12px;
 }
