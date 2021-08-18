@@ -280,7 +280,10 @@ export default {
           : '?chain=test';
       setTimeout(() => {
         window
-          .open('https://stealthmonitor.org/address/' + address + chain, '_blank')
+          .open(
+            'https://stealthmonitor.org/address/' + address + chain,
+            '_blank'
+          )
           .focus();
       }, 1);
     }
