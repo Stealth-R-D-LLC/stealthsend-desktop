@@ -64,7 +64,10 @@ export default {
       console.log('event.ctrlKey: ', event.ctrlKey);
       console.log('event.key: ', event.key);
       console.log('event.code: ', event.code);
-      if (event.ctrlKey && event.code === 'Escape' || event.key === 'Meta' && event.code === 'Escape') {
+      if (
+        (event.ctrlKey && event.code === 'Escape') ||
+        (event.key === 'Meta' && event.code === 'Escape')
+      ) {
         mainStore.SET_IS_LOCK(true);
         router.push('/lock');
       }
