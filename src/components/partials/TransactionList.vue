@@ -379,7 +379,8 @@ export default {
 :deep .status-text {
   width: 106px;
 }
-.status-text :deep svg {
+
+:deep .status-text svg {
   margin-right: 16px;
 }
 
