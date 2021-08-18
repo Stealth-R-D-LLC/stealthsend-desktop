@@ -88,12 +88,12 @@ export default {
       let sortedAccounts = accounts.value;
       return sortedAccounts
         .sort((a, b) => a.favouritePosition - b.favouritePosition)
-        .sort((a, b) =>
-          a.isFavourite === b.isFavourite ? 0 : a.isFavourite ? -1 : 1
-        )
         .sort((a, b) => {
           return a.isImported === b.isImported ? 0 : a.isImported ? 1 : -1;
-        });
+        })
+        .sort((a, b) =>
+          a.isFavourite === b.isFavourite ? 0 : a.isFavourite ? -1 : 1
+        );
     });
 
     const step = ref(0);
