@@ -159,7 +159,7 @@ export default {
     watchEffect(() => {
       setTimeout(() => {
         query.value = route.params.address;
-      }, 1)
+      }, 1);
     });
 
     function findLabelForTx(tx) {
