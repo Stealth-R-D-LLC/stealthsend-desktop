@@ -188,7 +188,7 @@ fn create_work(data: &Vec<u8>, work: &Vec<u8>, mcost: &u32) -> u64{
         .configure_threads(1)
         .configure_variant(Variant::Argon2d)
         .with_password(data)
-        .with_salt(encode(work))
+        .with_salt(work)
         .opt_out_of_secret_key(true)
         .hash_raw()
         .unwrap();
