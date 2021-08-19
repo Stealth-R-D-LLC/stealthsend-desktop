@@ -235,8 +235,9 @@ const FeelessJS = {
       work.writeUint8(scriptPubkeyBytes[14], 5);
       work.writeUint8(scriptPubkeyBytes[15], 6);
       work.writeUint8(scriptPubkeyBytes[16], 7);
-      console.log('work hex', work.toString('hex'));
-      let hash_denary = await this._getHashWithArgon2(data, work.toString('hex'), mcost);
+      console.log('data', data);
+      console.log('work', work);
+      let hash_denary = await this._getHashWithArgon2(data, work, mcost);
       // let hash_hex = Buffer.from(hash_denary).toString('hex');
       let work_denary = work.readBigUInt64BE();
       console.log("hash denary is %s, limit denary is %s, work denary is %s", hash_denary, limit_denary, work_denary);
