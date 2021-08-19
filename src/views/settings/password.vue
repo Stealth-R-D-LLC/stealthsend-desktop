@@ -99,6 +99,9 @@ export default {
             rule: () => {
               let details = zxcvbn(newPassword.value);
               if (details.feedback.warning.length) {
+                if (details.feedback.warning.includes('Repeats like')) {
+                  return 'Repeats like "aaa" or "abcabc" are easy to guess';
+                }
                 return details.feedback.warning;
               }
               if (details.feedback.suggestions.length) {
