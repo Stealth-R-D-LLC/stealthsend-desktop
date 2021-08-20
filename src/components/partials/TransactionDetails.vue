@@ -188,12 +188,14 @@ export default {
         process.env.VUE_APP_NETWORK === 'mainnet'
           ? '?chain=main'
           : '?chain=test';
-      window
-        .open(
-          'https://stealthmonitor.org/transactions/' + txid + chain,
-          '_blank'
-        )
-        .focus();
+      setTimeout(() => {
+        window
+          .open(
+            'https://stealthmonitor.org/transactions/' + txid + chain,
+            '_blank'
+          )
+          .focus();
+      }, 1);
     }
 
     function openAddressExplorer(address) {
@@ -201,9 +203,14 @@ export default {
         process.env.VUE_APP_NETWORK === 'mainnet'
           ? '?chain=main'
           : '?chain=test';
-      window
-        .open('https://stealthmonitor.org/address/' + address + chain, '_blank')
-        .focus();
+      setTimeout(() => {
+        window
+          .open(
+            'https://stealthmonitor.org/address/' + address + chain,
+            '_blank'
+          )
+          .focus();
+      }, 1);
     }
 
     async function getTx(txid) {
