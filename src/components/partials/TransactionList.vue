@@ -391,6 +391,7 @@ export default {
 .amount-fixed {
   width: 168px;
   display: inline-block;
+  text-align: right;
 }
 
 :deep .table .table__row:hover {
@@ -513,5 +514,14 @@ export default {
 .dashboard-container .table tr td:nth-child(6) .move,
 .dashboard-container .table tr td:nth-child(7) .move {
   white-space: nowrap;
+}
+
+/* Align 'USD Value' column, or third column from the end [:nth-last-child(-n + 3)], to the right */
+:deep .table thead th:nth-last-child(-n + 3) {
+  text-align: right;
+}
+
+:deep .table tbody td:nth-last-child(-n + 3) {
+  text-align: right;
 }
 </style>
