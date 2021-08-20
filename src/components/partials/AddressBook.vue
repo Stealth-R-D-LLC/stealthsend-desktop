@@ -125,6 +125,7 @@
         >
       </div>
     </div>
+
     <!-- CONTACT DETAILS -->
     <div class="contact-details" v-if="activeTab === 'contact-details'">
       <div>
@@ -173,6 +174,8 @@
         <StButton @click="openModal('send')">Send</StButton>
       </div>
     </div>
+
+    <!-- EDIT CONTACT -->
     <div class="edit-contact" v-if="activeTab === 'edit-contact'">
       <div>
         <StFormItem
@@ -213,7 +216,11 @@
           <StInput
             v-model="editContactForm.address"
             placeholder="Please enter a valid XST address"
-          />
+          >
+            <StTooltip tooltip="Scan Address">
+              <SvgIcon name="icon-qr-code" @click="startScanner" />
+            </StTooltip>
+          </StInput>
         </StFormItem>
       </div>
       <div class="add-contact__bottom">
@@ -224,6 +231,7 @@
         <StButton @click="confirmEdit">Save</StButton>
       </div>
     </div>
+
     <!-- ADD CONTACT -->
     <div class="add-contact" v-if="activeTab === 'add-contact'">
       <div>
@@ -713,7 +721,12 @@ export default {
       });
       QRData.value = null;
       isScanning.value = true;
-      addContactForm.value.address = '';
+      if (activeTab.value === 'add-contact') {
+        addContactForm.value.address = '';
+      }
+      if (activeTab.value === 'edit-contact') {
+        editContactForm.value.address = '';
+      }
     }
 
     function onDecode(data) {
@@ -721,7 +734,12 @@ export default {
       if (QRData.value) {
         isScanning.value = false;
         let address = QRData.value.replace(/[^a-z0-9]/gi, '');
-        addContactForm.value.address = address;
+        if (activeTab.value === 'add-contact') {
+          addContactForm.value.address = address;
+        }
+        if (activeTab.value === 'edit-contact') {
+          editContactForm.value.address = address;
+        }
       }
     }
 
