@@ -4,21 +4,7 @@
     <div class="st-settings-nav__body">
       <div class="group-title">
         <h6 class="semi-bold">Security</h6>
-        <svg
-          width="22"
-          height="25"
-          viewBox="0 0 22 25"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M11 11v4" stroke="#4E00F6" stroke-width="2" />
-          <circle cx="11" cy="11" r="2" fill="#4E00F6" />
-          <path
-            d="M2 9.001l9-7 9 7c0 7-9 14-9 14s-9-6.5-9-14z"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
-        </svg>
+        <SvgIcon name="icon-security" />
       </div>
       <ul class="group">
         <router-link to="/settings/password" class="group-item">
@@ -118,17 +104,7 @@
       -->
       <div class="group-title">
         <h6 class="semi-bold">About</h6>
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <circle cx="10" cy="10" r="9" stroke="#4E00F6" stroke-width="2" />
-          <circle cx="10" cy="7" r="1" fill="#4E00F6" />
-          <path stroke="#4E00F6" stroke-width="2" d="M10 9v5" />
-        </svg>
+        <SvgIcon name="icon-info" />
       </div>
 
       <ul class="group">
@@ -162,48 +138,7 @@
       </ul>
       <div class="group-title">
         <h6 class="semi-bold">Help</h6>
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 18 18"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M10 16V17H6V16H10Z"
-            stroke="#4E00F6"
-            stroke-width="2"
-            stroke-linecap="round"
-          />
-          <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M17 13H14V8H17V13Z"
-            stroke="#4E00F6"
-            stroke-width="2"
-            stroke-linecap="round"
-          />
-          <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M4 13H1L1 8H4V13Z"
-            stroke="#4E00F6"
-            stroke-width="2"
-            stroke-linecap="round"
-          />
-          <path
-            d="M2 7C2 4 4.00015 1 9 1C13.9998 1 16 4 16 7"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
-          <path
-            d="M5 17H3C1.99993 17 2.00009 17 2 16V14"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
-        </svg>
+        <SvgIcon name="icon-headset" />
       </div>
       <ul class="group">
         <li class="group-item" @click="goTo('/settings/delete-app-data')">
@@ -217,9 +152,13 @@
 
 <script>
 import router from '@/router';
+import SvgIcon from '../../components/partials/SvgIcon.vue';
 
 export default {
   name: 'StSettingsNav',
+  components: {
+    SvgIcon,
+  },
   setup() {
     function goTo(path) {
       router.push(path);
