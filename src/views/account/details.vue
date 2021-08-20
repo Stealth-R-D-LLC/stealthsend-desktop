@@ -38,88 +38,19 @@
       <div class="account-details-container__body--overflow">
         <div class="icons">
           <div :class="{ nonclickable: !componentVisibility.txDashboard }">
-            <svg
+            <SvgIcon
+              name="icon-chart"
               :class="{ inactive: !componentVisibility.chart }"
               @click="toggleComponentVisibility('chart')"
-              width="16"
-              height="18"
-              viewBox="0 0 16 18"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M2 18V7"
-                stroke="#4E00F6"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M6 18V9"
-                stroke="#4E00F6"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M10 18V0"
-                stroke="#4E00F6"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M14 18V4"
-                stroke="#4E00F6"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-            </svg>
+            />
           </div>
+
           <div :class="{ nonclickable: !componentVisibility.chart }">
-            <svg
+            <SvgIcon
+              name="icon-dashboard-transactions"
               :class="{ inactive: !componentVisibility.txDashboard }"
               @click="toggleComponentVisibility('txDashboard')"
-              width="18"
-              height="12"
-              viewBox="0 0 18 12"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M4 1H18"
-                stroke="#4E00F6"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M0 1H2"
-                stroke="#4E00F6"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M4 6H18"
-                stroke="#4E00F6"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M0 6H2"
-                stroke="#4E00F6"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M4 11H18"
-                stroke="#4E00F6"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M0 11H2"
-                stroke="#4E00F6"
-                stroke-width="2"
-                stroke-linejoin="round"
-              />
-            </svg>
+            />
           </div>
         </div>
         <template v-if="!refreshChart">
@@ -166,6 +97,7 @@ import router from '@/router';
 import { onBeforeRouteLeave } from 'vue-router';
 import emitter from '@/services/emitter';
 import useHelpers from '@/composables/useHelpers';
+import SvgIcon from '../../components/partials/SvgIcon.vue';
 
 export default {
   name: 'StAccountDetails',
@@ -174,6 +106,7 @@ export default {
     Chart,
     TransactionList,
     StLabel,
+    SvgIcon,
   },
   setup() {
     const mainStore = useMainStore();

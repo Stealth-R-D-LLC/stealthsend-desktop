@@ -23,25 +23,11 @@
           placeholder="Loading..."
           disabled
         >
-          <svg
+          <SvgIcon
+            name="icon-loader-address"
             v-if="!depositAddress"
             class="address-loader"
-            width="18"
-            height="18"
-            viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle
-              cx="9"
-              cy="9"
-              r="7"
-              stroke="#E5E4E8"
-              stroke-width="2"
-              stroke-linejoin="round"
-              stroke-dasharray="2 4"
-            />
-          </svg>
+          />
         </StInput>
         <template #description>
           Receiving Account:
@@ -66,9 +52,13 @@ import { useMainStore } from '@/store';
 import { computed, ref } from 'vue';
 import VanillaQR from 'vanillaqr';
 import CryptoService from '@/services/crypto';
+import SvgIcon from '../partials/SvgIcon.vue';
 
 export default {
   name: 'StReceiveModal',
+  components: {
+    SvgIcon,
+  },
   setup() {
     const mainStore = useMainStore();
 

@@ -9,11 +9,7 @@
       <template #header>Scan XST Address</template>
       <template #body>
         <div class="no-camera" v-show="!cameraAllowed">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.005 512.005">
-            <path
-              d="M508.869 3.131c-4.16-4.16-10.923-4.16-15.083 0L3.12 493.797c-4.16 4.16-4.16 10.923 0 15.083a10.716 10.716 0 007.552 3.115c2.731 0 5.461-1.045 7.531-3.115L508.869 18.213c4.16-4.16 4.16-10.922 0-15.082zM352.005 106.661H53.339c-29.419 0-53.333 23.936-53.333 53.333v192c0 29.397 23.915 53.333 53.333 53.333h21.333c5.888 0 10.667-4.779 10.667-10.667s-4.779-10.667-10.667-10.667H53.339c-17.643 0-32-14.357-32-32v-192c0-17.643 14.357-32 32-32h298.667c5.888 0 10.667-4.779 10.667-10.667s-4.78-10.665-10.668-10.665zM507.312 129.829c-2.944-1.963-6.677-2.389-9.941-1.067l-92.032 36.821v-5.589c0-5.888-4.779-10.667-10.667-10.667s-10.667 4.779-10.667 10.667v21.333c0 3.541 1.749 6.848 4.693 8.832a10.769 10.769 0 009.941 1.067l92.032-36.821v203.179l-92.032-36.821a10.646 10.646 0 00-9.941 1.067 10.636 10.636 0 00-4.693 8.832v21.333c0 17.643-14.357 32-32 32h-192c-5.888 0-10.667 4.779-10.667 10.667s4.779 10.667 10.667 10.667h192c29.419 0 53.333-23.936 53.333-53.333v-5.589l92.032 36.821c3.285 1.301 7.019.917 9.941-1.067a10.636 10.636 0 004.693-8.832V138.661a10.633 10.633 0 00-4.692-8.832z"
-            />
-          </svg>
+          <SvgIcon name="icon-no-camera" />
           <h6>There is no connected camera</h6>
         </div>
         <div v-show="isCameraLoading" class="loading-gif">
@@ -34,62 +30,25 @@
       <h6 v-if="activeTab === 'add-contact'">Add Contact</h6>
       <h6 v-if="activeTab === 'edit-contact'">Edit Contact</h6>
       <div class="icons">
-        <svg
+        <SvgIcon
+          name="icon-add-contact"
           v-if="activeTab === 'address-book'"
-          width="18"
-          height="18"
-          viewBox="0 0 18 18"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
           @click="changeTab('add-contact')"
-        >
-          <path d="M12 13H18M15 10V16" stroke="#4E00F6" stroke-width="2" />
-          <circle cx="8" cy="5" r="4" stroke="#4E00F6" stroke-width="2" />
-          <path
-            d="M11 9.59532C10.2091 9.22076 9.29818 9 8.3125 9C5.0625 9 9.9375 9 6.6875 9C3.4375 9 1 11.4 1 13.8C1 16.2 1 17 1 17H11"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
-        </svg>
-        <svg
+        />
+
+        <SvgIcon
+          name="icon-arrow-left"
           v-if="activeTab === 'add-contact' || activeTab === 'contact-details'"
-          width="19"
-          height="14"
-          viewBox="0 0 19 14"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
           @click="changeTab('address-book')"
-        >
-          <path d="M2 7H19" stroke="#4E00F6" stroke-width="2" />
-          <path d="M8 13L2 7L8 1" stroke="#4E00F6" stroke-width="2" />
-        </svg>
-        <svg
+        />
+
+        <SvgIcon
+          name="icon-arrow-left"
           v-if="activeTab === 'edit-contact'"
-          width="19"
-          height="14"
-          viewBox="0 0 19 14"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
           @click="changeTab('contact-details')"
-        >
-          <path d="M2 7H19" stroke="#4E00F6" stroke-width="2" />
-          <path d="M8 13L2 7L8 1" stroke="#4E00F6" stroke-width="2" />
-        </svg>
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 18 18"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          @click="closeCanvas"
-        >
-          <path
-            d="M3 3l12 12M3 15L15 3"
-            stroke="#4E00F6"
-            stroke-width="2"
-            stroke-linejoin="round"
-          />
-        </svg>
+        />
+
+        <SvgIcon name="icon-close-primary" @click="closeCanvas" />
       </div>
     </div>
     <!-- ADDRESS BOOK -->
@@ -154,20 +113,7 @@
         </template>
       </div>
       <div v-if="addressList.length" class="alphabet">
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 12 12"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M6 1.32668L7.49737 3.51153C7.5949 3.65383 7.73849 3.75816 7.90396 3.80693L10.4446 4.55586L8.82939 6.65511C8.72419 6.79183 8.66934 6.96064 8.67409 7.13308L8.74691 9.7808L6.25129 8.89335C6.08875 8.83555 5.91125 8.83555 5.74871 8.89335L3.25309 9.7808L3.32591 7.13308C3.33066 6.96064 3.27581 6.79183 3.17061 6.65511L1.55541 4.55586L4.09604 3.80693C4.26151 3.75816 4.4051 3.65383 4.50263 3.51153L6 1.32668Z"
-            stroke="#4E00F6"
-            stroke-width="1.5"
-            stroke-linejoin="round"
-          />
-        </svg>
+        <SvgIcon name="icon-favorite-small" />
         <a
           class="letter"
           :class="{ 'letter-active': isActive === item.id }"
@@ -215,85 +161,13 @@
           }}</StCheckbox
         >
         <p @click="viewTransactions" class="transactions">
-          <svg
-            width="18"
-            height="12"
-            viewBox="0 0 18 12"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M4 1H18"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M0 1H2"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M4 6H18"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M0 6H2"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M4 11H18"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M0 11H2"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-          </svg>
+          <SvgIcon name="icon-dashboard-transactions" />
           View Transactions
         </p>
       </div>
       <div class="add-contact__bottom">
         <p @click="editContact">
-          <svg
-            width="20"
-            height="21"
-            viewBox="0 0 20 21"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M0 7H6"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M0 3H9"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-            <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="M18 5L7 17L3 19L2 18L4 14L15 2L18 5Z"
-              stroke="#4E00F6"
-              stroke-width="2"
-            />
-            <path d="M5 13L8 16" stroke="#4E00F6" stroke-width="2" />
-            <path d="M13 5L15 7" stroke="#4E00F6" stroke-width="2" />
-          </svg>
-
+          <SvgIcon name="icon-edit" />
           Edit Contact
         </p>
         <StButton @click="openModal('send')">Send</StButton>
@@ -344,26 +218,7 @@
       </div>
       <div class="add-contact__bottom">
         <p @click="deleteContact">
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M3 3L15 15"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M3 15L15 3"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-          </svg>
+          <SvgIcon name="icon-close-primary" />
           Delete Contact
         </p>
         <StButton @click="confirmEdit">Save</StButton>
@@ -412,25 +267,7 @@
             placeholder="Please enter a valid XST address"
           >
             <StTooltip tooltip="Scan Address">
-              <svg
-                @click="startScanner"
-                width="18"
-                height="18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  clip-rule="evenodd"
-                  d="M7 7H1V1h6v6z"
-                  stroke="#E5E4E8"
-                  stroke-width="2"
-                />
-                <path
-                  d="M11 0v3h3V1h3v4M7 18v-2H4v1H1v-3M11 18v-2h3v1h3v-3M11 13H7v-2H4M10 7h8M14 9v2h3V9M1 10v2M11 9v1.636"
-                  stroke="#E5E4E8"
-                  stroke-width="2"
-                />
-              </svg>
+              <SvgIcon name="icon-qr-code" @click="startScanner" />
             </StTooltip>
           </StInput>
           <template #description>
@@ -443,26 +280,7 @@
       </div>
       <div class="add-contact__bottom">
         <p @click="changeTab('address-book')">
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M3 3L15 15"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M3 15L15 3"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-          </svg>
+          <SvgIcon name="icon-close-primary" />
           Cancel
         </p>
         <StButton @click="addContact">Save</StButton>
@@ -479,11 +297,13 @@ import CryptoService from '../../services/crypto';
 import router from '@/router';
 import { useValidation } from 'vue3-form-validation';
 import { QrStream } from 'vue3-qr-reader';
+import SvgIcon from '../partials/SvgIcon.vue';
 
 export default {
   name: 'AddressBook',
   components: {
     QrStream,
+    SvgIcon,
   },
   setup() {
     const mainStore = useMainStore();
@@ -1098,10 +918,10 @@ svg:hover circle {
 .add-contact__bottom p svg {
   margin-right: 20px;
 }
-.add-contact__bottom p svg path {
+.add-contact__bottom p :deep svg path {
   transition: 0.3s;
 }
-.add-contact__bottom p:hover svg path {
+.add-contact__bottom p:hover :deep svg path {
   stroke: var(--marine200);
 }
 .contact-details :deep .label {
