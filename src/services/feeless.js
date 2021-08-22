@@ -60,7 +60,10 @@ const FeelessJS = {
   ) {
     const HEIGHT = blockHeight;
     const SIZE = blockSize;
-    const BLOCKHASH = blockHash;
+    let BLOCKHASH = blockHash;
+    BLOCKHASH = BLOCKHASH.match(/.{1,2}/g)
+      .reverse()
+      .join('');
 
     const MCOST = this._getMcostFromSize(SIZE);
 
@@ -93,11 +96,38 @@ const FeelessJS = {
   },
 
   _getDataBytesFromTxAndHash(txUnsignedHex, hash) {
-    const HASH = Buffer.from(hash, 'hex');
-    const TXBYTES = Buffer.from(txUnsignedHex, 'hex');
-    const DATA = Buffer.concat([HASH, TXBYTES]);
-    // console.log('DATA BYTES: ', DATA);
-    // console.log('DATA Hex: ', DATA.toString('hex'));
+    function hexStringToByteArray(hexString) {
+      if (hexString.length % 2 !== 0) {
+        throw 'Must have an even number of hex digits to convert to bytes';
+      }
+      var numBytes = hexString.length / 2;
+      var byteArray = new Uint8Array(numBytes);
+      for (var i = 0; i < numBytes; i++) {
+        byteArray[i] = parseInt(hexString.substr(i * 2, 2), 16);
+      }
+      return byteArray;
+    }
+    function concatUint8(arrays) {
+      // sum of individual array lengths
+      let totalLength = arrays.reduce((acc, value) => acc + value.length, 0);
+
+      if (!arrays.length) return null;
+
+      let result = new Uint8Array(totalLength);
+
+      // for each array - copy it over result
+      // next array is copied right after the previous one
+      let length = 0;
+      for (let array of arrays) {
+        result.set(array, length);
+        length += array.length;
+      }
+
+      return result;
+    }
+    const HASH = hexStringToByteArray(hash);
+    const TXBYTES = hexStringToByteArray(txUnsignedHex);
+    const DATA = concatUint8([HASH, TXBYTES]);
     return DATA;
   },
 
@@ -189,7 +219,10 @@ const FeelessJS = {
     work.writeUint8(scriptPubkeyBytes[14], 5);
     work.writeUint8(scriptPubkeyBytes[15], 6);
     work.writeUint8(scriptPubkeyBytes[16], 7);
-
+    blockHash = blockHash
+      .match(/.{1,2}/g)
+      .reverse()
+      .join('');
     let data = this._getDataBytesFromTxAndHash(txUnsignedHex, blockHash);
     let mcost = this._getMcostFromSize(blockSize);
     let hashDenary = await this._getHashWithArgon2(data, work, mcost);
@@ -207,6 +240,34 @@ const FeelessJS = {
     result += `of limit denary ${limitDenary}. Work denary is ${workDenary}`;
 
     return result;
+  },
+
+  async testCase() {
+    let tx_unsigned_hex =
+      '0400000004c38bd403ddc7f671d1a19fcca124f2114844f8fa24a0deb4cff25946550d4fb00100000000ffffffff053cb6dd125c8bb24e2f49aee7466397891b6a541052cd3896802554ab5e8ff10100000000fffffffff2be04127f403f5f0d4db71ed4f830b8f093b2693c40f3ed6d53d8cccde01c280100000000ffffffff3e43843fc5a99e827a63a6480f80bfb412dd5edd0c08dc2cc1e30c61c83bab400000000000ffffffff0200e1f505000000001976a914caea98e6984db848b661d6b4b8b25ea9d971741f88ac1d460000000000001976a9146015f23dc00ec6cfbcac20e88a2e8487e4d3567388ac00000000';
+    let block_hash =
+      '99169e463a9f8cf4914b544efe46d6a1d891d7e3d71d3bc7d4fb7d469e9bcac1';
+    // block_hash = block_hash.match(/.{1,2}/g).reverse().join("");
+    block_hash = block_hash.split('').reverse().join('');
+
+    // check the work
+    let mcost = 256;
+    let data = this._getDataBytesFromTxAndHash(tx_unsigned_hex, block_hash);
+    let limit_denary = this._getLimitDenary();
+    let work = Buffer.from('cc807acecec4b2b4', 'hex');
+
+    console.log('data', data);
+    console.log('work', work);
+    let hash_denary = await this._getHashWithArgon2(data, work, mcost);
+    let work_denary = work.readBigUInt64BE();
+    console.log(
+      'hash denary is %s, limit denary is %s, work denary is %s',
+      hash_denary,
+      limit_denary,
+      work_denary
+    );
+    console.log('hash denary < limit denary: %s', hash_denary < limit_denary);
+    return hash_denary;
   },
 };
 

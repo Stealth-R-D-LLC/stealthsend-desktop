@@ -1,7 +1,7 @@
 import useFeeEstimator from '@/composables/useFeeEstimator';
 import CryptoService from '@/services/crypto';
 import { useMainStore } from '@/store';
-import * as bitcoin from 'bitcoinjs-lib';
+import * as bitcoin from '../../bitcoinjs-lib-feeless/src/index.js';
 import { Buffer } from 'buffer';
 import { add, format, subtract, multiply } from 'mathjs';
 
