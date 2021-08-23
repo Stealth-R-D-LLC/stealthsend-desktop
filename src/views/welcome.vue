@@ -1112,7 +1112,7 @@
             <StButton v-if="isValidMnemonic" @click="recoveryStepNext"
               >Proceed</StButton
             >
-            <StButton v-else @click="goBack">Back</StButton>
+            <StButton v-else @click="goBack">Try Again</StButton>
           </div>
           <div class="step set-password" v-if="recoveryStep === 5">
             <div>

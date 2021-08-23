@@ -185,7 +185,7 @@
           >Confirm</StButton
         >
         <StButton v-if="currentStep === 4 && !isValidMnemonic" @click="goBack"
-          >Back</StButton
+          >Try Again</StButton
         >
         <div class="step-container">
           <span
