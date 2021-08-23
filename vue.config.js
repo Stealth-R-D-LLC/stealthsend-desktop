@@ -8,6 +8,16 @@ module.exports = {
   },
   chainWebpack: config => config.resolve.symlinks(false),
   configureWebpack: {
+    module: {
+      noParse: /argon2\.wasm$/,
+      rules: [
+          {
+              test: /argon2\.wasm$/,
+              loaders: ['base64-loader'],
+              type: 'javascript/auto'
+          }
+      ]
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, vueSrc),
