@@ -4,66 +4,18 @@
       <h6>Transaction Details</h6>
       <div class="icons">
         <StTooltip class="tooltip" tooltip="Edit Label">
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            @click="openEditMode"
-          >
-            <path
-              d="M0 6.5h6M0 2.5h9"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-            <path
-              clip-rule="evenodd"
-              d="M18 4.5l-11 12-4 2-1-1 2-4 11-12 3 3z"
-              stroke="#4E00F6"
-              stroke-width="2"
-            />
-            <path
-              d="M5 12.5l3 3M13 4.5l2 2"
-              stroke="#4E00F6"
-              stroke-width="2"
-            />
-          </svg>
+          <SvgIcon name="icon-edit" @click="openEditMode" />
         </StTooltip>
-        <StTooltip class="tooltip" tooltip="Resend Transaction">
-          <svg
-            v-if="tx && tx.amount < 0"
-            @click="redoTransaction"
-            width="19"
-            height="15"
-            viewBox="0 0 19 15"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M1 15V9a2 2 0 012-2h14"
-              stroke="#4E00F6"
-              stroke-width="2"
-            />
-            <path d="M11 13l6-6-6-6" stroke="#4E00F6" stroke-width="2" />
-          </svg>
-        </StTooltip>
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 18 18"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          @click="close"
+
+        <StTooltip
+          class="tooltip"
+          tooltip="Resend Transaction"
+          v-if="tx && tx.amount < 0"
         >
-          <path
-            d="M3 3l12 12M3 15L15 3"
-            stroke="#4E00F6"
-            stroke-width="2"
-            stroke-linejoin="round"
-          />
-        </svg>
+          <SvgIcon name="icon-redo-transaction" @click="redoTransaction" />
+        </StTooltip>
+
+        <SvgIcon name="icon-close-primary" @click="close" />
       </div>
     </div>
     <div class="body" v-if="tx">
@@ -98,40 +50,9 @@
       <div class="item">
         <p class="bold">Amount</p>
         <p class="amount">
-          <svg
-            v-if="tx.amount > 0"
-            width="24"
-            height="24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="12" cy="12" r="12" fill="#D6F8F0" />
-            <path d="M7 14v3h10v-3" stroke="#07AC82" stroke-width="2" />
-            <path
-              d="M10 11l2 2 2-2"
-              stroke="#07AC82"
-              stroke-width="2"
-              stroke-linecap="square"
-            />
-            <path d="M12 6v7" stroke="#07AC82" stroke-width="2" />
-          </svg>
-          <svg
-            v-else-if="tx.amount < 0"
-            width="24"
-            height="24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="12" cy="12" r="12" fill="#E5E4E8" />
-            <path d="M7 13v3h10v-3" stroke="#8B8A8D" stroke-width="2" />
-            <path
-              d="M14 8l-2-2-2 2"
-              stroke="#8B8A8D"
-              stroke-width="2"
-              stroke-linecap="square"
-            />
-            <path d="M12 6v7" stroke="#8B8A8D" stroke-width="2" />
-          </svg>
+          <SvgIcon name="icon-transactions-received" v-if="tx.amount > 0" />
+
+          <SvgIcon name="icon-transactions-sent" v-else-if="tx.amount < 0" />
           {{ formatAmount(tx.amount, false, 6, 6) }} XST
         </p>
       </div>
@@ -183,9 +104,13 @@ import { ref, watch, computed } from 'vue';
 import useHelpers from '@/composables/useHelpers';
 import CryptoService from '@/services/crypto';
 import { useValidation, ValidationError } from 'vue3-form-validation';
+import SvgIcon from '../partials/SvgIcon.vue';
 
 export default {
   name: 'StTransactionDetails',
+  components: {
+    SvgIcon,
+  },
   setup() {
     const mainStore = useMainStore();
     const { formatBlocktime, formatAmount } = useHelpers();
@@ -200,7 +125,6 @@ export default {
         $rules: [
           {
             rule: () => {
-              console.log(label.value);
               return label.value.length > 50 && 'Label too long';
             },
           },
@@ -264,12 +188,14 @@ export default {
         process.env.VUE_APP_NETWORK === 'mainnet'
           ? '?chain=main'
           : '?chain=test';
-      window
-        .open(
-          'https://stealthmonitor.org/transactions/' + txid + chain,
-          '_blank'
-        )
-        .focus();
+      setTimeout(() => {
+        window
+          .open(
+            'https://stealthmonitor.org/transactions/' + txid + chain,
+            '_blank'
+          )
+          .focus();
+      }, 1);
     }
 
     function openAddressExplorer(address) {
@@ -277,19 +203,43 @@ export default {
         process.env.VUE_APP_NETWORK === 'mainnet'
           ? '?chain=main'
           : '?chain=test';
-      window
-        .open('https://stealthmonitor.org/address/' + address + chain, '_blank')
-        .focus();
+      setTimeout(() => {
+        window
+          .open(
+            'https://stealthmonitor.org/address/' + address + chain,
+            '_blank'
+          )
+          .focus();
+      }, 1);
     }
 
     async function getTx(txid) {
       const res = await mainStore.rpc('gettransaction', [txid]);
+      let position = 0;
+      let outputAddresses =
+        mainStore.offCanvasData.outputs?.map((output) => output.address) || [];
+      if (mainStore.account_balance_change < 0) {
+        position =
+          mainStore.offCanvasData.txinfo.destinations?.findIndex(
+            (dest) => outputAddresses.indexOf(dest.addresses[0]) === -1
+          ) || 0;
+      } else {
+        position =
+          mainStore.offCanvasData.txinfo.destinations?.findIndex(
+            (dest) =>
+              dest.amount === mainStore.offCanvasData.account_balance_change
+          ) || 0;
+      }
+      if (position === -1) {
+        position = 0;
+      }
+      if (typeof mainStore.offCanvasData.vout === 'number') {
+        position = mainStore.offCanvasData.vout;
+      }
       tx.value = {
         ...mainStore.offCanvasData,
         ...res,
-        position: mainStore.offCanvasData.vout
-          ? mainStore.offCanvasData.vout
-          : 0,
+        position,
       };
     }
 
@@ -326,10 +276,10 @@ export default {
   display: flex;
   align-items: center;
 }
-.top .icons svg {
+.top .icons :deep svg {
   cursor: pointer;
 }
-.top .icons > svg,
+.top .icons > :deep svg,
 .top .icons .tooltip + .tooltip {
   margin-left: 24px;
 }
@@ -357,7 +307,7 @@ export default {
   word-break: break-all;
   color: var(--marine500);
 }
-.item p svg {
+.item p :deep svg {
   margin-right: 12px;
 }
 .body {
