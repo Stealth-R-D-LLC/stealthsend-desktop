@@ -1,5 +1,6 @@
 <template>
   <aside
+    role="navigation"
     id="aside-menu"
     ref="asideMenu"
     class="layout__aside"
@@ -16,16 +17,7 @@
             :class="{ 'item-active': isCollapsed }"
             @click.prevent="toggleMenu"
           >
-            <svg
-              width="19"
-              height="14"
-              viewBox="0 0 19 14"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M0 7H17" stroke="#FAF9FC" stroke-width="2" />
-              <path d="M11 13L17 7L11 1" stroke="#FAF9FC" stroke-width="2" />
-            </svg>
+            <SvgIcon name="icon-arrow-right" />
           </a>
         </li>
         <li>
@@ -33,34 +25,10 @@
             <div class="icon">
               <StTooltip
                 class="tooltip"
-                :tooltip="!isCollapsed ? 'Dashboard' : ''"
+                :tooltip="!isCollapsed ? 'Dashboard' : null"
                 position="right"
               >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 18 18"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M7 11H1V17H7V11Z"
-                    stroke="#FAF9FC"
-                    stroke-width="2"
-                  />
-                  <path
-                    d="M17 11H11V17H17V11Z"
-                    stroke="#FAF9FC"
-                    stroke-width="2"
-                  />
-                  <path d="M0 7H8" stroke="#FAF9FC" stroke-width="2" />
-                  <path d="M0 3H8" stroke="#FAF9FC" stroke-width="2" />
-                  <path
-                    d="M17 1H11V7H17V1Z"
-                    stroke="#FAF9FC"
-                    stroke-width="2"
-                  />
-                </svg>
+                <SvgIcon name="icon-dashboard" />
               </StTooltip>
             </div>
 
@@ -71,25 +39,10 @@
           <span class="item">
             <div class="icon">
               <StTooltip
-                :tooltip="!isCollapsed ? 'Send XST' : ''"
+                :tooltip="!isCollapsed ? 'Send XST' : null"
                 position="right"
               >
-                <svg
-                  width="18"
-                  height="17"
-                  viewBox="0 0 18 17"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M1 11V16H17V11" stroke="#FAF9FC" stroke-width="2" />
-                  <path
-                    d="M12 5L9 2L6 5"
-                    stroke="#FAF9FC"
-                    stroke-width="2"
-                    stroke-linecap="square"
-                  />
-                  <path d="M9 2L9 12" stroke="#FAF9FC" stroke-width="2" />
-                </svg>
+                <SvgIcon name="icon-send-xst" />
               </StTooltip>
             </div>
             <span class="item__span"> Send </span>
@@ -99,25 +52,10 @@
           <span class="item">
             <div class="icon">
               <StTooltip
-                :tooltip="!isCollapsed ? 'Receive XST' : ''"
+                :tooltip="!isCollapsed ? 'Receive XST' : null"
                 position="right"
               >
-                <svg
-                  width="18"
-                  height="17"
-                  viewBox="0 0 18 17"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M1 11V16H17V11" stroke="#FAF9FC" stroke-width="2" />
-                  <path
-                    d="M6 8L9 11L12 8"
-                    stroke="#FAF9FC"
-                    stroke-width="2"
-                    stroke-linecap="square"
-                  />
-                  <path d="M9 11V0" stroke="#FAF9FC" stroke-width="2" />
-                </svg>
+                <SvgIcon name="icon-receive-xst" />
               </StTooltip>
             </div>
             <span class="item__span"> Receive </span>
@@ -127,65 +65,10 @@
           <router-link class="item" to="/transactions">
             <div class="icon">
               <StTooltip
-                :tooltip="!isCollapsed ? 'Transactions' : ''"
+                :tooltip="!isCollapsed ? 'Transactions' : null"
                 position="right"
               >
-                <svg
-                  width="21"
-                  height="18"
-                  viewBox="0 0 21 18"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M5 1.5H19"
-                    stroke="#FAF9FC"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M0 1.5H2"
-                    stroke="#FAF9FC"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M5 6.5H19"
-                    stroke="#FAF9FC"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M0 6.5H2"
-                    stroke="#FAF9FC"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M5 11.5H19"
-                    stroke="#FAF9FC"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M0 11.5H2"
-                    stroke="#FAF9FC"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M5 16.5H19"
-                    stroke="#FAF9FC"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M0 16.5H2"
-                    stroke="#FAF9FC"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                </svg>
+                <SvgIcon name="icon-transactions" />
               </StTooltip>
             </div>
             <span class="item__span"> Transactions </span>
@@ -195,31 +78,10 @@
           <span class="item">
             <div class="icon">
               <StTooltip
-                :tooltip="!isCollapsed ? 'Add Account' : ''"
+                :tooltip="!isCollapsed ? 'Add Account' : null"
                 position="right"
               >
-                <svg
-                  width="18"
-                  height="17"
-                  viewBox="0 0 18 17"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M10 13L18 13" stroke="#FAF9FC" stroke-width="2" />
-                  <path d="M14 9V17" stroke="#FAF9FC" stroke-width="2" />
-                  <path d="M0 6H8.09524" stroke="#FAF9FC" stroke-width="2" />
-                  <path d="M0 2H8.09524" stroke="#FAF9FC" stroke-width="2" />
-                  <path
-                    d="M7 10H1V16H7V10Z"
-                    stroke="#FAF9FC"
-                    stroke-width="2"
-                  />
-                  <path
-                    d="M17 1H11V7H17V1Z"
-                    stroke="#FAF9FC"
-                    stroke-width="2"
-                  />
-                </svg>
+                <SvgIcon name="icon-add-account" />
               </StTooltip>
             </div>
             <span class="item__span"> Add Account </span>
@@ -229,27 +91,10 @@
           <router-link class="item" to="/account/archived">
             <div class="icon">
               <StTooltip
-                :tooltip="!isCollapsed ? 'Manager' : ''"
+                :tooltip="!isCollapsed ? 'Manager' : null"
                 position="right"
               >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 18 18"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M10 16H18" stroke="#FAF9FC" stroke-width="2" />
-                  <path d="M10 12L18 12" stroke="#FAF9FC" stroke-width="2" />
-                  <path
-                    d="M7 11H1V17H7V11Z"
-                    stroke="#FAF9FC"
-                    stroke-width="2"
-                  />
-                  <path d="M10 6H18" stroke="#FAF9FC" stroke-width="2" />
-                  <path d="M10 2H18" stroke="#FAF9FC" stroke-width="2" />
-                  <path d="M7 1H1V7H7V1Z" stroke="#FAF9FC" stroke-width="2" />
-                </svg>
+                <SvgIcon name="icon-manager" />
               </StTooltip>
             </div>
             <span class="item__span"> Manager </span>
@@ -259,34 +104,10 @@
           <span class="item">
             <div class="icon">
               <StTooltip
-                :tooltip="!isCollapsed ? 'Address Book' : ''"
+                :tooltip="!isCollapsed ? 'Address Book' : null"
                 position="right"
               >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 18 18"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M12 13H18M14 9H18"
-                    stroke="#FAF9FC"
-                    stroke-width="2"
-                  />
-                  <circle
-                    cx="8"
-                    cy="5"
-                    r="4"
-                    stroke="#FAF9FC"
-                    stroke-width="2"
-                  />
-                  <path
-                    d="M8.3125 9C5.0625 9 9.9375 9 6.6875 9C3.4375 9 1 11.4 1 13.8C1 16.2 1 17 1 17H18"
-                    stroke="#FAF9FC"
-                    stroke-width="2"
-                  />
-                </svg>
+                <SvgIcon name="icon-address-book" />
               </StTooltip>
             </div>
 
@@ -296,28 +117,7 @@
       </ul>
     </nav>
     <a class="item__footer" @click="lock">
-      <svg
-        width="16"
-        height="17"
-        viewBox="0 0 16 17"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <rect
-          x="1"
-          y="8"
-          width="14"
-          height="8"
-          stroke="#C3A9FB"
-          stroke-width="2"
-        />
-        <path
-          d="M3 8H13V3C13 1.89543 12.1046 1 11 1H5C3.89543 1 3 1.89543 3 3V8Z"
-          stroke="#C3A9FB"
-          stroke-width="2"
-        />
-        <path d="M8 11V13" stroke="#C3A9FB" stroke-width="2" />
-      </svg>
+      <SvgIcon name="icon-lock" />
     </a>
   </aside>
 </template>
@@ -327,9 +127,13 @@ import { ref, computed, defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMainStore } from '@/store';
 import { onClickOutside } from '@vueuse/core';
+import SvgIcon from '../partials/SvgIcon.vue';
 
 export default defineComponent({
   name: 'StMenuBar',
+  components: {
+    SvgIcon,
+  },
   setup() {
     const mainStore = useMainStore();
     const router = useRouter();
@@ -465,8 +269,8 @@ export default defineComponent({
   font-weight: 600;
 }
 
-.layout__aside .item.router-link-exact-active svg path {
-  stroke: var(--marine200);
+.layout__aside .item.router-link-exact-active :deep .icon-svg path {
+  stroke: var(--marine200) !important;
 }
 
 .layout__aside .item.router-link-exact-active span {
@@ -479,9 +283,9 @@ export default defineComponent({
 }
 
 .layout__aside li:hover span,
-.layout__aside li:hover svg path,
-.layout__aside li:hover svg circle {
-  stroke: var(--marine200);
+.layout__aside li:hover :deep .icon-svg path,
+.layout__aside li:hover :deep .icon-svg circle {
+  stroke: var(--marine200) !important;
   color: var(--marine200) !important;
 }
 

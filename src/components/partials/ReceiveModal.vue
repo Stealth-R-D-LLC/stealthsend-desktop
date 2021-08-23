@@ -76,34 +76,7 @@
                 :class="{ 'switch-disabled': !amount }"
                 @click="changeCurrency('USD')"
               >
-                <svg
-                  width="19"
-                  height="16"
-                  viewBox="0 0 19 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
-                    stroke="#E5E4E8"
-                    stroke-width="2"
-                  />
-                  <path
-                    d="M14.2222 14.2222L14.2222 1.77773"
-                    stroke="#E5E4E8"
-                    stroke-width="2"
-                  />
-                  <path
-                    d="M4.77777 1.77783V14.2223"
-                    stroke="#E5E4E8"
-                    stroke-width="2"
-                  />
-                  <path
-                    d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
-                    stroke="#E5E4E8"
-                    stroke-width="2"
-                  />
-                </svg>
+                <SvgIcon name="icon-switch-currency" />
               </div>
             </StTooltip>
           </StAmount>
@@ -124,34 +97,7 @@
           >
             <StTooltip tooltip="Switch Currency">
               <div @click="changeCurrency('XST')">
-                <svg
-                  width="19"
-                  height="16"
-                  viewBox="0 0 19 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M10.4445 11.5557L14.2222 14.2223L18 11.5557"
-                    stroke="#E5E4E8"
-                    stroke-width="2"
-                  />
-                  <path
-                    d="M14.2222 14.2222L14.2222 1.77773"
-                    stroke="#E5E4E8"
-                    stroke-width="2"
-                  />
-                  <path
-                    d="M4.77777 1.77783V14.2223"
-                    stroke="#E5E4E8"
-                    stroke-width="2"
-                  />
-                  <path
-                    d="M1 4.4445L4.77778 1.77783L8.55555 4.4445"
-                    stroke="#E5E4E8"
-                    stroke-width="2"
-                  />
-                </svg>
+                <SvgIcon name="icon-switch-currency" />
               </div>
             </StTooltip>
           </StAmount>
@@ -166,50 +112,14 @@
             <StTooltip
               v-if="depositAddress"
               :tooltip="
-                copyPending ? 'Copied to clipboard!' : 'Copy to Clipboard'
+                copyPending ? 'Copied to Clipboard!' : 'Copy to Clipboard'
               "
             >
               <StClipboard :content="depositAddress" @click="handleCopy">
-                <svg
-                  width="15"
-                  height="19"
-                  viewBox="0 0 15 19"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M10 5.5H1V17.5H10V5.5Z"
-                    stroke="#E5E4E8"
-                    stroke-width="2"
-                  />
-                  <path
-                    d="M14 14.5L14 0.500013"
-                    stroke="#E5E4E8"
-                    stroke-width="2"
-                  />
-                  <path d="M2 1.5L14 1.5" stroke="#E5E4E8" stroke-width="2" />
-                </svg>
+                <SvgIcon name="icon-clipboard-white" />
               </StClipboard>
             </StTooltip>
-            <svg
-              v-else
-              class="address-loader"
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle
-                cx="9"
-                cy="9"
-                r="7"
-                stroke="#E5E4E8"
-                stroke-width="2"
-                stroke-linejoin="round"
-                stroke-dasharray="2 4"
-              />
-            </svg>
+            <SvgIcon name="icon-loader-address" v-else class="address-loader" />
           </StInput>
         </StFormItem>
       </template>
@@ -231,7 +141,7 @@
         </StFormItem>
         <StTooltip
           class="tooltip"
-          :tooltip="copyPending ? 'Copied to clipboard!' : 'Copy to Clipboard'"
+          :tooltip="copyPending ? 'Copied to Clipboard!' : 'Copy to Clipboard'"
         >
           <StClipboard :content="depositAddress" @click="handleCopy"
             >Copy to Clipboard</StClipboard
@@ -284,9 +194,13 @@ import { useRoute } from 'vue-router';
 import useHelpers from '@/composables/useHelpers';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import DOMPurify from 'dompurify';
+import SvgIcon from '../partials/SvgIcon.vue';
 
 export default {
   name: 'StReceiveModal',
+  components: {
+    SvgIcon,
+  },
   setup() {
     const mainStore = useMainStore();
     const { formatAmount } = useHelpers();
@@ -493,7 +407,7 @@ export default {
         closeModal();
       } catch (e) {
         if (e instanceof ValidationError) {
-          console.log('Email validation error: ', e);
+          console.log(e);
         }
       }
     }

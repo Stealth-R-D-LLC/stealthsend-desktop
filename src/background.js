@@ -7,8 +7,8 @@ import {
   ipcMain,
   Menu,
   protocol,
-  shell,
   session,
+  shell,
   systemPreferences,
 } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
@@ -36,7 +36,6 @@ let delta = {
   other: {
     height: 0,
     width: 0,
-    maxHeight: 0,
   },
 };
 
@@ -88,6 +87,7 @@ async function createWindow() {
     'https://www.admin.ch/opc/en/classified-compilation/19930159/index.html',
     'https://github.com/Stealth-R-D-LLC/Stealth',
     'https://coincap.io/',
+    'https://stealth.org/',
   ];
 
   // resize the window for the create process
@@ -96,6 +96,7 @@ async function createWindow() {
       width: 1152,
       height: 700 - delta[getOs()].height,
       center: true,
+      useContentSize: true,
       maximizable: false,
     });
     win.setResizable(false);
@@ -112,6 +113,7 @@ async function createWindow() {
       maxWidth: 1600,
       maxHeight: 1200 - delta[getOs()].height,
       center: true,
+      useContentSize: true,
       maximizable: false,
     });
     win.setResizable(true);
@@ -128,6 +130,7 @@ async function createWindow() {
       maxWidth: 1788,
       maxHeight: 1200 - delta[getOs()].height,
       center: true,
+      useContentSize: true,
       maximizable: false,
     });
     win.setResizable(true);
@@ -142,6 +145,8 @@ async function createWindow() {
           accelerator: 'CmdOrCtrl+Q',
           role: 'close',
         },
+        { label: 'Copy', accelerator: 'CmdOrCtrl+C', selector: 'copy:' },
+        { label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:' },
       ],
     },
     {
@@ -156,10 +161,6 @@ async function createWindow() {
 
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
-
-  /* systemPreferences.askForMediaAccess('camera').then((isAllowed) => {
-    console.log('isAllowed', isAllowed);
-  }); */
 
   // webFrame.setZoomFactor(1);
   // webFrame.setVisualZoomLevelLimits(1, 1);
@@ -180,14 +181,16 @@ async function createWindow() {
     webContents.setZoomFactor(1);
     webContents.setVisualZoomLevelLimits(1, 1);
   });
-  webContents.on('new-window', function (event, url) {
+  webContents.setWindowOpenHandler((details) => {
+    // new-window has been replaced with this
+    const url = details.url;
     if (
       allowedUrls.includes(url) ||
       url.includes('https://stealthmonitor.org/')
     ) {
       shell.openExternal(url);
     }
-    event.preventDefault();
+    return { action: 'deny' };
   });
   webContents.on('will-navigate', (event, url) => {
     if (url.startsWith('mailto:')) {
@@ -199,7 +202,6 @@ async function createWindow() {
     ) {
       shell.openExternal(url);
     }
-    event.preventDefault();
   });
 }
 async function askForMediaAccess() {
@@ -314,7 +316,27 @@ app.on('ready', async () => {
     });
 
   createWindow();
-  askForMediaAccess();
+  if (process.env.IS_TEST) askForMediaAccess();
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    const contentSecurityPolicyHeaders = {
+      'content-security-policy': [
+        "style-src 'unsafe-inline' 'self' https://fonts.googleapis.com app:;",
+        "style-src-elem 'unsafe-inline' https://fonts.googleapis.com 'self' https://fonts.googleapis.com app:;",
+        "font-src https://fonts.gstatic.com 'self';",
+        "connect-src 'self' https://api-mainnet.stealthmonitor.xyz https://api.stealth.org 172.20.10.112:8080 app:;",
+        "script-src 'unsafe-inline' 'unsafe-eval' 'self' app: blob:;",
+        "script-src-elem 'unsafe-inline' 'self' app:;",
+        "img-src 'self' app: data:;",
+        "object-src 'none';",
+        "manifest-src 'none';",
+      ],
+      ...details.responseHeaders,
+    };
+
+    callback({
+      responseHeaders: contentSecurityPolicyHeaders,
+    });
+  });
 });
 
 app.on('will-quit', () => {

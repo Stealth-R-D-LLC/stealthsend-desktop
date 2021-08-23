@@ -3,21 +3,7 @@
     <div class="top">
       <span class="title">Recent notifications</span>
       <div class="icons">
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 18 18"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          @click="closeCanvas"
-        >
-          <path
-            d="M3 3l12 12M3 15L15 3"
-            stroke="#4E00F6"
-            stroke-width="2"
-            stroke-linejoin="round"
-          />
-        </svg>
+        <SvgIcon name="icon-close-primary" @click="closeCanvas" />
       </div>
     </div>
     <div class="notifications-list">
@@ -38,8 +24,13 @@
 
 <script>
 import { useMainStore } from '@/store';
+import SvgIcon from '../partials/SvgIcon.vue';
+
 export default {
   name: 'RecentNotifications',
+  components: {
+    SvgIcon,
+  },
   setup() {
     const mainStore = useMainStore();
     function closeCanvas() {

@@ -111,27 +111,10 @@
                   :key="word"
                 >
                   {{ word }}
-                  <svg
+                  <SvgIcon
+                    name="icon-close-black"
                     @click="removeSelectedWord(word)"
-                    width="8"
-                    height="8"
-                    viewBox="0 0 8 8"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M1 1L7 7"
-                      stroke="#1C1A1C"
-                      stroke-width="1.5"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M1 7L7 1"
-                      stroke="#1C1A1C"
-                      stroke-width="1.5"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
+                  />
                 </a>
               </div>
             </div>
@@ -147,41 +130,9 @@
                 @keyup.enter="selectWord(mnemonic)"
                 @keydown.tab.prevent="selectTabWord(searchedWords)"
               >
-                <svg
-                  @click="mnemonic = ''"
-                  width="19"
-                  height="18"
-                  viewBox="0 0 19 18"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M3.4541 3L15.4541 15"
-                    stroke="#4E00F6"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M3.4541 15L15.4541 3"
-                    stroke="#4E00F6"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-                <svg
-                  @click="selectWord(mnemonic)"
-                  width="17"
-                  height="12"
-                  viewBox="0 0 17 12"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M15.4541 1L5.90865 10L1.4541 5"
-                    stroke="#4E00F6"
-                    stroke-width="2"
-                  />
-                </svg>
+                <SvgIcon name="icon-close-primary" @click="mnemonic = ''" />
+
+                <SvgIcon name="icon-checkmark" @click="selectWord(mnemonic)" />
               </StInput>
               <p v-if="isError" class="mnemonic-error">
                 Selected word is not in wordlist
@@ -234,7 +185,7 @@
           >Confirm</StButton
         >
         <StButton v-if="currentStep === 4 && !isValidMnemonic" @click="goBack"
-          >Back</StButton
+          >Try Again</StButton
         >
         <div class="step-container">
           <span
@@ -550,12 +501,12 @@ export default {
 .mnemonic:nth-child(6n + 6) {
   margin-left: auto;
 }
-.mnemonic svg {
+.mnemonic :deep svg {
   cursor: pointer;
   display: none;
   margin-left: 8px;
 }
-.mnemonic:last-child svg {
+.mnemonic:last-child :deep svg {
   display: block !important;
 }
 .searched-words {

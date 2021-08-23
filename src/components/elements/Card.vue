@@ -7,33 +7,7 @@
           class="info-container"
           @click.stop="toggleAccountOptions(account.label)"
         >
-          <svg
-            class="info"
-            width="12"
-            height="10"
-            viewBox="0 0 12 10"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M0 1H8"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M0 5H12"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M0 9H12"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-          </svg>
+          <SvgIcon name="icon-hamburger-menu-primary" class="info" />
         </div>
       </div>
       <div class="amount-container">
@@ -43,49 +17,17 @@
         <p class="medium grey" v-if="steps">
           ~
           {{ isHiddenAmounts ? '$••• USD' : steps[type].amountRight + ' USD' }}
-          <svg
+          <SvgIcon
+            name="icon-favorite"
             v-if="account.isFavourite"
             class="star"
-            width="16"
-            height="14"
-            viewBox="0 0 16 14"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M8 1.66667L10.2 4.6C10.3476 4.79683 10.5626 4.93233 10.8039 4.98058L14.248 5.66939L12.2 8.4C12.0702 8.5731 12 8.78363 12 9V12.523L8.37139 11.0715C8.13298 10.9762 7.86702 10.9762 7.62861 11.0715L4 12.523V9C4 8.78363 3.92982 8.5731 3.8 8.4L1.75205 5.66939L5.19612 4.98058C5.43738 4.93233 5.65238 4.79683 5.8 4.6L8 1.66667Z"
-              stroke="#C3A9FB"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-          </svg>
+          />
         </p>
       </div>
     </div>
     <transition name="fill">
       <div v-if="accountOptions === account.label" class="account-options">
-        <svg
-          class="close"
-          width="18"
-          height="18"
-          viewBox="0 0 18 18"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          @click="accountOptions = ''"
-        >
-          <path
-            d="M3 3L15 15"
-            stroke="#FAF9FC"
-            stroke-width="2"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M3 15L15 3"
-            stroke="#FAF9FC"
-            stroke-width="2"
-            stroke-linejoin="round"
-          />
-        </svg>
+        <SvgIcon name="icon-close" class="close" @click="accountOptions = ''" />
         <ul>
           <li>
             <a @click="toggleModal('send', account)">Send</a>
@@ -111,9 +53,13 @@ import CryptoService from '@/services/crypto';
 import router from '@/router';
 import emitter from '@/services/emitter';
 import { onClickOutside } from '@vueuse/core';
+import SvgIcon from '../partials/SvgIcon.vue';
 
 export default {
   name: 'StCard',
+  components: {
+    SvgIcon,
+  },
   props: {
     type: {
       type: Number,
