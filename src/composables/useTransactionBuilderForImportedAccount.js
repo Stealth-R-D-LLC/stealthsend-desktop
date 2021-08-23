@@ -47,13 +47,13 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       let rawTransaction = null;
       if (sendForm.isFeeless) {
         rawTransaction = new bitcoinFeeless.TransactionBuilder(
-         CryptoService.network,
-         3000000
+          CryptoService.network,
+          3000000
         );
       } else {
         rawTransaction = new bitcoin.TransactionBuilder(
-         CryptoService.network,
-         3000000
+          CryptoService.network,
+          3000000
         );
       }
       // add all outputs
@@ -98,7 +98,6 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
       // create feework and feeless scriptPubkey and add output for feeless trx
       if (fee === 0) {
-
         rawTransaction.setVersion(4);
         const bestBlock = await mainStore.rpc('getbestblock', []);
 
@@ -109,34 +108,35 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         console.log('FEELESS hash: ', bestBlock.hash);
         console.time('FEELESS create_feework_and_script_pubkey');
 
-        const feelessScriptPubkey = await FeelessJS.createFeeworkAndScriptPubkey(
-         txUnsignedHex,
-         bestBlock.height,
-         bestBlock.size,
-         bestBlock.hash
-        );
+        const feelessScriptPubkey =
+          await FeelessJS.createFeeworkAndScriptPubkey(
+            txUnsignedHex,
+            bestBlock.height,
+            bestBlock.size,
+            bestBlock.hash
+          );
 
         console.timeEnd('FEELESS create_feework_and_script_pubkey');
 
         console.log(
-         'TRANSACTION BUILDER: feeless script sig key hex: ',
-         feelessScriptPubkey.toString('hex')
+          'TRANSACTION BUILDER: feeless script sig key hex: ',
+          feelessScriptPubkey.toString('hex')
         );
         const testFeelessScriptPubkey =
-         await FeelessJS.testCreateFeeworkAndScriptPubkey(
-          txUnsignedHex,
-          bestBlock.height,
-          bestBlock.size,
-          bestBlock.hash,
-          feelessScriptPubkey.toString('hex')
-         );
+          await FeelessJS.testCreateFeeworkAndScriptPubkey(
+            txUnsignedHex,
+            bestBlock.height,
+            bestBlock.size,
+            bestBlock.hash,
+            feelessScriptPubkey.toString('hex')
+          );
         console.log(
-         'FEELESS test results for script pubkey: ',
-         testFeelessScriptPubkey
+          'FEELESS test results for script pubkey: ',
+          testFeelessScriptPubkey
         );
         rawTransaction.addOutput(Buffer.from(feelessScriptPubkey, 'hex'), 0);
         console.log(
-         'TRANSACTION BUILDER: added output with zero amount and opcode OP_FEEWORK'
+          'TRANSACTION BUILDER: added output with zero amount and opcode OP_FEEWORK'
         );
       }
 
@@ -154,18 +154,14 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       let keyPair = null;
       if (sendForm.isFeeless) {
         keyPair = bitcoinFeeless.ECPair.fromWIF(
-         decryptedWIF,
-         CryptoService.network
+          decryptedWIF,
+          CryptoService.network
         );
       } else {
-        keyPair = bitcoin.ECPair.fromWIF(
-         decryptedWIF,
-         CryptoService.network
-        );
+        keyPair = bitcoin.ECPair.fromWIF(decryptedWIF, CryptoService.network);
       }
 
       for (let i = 0; i < utxo.length; i++) {
-
         try {
           rawTransaction.sign(i, keyPair);
         } catch (e) {
