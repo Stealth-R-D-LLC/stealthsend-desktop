@@ -260,7 +260,8 @@
             </StTooltip>
           </StAmount>
           <template #description>
-            Minimum: {{ minimumXSTForSend }} XST, Fee: 0.01 XST
+            Minimum: {{ minimumXSTForSend }} XST, Fee:
+            {{ isFeeless ? '0.00 XST' : `${aproxFee} XST` }}
           </template>
         </StFormItem>
         <StSwitch v-model="isFeeless" theme="dark" type="thunder"
@@ -427,6 +428,7 @@
 </template>
 
 <script>
+/* eslint-disable no-unreachable */
 import { useMainStore } from '@/store';
 import { computed, ref, watch, watchEffect } from 'vue';
 import CryptoService from '@/services/crypto';
@@ -463,7 +465,7 @@ export default {
     const amount = ref(null);
     const amountUSD = ref(null);
     const depositAddress = ref('');
-    const aproxFee = ref(null);
+    const aproxFee = ref(0.01);
     const currentStep = ref(1);
     const counter = ref(5);
     const counterTimeout = ref(null);
@@ -634,6 +636,10 @@ export default {
     }
 
     function findFee(fee = 0.01) {
+      if (isFeeless.value) {
+        aproxFee.value = 0;
+        return 0;
+      }
       // steps:
       // 1. find unspentOutputs for selected account
       // 2. start with fee = 0.01
@@ -695,6 +701,8 @@ export default {
         console.info('TRANSACTION BUILDER: fee: ', aproxFee.value);
         console.info('TRANSACTION BUILDER: target amount: ', target);
 
+        // return;
+
         let transactionResponse = '';
         if (account.value.wif && account.value.isImported) {
           // build transaction for imported account
@@ -704,6 +712,7 @@ export default {
               address: depositAddress.value.trim(),
               amount: target,
               account: account.value,
+              isFeeless: isFeeless.value,
             }
           );
         } else {
@@ -713,6 +722,7 @@ export default {
               address: depositAddress.value.trim(),
               amount: target,
               account: account.value,
+              isFeeless: isFeeless.value,
             });
           } catch (e) {
             console.log('Transaction builder error: ', e);
@@ -918,7 +928,7 @@ export default {
   cursor: pointer;
 }
 :deep .st-switch--thunder {
-  margin-top: 8px;
+  /* margin-top: 8px; */
   cursor: pointer;
 }
 .switch > p {
@@ -1138,5 +1148,9 @@ export default {
   border: 2px solid var(--marine500);
   width: 200px;
   height: 200px;
+}
+
+.st-switch--dark {
+  margin-top: 28px;
 }
 </style>

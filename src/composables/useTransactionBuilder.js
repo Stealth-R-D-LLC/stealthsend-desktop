@@ -1,16 +1,20 @@
-// import useFeeEstimator from '@/composables/useFeeEstimator';
+import useFeeEstimator from '@/composables/useFeeEstimator';
 import CryptoService from '@/services/crypto';
 import FeelessJS from '@/services/feeless';
 import { useMainStore } from '@/store';
-import * as bitcoin from '../../bitcoinjs-lib-feeless/src/index.js';
+import * as bitcoinFeeless from '../../bitcoinjs-lib-feeless/src/index.js';
+import * as bitcoin from 'bitcoinjs-lib';
 import { Buffer } from 'buffer';
 import { add, format, subtract, floor } from 'mathjs';
 
 export default async function useTransactionBuilder(utxo, sendForm) {
   const mainStore = useMainStore();
 
-  // const { fee } = useFeeEstimator(utxo.length);
-  const fee = 0;
+  let fee = 0;
+  if (!sendForm.isFeeless) {
+    const feeEstimator = useFeeEstimator(utxo.length);
+    fee = feeEstimator.fee;
+  }
 
   console.log('TRANSACTION BUILDER: latest fee:', fee);
 
@@ -54,10 +58,18 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
   async function buildTransaction() {
     // eslint-disable-next-line no-async-promise-executor
-    let rawTransaction = new bitcoin.TransactionBuilder(
-      CryptoService.network,
-      3000000
-    );
+    let rawTransaction = null;
+    if (sendForm.isFeeless) {
+      rawTransaction = new bitcoinFeeless.TransactionBuilder(
+        CryptoService.network,
+        3000000
+      );
+    } else {
+      rawTransaction = new bitcoin.TransactionBuilder(
+        CryptoService.network,
+        3000000
+      );
+    }
 
     // add all outputs
     for await (let tx of utxo) {
@@ -172,10 +184,18 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         }'/${pathForAddress.change}/${pathForAddress.address}` // TODO CHANGE 1 (TESTNET) TO 125 (XST)
       );
 
-      const keyPair = bitcoin.ECPair.fromWIF(
+      let keyPair = null;
+      if (sendForm.isFeeless) {
+keyPair = bitcoinFeeless.ECPair.fromWIF(
         child.toWIF(),
         CryptoService.network
       );
+      } else {
+        keyPair = bitcoin.ECPair.fromWIF(
+          child.toWIF(),
+          CryptoService.network
+        );
+      }
 
       try {
         rawTransaction.sign(i, keyPair);
