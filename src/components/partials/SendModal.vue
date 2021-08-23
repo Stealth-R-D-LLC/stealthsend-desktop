@@ -259,8 +259,13 @@
               </svg>
             </StTooltip>
           </StAmount>
-          <p class="form-desc">Minimum: {{ minimumXSTForSend }} XST</p>
+          <template #description>
+            Minimum: {{ minimumXSTForSend }} XST, Fee: 0.01 XST
+          </template>
         </StFormItem>
+        <StSwitch v-model="isFeeless" theme="dark" type="thunder"
+          >Feeless</StSwitch
+        >
       </template>
       <template v-if="currentStep === 3">
         <div class="payment">
@@ -468,6 +473,7 @@ export default {
     const QRData = ref(null);
     const cameraAllowed = ref(false);
     const isCameraLoading = ref(false);
+    const isFeeless = ref(false);
 
     const pickedAccount = computed(() => {
       return mainStore.accountDetails;
@@ -874,6 +880,7 @@ export default {
       amountUSD,
       cameraAllowed,
       isCameraLoading,
+      isFeeless,
       // changeAccount,
 
       currentStep,
@@ -908,6 +915,10 @@ export default {
   top: -46px;
 }
 :deep .st-amount > .st-icon {
+  cursor: pointer;
+}
+:deep .st-switch--thunder {
+  margin-top: 8px;
   cursor: pointer;
 }
 .switch > p {
@@ -1071,7 +1082,7 @@ export default {
   margin: 0;
 }
 .send-modal .st-form-item {
-  margin: 0 0 32px;
+  margin: 0 0 16px;
 }
 .send-modal .st-modal__footer {
   display: flex;
