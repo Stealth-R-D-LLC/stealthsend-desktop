@@ -7,8 +7,8 @@ import {
   ipcMain,
   Menu,
   protocol,
-  shell,
   session,
+  shell,
   systemPreferences,
 } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
@@ -36,7 +36,6 @@ let delta = {
   other: {
     height: 0,
     width: 0,
-    maxHeight: 0,
   },
 };
 
@@ -97,6 +96,7 @@ async function createWindow() {
       width: 1152,
       height: 700 - delta[getOs()].height,
       center: true,
+      useContentSize: true,
       maximizable: false,
     });
     win.setResizable(false);
@@ -113,6 +113,7 @@ async function createWindow() {
       maxWidth: 1600,
       maxHeight: 1200 - delta[getOs()].height,
       center: true,
+      useContentSize: true,
       maximizable: false,
     });
     win.setResizable(true);
@@ -129,6 +130,7 @@ async function createWindow() {
       maxWidth: 1788,
       maxHeight: 1200 - delta[getOs()].height,
       center: true,
+      useContentSize: true,
       maximizable: false,
     });
     win.setResizable(true);
