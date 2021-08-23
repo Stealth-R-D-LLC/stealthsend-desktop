@@ -196,7 +196,7 @@ const CryptoService = {
   async getAccounts() {
     // TODO deprecated. use scanWallet() instead
     let accounts = (await db.getItem('accounts')) || [];
-    console.log('Accounts: ', accounts);
+    // console.log('Accounts: ', accounts);
     return accounts;
   },
   async storeTxAndLabel(txid, label) {

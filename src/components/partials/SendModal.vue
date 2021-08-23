@@ -206,9 +206,10 @@
             <p class="bold">Label:</p>
             <p>{{ label ? label : 'No label' }}</p>
             <p class="bold">Fee:</p>
-            <p>
-              {{ aproxFee ? formatAmount(aproxFee, false, 6, 6) : '0.02' }} XST
+            <p v-if="!isFeeless">
+              {{ aproxFee ? formatAmount(aproxFee, true, 2, 2) : '0.02' }} XST
             </p>
+            <p v-if="isFeeless">0.00 XST</p>
           </div>
         </div>
       </template>
@@ -394,6 +395,13 @@ export default {
         ],
       },
     });
+
+    watch(
+      () => isFeeless.value,
+      () => {
+        findFee(0.01);
+      }
+    );
 
     watch(
       () => isVisible.value,
