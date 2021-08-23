@@ -186,15 +186,12 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
       let keyPair = null;
       if (sendForm.isFeeless) {
-keyPair = bitcoinFeeless.ECPair.fromWIF(
-        child.toWIF(),
-        CryptoService.network
-      );
-      } else {
-        keyPair = bitcoin.ECPair.fromWIF(
+        keyPair = bitcoinFeeless.ECPair.fromWIF(
           child.toWIF(),
           CryptoService.network
         );
+      } else {
+        keyPair = bitcoin.ECPair.fromWIF(child.toWIF(), CryptoService.network);
       }
 
       try {
