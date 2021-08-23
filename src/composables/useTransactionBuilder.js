@@ -1,6 +1,8 @@
 import useFeeEstimator from '@/composables/useFeeEstimator';
 import CryptoService from '@/services/crypto';
+import FeelessJS from '@/services/feeless';
 import { useMainStore } from '@/store';
+import * as bitcoinFeeless from '../../bitcoinjs-lib-feeless/src/index.js';
 import * as bitcoin from 'bitcoinjs-lib';
 import { Buffer } from 'buffer';
 import { add, format, subtract, floor } from 'mathjs';
@@ -8,7 +10,11 @@ import { add, format, subtract, floor } from 'mathjs';
 export default async function useTransactionBuilder(utxo, sendForm) {
   const mainStore = useMainStore();
 
-  const { fee } = useFeeEstimator(utxo.length);
+  let fee = 0;
+  if (!sendForm.isFeeless) {
+    const feeEstimator = useFeeEstimator(utxo.length);
+    fee = feeEstimator.fee;
+  }
 
   console.log('TRANSACTION BUILDER: latest fee:', fee);
 
@@ -38,21 +44,32 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         // similar logic like in accountDiscovery
         const acc = CryptoService.getChildFromRoot(accountIndex, j, i);
         if (acc.address === address) {
+          //console.log('tu');
           let path = CryptoService.breakAccountPath(
             `${accountIndex}'/${j}/${i}`
           );
           return path;
         }
+        //console.log('nisam tu');
       }
+      //console.log('NISAM TU 2');
     }
   }
 
   async function buildTransaction() {
     // eslint-disable-next-line no-async-promise-executor
-    let rawTransaction = new bitcoin.TransactionBuilder(
-      CryptoService.network,
-      3000000
-    );
+    let rawTransaction = null;
+    if (sendForm.isFeeless) {
+      rawTransaction = new bitcoinFeeless.TransactionBuilder(
+        CryptoService.network,
+        3000000
+      );
+    } else {
+      rawTransaction = new bitcoin.TransactionBuilder(
+        CryptoService.network,
+        3000000
+      );
+    }
 
     // add all outputs
     for await (let tx of utxo) {
@@ -115,6 +132,49 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       rawTransaction.addOutput(change.address, change.amount);
     }
 
+    // create feework and feeless scriptPubkey and add output for feeless trx
+    if (fee === 0) {
+      rawTransaction.setVersion(4);
+      const bestBlock = await mainStore.rpc('getbestblock', []);
+
+      const txUnsignedHex = rawTransaction.buildIncomplete().toHex();
+      console.log('FEELESS txUnsignedHex: ', txUnsignedHex);
+      console.log('FEELESS height: ', bestBlock.height);
+      console.log('FEELESS size: ', bestBlock.size);
+      console.log('FEELESS hash: ', bestBlock.hash);
+      console.time('FEELESS create_feework_and_script_pubkey');
+
+      const feelessScriptPubkey = await FeelessJS.createFeeworkAndScriptPubkey(
+        txUnsignedHex,
+        bestBlock.height,
+        bestBlock.size,
+        bestBlock.hash
+      );
+
+      console.timeEnd('FEELESS create_feework_and_script_pubkey');
+
+      console.log(
+        'TRANSACTION BUILDER: feeless script sig key hex: ',
+        feelessScriptPubkey.toString('hex')
+      );
+      const testFeelessScriptPubkey =
+        await FeelessJS.testCreateFeeworkAndScriptPubkey(
+          txUnsignedHex,
+          bestBlock.height,
+          bestBlock.size,
+          bestBlock.hash,
+          feelessScriptPubkey.toString('hex')
+        );
+      console.log(
+        'FEELESS test results for script pubkey: ',
+        testFeelessScriptPubkey
+      );
+      rawTransaction.addOutput(Buffer.from(feelessScriptPubkey, 'hex'), 0);
+      console.log(
+        'TRANSACTION BUILDER: added output with zero amount and opcode OP_FEEWORK'
+      );
+    }
+
     for (let i = 0; i < utxo.length; i++) {
       // careful how to derive the path. depends on the account of the address
       const pathForAddress = findPathForAddress(utxo[i].address);
@@ -124,14 +184,20 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         }'/${pathForAddress.change}/${pathForAddress.address}` // TODO CHANGE 1 (TESTNET) TO 125 (XST)
       );
 
-      const keyPair = bitcoin.ECPair.fromWIF(
-        child.toWIF(),
-        CryptoService.network
-      );
+      let keyPair = null;
+      if (sendForm.isFeeless) {
+        keyPair = bitcoinFeeless.ECPair.fromWIF(
+          child.toWIF(),
+          CryptoService.network
+        );
+      } else {
+        keyPair = bitcoin.ECPair.fromWIF(child.toWIF(), CryptoService.network);
+      }
 
       try {
         rawTransaction.sign(i, keyPair);
       } catch (e) {
+        console.dir(e);
         throw new Error('TRANSACTION BUILDER: cannot sign tx: ', e);
       }
     }

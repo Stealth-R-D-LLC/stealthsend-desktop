@@ -2,7 +2,7 @@ import router from '@/router';
 import { useMainStore } from '@/store';
 import * as bip32 from 'bip32';
 import * as bip39 from 'bip39';
-import * as bitcoin from 'bitcoinjs-lib';
+import * as bitcoin from '../../bitcoinjs-lib-feeless/src/index.js';
 import { Buffer } from 'buffer';
 import cryptoJs from 'crypto-js';
 import { add, format } from 'mathjs';
