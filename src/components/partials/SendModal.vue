@@ -143,6 +143,7 @@
           <StAmount
             v-if="inputAmountState === 'XST'"
             v-model="form.amount.$value"
+            @input="changeAmount"
             placeholder="XST 0.000000"
             :options="{
               locale: 'en',
@@ -186,7 +187,11 @@
           </StAmount>
           <template #description>
             Minimum: {{ minimumXSTForSend }} XST, Fee:
-            {{ isFeeless ? '0.00 XST' : `${aproxFee} XST` }}
+            {{
+              isFeeless
+                ? '0.00 XST'
+                : `${formatAmount(aproxFee, true, 2, 2)} XST`
+            }}
           </template>
         </StFormItem>
         <StSwitch v-model="isFeeless" theme="dark" type="thunder"
@@ -485,7 +490,7 @@ export default {
     }
 
     function findFee(fee = 0.01) {
-      if (isFeeless.value) {
+      if (isFeeless.value || !amount.value || amount.value === 0) {
         aproxFee.value = 0;
         return 0;
       }
@@ -714,6 +719,10 @@ export default {
       }
     }
 
+    function changeAmount() {
+      findFee(amount.value);
+    }
+
     function preventRemove(acc) {
       setTimeout(() => {
         account.value = acc;
@@ -760,6 +769,7 @@ export default {
       minimumXSTForSend,
       QRData,
       onDecode,
+      changeAmount,
 
       form,
       errors,
