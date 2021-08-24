@@ -52,7 +52,7 @@
         <p class="amount">
           <SvgIcon name="icon-transactions-received" v-if="tx.amount > 0" />
 
-          <SvgIcon name="icon-transactions-sent" v-else-if="tx.amount < 0" />
+          <SvgIcon name="icon-transactions-sent" v-else-if="tx.amount <= 0" />
           {{ formatAmount(tx.amount, false, 6, 6) }} XST
         </p>
       </div>

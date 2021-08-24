@@ -143,6 +143,7 @@
           <StAmount
             v-if="inputAmountState === 'XST'"
             v-model="form.amount.$value"
+            @input="changeAmount"
             placeholder="XST 0.000000"
             :options="{
               locale: 'en',
@@ -186,7 +187,11 @@
           </StAmount>
           <template #description>
             Minimum: {{ minimumXSTForSend }} XST, Fee:
-            {{ isFeeless ? '0.00 XST' : `${aproxFee} XST` }}
+            {{
+              isFeeless
+                ? '0.00 XST'
+                : `${formatAmount(aproxFee, true, 2, 2)} XST`
+            }}
           </template>
         </StFormItem>
         <StSwitch v-model="isFeeless" theme="dark" type="thunder"
@@ -222,7 +227,7 @@
       </template>
       <template v-if="currentStep === 5">
         <div class="progress">
-          <SvgIcon name="icon-loader-light" class="progress-animated" />
+          <CircleProgress></CircleProgress>
           <div class="overlay"></div>
         </div>
         <p class="progress-note">
@@ -281,6 +286,7 @@ import { format, add, subtract } from 'mathjs';
 import emitter from '@/services/emitter';
 import { QrStream } from 'vue3-qr-reader';
 import SvgIcon from '../partials/SvgIcon.vue';
+import CircleProgress from '../partials/CircleProgress.vue';
 
 const sumOf = (x = 0, y = 0) => {
   let sum = add(x, y);
@@ -292,6 +298,7 @@ export default {
   components: {
     QrStream,
     SvgIcon,
+    CircleProgress,
   },
   setup() {
     const mainStore = useMainStore();
@@ -483,7 +490,7 @@ export default {
     }
 
     function findFee(fee = 0.01) {
-      if (isFeeless.value) {
+      if (isFeeless.value || !amount.value || amount.value === 0) {
         aproxFee.value = 0;
         return 0;
       }
@@ -712,6 +719,10 @@ export default {
       }
     }
 
+    function changeAmount() {
+      findFee(amount.value);
+    }
+
     function preventRemove(acc) {
       setTimeout(() => {
         account.value = acc;
@@ -758,6 +769,7 @@ export default {
       minimumXSTForSend,
       QRData,
       onDecode,
+      changeAmount,
 
       form,
       errors,
