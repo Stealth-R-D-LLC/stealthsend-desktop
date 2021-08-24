@@ -125,7 +125,10 @@
           </template>
           <template #actions="{ item }">
             <div class="icon-container">
-              <StTooltip v-if="item.isFeeles" tooltip="Feeless transaction">
+              <StTooltip
+                v-if="isTxFeeless(item.txinfo)"
+                tooltip="Feeless transaction"
+              >
                 <SvgIcon name="icon-feeles" />
               </StTooltip>
 
@@ -148,7 +151,10 @@
               :class="{ expanded__active: isExpanded === item.index }"
             >
               <div class="expanded__inner">
-                <StTooltip v-if="item.isFeeles" tooltip="Feeless transaction">
+                <StTooltip
+                  v-if="isTxFeeless(item.txinfo)"
+                  tooltip="Feeless transaction"
+                >
                   <SvgIcon name="icon-feeles" />
                 </StTooltip>
 
@@ -224,6 +230,15 @@ export default {
       } else {
         isExpanded.value = txid;
       }
+    }
+
+    function isTxFeeless(txinfo = undefined) {
+      // tx is feeless if it has an {amount: 0, type: "feework"} object in txinfo.destinations
+      if (!txinfo) return false;
+      let found = txinfo.destinations.find(
+        (el) => el.amount === 0 && el.type === 'feework'
+      );
+      return !!found;
     }
 
     function orderTransactions(
@@ -335,6 +350,7 @@ export default {
       orderTransactions,
       txs,
       findLabelForTx,
+      isTxFeeless,
       isHiddenAmounts: computed(() => mainStore.isAmountsHidden),
     };
   },
