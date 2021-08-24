@@ -222,7 +222,7 @@
       </template>
       <template v-if="currentStep === 5">
         <div class="progress">
-          <!-- <SvgIcon name="icon-loader-light" class="progress-animated" /> -->
+          <CircleProgress></CircleProgress>
           <div class="overlay"></div>
         </div>
         <p class="progress-note">
@@ -281,6 +281,7 @@ import { format, add, subtract } from 'mathjs';
 import emitter from '@/services/emitter';
 import { QrStream } from 'vue3-qr-reader';
 import SvgIcon from '../partials/SvgIcon.vue';
+import CircleProgress from '../partials/CircleProgress.vue';
 
 const sumOf = (x = 0, y = 0) => {
   let sum = add(x, y);
@@ -292,6 +293,7 @@ export default {
   components: {
     QrStream,
     SvgIcon,
+    CircleProgress,
   },
   setup() {
     const mainStore = useMainStore();
