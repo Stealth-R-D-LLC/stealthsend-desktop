@@ -11,7 +11,7 @@ export default function useHelpers() {
   // 2nd argument is usually for rounding fiat to 2 decimal places
   // without 2nd argument, the function will just add the decimal dots and comma separators
   function formatAmount(
-    amount,
+    amount = 0,
     roundDecimals = false,
     decimals = 2,
     minimumFractionDigits = 2

@@ -31,7 +31,7 @@
                 <template v-if="$route.name !== 'Dashboard'">Received</template>
               </template>
 
-              <template v-else-if="item.amount < 0">
+              <template v-else-if="item.amount <= 0">
                 <SvgIcon name="icon-transactions-sent" />
                 <template v-if="$route.name !== 'Dashboard'">Sent</template>
               </template>
@@ -48,7 +48,11 @@
               :class="{ 'move-left': isExpanded === item.index }"
             >
               <span>{{
-                item && item.output && item.output[0]?.addresses[0]
+                item &&
+                item.output &&
+                item.output[0] &&
+                item.output[0].addresses &&
+                item.output[0].addresses[0]
               }}</span>
             </div>
           </template>

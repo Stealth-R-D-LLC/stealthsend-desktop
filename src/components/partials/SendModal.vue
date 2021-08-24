@@ -222,7 +222,7 @@
       </template>
       <template v-if="currentStep === 5">
         <div class="progress">
-          <SvgIcon name="icon-loader-light" class="progress-animated" />
+          <!-- <SvgIcon name="icon-loader-light" class="progress-animated" /> -->
           <div class="overlay"></div>
         </div>
         <p class="progress-note">
