@@ -341,8 +341,10 @@ export default {
       if (currentStep.value === 2) {
         if (mainStore.redoAmount) {
           amount.value = mainStore.redoAmount;
+          isFeeless.value = mainStore.isFeeless;
         } else {
           amount.value = null;
+          isFeeless.value = mainStore.isFeeless;
           setTimeout(() => (inputAmountState.value = 'USD'), 1);
           setTimeout(() => (inputAmountState.value = 'XST'), 1);
         }
@@ -426,6 +428,7 @@ export default {
       mainStore.SET_MODAL_VISIBILITY('send', false);
       mainStore.SET_SEND_ADDRESS('');
       mainStore.SET_REDO_AMOUNT(null);
+      mainStore.SET_FEELESS(false);
       // reset all variables
       inputAmountState.value = 'XST';
       // account.value = null;
