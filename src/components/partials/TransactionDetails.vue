@@ -244,9 +244,13 @@ export default {
     }
 
     function redoTransaction() {
+      const isFeeless = !!(tx.value.vout.filter(output => {
+        return output.scriptPubKey.type === "feework";
+      })).length;
       mainStore.SET_SEND_ADDRESS(tx.value.vout[0].scriptPubKey.addresses[0]);
       mainStore.SET_REDO_AMOUNT(tx.value.vout[0].value);
       mainStore.SET_MODAL_VISIBILITY('send', true);
+      mainStore.SET_FEELESS(isFeeless);
       close();
     }
 
