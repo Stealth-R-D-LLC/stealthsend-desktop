@@ -40,20 +40,20 @@ export default {
 .circle-progress {
   width: 95px;
   height: 95px;
-  border: 1px solid rgba(224, 211, 252, 0.3);
+  border: 2px solid rgba(224, 211, 252, 0.3);
   border-radius: 50%;
   box-sizing: content-box;
   position: absolute;
   top: 0;
 }
 .rightcircle {
-  border-top: 1px solid #e0d3fc;
-  border-right: 1px solid #e0d3fc;
+  border-top: 2px solid #e0d3fc;
+  border-right: 2px solid #e0d3fc;
   right: 0;
 }
 .leftcircle {
-  border-bottom: 1px solid #e0d3fc;
-  border-left: 1px solid #e0d3fc;
+  border-bottom: 2px solid #e0d3fc;
+  border-left: 2px solid #e0d3fc;
   left: 0;
   -webkit-transform: rotate(90deg);
   transform: rotate(90deg);
