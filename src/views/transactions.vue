@@ -172,6 +172,8 @@ export default {
 </script>
 
 <style scoped>
+@import '../css/components/datepicker.css';
+
 .controls {
   margin: 14px 24px 0;
   display: grid;
