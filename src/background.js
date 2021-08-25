@@ -13,54 +13,22 @@ import {
 } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const os = require('os');
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } },
 ]);
 
-let delta = {
-  linux: {
-    height: 26,
-    width: 0,
-  },
-  mac: {
-    height: 0,
-    width: 0,
-  },
-  windows: {
-    height: 20,
-    width: 0,
-  },
-  other: {
-    height: 0,
-    width: 0,
-  },
-};
-
-function getOs() {
-  const currentOs = os.type().toLowerCase();
-  if (currentOs.includes('linux')) {
-    return 'linux';
-  } else if (currentOs.includes('darwin')) {
-    return 'mac';
-  } else if (currentOs.includes('windows')) {
-    return 'windows';
-  }
-  return 'other';
-}
-
 let win = {};
 async function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
     width: 1152,
-    height: 700 - delta[getOs()].height,
+    height: 700,
     minWidth: 1152,
-    minHeight: 700 - delta[getOs()].height,
+    minHeight: 700,
     maxWidth: 1600,
-    maxHeight: 1200 - delta[getOs()].height,
+    maxHeight: 1200,
     center: true,
     useContentSize: true,
     maximizable: false,
@@ -94,9 +62,8 @@ async function createWindow() {
   ipcMain.on('resize:create', () => {
     win.setBounds({
       width: 1152,
-      height: 700 - delta[getOs()].height,
+      height: 700,
       center: true,
-      useContentSize: true,
       maximizable: false,
     });
     win.setResizable(false);
@@ -107,13 +74,12 @@ async function createWindow() {
     // can accept event and args
     win.setBounds({
       width: 1152,
-      height: 700 - delta[getOs()].height,
+      height: 700,
       minWidth: 1152,
-      minHeight: 700 - delta[getOs()].height,
+      minHeight: 700,
       maxWidth: 1600,
-      maxHeight: 1200 - delta[getOs()].height,
+      maxHeight: 1200,
       center: true,
-      useContentSize: true,
       maximizable: false,
     });
     win.setResizable(true);
@@ -124,13 +90,12 @@ async function createWindow() {
     // can accept event and args
     win.setBounds({
       width: 1340,
-      height: 700 - delta[getOs()].height,
+      height: 700,
       minWidth: 1340,
-      minHeight: 700 - delta[getOs()].height,
+      minHeight: 700,
       maxWidth: 1788,
-      maxHeight: 1200 - delta[getOs()].height,
+      maxHeight: 1200,
       center: true,
-      useContentSize: true,
       maximizable: false,
     });
     win.setResizable(true);
