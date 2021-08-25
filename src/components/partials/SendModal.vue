@@ -341,10 +341,8 @@ export default {
       if (currentStep.value === 2) {
         if (mainStore.redoAmount) {
           amount.value = mainStore.redoAmount;
-          isFeeless.value = mainStore.isFeeless;
         } else {
           amount.value = null;
-          isFeeless.value = mainStore.isFeeless;
           setTimeout(() => (inputAmountState.value = 'USD'), 1);
           setTimeout(() => (inputAmountState.value = 'XST'), 1);
         }
@@ -428,7 +426,6 @@ export default {
       mainStore.SET_MODAL_VISIBILITY('send', false);
       mainStore.SET_SEND_ADDRESS('');
       mainStore.SET_REDO_AMOUNT(null);
-      mainStore.SET_FEELESS(false);
       // reset all variables
       inputAmountState.value = 'XST';
       // account.value = null;
@@ -493,9 +490,12 @@ export default {
     }
 
     function findFee(fee = 0.01) {
-      if (isFeeless.value || !amount.value || amount.value === 0) {
+      if (isFeeless.value) {
         aproxFee.value = 0;
         return 0;
+      }
+      if (!amount.value || amount.value === 0) {
+        return 0.01;
       }
       // steps:
       // 1. find unspentOutputs for selected account
@@ -671,6 +671,7 @@ export default {
       // if not, find real fee
       amount.value = 0;
       let fee = findFee();
+      console.log('feeeee', fee);
       // subtract real fee from amount
       const maxAmount = format(subtract(item.utxo, fee), { precision: 8 });
       form.amount.$value = maxAmount;
@@ -723,7 +724,7 @@ export default {
     }
 
     function changeAmount() {
-      findFee(amount.value);
+      findFee();
     }
 
     function preventRemove(acc) {
