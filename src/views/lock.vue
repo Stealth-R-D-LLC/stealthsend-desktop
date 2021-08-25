@@ -59,7 +59,7 @@
                 >Forgot Password</a
               >
             </StFormItem>
-            <StButton type="type-d" @click="validatePassword"
+            <StButton size="normal" type="type-d" @click="validatePassword"
               >Continue</StButton
             >
           </form>
