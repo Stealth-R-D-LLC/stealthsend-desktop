@@ -32,7 +32,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
   const multiplyOf = (x = 0, y = 0) => {
     let result = multiply(x, y);
-    result = format(result, { precision: 8 });
+    result = format(result, { precision: 14 });
     return Number(result);
   };
 

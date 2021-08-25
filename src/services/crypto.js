@@ -567,8 +567,9 @@ const CryptoService = {
         if (account.xpub?.length > 0) {
           const hdAccount = await mainStore.rpc('gethdaccount', [account.xpub]);
           for (let tx of hdAccount) {
+            console.log('', tx.account_balance_change);
             accUtxo = add(accUtxo, tx.account_balance_change);
-            accUtxo = format(accUtxo, { precision: 8 });
+            accUtxo = format(accUtxo, { precision: 14 });
             let outputAddresses = tx.outputs.map((output) => output.address);
             let indexOfDestination = 0;
             if (tx.amount < 0) {
@@ -623,7 +624,7 @@ const CryptoService = {
             });
           }
           accUtxo = add(accUtxo, importedAccountBalance);
-          accUtxo = format(accUtxo, { precision: 8 });
+          accUtxo = format(accUtxo, { precision: 14 });
 
           newAccounts.push({
             ...account,
@@ -636,15 +637,15 @@ const CryptoService = {
         if (!account.isArchived) {
           // do not include archived accounts into calculating the whole balance of the wallet XST-167
           balance = add(balance, accUtxo);
-          balance = format(balance, { precision: 8 });
+          balance = format(balance, { precision: 14 });
         }
       }
+      await db.setItem('accounts', newAccounts);
       resolve({
         utxo: balance, // sum of all utxo (except archived accounts)
         txs: txs, // all transactions,
         accounts: newAccounts,
       });
-      await db.setItem('accounts', newAccounts);
     });
   },
   nextToUse(freeAddresses) {

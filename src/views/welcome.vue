@@ -1657,7 +1657,7 @@ export default {
 
       for (let tx of hdAccount) {
         accUtxo = add(accUtxo, tx.account_balance_change);
-        accUtxo = format(accUtxo, { precision: 8 });
+        accUtxo = format(accUtxo, { precision: 14 });
       }
 
       let acc = {
