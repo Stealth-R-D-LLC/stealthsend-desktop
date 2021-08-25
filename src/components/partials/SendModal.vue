@@ -290,7 +290,7 @@ import CircleProgress from '../partials/CircleProgress.vue';
 
 const sumOf = (x = 0, y = 0) => {
   let sum = add(x, y);
-  sum = format(sum, { precision: 8 });
+  sum = format(sum, { precision: 14 });
   return Number(sum);
 };
 export default {
@@ -673,7 +673,7 @@ export default {
       let fee = findFee();
       console.log('feeeee', fee);
       // subtract real fee from amount
-      const maxAmount = format(subtract(item.utxo, fee), { precision: 8 });
+      const maxAmount = format(subtract(item.utxo, fee), { precision: 14 });
       form.amount.$value = maxAmount;
       setTimeout(() => (inputAmountState.value = 'USD'), 1);
       setTimeout(() => (inputAmountState.value = 'XST'), 1);
