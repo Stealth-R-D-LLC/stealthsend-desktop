@@ -18,7 +18,7 @@ export default {
     },
     bold: {
       type: Boolean,
-      required: true,
+      required: false,
       default: () => {
         return false;
       },
