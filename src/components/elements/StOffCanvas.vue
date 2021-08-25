@@ -3,7 +3,7 @@
     <div
       class="off-canvas-wrapper"
       :class="{ open: isOpen }"
-      :aria-hidden="open ? 'true' : 'false'"
+      :aria-hidden="isOpen ? 'true' : 'false'"
       @click="closeCanvas"
     >
       <div class="off-canvas-menu" :class="{ open: isOpen }" @click.stop>
