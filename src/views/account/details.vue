@@ -27,8 +27,10 @@
           </StLabel>
         </div>
         <div class="actions">
-          <StButton type="type-c" @click="openModal('send')">Send</StButton>
-          <StButton type="type-c" @click="openModal('receive')"
+          <StButton type="type-c" size="normal" @click="openModal('send')"
+            >Send</StButton
+          >
+          <StButton type="type-c" size="normal" @click="openModal('receive')"
             >Receive</StButton
           >
         </div>
@@ -69,19 +71,6 @@
         ></TransactionList>
       </div>
     </div>
-    <Card
-      class="list-item"
-      :archiveable="false"
-      :account="{
-        label: account.label,
-        utxo: account.utxo,
-        isArchived: account.isArchived,
-      }"
-    ></Card>
-    <StTooltip
-      :tooltip="copyPending ? 'Copied to Clipboard!' : 'Copy to Clipboard'"
-    >
-    </StTooltip>
   </div>
 </template>
 
@@ -89,7 +78,6 @@
 import { useMainStore } from '@/store';
 import { computed, ref, onMounted } from 'vue';
 import StLabel from '@/components/elements/StLabel';
-import Card from '@/components/elements/Card';
 import Chart from '@/views/dashboard/components/chart';
 import TransactionList from '@/components/partials/TransactionList';
 import CryptoService from '@/services/crypto';
@@ -102,7 +90,6 @@ import SvgIcon from '../../components/partials/SvgIcon.vue';
 export default {
   name: 'StAccountDetails',
   components: {
-    Card,
     Chart,
     TransactionList,
     StLabel,

@@ -10,11 +10,11 @@
           <SvgIcon name="icon-hamburger-menu-primary" class="info" />
         </div>
       </div>
-      <div class="amount-container">
-        <h6 class="currency" v-if="steps">
+      <div class="amount-container" v-if="steps && steps[type]">
+        <h6 class="currency">
           {{ isHiddenAmounts ? '••• XST' : steps[type].amountLeft }}
         </h6>
-        <p class="medium grey" v-if="steps">
+        <p class="medium grey">
           ~
           {{ isHiddenAmounts ? '$••• USD' : steps[type].amountRight + ' USD' }}
           <SvgIcon
