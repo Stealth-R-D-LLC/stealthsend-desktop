@@ -234,7 +234,7 @@ export default {
 
     function isTxFeeless(txinfo = undefined) {
       // tx is feeless if it has an {amount: 0, type: "feework"} object in txinfo.destinations
-      if (!txinfo) return false;
+      if (!txinfo || !txinfo.destinations) return false;
       let found = txinfo.destinations.find(
         (el) => el.amount === 0 && el.type === 'feework'
       );
@@ -433,7 +433,7 @@ export default {
 :deep .tooltip {
   display: flex;
   align-items: center;
-  margin-right: 24px;
+  margin-right: 28px;
 }
 
 .icon {
