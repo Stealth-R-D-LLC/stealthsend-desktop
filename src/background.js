@@ -47,6 +47,18 @@ async function createWindow() {
     },
   });
 
+  // win.on('hide', function (event) {
+  //   console.log('2------', event);
+  // })
+  //   win.on('minimize', function (event) {
+  //   console.log('22------', event);
+  // })
+  //   win.on('maximize', function (event) {
+  //   console.log('3------', event);
+  // })
+  // win.on('resize', function (event) {
+  //   console.log('1------', event);
+  // })
   const allowedUrls = [
     'https://www.allaboutcookies.org/',
     'https://www.google.ch/policies/privacy/partners',
@@ -122,6 +134,12 @@ async function createWindow() {
         { role: 'toggleDevTools' },
       ],
     },
+      {
+    label: 'Window',
+    submenu: [
+      { role: 'minimize' }
+    ]
+  },
   ];
 
   const menu = Menu.buildFromTemplate(menuTemplate);
@@ -193,6 +211,7 @@ async function askForMediaAccess() {
   }
   return false;
 }
+
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
