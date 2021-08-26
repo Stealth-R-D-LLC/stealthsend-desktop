@@ -209,9 +209,9 @@ export default {
 }
 @media only screen and (max-width: 1299px) {
   .transactions-table :deep td:nth-child(4),
-:deep th:nth-child(4) {
-  display: none;
-}
+  :deep th:nth-child(4) {
+    display: none;
+  }
 }
 .transactions-table :deep td:nth-child(4) {
   width: 300px;
