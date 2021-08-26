@@ -134,12 +134,10 @@ async function createWindow() {
         { role: 'toggleDevTools' },
       ],
     },
-      {
-    label: 'Window',
-    submenu: [
-      { role: 'minimize' }
-    ]
-  },
+    {
+      label: 'Window',
+      submenu: [{ role: 'minimize' }],
+    },
   ];
 
   const menu = Menu.buildFromTemplate(menuTemplate);
@@ -211,7 +209,6 @@ async function askForMediaAccess() {
   }
   return false;
 }
-
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
