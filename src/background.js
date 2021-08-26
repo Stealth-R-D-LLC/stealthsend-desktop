@@ -34,6 +34,7 @@ async function createWindow() {
     maximizable: false,
     fullscreenable: false,
     webPreferences: {
+      backgroundThrottling: false,
       nodeIntegration: false,
       nodeIntegrationInWorker: false,
       contextIsolation: true, // protect against prototype pollution
@@ -121,6 +122,10 @@ async function createWindow() {
         { role: 'forceReload' },
         { role: 'toggleDevTools' },
       ],
+    },
+    {
+      label: 'Window',
+      submenu: [{ role: 'minimize' }],
     },
   ];
 

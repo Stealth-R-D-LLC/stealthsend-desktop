@@ -141,6 +141,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       const bestBlock = await mainStore.rpc('getbestblock', []);
 
       const txUnsignedHex = rawTransaction.buildIncomplete().toHex();
+      console.log('FEELESS RAW TX: ', rawTransaction.__INPUTS.length);
       console.log('FEELESS txUnsignedHex: ', txUnsignedHex);
       console.log('FEELESS height: ', bestBlock.height);
       console.log('FEELESS size: ', bestBlock.size);
@@ -148,6 +149,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       console.time('FEELESS create_feework_and_script_pubkey');
 
       const feelessScriptPubkey = await FeelessJS.createFeeworkAndScriptPubkey(
+        rawTransaction.__INPUTS.length,
         txUnsignedHex,
         bestBlock.height,
         bestBlock.size,
