@@ -567,7 +567,7 @@ const CryptoService = {
         if (account.xpub?.length > 0) {
           const hdAccount = await mainStore.rpc('gethdaccount', [account.xpub]);
           for (let tx of hdAccount) {
-            console.log('', tx.account_balance_change);
+            // console.log('', tx.account_balance_change);
             accUtxo = add(accUtxo, tx.account_balance_change);
             accUtxo = format(accUtxo, { precision: 14 });
             let outputAddresses = tx.outputs.map((output) => output.address);

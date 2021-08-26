@@ -86,7 +86,9 @@ export default {
         let config = localStorage.getItem('autolock') || null;
         config = JSON.parse(config);
         idleTime = idleTime + 1;
+        console.log('increment!', idleTime);
         if (!config) return;
+        console.log('config:', config);
         if (
           idleTime > config.interval &&
           config.isEnabled &&
