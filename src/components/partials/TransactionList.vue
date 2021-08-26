@@ -44,7 +44,7 @@
           </template>
           <template #recipient="{ item }">
             <div
-              class="move amount-fixed"
+              class="move"
               :class="{ 'move-left': isExpanded === item.index }"
             >
               <span>{{
@@ -52,7 +52,7 @@
                 item.output &&
                 item.output[0] &&
                 item.output[0].addresses &&
-                item.output[0].addresses[0]
+                item.output[0].addresses[0] || '-'
               }}</span>
             </div>
           </template>
@@ -428,6 +428,12 @@ export default {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  min-width: 63px;
+  max-width: 63px;
+}
+
+.icon-container svg {
+  min-width: 18px;
 }
 
 :deep .tooltip {
