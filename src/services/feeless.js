@@ -53,6 +53,7 @@ import { Buffer } from 'buffer/index.js';
 
 const FeelessJS = {
   async createFeeworkAndScriptPubkey(
+    inputsLength,
     txUnsignedHex,
     blockHeight,
     blockSize,
@@ -61,11 +62,22 @@ const FeelessJS = {
     const HEIGHT = blockHeight;
     const SIZE = blockSize;
     let BLOCKHASH = blockHash;
+
+    function _getBytesSize(txUnsignedHex, inputsLength) {
+      var BYTES_SIZE = txUnsignedHex.length / 2;
+      BYTES_SIZE = BYTES_SIZE + inputsLength * 108 + 18; // 108 for each input and 18 for feeless
+      return BYTES_SIZE;
+    }
+
+    const BYTES_SIZE = _getBytesSize(txUnsignedHex, inputsLength);
+
+    console.log('BYTES_SIZE', BYTES_SIZE);
+
     BLOCKHASH = BLOCKHASH.match(/.{1,2}/g)
       .reverse()
       .join('');
 
-    const MCOST = this._getMcostFromSize(SIZE);
+    const MCOST = this._getMcostFromSize(SIZE, BYTES_SIZE);
 
     const DATA = this._getDataBytesFromTxAndHash(txUnsignedHex, BLOCKHASH);
     const WORK = await this._createWork(DATA, MCOST);
@@ -81,15 +93,26 @@ const FeelessJS = {
     return scriptPubkeyBuffer.toString('hex');
   },
 
-  _getMcostFromSize(size) {
+  _getMcostFromSize(size, bytes) {
     const M = 1000 * 110;
     const BASE = 256;
-    let COST = (1 + size / 1000) * BASE;
+    const MAXSIZE = 200000;
+    const MAXINT = 2 ** 31 - 1;
+
+    let COST = (1 + bytes / 1000) * BASE;
+    const NEWSIZE = size + bytes;
+
+    if (NEWSIZE > MAXSIZE) {
+      // MAXINT is just a sentinel that says to use a money fee
+      return MAXINT;
+    }
+
     let i = 2;
-    while (i <= (31 * size) / 204800) {
+    while (i <= (31 * NEWSIZE) / MAXSIZE) {
       COST = (COST * M) / 100000;
       i += 1;
     }
+
     const mcosts = [COST, 4608];
     const MCOST = Number(Math.ceil(Math.min(...mcosts)));
     return MCOST;
