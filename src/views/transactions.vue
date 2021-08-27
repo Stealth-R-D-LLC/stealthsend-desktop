@@ -55,13 +55,13 @@ export default {
     DatePicker,
     SvgIcon,
   },
-  beforeRouteLeave() {
+  // beforeRouteLeave() {
     //const mainStore = useMainStore();
     //mainStore.SET_ACTIVE_TRANSACTION_ADDRESS('')
     // called when the route that renders this component is about to
     // be navigated away from.
     // has access to `this` component instance.
-  },
+  // },
   beforeRouteEnter(to, from, next) {
     const mainStore = useMainStore();
 
