@@ -30,10 +30,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     return Number(diff);
   };
   function calculateChange(accountAmount, sendAmount) {
-    console.log('change - account amount', accountAmount);
-    console.log('change - sendAmount', sendAmount);
     let change = subtractOf(accountAmount, sendAmount);
-    console.log('chng: ', change);
     return change;
   }
 
