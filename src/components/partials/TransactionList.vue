@@ -47,13 +47,17 @@
               class="move"
               :class="{ 'move-left': isExpanded === item.index }"
             >
-              <span>{{
-                (item &&
-                  item.output &&
-                  item.output[0] &&
-                  item.output[0].addresses &&
-                  item.output[0].addresses[0]) ||
-                '-'
+              <span v-if="$route.name === 'Transactions'">{{
+                item.txinfo &&
+                item.txinfo.destinations[0] &&
+                item.txinfo.destinations[0].addresses[0]
+              }}</span>
+              <span v-else>{{
+                item &&
+                item.output &&
+                item.output[0] &&
+                item.output[0].addresses &&
+                item.output[0].addresses[0]
               }}</span>
             </div>
           </template>
