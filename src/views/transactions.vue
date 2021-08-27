@@ -55,13 +55,13 @@ export default {
     DatePicker,
     SvgIcon,
   },
-  beforeRouteLeave() {
-    //const mainStore = useMainStore();
-    //mainStore.SET_ACTIVE_TRANSACTION_ADDRESS('')
-    // called when the route that renders this component is about to
-    // be navigated away from.
-    // has access to `this` component instance.
-  },
+  // beforeRouteLeave() {
+  //const mainStore = useMainStore();
+  //mainStore.SET_ACTIVE_TRANSACTION_ADDRESS('')
+  // called when the route that renders this component is about to
+  // be navigated away from.
+  // has access to `this` component instance.
+  // },
   beforeRouteEnter(to, from, next) {
     const mainStore = useMainStore();
 
@@ -205,7 +205,7 @@ export default {
 }
 .transactions-table :deep td:nth-child(4),
 :deep th:nth-child(4) {
-  display: block;
+  display: revert;
 }
 @media only screen and (max-width: 1299px) {
   .transactions-table :deep td:nth-child(4),
