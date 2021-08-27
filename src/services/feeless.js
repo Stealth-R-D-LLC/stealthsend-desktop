@@ -97,14 +97,11 @@ const FeelessJS = {
     const M = 1000 * 110;
     const BASE = 256;
     const MAXSIZE = 200000;
-    const MAXINT = 2 ** 31 - 1;
-
     let COST = (1 + bytes / 1000) * BASE;
-    const NEWSIZE = size + bytes;
+    let NEWSIZE = size + bytes;
 
     if (NEWSIZE > MAXSIZE) {
-      // MAXINT is just a sentinel that says to use a money fee
-      return MAXINT;
+      NEWSIZE = MAXSIZE;
     }
 
     let i = 2;
