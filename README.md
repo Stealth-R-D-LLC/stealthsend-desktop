@@ -31,7 +31,7 @@ After cloning the repo from our git, do the following steps:
 # download cert from https://bipa1.barrage.net/ipa/config/ca.crt
 export NODE_EXTRA_CA_CERTS="path/to/cert/file"
 npm config set registry https://nexus.barrage.net/repository/npm.barrage.net/ --global
-# username&pass are bipa credentials
+# username&pass are bipa credentials (possibly you'll have to trigger it with `npm adduser`)
 # email is your work email
 npm config set registry https://nexus.barrage.net/repository/npm.barrage.net/
 ```
