@@ -13,7 +13,7 @@
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint --ext .js,.vue src",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.{js,vue}' --write",
-    "clean": "rm -rf node_modules package-lock.json dist_electron && npm i",
+    "clean": "rm -rf node_modules package-lock.json dist_electron && npm i --legacy-peer-deps",
     "clean-post": "rm -rf node_modules package-lock.json dist_electron",
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
