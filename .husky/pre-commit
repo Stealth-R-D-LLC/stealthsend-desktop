@@ -13,7 +13,7 @@ fi
 
 for FILE in $STAGED_FILES
 do
-  echo "$FILE"
+#   echo "$FILE"
   npx prettier --config .prettierrc $FILE --write
 
   if [[ "$?" == 0 ]]; then
