@@ -16,10 +16,10 @@ do
   echo "$FILE"
   npx prettier --config .prettierrc $FILE --write
 
-#   if [[ "$?" == 0 ]]; then
-#     echo "\t\033[32mESLint Passed: $FILE\033[0m"
-#   else
-#     echo "\t\033[41mESLint Failed: $FILE\033[0m"
-#     PASS=false
-#   fi
+  if [[ "$?" == 0 ]]; then
+    echo "\t\033[32mESLint Passed: $FILE\033[0m"
+  else
+    echo "\t\033[41mESLint Failed: $FILE\033[0m"
+    PASS=false
+  fi
 done
