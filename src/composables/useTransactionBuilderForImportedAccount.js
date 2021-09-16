@@ -118,7 +118,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
             bestBlock.hash
           );
 
-        console.timeEnd('FEELESS create_feework_and_script_pubkey aa');
+        console.timeEnd('FEELESS create_feework_and_script_pubkey');
 
         console.log(
           'TRANSACTION BUILDER: feeless script sig key hex: ',
