@@ -3,10 +3,10 @@
 
 STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(js|vue)$')
 
-# if [[ "$STAGED_FILES" = "" ]]; then
-#   echo "No staged files."
-#   exit 0
-# fi
+if [[ "$STAGED_FILES" = "" ]]; then
+  echo "No staged files."
+  exit 0
+fi
 
 #npm run prettier-format
 # npx prettier --config .prettierrc 'src/**/*.{js,vue}' --write 
