@@ -17,7 +17,7 @@ do
   npx prettier --config .prettierrc $FILE --write
 
   if [[ "$?" == 0 ]]; then
-    echo "\tLinting file: $FILE"
+    # echo "\tLinting file: $FILE"
   else
     echo "\tLint failed for file: $FILE"
     PASS=false
