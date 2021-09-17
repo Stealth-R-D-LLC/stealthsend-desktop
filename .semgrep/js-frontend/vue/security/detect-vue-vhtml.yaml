@@ -1,0 +1,35 @@
+# rules:
+#     patterns:
+#       - pattern-either: 
+#         - pattern: |
+#           console.log(...)
+#     message: |
+#       brate ne smijes korisitit v-html to je trash.
+#     languages:
+#       - javascript
+#     metadata:
+#         references:
+#           - https://docs.angularjs.org/api/ng/function/angular.element
+#           - https://owasp.org/www-chapter-london/assets/slides/OWASPLondon20170727_AngularJS.pdf
+#     fix: |
+      
+#     severity: WARNING
+
+rules:
+  - id: detect-vue-v-html
+    patterns:
+      - pattern-either: 
+        - pattern: |
+            console.log(...)
+        - pattern: |
+            console.error(...)
+        - pattern: |
+            template: ...
+    message: |
+              message message message message message message message .
+    languages:
+    - javascript
+    severity: WARNING
+    metadata:
+      owasp: 'A6: Sensitive Data Exposure'
+      cwe: 'CWE-345: Insufficient Verification of Data Authenticity'
