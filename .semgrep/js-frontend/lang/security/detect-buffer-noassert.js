@@ -1,11 +1,11 @@
 // ok:detect-buffer-noassert
-a.readUInt8(0)
+a.readUInt8(0);
 
 // ok:detect-buffer-noassert
-a.readUInt8(0, false)
+a.readUInt8(0, false);
 
 // ruleid:detect-buffer-noassert
-a.readUInt8(0, true)
+a.readUInt8(0, true);
 
 // ruleid:detect-buffer-noassert
-a.writeFloatLE(0, true)
+a.writeFloatLE(0, true);
