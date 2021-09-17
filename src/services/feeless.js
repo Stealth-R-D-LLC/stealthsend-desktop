@@ -1,6 +1,7 @@
 import argon2 from 'argon2-browser';
 import { XorShift1024Star } from 'xorshift.js';
 import { Buffer } from 'buffer/index.js';
+import differenceInSeconds from 'date-fns/differenceInSeconds';
 
 // Pseudo Code
 
@@ -159,22 +160,31 @@ const FeelessJS = {
   },
 
   async _createWork(data, mcost) {
-    let HASH_DENARY;
-    let WORK;
+    var HASH_DENARY;
+    var WORK;
     const LIMIT_DENARY = this._getLimitDenary();
+    var start = new Date();
+    setTimeout(async () => {
     do {
       try {
-        const seedDate = Date.now();
-        const seed = seedDate.toString(16);
-        const prng = new XorShift1024Star(seed);
-        const randomBytes = prng.randomBytes(8);
-        WORK = Buffer.from(randomBytes);
-        HASH_DENARY = await this._getHashWithArgon2(data, WORK, mcost);
+          let curr = new Date();
+          const seedDate = Date.now();
+          const seed = seedDate.toString(16);
+          const prng = new XorShift1024Star(seed);
+          const randomBytes = prng.randomBytes(8);
+          WORK = Buffer.from(randomBytes);
+          HASH_DENARY = await this._getHashWithArgon2(data, WORK, mcost);
+          console.log('working 1', differenceInSeconds(curr, start));
+          if (differenceInSeconds(curr, start) > 180) {
+            console.log('alo dosta');
+            throw new Error('exceeded!')
+          }
       } catch (e) {
-        console.log(`FEELESS: Error in crunching the WORK`, e);
-        throw new Error(e);
+          console.log(`FEELESS: Error in crunching the WORK`, e);
+          throw new Error(e);
       }
-    } while (HASH_DENARY > LIMIT_DENARY);
+      } while (HASH_DENARY > LIMIT_DENARY);
+    }, 1)
     console.log('HASH_DENARY', HASH_DENARY);
     console.log('LIMIT_DENARY', LIMIT_DENARY);
     console.log('WORK bytes', WORK);
@@ -182,6 +192,7 @@ const FeelessJS = {
     console.log('WORK bytes to hex to bn', this._hexToBn(WORK.toString('hex')));
     WORK = WORK.readBigUInt64BE();
     console.log('WORK hex', WORK);
+    console.log('RETURN');
     return WORK;
   },
 
