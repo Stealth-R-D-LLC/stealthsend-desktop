@@ -8,7 +8,6 @@ exports.default = async function notarizing(context) {
   }
 
   const appName = packager.appInfo.productFilename;
-  console.log("STARTING NOTARIZATION");
 
   return await notarize({
     appBundleId: process.env.NOTARIZE_APP_BUNDLE_ID,
