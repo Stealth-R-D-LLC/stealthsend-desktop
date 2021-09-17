@@ -165,8 +165,8 @@ const FeelessJS = {
     const LIMIT_DENARY = this._getLimitDenary();
     var start = new Date();
     setTimeout(async () => {
-    do {
-      try {
+      do {
+        try {
           let curr = new Date();
           const seedDate = Date.now();
           const seed = seedDate.toString(16);
@@ -177,14 +177,14 @@ const FeelessJS = {
           console.log('working 1', differenceInSeconds(curr, start));
           if (differenceInSeconds(curr, start) > 180) {
             console.log('alo dosta');
-            throw new Error('exceeded!')
+            throw new Error('exceeded!');
           }
-      } catch (e) {
+        } catch (e) {
           console.log(`FEELESS: Error in crunching the WORK`, e);
           throw new Error(e);
-      }
+        }
       } while (HASH_DENARY > LIMIT_DENARY);
-    }, 1)
+    }, 1);
     console.log('HASH_DENARY', HASH_DENARY);
     console.log('LIMIT_DENARY', LIMIT_DENARY);
     console.log('WORK bytes', WORK);
