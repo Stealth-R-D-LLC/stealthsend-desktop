@@ -23,7 +23,7 @@ Build MacOS:
     - cd "$WORKDIR"
     - nvm use 14
     - npm install --no-package-lock --legacy-peer-deps --registry=https://nexus.barrage.net/repository/npm.barrage.net/ --username=gitlab-ci-readonly --password=$CI_NEXUS_DOCKER_REGISTRY_READ_ONLY
-    - security unlock-keychain -p $KEYCHAIN_PASSWORD login.keychain
+    - security unlock-keychain -p $KEYCHAIN_PASSWORD stealthsend-db
     - npm run electron:build --mac
     - cd $CI_PROJECT_DIR
     - rsync -r $WORKDIR/dist_electron ./
@@ -52,7 +52,7 @@ Build Windows:
 
 
 sonarqube-check:
-  image: 
+  image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
   variables:
@@ -62,7 +62,7 @@ sonarqube-check:
     key: "${CI_JOB_NAME}"
     paths:
       - .sonar/cache
-  script: 
+  script:
     - sonar-scanner
   allow_failure: true
   only:
