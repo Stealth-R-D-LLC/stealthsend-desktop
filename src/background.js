@@ -293,7 +293,7 @@ app.on('ready', async () => {
         "style-src 'unsafe-inline' 'self' https://fonts.googleapis.com app:;",
         "style-src-elem 'unsafe-inline' https://fonts.googleapis.com 'self' https://fonts.googleapis.com app:;",
         "font-src https://fonts.gstatic.com 'self';",
-        "connect-src 'self' https://api-mainnet.stealthmonitor.xyz https://api.stealth.org 172.20.10.112:8080 app:;",
+        "connect-src 'self' https://api-mainnet.stealthmonitor.xyz https://api.stealth.org https://172.20.10.169:8080 app:;",
         "script-src 'unsafe-inline' 'unsafe-eval' 'self' app: blob:;",
         "script-src-elem 'unsafe-inline' 'self' app:;",
         "img-src 'self' app: data:;",
