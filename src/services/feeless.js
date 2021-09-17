@@ -164,27 +164,23 @@ const FeelessJS = {
     var WORK;
     const LIMIT_DENARY = this._getLimitDenary();
     var start = new Date();
-    setTimeout(async () => {
-      do {
-        try {
-          let curr = new Date();
-          const seedDate = Date.now();
-          const seed = seedDate.toString(16);
-          const prng = new XorShift1024Star(seed);
-          const randomBytes = prng.randomBytes(8);
-          WORK = Buffer.from(randomBytes);
-          HASH_DENARY = await this._getHashWithArgon2(data, WORK, mcost);
-          console.log('working 1', differenceInSeconds(curr, start));
-          if (differenceInSeconds(curr, start) > 180) {
-            console.log('alo dosta');
-            throw new Error('exceeded!');
-          }
-        } catch (e) {
-          console.log(`FEELESS: Error in crunching the WORK`, e);
-          throw new Error(e);
+    do {
+      try {
+        let curr = new Date();
+        const seedDate = Date.now();
+        const seed = seedDate.toString(16);
+        const prng = new XorShift1024Star(seed);
+        const randomBytes = prng.randomBytes(8);
+        WORK = Buffer.from(randomBytes);
+        HASH_DENARY = await this._getHashWithArgon2(data, WORK, mcost);
+        if (differenceInSeconds(curr, start) >= 3 * 1000) {
+          throw new Error('Feeless calculation time exceeded!');
         }
-      } while (HASH_DENARY > LIMIT_DENARY);
-    }, 1);
+      } catch (e) {
+        console.log(`FEELESS: Error in crunching the WORK`, e);
+        throw new Error(e);
+      }
+    } while (HASH_DENARY > LIMIT_DENARY);
     console.log('HASH_DENARY', HASH_DENARY);
     console.log('LIMIT_DENARY', LIMIT_DENARY);
     console.log('WORK bytes', WORK);
