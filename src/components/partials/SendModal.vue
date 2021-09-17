@@ -671,7 +671,7 @@ export default {
       // if not, find real fee
       amount.value = 0;
       let fee = findFee();
-      console.log('fee: ', fee);
+      // console.log('fee: ', fee);
       // subtract real fee from amount
       const maxAmount = format(subtract(item.utxo, fee), { precision: 14 });
       form.amount.$value = maxAmount;
