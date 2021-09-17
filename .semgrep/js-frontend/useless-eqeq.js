@@ -1,9 +1,8 @@
-
 // ruleid:eqeq-is-bad
-x == x
+x == x;
 
 // ok:eqeq-is-bad
-assert(x == x)
+assert(x == x);
 
 // ok, harmless
-1 == 1
+1 == 1;

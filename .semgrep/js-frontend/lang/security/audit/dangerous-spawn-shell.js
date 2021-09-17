@@ -1,8 +1,8 @@
-const {spawn, spawnSync} = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 
-let name = "bash"
+let name = 'bash';
 // ruleid: dangerous-spawn-shell
-spawnSync(name, ["-c", userInput]);
+spawnSync(name, ['-c', userInput]);
 
 // ruleid: dangerous-spawn-shell
 spawn('sh', [userInput]);

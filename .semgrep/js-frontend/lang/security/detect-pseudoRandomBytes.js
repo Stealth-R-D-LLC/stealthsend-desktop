@@ -1,5 +1,5 @@
 // ok:detect-pseudoRandomBytes
-crypto.randomBytes
+crypto.randomBytes;
 
 // ruleid:detect-pseudoRandomBytes
-crypto.pseudoRandomBytes
+crypto.pseudoRandomBytes;
