@@ -67,3 +67,5 @@ sonarqube-check:
   allow_failure: true
   only:
     - develop # or the name of your main branch
+  tags:
+    - docker-executor
