@@ -170,7 +170,7 @@ const FeelessJS = {
         const randomBytes = prng.randomBytes(8);
         WORK = Buffer.from(randomBytes);
         HASH_DENARY = await this._getHashWithArgon2(data, WORK, mcost);
-        if (differenceInSeconds(curr, start) >= 3 * 1000) {
+        if (differenceInSeconds(curr, start) >= 180) {
           throw new Error('Feeless calculation time exceeded!');
         }
       } catch (e) {
