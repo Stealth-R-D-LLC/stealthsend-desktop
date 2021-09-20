@@ -607,7 +607,11 @@ const CryptoService = {
             account.address,
           ]);
 
-          for (let tx of inputs) {
+          const inputsMapped = this.processImportedTxs(inputs);
+
+          const outputsMapped = this.processImportedTxs(outputs);
+
+          for (let tx of inputsMapped) {
             txs.push({
               ...tx,
               account: account.label,
@@ -615,7 +619,7 @@ const CryptoService = {
               txinfo: {},
             });
           }
-          for (let tx of outputs) {
+          for (let tx of outputsMapped) {
             txs.push({
               ...tx,
               account: account.label,
@@ -718,6 +722,30 @@ const CryptoService = {
     await db.setItem('accounts', accounts);
 
     return accounts;
+  },
+  sumOf(x = 0, y = 0) {
+    let sum = add(x, y);
+    sum = format(sum, { precision: 14 });
+    return Number(sum);
+  },
+
+  processImportedTxs(transactions) {
+    let self = this;
+    let helper = {};
+
+    return transactions.reduce((r, o) => {
+      let key = o.blocktime + '-' + o.txid;
+
+      if (!helper[key]) {
+        helper[key] = Object.assign({}, o);
+
+        r.push(helper[key]);
+      } else {
+        helper[key].amount = self.sumOf(helper[key].amount, o.amount);
+      }
+
+      return r;
+    }, []);
   },
 };
 
