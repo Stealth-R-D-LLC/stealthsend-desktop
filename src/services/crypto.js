@@ -607,7 +607,6 @@ const CryptoService = {
             account.address,
           ]);
 
-
           const inputsMapped = this.processImportedTxs(inputs);
 
           const outputsMapped = this.processImportedTxs(outputs);
@@ -737,7 +736,7 @@ const CryptoService = {
     return transactions.reduce((r, o) => {
       let key = o.blocktime + '-' + o.txid;
 
-      if(!helper[key]) {
+      if (!helper[key]) {
         helper[key] = Object.assign({}, o);
 
         r.push(helper[key]);
@@ -747,7 +746,7 @@ const CryptoService = {
 
       return r;
     }, []);
-  }
+  },
 };
 
 export default CryptoService;
