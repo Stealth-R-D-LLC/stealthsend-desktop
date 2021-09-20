@@ -237,6 +237,8 @@ export default {
               });
             }
           });
+
+        allTransactions = CryptoService.processImportedTxs(allTransactions);
       } else {
         await mainStore
           .rpc('gethdaccount', [account.value.xpub])
