@@ -11,12 +11,30 @@ const API_CONFIG = {
   },
   transformRequest: [
     (data) => {
-      data = {
-        ...data,
+      let _data = null;
+      let rpcInfo = {
         jsonrpc: '2.0',
         id: 666420,
       };
-      return JSON.stringify(data);
+
+      if (Array.isArray(data)) {
+        let arrayData = [];
+        data.forEach((i) => {
+          arrayData.push({
+            ...i,
+            ...rpcInfo,
+          });
+        });
+
+        _data = [...arrayData];
+      } else {
+        _data = {
+          ...data,
+          ...rpcInfo,
+        };
+      }
+
+      return JSON.stringify(_data);
     },
   ],
 };

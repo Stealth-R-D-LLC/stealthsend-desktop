@@ -146,6 +146,25 @@ export const useMainStore = defineStore({
           });
       });
     },
+    rpcMulti(method, payload) {
+      return new Promise((resolve, reject) => {
+        const requestArray = [];
+        payload.forEach((payloadItem) => {
+          requestArray.push({
+            method,
+            params: payloadItem,
+          });
+        });
+        API.post('', requestArray)
+          .then((res) => {
+            resolve(res.data.map((item) => item.result));
+          })
+          .catch((err) => {
+            console.error('RPC error: ', err);
+            reject('RPC error: ', err);
+          });
+      });
+    },
     getMarketInfo() {
       return new Promise((resolve, reject) => {
         API.get('https://api.stealth.org/api/market/info')

@@ -189,8 +189,10 @@ export default {
         await mainStore
           .rpc('getaddressinputs', [account.value.address])
           .then(async (inputs) => {
-            let inputsTransactions = await Promise.all(
-              inputs.map((tx) => mainStore.rpc('gettransaction', [tx.txid]))
+            const allInputsTxIdArray = inputs.map((input) => [input.txid]);
+            let inputsTransactions = await mainStore.rpcMulti(
+              'gettransaction',
+              allInputsTxIdArray
             );
             for (let txIndex in inputsTransactions) {
               let indexOfDestination = inputsTransactions[
@@ -220,8 +222,10 @@ export default {
         await mainStore
           .rpc('getaddressoutputs', [account.value.address])
           .then(async (outputs) => {
-            let outputTransactions = await Promise.all(
-              outputs.map((tx) => mainStore.rpc('gettransaction', [tx.txid]))
+            const allOutputsTxIdArray = outputs.map((output) => [output.txid]);
+            let outputTransactions = await mainStore.rpcMulti(
+              'gettransaction',
+              allOutputsTxIdArray
             );
             for (let txIndex in outputTransactions) {
               allTransactions.push({

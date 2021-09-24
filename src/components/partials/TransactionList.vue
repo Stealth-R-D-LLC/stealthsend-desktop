@@ -47,12 +47,7 @@
               class="move"
               :class="{ 'move-left': isExpanded === item.index }"
             >
-              <span v-if="$route.name === 'Transactions'">{{
-                item.txinfo &&
-                item.txinfo.destinations[0] &&
-                item.txinfo.destinations[0].addresses[0]
-              }}</span>
-              <span v-else>{{
+              <span>{{
                 item &&
                 item.output &&
                 item.output[0] &&
@@ -238,11 +233,16 @@ export default {
     }
 
     function isTxFeeless(txinfo = undefined) {
-      // tx is feeless if it has an {amount: 0, type: "feework"} object in txinfo.destinations
-      if (!txinfo || !txinfo.destinations) return false;
-      let found = txinfo.destinations.find(
-        (el) => el.amount === 0 && el.type === 'feework'
-      );
+      let found = false;
+      if (!txinfo) return found;
+      else if (txinfo.vout) {
+        found = txinfo.vout.find((el) => el.scriptPubKey.type === 'feework');
+      } else if (txinfo.destinations) {
+        found = txinfo.destinations.find(
+          (el) => el.amount === 0 && el.type === 'feework'
+        );
+      }
+
       return !!found;
     }
 
