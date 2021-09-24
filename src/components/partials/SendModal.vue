@@ -484,7 +484,7 @@ export default {
           .filter((el) => el.length > 0)
           .reduce((a, b) => a.concat(b), []);
       } else {
-        res = await mainStore.rpc('getaddressoutputs', [acc.address]);
+        res = await mainStore.rpc('getaddressoutputs', [acc.address, 1, 99999]);
         unspentOutputs = res.filter((el) => el.isspent === 'false');
       }
     }
