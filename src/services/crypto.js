@@ -564,68 +564,71 @@ const CryptoService = {
       let newAccounts = [];
       for (let account of accounts) {
         let accUtxo = 0;
-        if (account.xpub?.length > 0) {
-          const hdAccount = await mainStore.rpc('gethdaccount', [account.xpub]);
-          for (let tx of hdAccount) {
-            accUtxo = add(accUtxo, tx.account_balance_change);
-            accUtxo = format(accUtxo, { precision: 14 });
-            let outputAddresses = tx.outputs.map((output) => output.address);
-            let indexOfDestination = 0;
-            if (tx.amount < 0) {
-              indexOfDestination = tx.txinfo.destinations.findIndex(
-                (dest) => outputAddresses.indexOf(dest.addresses[0]) !== -1
-              );
-            } else {
-              indexOfDestination = tx.txinfo.destinations.findIndex(
-                (dest) => dest.amount === tx.account_balance_change
-              );
-            }
-            txs.push({
-              outputs: tx.outputs,
-              output: [tx.txinfo.destinations[indexOfDestination]],
-              amount: tx.account_balance_change,
-              txid: tx.txid,
-              blocktime: tx.txinfo.blocktime,
-              account: account.label,
-              xpub: account.xpub,
-              txinfo: tx.txinfo,
-            });
-          }
-          newAccounts.push({
-            ...account,
-            utxo: Number(accUtxo),
-          });
-        } else {
+        let allTransactions = [];
+        if (account.isImported && account.wif) {
           const importedAccountBalance = await mainStore.rpc(
             'getaddressbalance',
             [account.address]
           );
-          const inputs = await mainStore.rpc('getaddressinputs', [
-            account.address,
-          ]);
-          const outputs = await mainStore.rpc('getaddressoutputs', [
-            account.address,
-          ]);
 
-          const inputsMapped = this.processImportedTxs(inputs);
-
-          const outputsMapped = this.processImportedTxs(outputs);
-
-          for (let tx of inputsMapped) {
-            txs.push({
-              ...tx,
-              account: account.label,
-              amount: -tx.amount,
-              txinfo: {},
+          await mainStore
+            .rpc('getaddressinputs', [account.address, 1, 10000])
+            .then(async (inputs) => {
+              const allInputsTxIdArray = inputs.map((input) => [input.txid]);
+              let inputsTransactions = await mainStore.rpcMulti(
+                'gettransaction',
+                allInputsTxIdArray
+              );
+              for (let txIndex in inputsTransactions) {
+                let indexOfDestination = inputsTransactions[
+                  txIndex
+                ].vout.findIndex(
+                  (dest) =>
+                    dest.scriptPubKey.addresses &&
+                    dest.scriptPubKey.addresses[0] !== account.address
+                );
+                allTransactions.push({
+                  ...inputs[txIndex],
+                  account: account.label,
+                  amount: -inputs[txIndex].amount,
+                  txinfo: {
+                    ...inputsTransactions[txIndex],
+                  },
+                  output:
+                    indexOfDestination === -1
+                      ? []
+                      : [
+                          inputsTransactions[txIndex].vout[indexOfDestination]
+                            .scriptPubKey,
+                        ],
+                });
+              }
             });
-          }
-          for (let tx of outputsMapped) {
-            txs.push({
-              ...tx,
-              account: account.label,
-              txinfo: {},
+          await mainStore
+            .rpc('getaddressoutputs', [account.address, 1, 10000])
+            .then(async (outputs) => {
+              const allOutputsTxIdArray = outputs.map((output) => [
+                output.txid,
+              ]);
+              let outputTransactions = await mainStore.rpcMulti(
+                'gettransaction',
+                allOutputsTxIdArray
+              );
+              for (let txIndex in outputTransactions) {
+                allTransactions.push({
+                  ...outputs[txIndex],
+                  account: account.label,
+                  txinfo: {
+                    ...outputTransactions[txIndex],
+                  },
+                  output: [
+                    outputTransactions[txIndex].vout[outputs[txIndex].vout]
+                      .scriptPubKey,
+                  ],
+                });
+              }
             });
-          }
+
           accUtxo = add(accUtxo, importedAccountBalance);
           accUtxo = format(accUtxo, { precision: 14 });
 
@@ -633,7 +636,50 @@ const CryptoService = {
             ...account,
             utxo: accUtxo,
           });
+
+          const processed = this.processImportedTxs(allTransactions);
+          allTransactions = processed;
+        } else {
+          await mainStore
+            .rpc('gethdaccount', [account.xpub])
+            .then((hdAccount) => {
+              for (let tx of hdAccount) {
+                accUtxo = add(accUtxo, tx.account_balance_change);
+                accUtxo = format(accUtxo, { precision: 14 });
+
+                let outputAddresses = tx.outputs.map(
+                  (output) => output.address
+                );
+                let indexOfDestination;
+                if (tx.account_balance_change < 0) {
+                  indexOfDestination = tx.txinfo.destinations.findIndex(
+                    (dest) => outputAddresses.indexOf(dest.addresses[0]) === -1
+                  );
+                } else {
+                  indexOfDestination = tx.txinfo.destinations.findIndex(
+                    (dest) => dest.amount === tx.account_balance_change
+                  );
+                }
+                if (indexOfDestination === -1) {
+                  indexOfDestination = 0;
+                }
+
+                allTransactions.push({
+                  ...tx,
+                  output: [tx.txinfo.destinations[indexOfDestination]],
+                  amount: tx.account_balance_change,
+                  blocktime: tx.txinfo.blocktime,
+                  account: account.label,
+                });
+              }
+            });
+
+          newAccounts.push({
+            ...account,
+            utxo: Number(accUtxo),
+          });
         }
+        txs.push(...allTransactions);
         // When a user looks at their wallet, the software aggregates the sum of value of all their
         // UTXOs and presents it to them as their "balance".
         // Bitcoin doesn’t know balances associated with an account or username as they appear in banking.
