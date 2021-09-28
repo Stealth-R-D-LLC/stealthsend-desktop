@@ -283,7 +283,7 @@ export default {
       getData();
     });
     emitter.on('transactions:refresh', () => {
-      setTimeout(async() => {
+      setTimeout(async () => {
         getData();
         const hdWallet = await CryptoService.scanWallet();
         let refreshAccount = hdWallet.accounts.find(
