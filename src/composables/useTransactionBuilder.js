@@ -46,9 +46,9 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         if (acc.address === address) {
           let path = CryptoService.breakAccountPath(
             `${accountIndex}'/${j}/${i}`
-          );
-          return path;
-        }
+            );
+            return path;
+          }
       }
     }
   }
@@ -182,6 +182,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
           pathForAddress.account
         }'/${pathForAddress.change}/${pathForAddress.address}` // TODO CHANGE 1 (TESTNET) TO 125 (XST)
       );
+
 
       let keyPair = null;
       if (sendForm.isFeeless) {

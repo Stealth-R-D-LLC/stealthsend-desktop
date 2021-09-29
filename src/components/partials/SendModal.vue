@@ -335,10 +335,10 @@ export default {
     watchEffect(() => {
       if (currentStep.value === 1) {
         if (mainStore.sendAddress) {
-          let redoAccount = accounts.value.find(
-            (obj) => obj.label === mainStore.redoAccount
-          );
-          account.value = redoAccount;
+          // let redoAccount = accounts.value.find(
+          //   (obj) => obj.label === mainStore.redoAccount
+          // );
+          // account.value = redoAccount;
           depositAddress.value = mainStore.sendAddress;
         }
       }
@@ -464,6 +464,13 @@ export default {
       // select first option
       if (!pickedAccount.value) {
         account.value = hdWallet.accounts[0];
+      }
+
+      if (mainStore.redoAccount) {
+        // redo account has a priority
+        account.value = accounts.value.find(
+          (el) => el.label === mainStore.redoAccount
+        );
       }
       getUnspentOutputs(account.value);
       // // manually start finding address for preselected account
