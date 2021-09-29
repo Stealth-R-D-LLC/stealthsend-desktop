@@ -335,12 +335,17 @@ export default {
     watchEffect(() => {
       if (currentStep.value === 1) {
         if (mainStore.sendAddress) {
+          let redoAccount = accounts.value.find(
+            (obj) => obj.label === mainStore.redoAccount
+          );
+          account.value = redoAccount;
           depositAddress.value = mainStore.sendAddress;
         }
       }
       if (currentStep.value === 2) {
         if (mainStore.redoAmount) {
           amount.value = mainStore.redoAmount;
+          isFeeless.value = mainStore.isFeeless;
         } else {
           amount.value = null;
           setTimeout(() => (inputAmountState.value = 'USD'), 1);
@@ -425,6 +430,8 @@ export default {
     function closeModal() {
       mainStore.SET_MODAL_VISIBILITY('send', false);
       mainStore.SET_SEND_ADDRESS('');
+      mainStore.SET_REDO_ACCOUNT('');
+      mainStore.SET_FEELESS(false);
       mainStore.SET_REDO_AMOUNT(null);
       // reset all variables
       inputAmountState.value = 'XST';
