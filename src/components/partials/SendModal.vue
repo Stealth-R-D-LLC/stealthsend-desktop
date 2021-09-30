@@ -70,6 +70,7 @@
             :can-deselect="false"
             :clear-on-select="false"
             placeholder="Select account"
+            :disabled="!form.account.$value"
             @select="getUnspentOutputs"
             @remove="preventRemove($event)"
           >
@@ -249,7 +250,12 @@
     </template>
     <template #footer class="flex-center-all">
       <template v-if="currentStep === 1">
-        <StButton type="type-d" @click="validateFirstStep">Proceed</StButton>
+        <StButton
+          :disabled="!account || Object.keys(account).length === 0"
+          type="type-d"
+          @click="validateFirstStep"
+          >Proceed</StButton
+        >
       </template>
       <template v-if="currentStep === 2">
         <StButton @click="validateSecondStep" type="type-d">Proceed</StButton>
@@ -335,12 +341,17 @@ export default {
     watchEffect(() => {
       if (currentStep.value === 1) {
         if (mainStore.sendAddress) {
+          // let redoAccount = accounts.value.find(
+          //   (obj) => obj.label === mainStore.redoAccount
+          // );
+          // account.value = redoAccount;
           depositAddress.value = mainStore.sendAddress;
         }
       }
       if (currentStep.value === 2) {
         if (mainStore.redoAmount) {
           amount.value = mainStore.redoAmount;
+          isFeeless.value = mainStore.isFeeless;
         } else {
           amount.value = null;
           setTimeout(() => (inputAmountState.value = 'USD'), 1);
@@ -425,6 +436,8 @@ export default {
     function closeModal() {
       mainStore.SET_MODAL_VISIBILITY('send', false);
       mainStore.SET_SEND_ADDRESS('');
+      mainStore.SET_REDO_ACCOUNT('');
+      mainStore.SET_FEELESS(false);
       mainStore.SET_REDO_AMOUNT(null);
       // reset all variables
       inputAmountState.value = 'XST';
@@ -454,16 +467,23 @@ export default {
       const hdWallet = await CryptoService.scanWallet();
       accounts.value = hdWallet.accounts.filter((el) => !el.isArchived);
 
-      // select first option
-      if (!pickedAccount.value) {
+      if (mainStore.redoAccount) {
+        // redo account has a priority
+        account.value = accounts.value.find(
+          (el) => el.label === mainStore.redoAccount
+        );
+      }
+      // select first option so it doesn't remain empty
+      if (!account.value) {
         account.value = hdWallet.accounts[0];
       }
+
       getUnspentOutputs(account.value);
       // // manually start finding address for preselected account
       // changeAccount(account.value)
     }
 
-    scanWallet();
+    // scanWallet();
     let unspentOutputs = [];
 
     async function getUnspentOutputs(acc) {
