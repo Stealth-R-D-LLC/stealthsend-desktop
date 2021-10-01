@@ -284,11 +284,11 @@ export default {
     });
     emitter.on('transactions:refresh', () => {
       setTimeout(async () => {
-        getData();
         const hdWallet = await CryptoService.scanWallet();
         let refreshAccount = hdWallet.accounts.find(
           (obj) => obj.label === account.value?.label
         );
+        await getData();
         mainStore.SET_ACCOUNT_DETAILS(refreshAccount);
       }, 5000);
     });
