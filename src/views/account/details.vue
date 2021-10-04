@@ -280,7 +280,9 @@ export default {
     }
     emitter.on('header:account-changed', (account) => {
       mainStore.SET_ACCOUNT_DETAILS(account);
-      getData();
+      setTimeout(() => {
+        getData();
+      }, 1);
     });
     emitter.on('transactions:refresh', () => {
       setTimeout(async () => {

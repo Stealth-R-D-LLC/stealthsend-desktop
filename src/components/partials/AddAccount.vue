@@ -178,6 +178,7 @@ import emitter from '@/services/emitter';
 import { QrStream } from 'vue3-qr-reader';
 import router from '@/router';
 import SvgIcon from '../partials/SvgIcon.vue';
+import { useRoute } from 'vue-router';
 
 export default {
   name: 'StAccountModal',
@@ -198,6 +199,8 @@ export default {
     const QRData = ref(null);
     const cameraAllowed = ref(false);
     const isCameraLoading = ref(false);
+
+    const route = useRoute();
 
     const {
       form,
@@ -420,8 +423,14 @@ export default {
       let account = hdWallet.accounts.filter(
         (obj) => obj.label === accountName.value
       );
-      mainStore.SET_ACCOUNT_DETAILS(account[0]);
-      router.push('/account/details');
+      console.log('acco', account);
+      // mainStore.SET_ACCOUNT_DETAILS(account);
+
+      emitter.emit('header:new-account', account); // lazy hack for XST-841 - refreshing account details screen
+      // emitter.emit('header:account-changed', account);
+      if (route.name !== 'AccountDetails') {
+        router.push('/account/details');
+      }
       closeModal();
     }
 
