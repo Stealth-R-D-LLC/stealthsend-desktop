@@ -224,11 +224,12 @@ export default {
             (dest) => outputAddresses.indexOf(dest.addresses[0]) === -1
           ) || 0;
       } else {
-        position =
-          mainStore.offCanvasData.txinfo.destinations?.findIndex(
-            (dest) =>
-              dest.amount === mainStore.offCanvasData.account_balance_change
-          ) || 0;
+        position = 0;
+        // position =
+        //   mainStore.offCanvasData.txinfo.destinations?.findIndex(
+        //     (dest) =>
+        //       dest.amount === mainStore.offCanvasData.account_balance_change
+        //   ) || 0;
       }
       if (position === -1) {
         position = 0;
