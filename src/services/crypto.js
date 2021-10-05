@@ -566,10 +566,14 @@ const CryptoService = {
         let accUtxo = 0;
         let allTransactions = [];
         if (account.isImported && account.wif) {
-          const importedAccountBalance = await mainStore.rpc(
-            'getaddressbalance',
-            [account.address]
-          );
+          let importedAccountBalance = 0;
+          try {
+            await mainStore.rpc('getaddressbalance', [account.address]);
+          } catch (error) {
+            console.log(
+              'Cannot find address, probably no transactions, continuing anyways'
+            );
+          }
 
           await mainStore
             .rpc('getaddressinputs', [account.address, 1, 10000])
@@ -738,7 +742,16 @@ const CryptoService = {
 
     const address = payment.address;
     const mainStore = useMainStore();
-    const balance = await mainStore.rpc('getaddressbalance', [address]);
+
+    let balance = 0;
+
+    try {
+      balance = await mainStore.rpc('getaddressbalance', [address]);
+    } catch (error) {
+      console.log(
+        'Cannot find address, probably no transactions, continuing anyways'
+      );
+    }
 
     let accounts = await this.getAccounts();
     let wallet = await this.getWalletFromDb();
