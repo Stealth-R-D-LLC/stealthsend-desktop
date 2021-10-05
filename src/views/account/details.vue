@@ -286,14 +286,14 @@ export default {
       }, 1);
     });
     emitter.on('transactions:refresh', () => {
-      setTimeout(async () => {
-        const hdWallet = await CryptoService.scanWallet();
-        let refreshAccount = hdWallet.accounts.find(
-          (obj) => obj.label === account.value?.label
-        );
-        await getData();
-        mainStore.SET_ACCOUNT_DETAILS(refreshAccount);
-      }, 5000);
+      // setTimeout(async () => {
+      //   const hdWallet = await CryptoService.scanWallet();
+      //   let refreshAccount = hdWallet.accounts.find(
+      //     (obj) => obj.label === account.value?.label
+      //   );
+      getData();
+      //   mainStore.SET_ACCOUNT_DETAILS(refreshAccount);
+      // }, 5000);
     });
     return {
       account,
