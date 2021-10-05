@@ -473,7 +473,9 @@ export default {
     const archivedAccOldIndex = ref(null);
     let isDragged = ref(false);
 
-    onMounted(() => {
+    onMounted(async () => {
+      mainStore.START_GLOBAL_LOADING();
+      await scanWallet();
       var elActive = document.getElementById('activeAccounts');
       var elArchived = document.getElementById('archivedAccounts');
       var elArchivedDropzone = document.getElementById('archivedDropzone');
@@ -530,6 +532,7 @@ export default {
           name: 'accounts',
         },
       });
+      mainStore.STOP_GLOBAL_LOADING();
     });
 
     function cancelArchiveActive() {
@@ -693,8 +696,6 @@ export default {
       editAccountNameModal.value = false;
       resetFields();
     }
-
-    scanWallet();
 
     emitter.on('favorite:refresh', () => {
       isFavoriteRefresh.value = true;

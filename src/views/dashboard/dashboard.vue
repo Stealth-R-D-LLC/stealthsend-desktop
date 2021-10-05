@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import TransactionList from '@/components/partials/TransactionList.vue';
 import Chart from '@/views/dashboard/components/chart';
 import CryptoService from '@/services/crypto';
@@ -59,10 +59,14 @@ export default {
       CryptoService.archiveAccount(account);
     };
 
-    scanWallet();
+    onMounted(async () => {
+      mainStore.START_GLOBAL_LOADING();
+      await scanWallet();
+      mainStore.STOP_GLOBAL_LOADING();
+    });
 
-    emitter.on('transactions:refresh', () => {
-      scanWallet();
+    emitter.on('transactions:refresh', async () => {
+      await scanWallet();
     });
 
     return {

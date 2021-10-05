@@ -462,11 +462,12 @@ export default {
     async function scanWallet() {
       if (pickedAccount.value) {
         // already picked from account details
-        account.value = { ...pickedAccount.value };
+        account.value = { ...mainStore.accountDetails };
+        getUnspentOutputs(account.value);
+        return;
       }
       const hdWallet = await CryptoService.scanWallet();
       accounts.value = hdWallet.accounts.filter((el) => !el.isArchived);
-
       if (mainStore.redoAccount) {
         // redo account has a priority
         account.value = accounts.value.find(
