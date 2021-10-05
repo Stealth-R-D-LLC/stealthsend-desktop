@@ -236,8 +236,11 @@ export default function useCoinControl(outputs, target) {
         bestSet.map((el) => el.amount).reduce((a, b) => a + b, 0)
     ) {
       bestSet = [minSingleUtxo];
+      return bestSet;
+    } else {
+      console.log('else');
+      return bestSet;
     }
-    return bestSet;
   }
 
   let best = coinSelection(); // run coin selection on init

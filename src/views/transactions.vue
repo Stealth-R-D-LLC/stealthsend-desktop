@@ -84,12 +84,16 @@ export default {
       return route.name;
     });
 
-    onMounted(() => {
+    onMounted(async () => {
+      mainStore.START_GLOBAL_LOADING();
       query.value = '';
 
       if (route.params.address) {
         query.value = route.params.address;
       }
+
+      await scanWallet();
+      mainStore.STOP_GLOBAL_LOADING();
     });
 
     watchEffect(() => {
@@ -112,8 +116,6 @@ export default {
       const hdWallet = await CryptoService.scanWallet();
       transactions.value = hdWallet.txs;
     }
-
-    scanWallet();
 
     const computedTransactions = computed(() => {
       let filtered = [...transactions.value];
