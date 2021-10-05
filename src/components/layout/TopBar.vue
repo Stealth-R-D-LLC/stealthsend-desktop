@@ -680,6 +680,11 @@ export default {
       accountVisible.value = false;
     }
 
+    emitter.on('header:new-account', async (acc) => {
+      await scanWallet();
+      emitter.emit('header:account-changed', acc);
+    });
+
     function openAccountModal() {
       showArrow.value = account.value.label;
       accountVisible.value = true;
