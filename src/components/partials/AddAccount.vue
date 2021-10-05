@@ -149,7 +149,8 @@
           <h5>Importing Private Key</h5>
           <p class="medium">Please be patient and don’t exit the application</p>
           <div class="progress">
-            <SvgIcon name="icon-loader" class="progress-animated" />
+            <!-- <SvgIcon name="icon-loader" class="progress-animated" /> -->
+            <CircleProgress></CircleProgress>
             <div class="overlay-progress"></div>
           </div>
         </template>
@@ -171,19 +172,22 @@
 
 <script>
 import { useMainStore } from '@/store';
-import { computed, ref, watchEffect, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import CryptoService from '@/services/crypto';
 import { useValidation, ValidationError } from 'vue3-form-validation';
+import CircleProgress from '../partials/CircleProgress.vue';
 import emitter from '@/services/emitter';
 import { QrStream } from 'vue3-qr-reader';
 import router from '@/router';
 import SvgIcon from '../partials/SvgIcon.vue';
+import { useRoute } from 'vue-router';
 
 export default {
   name: 'StAccountModal',
   components: {
     QrStream,
     SvgIcon,
+    CircleProgress,
   },
   setup() {
     // VARIABLES
@@ -198,6 +202,8 @@ export default {
     const QRData = ref(null);
     const cameraAllowed = ref(false);
     const isCameraLoading = ref(false);
+
+    const route = useRoute();
 
     const {
       form,
@@ -252,20 +258,20 @@ export default {
     });
 
     // WATCH
-    watchEffect(() => {
-      if (currentStep.value === 3) {
-        setTimeout(() => {
-          nextStep();
-        }, 2000);
-      }
-      // if (currentStep.value === 4) {
-      //   setTimeout(() => {
-      //     currentStep.value = 1;
-      //     activeStep.value = 'add-account';
-      //     closeModal();
-      //   }, 2000);
-      // }
-    });
+    // watchEffect(() => {
+    //   if (currentStep.value === 3) {
+    //     setTimeout(() => {
+    //       nextStep();
+    //     }, 2000);
+    //   }
+    //   // if (currentStep.value === 4) {
+    //   //   setTimeout(() => {
+    //   //     currentStep.value = 1;
+    //   //     activeStep.value = 'add-account';
+    //   //     closeModal();
+    //   //   }, 2000);
+    //   // }
+    // });
 
     // COMPUTED
     const isVisible = computed(() => {
@@ -335,12 +341,33 @@ export default {
       if (currentStep.value === 2) {
         try {
           await validateFields();
+          nextStep();
           await CryptoService.importAccount(
             accountName.value,
             privateKey.value
           );
-          emitter.emit('accounts:refresh');
-          nextStep();
+
+          const hdWallet = await CryptoService.scanWallet();
+          let account = hdWallet.accounts.find(
+            (obj) => obj.label === accountName.value
+          );
+
+          emitter.emit('header:new-account', account); // lazy hack for XST-841 - refreshing account details screen
+
+          if (route.name === 'ArchivedAccounts') {
+            // refresh accoutns only in case you're on the archived accounts screen
+            emitter.emit('accounts:refresh');
+          }
+
+          emitter.on('accounts-refresh-done', () => {
+            nextStep();
+            emitter.off('accounts-refresh-done');
+          });
+
+          // setTimeout(() => {
+          //   // async emitter would be a better option in this case
+          //   nextStep();
+          // }, 5 * 1000);
         } catch (e) {
           if (e instanceof ValidationError) {
             console.log(e);
@@ -416,12 +443,16 @@ export default {
     }
 
     async function openAccountDetails() {
-      const hdWallet = await CryptoService.scanWallet();
-      let account = hdWallet.accounts.filter(
-        (obj) => obj.label === accountName.value
-      );
-      mainStore.SET_ACCOUNT_DETAILS(account[0]);
-      router.push('/account/details');
+      // const hdWallet = await CryptoService.scanWallet();
+      // let account = hdWallet.accounts.find(
+      //   (obj) => obj.label === accountName.value
+      // );
+
+      // emitter.emit('header:new-account', account); // lazy hack for XST-841 - refreshing account details screen
+      // // emitter.emit('header:account-changed', account);
+      if (route.name !== 'AccountDetails') {
+        router.push('/account/details');
+      }
       closeModal();
     }
 
@@ -650,13 +681,15 @@ svg circle {
   line-height: 28px;
   letter-spacing: 0.12px;
   font-family: var(--secondary-font);
-  /* background-color: var(--white); */
+  background-color: #fff;
   border-radius: 100%;
   position: absolute;
-  top: 1px;
-  right: 1px;
-  bottom: 1px;
+  top: 2px;
+  right: 0px;
+  bottom: 5px;
   left: 1px;
+  width: 98px;
+  height: 97px;
 }
 .no-camera {
   display: flex;
@@ -687,5 +720,18 @@ svg circle {
   display: block;
   height: 28px;
   position: absolute;
+}
+
+:deep.circle-progress__wrapper .rightcircle {
+  border-top: 2px solid var(--marine200);
+  border-right: 2px solid var(--marine200);
+  right: 0;
+}
+:deep.circle-progress__wrapper .leftcircle {
+  border-bottom: 2px solid var(--marine200);
+  border-left: 2px solid var(--marine200);
+  left: 0;
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
 }
 </style>
