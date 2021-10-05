@@ -47,13 +47,13 @@ export default {
   top: 0;
 }
 .rightcircle {
-  border-top: 2px solid #e0d3fc;
-  border-right: 2px solid #e0d3fc;
+  border-top: 2px solid var(--marine50);
+  border-right: 2px solid var(--marine50);
   right: 0;
 }
 .leftcircle {
-  border-bottom: 2px solid #e0d3fc;
-  border-left: 2px solid #e0d3fc;
+  border-bottom: 2px solid var(--marine50);
+  border-left: 2px solid var(--marine50);
   left: 0;
   -webkit-transform: rotate(90deg);
   transform: rotate(90deg);
