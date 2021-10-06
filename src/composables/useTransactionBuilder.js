@@ -118,7 +118,8 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     };
     console.log(
       'TRANSACTION BUILDER: change:',
-      floor(calculateChange(sumUtxo, Number(sendForm.amount)) * 1e6)
+      floor(calculateChange(sumUtxo, Number(sendForm.amount)) * 1e6),
+      calculateChange(sumUtxo, Number(sendForm.amount))
     );
 
     // add the output for recipient
@@ -126,7 +127,10 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
     // add the output for the change, send the change back to yourself.
     // Outputs - inputs = transaction fee, so always double-check your math!
-    if (change.amount > 0) {
+    if (
+      calculateChange(sumUtxo, Number(sendForm.amount)) >
+      CryptoService.constraints.MINIMAL_CHANGE
+    ) {
       rawTransaction.addOutput(change.address, change.amount);
     }
 

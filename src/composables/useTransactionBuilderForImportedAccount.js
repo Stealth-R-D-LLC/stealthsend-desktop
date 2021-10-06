@@ -92,7 +92,10 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
       // add the output for the change, send the change back to yourself.
       // Outputs - inputs = transaction fee, so always double-check your math!
-      if (change.amount > 0) {
+      if (
+        calculateChange(sumUtxo, Number(sendForm.amount)) >
+        CryptoService.constraints.MINIMAL_CHANGE
+      ) {
         rawTransaction.addOutput(change.address, change.amount);
       }
 
