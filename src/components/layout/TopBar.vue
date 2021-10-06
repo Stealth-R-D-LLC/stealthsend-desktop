@@ -162,7 +162,7 @@
         <template #header>{{
           checkPassword
             ? 'Password Required'
-            : account.isImported
+            : account?.isImported
             ? 'Account Keys'
             : 'Account Key'
         }}</template>
@@ -188,12 +188,12 @@
                   balances, but does not allow sending of funds.
                 </p>
               </div>
-              <p class="bold" v-if="!account.isImported">xpub</p>
+              <p class="bold" v-if="!account?.isImported">xpub</p>
               <p class="bold" v-else>Public Key</p>
               <p class="key">{{ publicKey }}</p>
               <div class="copy-key">
                 <p>
-                  Copy <span v-if="!account.isImported">xpub</span>
+                  Copy <span v-if="!account?.isImported">xpub</span>
                   <span v-else>public key</span> to clipboard or show QR code
                 </p>
                 <div>
@@ -216,7 +216,7 @@
                 </div>
               </div>
               <p
-                v-if="!account.isImported && !account.wif"
+                v-if="!account?.isImported && !account.wif"
                 @click="openBlockExplorer"
                 class="view-more bold"
               >
@@ -507,7 +507,7 @@ export default {
 
     function getPublicKey() {
       if (!account.value) return;
-      if (account.value.isImported && account.value.wif) {
+      if (account?.value?.isImported && account.value.wif) {
         publicKey.value = account.value.publicKey;
       } else {
         const path = CryptoService.breakAccountPath(account.value.path);
@@ -521,7 +521,7 @@ export default {
     }
 
     async function getPrivateKey() {
-      if (account.value.isImported) {
+      if (account?.value?.isImported) {
         const wallet = await db.getItem('wallet');
         try {
           const secretKey = await CryptoService.AESDecrypt(
