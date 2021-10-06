@@ -564,7 +564,8 @@ const CryptoService = {
       let txs = [];
       let newAccounts = [];
       for (let account of accounts) {
-        if (targetAccount && account.address !== targetAccount.address) continue; // in case a target account is passed, run the scan only for that account
+        if (targetAccount && account.address !== targetAccount.address)
+          continue; // in case a target account is passed, run the scan only for that account
         let accUtxo = 0;
         let allTransactions = [];
         if (account.isImported && account.wif) {
