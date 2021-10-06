@@ -460,15 +460,14 @@ export default {
     const accounts = ref([]);
 
     async function scanWallet() {
+      const hdWallet = await CryptoService.scanWallet();
+      accounts.value = hdWallet.accounts.filter((el) => !el.isArchived);
       if (pickedAccount.value) {
         // already picked from account details
         account.value = { ...mainStore.accountDetails };
-        console.log('awawa', account.value);
         getUnspentOutputs(account.value);
         return;
       }
-      const hdWallet = await CryptoService.scanWallet();
-      accounts.value = hdWallet.accounts.filter((el) => !el.isArchived);
       if (mainStore.redoAccount) {
         // redo account has a priority
         account.value = accounts.value.find(
