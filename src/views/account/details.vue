@@ -127,12 +127,17 @@ export default {
       }, 2000);
     }
 
-    onMounted(() => {
+    onMounted(async () => {
+      mainStore.START_GLOBAL_LOADING();
       if (!componentVisibility.value.chart) {
         toggleComponentVisibility('chart');
       }
       if (!componentVisibility.value.txDashboard) {
         toggleComponentVisibility('txDashboard');
+      }
+      if (account.value && Object.keys(account.value).length > 0) {
+        await getData();
+        mainStore.STOP_GLOBAL_LOADING();
       }
     });
 
@@ -277,18 +282,20 @@ export default {
       transactions.value = allTransactions;
     }
 
-    if (account.value && Object.keys(account.value).length > 0) {
-      getData();
-    }
-    emitter.on('header:account-changed', () => {
+    emitter.on('header:account-changed', async () => {
       // mainStore.SET_ACCOUNT_DETAILS(account);
       // account.value = acc;
-      setTimeout(async () => {
-        await getData();
-        emitter.emit('accounts-refresh-done');
-      }, 1);
+      mainStore.START_GLOBAL_LOADING();
+
+      await getData();
+      emitter.emit('accounts-refresh-done');
+      // setTimeout(async () => {
+      // }, 1);
+      mainStore.STOP_GLOBAL_LOADING();
     });
     emitter.on('transactions:refresh', async () => {
+      mainStore.START_GLOBAL_LOADING();
+
       // setTimeout(async () => {
       //   const hdWallet = await CryptoService.scanWallet();
       //   let refreshAccount = hdWallet.accounts.find(
@@ -296,6 +303,8 @@ export default {
       //   );
       await getData();
       refreshAccount();
+      mainStore.STOP_GLOBAL_LOADING();
+
       //   mainStore.SET_ACCOUNT_DETAILS(refreshAccount);
       // }, 5000);
     });
