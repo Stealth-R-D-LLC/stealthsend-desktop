@@ -2,7 +2,7 @@
   <div class="account-details-container" v-if="account">
     <div class="account-details-container__top">
       <div class="left">
-        <div>
+        <div @click="refreshAccount">
           <StLabel label="XST Balance" bold>{{
             isHiddenAmounts ? '•••' : formatAmount(account.utxo, false, 6, 6)
           }}</StLabel>
@@ -127,14 +127,24 @@ export default {
       }, 2000);
     }
 
-    onMounted(() => {
+    onMounted(async () => {
+      mainStore.START_GLOBAL_LOADING();
       if (!componentVisibility.value.chart) {
         toggleComponentVisibility('chart');
       }
       if (!componentVisibility.value.txDashboard) {
         toggleComponentVisibility('txDashboard');
       }
+      if (account.value && Object.keys(account.value).length > 0) {
+        await getData();
+        mainStore.STOP_GLOBAL_LOADING();
+      }
     });
+
+    async function refreshAccount() {
+      let res = await CryptoService.scanWallet(account.value);
+      mainStore.SET_ACCOUNT_DETAILS(res.accounts[0]);
+    }
 
     function openModal(modal) {
       mainStore.SET_MODAL_VISIBILITY(modal, true);
@@ -155,11 +165,7 @@ export default {
       );
     });
     const changePercent24Hr = computed(() => {
-      return formatAmount(
-        CryptoService.constraints.changePercent24Hr,
-        false,
-        2
-      );
+      return formatAmount(CryptoService.constraints.changePercent24Hr);
     });
 
     function toggleComponentVisibility(component) {
@@ -202,6 +208,7 @@ export default {
                   dest.scriptPubKey.addresses &&
                   dest.scriptPubKey.addresses[0] !== account.value.address
               );
+
               allTransactions.push({
                 ...inputs[txIndex],
                 account: account.value.label,
@@ -275,23 +282,29 @@ export default {
       transactions.value = allTransactions;
     }
 
-    if (account.value && Object.keys(account.value).length > 0) {
-      getData();
-    }
-    emitter.on('header:account-changed', (account) => {
-      mainStore.SET_ACCOUNT_DETAILS(account);
-      setTimeout(async () => {
-        await getData();
-        emitter.emit('accounts-refresh-done');
-      }, 1);
+    emitter.on('header:account-changed', async () => {
+      // mainStore.SET_ACCOUNT_DETAILS(account);
+      // account.value = acc;
+      mainStore.START_GLOBAL_LOADING();
+
+      await getData();
+      emitter.emit('accounts-refresh-done');
+      // setTimeout(async () => {
+      // }, 1);
+      mainStore.STOP_GLOBAL_LOADING();
     });
-    emitter.on('transactions:refresh', () => {
+    emitter.on('transactions:refresh', async () => {
+      mainStore.START_GLOBAL_LOADING();
+
       // setTimeout(async () => {
       //   const hdWallet = await CryptoService.scanWallet();
       //   let refreshAccount = hdWallet.accounts.find(
       //     (obj) => obj.label === account.value?.label
       //   );
-      getData();
+      await getData();
+      refreshAccount();
+      mainStore.STOP_GLOBAL_LOADING();
+
       //   mainStore.SET_ACCOUNT_DETAILS(refreshAccount);
       // }, 5000);
     });
@@ -311,6 +324,7 @@ export default {
       componentVisibility,
       toggleComponentVisibility,
       refreshChart,
+      refreshAccount,
     };
   },
 };

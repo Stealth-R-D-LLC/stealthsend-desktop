@@ -552,7 +552,8 @@ const CryptoService = {
     let bytes = cryptoJs.AES.decrypt(decData, key).toString(cryptoJs.enc.Utf8);
     return JSON.parse(bytes);
   },
-  async scanWallet() {
+  async scanWallet(targetAccount = null) {
+    // extend function with targetAccount argument in case you want to refresh the state of a particular account (XST-801)
     const mainStore = useMainStore();
     // initially scan all accounts in the wallet for utxos
     // gethdaccounts retrieves all transactions for a particular account
@@ -563,6 +564,8 @@ const CryptoService = {
       let txs = [];
       let newAccounts = [];
       for (let account of accounts) {
+        if (targetAccount && account.address !== targetAccount.address)
+          continue; // in case a target account is passed, run the scan only for that account
         let accUtxo = 0;
         let allTransactions = [];
         if (account.isImported && account.wif) {
@@ -693,7 +696,7 @@ const CryptoService = {
           balance = format(balance, { precision: 14 });
         }
       }
-      await db.setItem('accounts', newAccounts);
+      if (!targetAccount) await db.setItem('accounts', newAccounts);
       resolve({
         utxo: balance, // sum of all utxo (except archived accounts)
         txs: txs, // all transactions,
