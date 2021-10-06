@@ -463,6 +463,7 @@ export default {
       if (pickedAccount.value) {
         // already picked from account details
         account.value = { ...mainStore.accountDetails };
+        console.log('awawa', account.value);
         getUnspentOutputs(account.value);
         return;
       }
