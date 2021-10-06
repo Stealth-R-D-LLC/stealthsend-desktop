@@ -671,9 +671,9 @@ export default {
 
     const changedAccount = ref('');
 
-    function accountChanged(account) {
+    async function accountChanged(account) {
       mainStore.SET_ACCOUNT_DETAILS(account);
-      scanWallet();
+      await scanWallet();
       setTimeout(() => {
         emitter.emit('header:account-changed', account);
       }, 1);
