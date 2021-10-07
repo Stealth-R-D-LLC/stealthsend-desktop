@@ -461,7 +461,9 @@ export default {
 
     async function scanWallet() {
       const hdWallet = await CryptoService.scanWallet();
-      accounts.value = hdWallet.accounts.filter((el) => !el.isArchived);
+      accounts.value = hdWallet.accounts.filter(
+        (el) => !el.isArchived && el.utxo > minimumXSTForSend.value
+      );
       if (pickedAccount.value) {
         // already picked from account details
         account.value = { ...mainStore.accountDetails };
