@@ -242,6 +242,8 @@ fieldset[disabled] .multiselect {
   width: calc(100% - 32px);
   position: relative;
   z-index: 2;
+  background: white;
+  top: 4px;
 }
 .multiselect--active .multiselect__select {
   z-index: 2;
