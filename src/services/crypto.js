@@ -553,6 +553,8 @@ const CryptoService = {
     return JSON.parse(bytes);
   },
   async scanWallet(targetAccount = null) {
+              console.log('scan wallet 19');
+
     // extend function with targetAccount argument in case you want to refresh the state of a particular account (XST-801)
     const mainStore = useMainStore();
     // initially scan all accounts in the wallet for utxos
@@ -569,6 +571,7 @@ const CryptoService = {
         let accUtxo = 0;
         let allTransactions = [];
         if (account.isImported && account.wif) {
+          console.log('scanning imported acc...');
           let importedAccountBalance = 0;
           try {
             await mainStore.rpc('getaddressbalance', [account.address]);

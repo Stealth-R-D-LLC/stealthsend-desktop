@@ -477,6 +477,8 @@ export default {
 
     onMounted(async () => {
       mainStore.START_GLOBAL_LOADING();
+      console.log('scan wallet 6');
+
       await scanWallet();
       var elActive = document.getElementById('activeAccounts');
       var elArchived = document.getElementById('archivedAccounts');
@@ -664,6 +666,8 @@ export default {
       if (isFavoriteRefresh.value) {
         hdWallet = await CryptoService.getAccounts();
       } else {
+        console.log('scan wallet 7');
+
         let wallet = await CryptoService.scanWallet();
         hdWallet = wallet.accounts;
       }
@@ -703,12 +707,16 @@ export default {
       if (route.name !== 'ArchivedAccounts') return; // don't refresh if not on this screen
 
       isFavoriteRefresh.value = true;
+      console.log('scan wallet 8');
+
       scanWallet();
     });
 
     emitter.on('accounts:refresh', () => {
       if (route.name !== 'ArchivedAccounts') return; // don't refresh if not on this screen
       isFavoriteRefresh.value = false;
+      console.log('scan wallet 9');
+
       scanWallet();
     });
 

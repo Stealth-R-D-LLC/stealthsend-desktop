@@ -44,6 +44,8 @@ export default {
       (newVal) => {
         // if receive any modal is now closed
         if (!newVal) {
+          console.log('scan wallet  27');
+
           scanWallet();
         }
       }
@@ -54,6 +56,8 @@ export default {
       (newVal) => {
         // if send any modal is now closed
         if (!newVal) {
+          console.log('scan wallet  28');
+
           scanWallet();
         }
       }
@@ -70,6 +74,8 @@ export default {
     );
 
     async function scanWallet() {
+      console.log('scan wallet  29');
+
       const hdWallet = await CryptoService.scanWallet();
       utxo.value = Number(hdWallet.utxo);
       txs.value = hdWallet.txs;
@@ -79,6 +85,8 @@ export default {
           return a.isFavourite === b.isFavourite ? 0 : a.isFavourite ? -1 : 1;
         });
     }
+    console.log('scan wallet  30');
+
     scanWallet();
 
     const constraints = computed(() => {
@@ -112,11 +120,13 @@ export default {
 
     emitter.on('accounts:refresh', () => {
       if (route.name !== 'Dashboard') return; // don't refresh if not on this screen
+      console.log('scan wallet  31');
 
       scanWallet();
     });
     emitter.on('transactions:refresh', () => {
       if (route.name !== 'Dashboard') return; // don't refresh if not on this screen
+      console.log('scan wallet  32');
 
       scanWallet();
     });

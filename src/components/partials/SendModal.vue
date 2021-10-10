@@ -424,6 +424,8 @@ export default {
     watch(
       () => isVisible.value,
       () => {
+        console.log('scan wallet 17');
+
         scanWallet();
         if (!isVisible.value) {
           closeModal();
@@ -460,6 +462,8 @@ export default {
     const accounts = ref([]);
 
     async function scanWallet() {
+                console.log('scan wallet 18');
+
       const hdWallet = await CryptoService.scanWallet();
       accounts.value = hdWallet.accounts.filter(
         (el) => !el.isArchived && el.utxo > minimumXSTForSend.value

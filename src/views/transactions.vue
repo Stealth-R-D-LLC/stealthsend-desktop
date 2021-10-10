@@ -113,6 +113,8 @@ export default {
     }
 
     async function scanWallet() {
+      console.log('scan wallet 20');
+
       const hdWallet = await CryptoService.scanWallet();
       transactions.value = hdWallet.txs;
     }
@@ -160,6 +162,8 @@ export default {
     });
 
     emitter.on('transactions:refresh', () => {
+      if (route.name !== 'Transactions') return;
+      console.log('scan wallet 21');
       scanWallet();
     });
 
