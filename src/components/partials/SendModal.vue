@@ -614,7 +614,7 @@ export default {
                 console.log('refreshing accounts');
                 emitter.emit('transactions:refresh');
                 emitter.emit('accounts:refresh');
-              }, 6500);
+              }, 17000);
             } else {
               setTimeout(() => changeStep(7), 6000);
             }
