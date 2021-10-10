@@ -108,7 +108,7 @@ export default {
         value: Infinity,
       },
     ]);
-    const currentFilter = ref({ label: 'All', value: Infinity });
+    const currentFilter = ref({ label: '3d', value: 3 });
     const currentDirection = ref({ label: 'All', value: '' });
 
     function changeFilter(filter) {

@@ -228,6 +228,7 @@ export default {
     }
 
     emitter.on('favorite:refresh', () => {
+      if (mainStore.currentOffCanvas !== 'favourite-list') return; // don't refresh if not on this screen
       scanWallet();
     });
 
@@ -397,5 +398,10 @@ export default {
 }
 :deep .multiselect__content-wrapper {
   padding-top: 65px;
+}
+
+:deep .multiselect--active .multiselect__tags {
+  background: white;
+  top: -6px;
 }
 </style>

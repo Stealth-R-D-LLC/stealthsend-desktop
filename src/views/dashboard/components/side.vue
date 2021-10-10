@@ -23,6 +23,7 @@ import { ref, computed, watch } from 'vue';
 import { useMainStore } from '@/store';
 import router from '@/router';
 import emitter from '@/services/emitter';
+import { useRoute } from 'vue-router';
 
 export default {
   components: {
@@ -36,6 +37,7 @@ export default {
 
     const utxo = ref(0);
     const txs = ref([]);
+    const route = useRoute();
 
     watch(
       () => mainStore.modals.receive,
@@ -109,9 +111,13 @@ export default {
     }
 
     emitter.on('accounts:refresh', () => {
+      if (route.name !== 'Dashboard') return; // don't refresh if not on this screen
+
       scanWallet();
     });
     emitter.on('transactions:refresh', () => {
+      if (route.name !== 'Dashboard') return; // don't refresh if not on this screen
+
       scanWallet();
     });
 
