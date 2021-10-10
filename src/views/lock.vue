@@ -206,6 +206,7 @@ export default {
     );
 
     onMounted(() => {
+      mainStore.STOP_GLOBAL_LOADING(); // just in case
       let video = document.getElementById('bgAnimation');
       video.addEventListener('loadeddata', () => {
         isVideoLoaded.value = true;

@@ -404,6 +404,7 @@ import emitter from '@/services/emitter';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import Sortable from 'sortablejs';
 import SvgIcon from '../partials/SvgIcon.vue';
+import { useRoute } from 'vue-router';
 
 export default {
   name: 'StAccounts',
@@ -430,6 +431,7 @@ export default {
     let isDraggedActive = ref(false);
     let isDraggedInactive = ref(false);
     let isFavoriteRefresh = ref(false);
+    const route = useRoute();
 
     const {
       form,
@@ -698,11 +700,14 @@ export default {
     }
 
     emitter.on('favorite:refresh', () => {
+      if (route.name !== 'ArchivedAccounts') return; // don't refresh if not on this screen
+
       isFavoriteRefresh.value = true;
       scanWallet();
     });
 
     emitter.on('accounts:refresh', () => {
+      if (route.name !== 'ArchivedAccounts') return; // don't refresh if not on this screen
       isFavoriteRefresh.value = false;
       scanWallet();
     });
