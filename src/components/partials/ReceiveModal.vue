@@ -286,6 +286,8 @@ export default {
     });
 
     async function scanWallet() {
+      console.log('scan wallet 15');
+
       const hdWallet = await CryptoService.scanWallet();
       accounts.value = hdWallet.accounts.filter((el) => !el.isArchived);
       if (pickedAccount.value) {
@@ -299,6 +301,8 @@ export default {
 
     async function onOpen() {
       // when the modal is opened, scan for the address and show it
+      console.log('scan wallet 16');
+
       await scanWallet();
       if (pickedAccount.value) {
         pickedAccount.value;

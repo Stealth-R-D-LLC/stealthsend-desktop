@@ -294,6 +294,8 @@ export default {
       () => isVisible.value,
       async () => {
         if (isVisible.value) {
+          console.log('scan wallet 10');
+
           let { accounts } = await CryptoService.scanWallet();
           existingAccounts = accounts;
           wallet = await CryptoService.getWalletFromDb();
@@ -346,6 +348,8 @@ export default {
             accountName.value,
             privateKey.value
           );
+
+          console.log('scan wallet 11');
 
           const hdWallet = await CryptoService.scanWallet();
           let account = hdWallet.accounts.find(

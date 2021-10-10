@@ -144,6 +144,7 @@ export default {
     });
 
     async function refreshAccount() {
+      console.log('scan wallet  23');
       let res = await CryptoService.scanWallet(account.value);
       mainStore.SET_ACCOUNT_DETAILS(res.accounts[0]);
     }

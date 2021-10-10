@@ -51,6 +51,8 @@ export default {
     });
 
     async function scanWallet() {
+      console.log('scan wallet  24');
+
       const hdWallet = await CryptoService.scanWallet();
       utxo.value = hdWallet.utxo;
       transactions.value = hdWallet.txs;
@@ -63,12 +65,16 @@ export default {
 
     onMounted(async () => {
       mainStore.START_GLOBAL_LOADING();
+      console.log('scan wallet  25');
+
       await scanWallet();
       mainStore.STOP_GLOBAL_LOADING();
     });
 
     emitter.on('transactions:refresh', async () => {
       if (route.name !== 'Dashboard') return; // don't refresh if not on this screen
+      console.log('scan wallet  26');
+
       await scanWallet();
     });
 

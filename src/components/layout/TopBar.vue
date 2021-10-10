@@ -489,6 +489,7 @@ export default {
       () => isVisible.value,
       async () => {
         if (isVisible.value) {
+          console.log('scan wallet 1');
           await scanWallet();
           getPublicKey();
         }
@@ -553,6 +554,7 @@ export default {
       }
       privateKey.value = '';
       resetFields();
+      console.log('scan wallet 2');
       await scanWallet();
       getPublicKey();
     }
@@ -610,6 +612,7 @@ export default {
     async function scanWallet() {
       // eslint-disable-next-line no-async-promise-executor
       return new Promise(async (resolve) => {
+        console.log('scan wallet 3');
         const hdWallet = await CryptoService.scanWallet();
         accounts.value = hdWallet.accounts;
         // select first option
@@ -673,6 +676,8 @@ export default {
 
     async function accountChanged(account) {
       mainStore.SET_ACCOUNT_DETAILS(account);
+      console.log('scan wallet 4');
+
       await scanWallet();
       setTimeout(() => {
         emitter.emit('header:account-changed', account);
@@ -681,6 +686,8 @@ export default {
     }
 
     emitter.on('header:new-account', async (acc) => {
+      console.log('scan wallet 5');
+
       await scanWallet();
       emitter.emit('header:account-changed', acc);
     });
