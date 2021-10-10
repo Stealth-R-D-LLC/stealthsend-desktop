@@ -398,4 +398,9 @@ export default {
 :deep .multiselect__content-wrapper {
   padding-top: 65px;
 }
+
+:deep .multiselect--active .multiselect__tags {
+  background: white;
+  top: -6px;
+}
 </style>
