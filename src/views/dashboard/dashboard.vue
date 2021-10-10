@@ -24,6 +24,7 @@ import Chart from '@/views/dashboard/components/chart';
 import CryptoService from '@/services/crypto';
 import { useMainStore } from '@/store';
 import emitter from '@/services/emitter';
+import { useRoute } from 'vue-router';
 
 export default {
   name: 'StDahboard',
@@ -35,6 +36,7 @@ export default {
     const mainStore = useMainStore();
     mainStore.SET_HEADER_STYLE('default');
     mainStore.getMarketInfo();
+    const route = useRoute();
 
     const accounts = ref([]);
     const utxo = ref(0);
@@ -66,6 +68,7 @@ export default {
     });
 
     emitter.on('transactions:refresh', async () => {
+      if (route.name !== 'Dashboard') return; // don't refresh if not on this screen
       await scanWallet();
     });
 

@@ -572,7 +572,7 @@ export default {
         const utxo = coinSelection(target);
 
         if (utxo.length === 0) {
-          setTimeout(() => changeStep(7), 4000);
+          setTimeout(() => changeStep(7), 6000);
           return;
         }
         console.info('TRANSACTION BUILDER: candidates: ', unspentOutputs);
@@ -604,26 +604,30 @@ export default {
               account: account.value,
               isFeeless: isFeeless.value,
             });
+            if (transactionResponse.txid) {
+              CryptoService.storeTxAndLabel(
+                transactionResponse.txid,
+                label.value
+              );
+              setTimeout(() => {
+                changeStep(6);
+                console.log('refreshing accounts');
+                emitter.emit('transactions:refresh');
+                emitter.emit('accounts:refresh');
+              }, 6500);
+            } else {
+              setTimeout(() => changeStep(7), 6000);
+            }
           } catch (e) {
             console.log('Transaction builder error: ', e);
-            setTimeout(() => changeStep(7), 4000);
+            setTimeout(() => changeStep(7), 6000);
           }
-        }
-        if (transactionResponse.txid) {
-          CryptoService.storeTxAndLabel(transactionResponse.txid, label.value);
-          setTimeout(() => {
-            changeStep(6);
-            emitter.emit('transactions:refresh');
-            emitter.emit('accounts:refresh');
-          }, 4000);
-        } else {
-          setTimeout(() => changeStep(7), 4000);
         }
       } catch (e) {
         if (e instanceof ValidationError) {
           console.log(e);
         } else {
-          setTimeout(() => changeStep(7), 4000);
+          setTimeout(() => changeStep(7), 6000);
         }
       }
     }
