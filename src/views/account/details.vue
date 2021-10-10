@@ -2,7 +2,7 @@
   <div class="account-details-container" v-if="account">
     <div class="account-details-container__top">
       <div class="left">
-        <div @click="refreshAccount">
+        <div>
           <StLabel label="XST Balance" bold>{{
             isHiddenAmounts ? '•••' : formatAmount(account.utxo, false, 6, 6)
           }}</StLabel>
@@ -86,6 +86,7 @@ import { onBeforeRouteLeave } from 'vue-router';
 import emitter from '@/services/emitter';
 import useHelpers from '@/composables/useHelpers';
 import SvgIcon from '../../components/partials/SvgIcon.vue';
+import { useRoute } from 'vue-router';
 
 export default {
   name: 'StAccountDetails',
@@ -98,6 +99,7 @@ export default {
   setup() {
     const mainStore = useMainStore();
     const { formatAmount } = useHelpers();
+    const route = useRoute();
 
     onBeforeRouteLeave(() => {
       mainStore.SET_ACCOUNT_DETAILS(null);
@@ -142,6 +144,7 @@ export default {
     });
 
     async function refreshAccount() {
+      console.log('refresh acc data');
       let res = await CryptoService.scanWallet(account.value);
       mainStore.SET_ACCOUNT_DETAILS(res.accounts[0]);
     }
@@ -276,6 +279,7 @@ export default {
                 blocktime: tx.txinfo.blocktime,
                 account: account.value.label,
               });
+              console.log('alllll tx: ', allTransactions);
             }
           });
       }
@@ -283,6 +287,7 @@ export default {
     }
 
     emitter.on('header:account-changed', async () => {
+      if (route.name !== 'AccountDetails') return; // don't refresh if not on this screen
       // mainStore.SET_ACCOUNT_DETAILS(account);
       // account.value = acc;
       mainStore.START_GLOBAL_LOADING();
@@ -294,6 +299,8 @@ export default {
       mainStore.STOP_GLOBAL_LOADING();
     });
     emitter.on('transactions:refresh', async () => {
+      console.log('transactions are refreshing');
+      if (route.name !== 'AccountDetails') return; // don't refresh if not on this screen
       mainStore.START_GLOBAL_LOADING();
 
       // setTimeout(async () => {
@@ -302,7 +309,7 @@ export default {
       //     (obj) => obj.label === account.value?.label
       //   );
       await getData();
-      refreshAccount();
+      await refreshAccount();
       mainStore.STOP_GLOBAL_LOADING();
 
       //   mainStore.SET_ACCOUNT_DETAILS(refreshAccount);
