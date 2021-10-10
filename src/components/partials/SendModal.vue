@@ -462,7 +462,7 @@ export default {
     const accounts = ref([]);
 
     async function scanWallet() {
-                console.log('scan wallet 18');
+      console.log('scan wallet 18');
 
       const hdWallet = await CryptoService.scanWallet();
       accounts.value = hdWallet.accounts.filter(

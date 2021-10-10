@@ -553,7 +553,7 @@ const CryptoService = {
     return JSON.parse(bytes);
   },
   async scanWallet(targetAccount = null) {
-              console.log('scan wallet 19');
+    console.log('scan wallet 19');
 
     // extend function with targetAccount argument in case you want to refresh the state of a particular account (XST-801)
     const mainStore = useMainStore();
