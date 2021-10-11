@@ -161,7 +161,7 @@ export default {
     emitter.on('transactions:refresh', async () => {
       if (route.name !== 'Transactions') return;
       console.log('scan wallet 21');
-      await CryptoService.scanWallet();
+      // await CryptoService.scanWallet();
     });
 
     return {

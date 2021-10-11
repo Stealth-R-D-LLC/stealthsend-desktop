@@ -612,8 +612,9 @@ export default {
                 transactionResponse.txid,
                 label.value
               );
-              setTimeout(() => {
+              setTimeout(async () => {
                 changeStep(6);
+                await CryptoService.scanWallet();
                 console.log('refreshing accounts');
                 emitter.emit('transactions:refresh');
                 emitter.emit('accounts:refresh');
