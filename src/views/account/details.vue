@@ -67,7 +67,9 @@
           v-if="componentVisibility.txDashboard"
           class="details-table"
           has-table-header
-          :transactions="transactions"
+          :transactions="
+            wallet.txs.filter((el) => el.account === account.label)
+          "
         ></TransactionList>
       </div>
     </div>
@@ -117,8 +119,11 @@ export default {
       return mainStore.resetChart;
     });
 
+    const wallet = computed(() => {
+      return mainStore.wallet;
+    });
+
     // const addressInfo = ref({});
-    const transactions = ref([]);
     // const qrSrc = ref('');
 
     let copyPending = ref(false);
@@ -137,10 +142,7 @@ export default {
       if (!componentVisibility.value.txDashboard) {
         toggleComponentVisibility('txDashboard');
       }
-      if (account.value && Object.keys(account.value).length > 0) {
-        await getData();
-        mainStore.STOP_GLOBAL_LOADING();
-      }
+      mainStore.STOP_GLOBAL_LOADING();
     });
 
     async function refreshAccount() {
@@ -186,45 +188,20 @@ export default {
       }
     }
 
-    async function getData() {
-      console.log('rucni sken', account.value);
-      await CryptoService.scanWallet(account.value);
-      transactions.value = mainStore.wallet.txs;
-    }
-
-    emitter.on('header:account-changed', async () => {
-      if (route.name !== 'AccountDetails') return; // don't refresh if not on this screen
-      // mainStore.SET_ACCOUNT_DETAILS(account);
-      // account.value = acc;
-      mainStore.START_GLOBAL_LOADING();
-
-      // await getData();
-      transactions.value = mainStore.wallet.txs;
-      emitter.emit('accounts-refresh-done');
-      // setTimeout(async () => {
-      // }, 1);
-      mainStore.STOP_GLOBAL_LOADING();
-    });
     emitter.on('transactions:refresh', async () => {
       if (route.name !== 'AccountDetails') return; // don't refresh if not on this screen
-      mainStore.START_GLOBAL_LOADING();
-      transactions.value = mainStore.wallet.txs;
-      // await refreshAccount();
       mainStore.SET_ACCOUNT_DETAILS(
         mainStore.wallet.accounts.find(
           (el) => el.address === account.value.address
         )
       );
-      mainStore.STOP_GLOBAL_LOADING();
-
-      // }, 5000);
     });
     return {
       account,
       copyPending,
       handleCopy,
       openTransaction,
-      transactions,
+      wallet,
       usdAmount,
       btcAmount,
       openModal,

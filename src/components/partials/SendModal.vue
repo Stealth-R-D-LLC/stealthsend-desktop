@@ -617,7 +617,6 @@ export default {
                 await CryptoService.scanWallet();
                 console.log('refreshing accounts');
                 emitter.emit('transactions:refresh');
-                emitter.emit('accounts:refresh');
               }, 17000);
             } else {
               setTimeout(() => changeStep(7), 6000);

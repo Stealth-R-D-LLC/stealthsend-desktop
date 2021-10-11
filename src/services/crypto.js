@@ -649,6 +649,7 @@ const CryptoService = {
 
           const processed = this.processImportedTxs(allTransactions);
           allTransactions = processed;
+          console.log('processed', processed);
         } else {
           await mainStore
             .rpc('gethdaccount', [account.xpub])
@@ -689,6 +690,7 @@ const CryptoService = {
             utxo: Number(accUtxo),
           });
         }
+        console.log('ajmooo');
         txs.push(...allTransactions);
         // When a user looks at their wallet, the software aggregates the sum of value of all their
         // UTXOs and presents it to them as their "balance".
