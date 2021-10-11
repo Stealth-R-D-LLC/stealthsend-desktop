@@ -553,7 +553,7 @@ const CryptoService = {
     return JSON.parse(bytes);
   },
   async scanWallet(targetAccount = null) {
-    console.log('scan wallet 19');
+    console.log('scan wallet 19 glavni');
 
     // extend function with targetAccount argument in case you want to refresh the state of a particular account (XST-801)
     const mainStore = useMainStore();
@@ -702,17 +702,30 @@ const CryptoService = {
       if (!targetAccount) await db.setItem('accounts', newAccounts);
 
       // certain props can be removed to reduce the object size
-      function removeProps(obj){
-        const keysForDelete = ['blockhash', 'height', 'prev_txid', 'prev_vout', 'vtx', 'vin', 'locktime', 'time', 'version', 'scriptSig', 'sequence', 'asm', 'reqSigs']
-        if(Array.isArray(obj)){
-          obj.forEach(function(item){
-            removeProps(item,keysForDelete)
+      function removeProps(obj) {
+        const keysForDelete = [
+          'blockhash',
+          'height',
+          'prev_txid',
+          'prev_vout',
+          'vtx',
+          'vin',
+          'locktime',
+          'time',
+          'version',
+          'scriptSig',
+          'sequence',
+          'asm',
+          'reqSigs',
+        ];
+        if (Array.isArray(obj)) {
+          obj.forEach(function (item) {
+            removeProps(item, keysForDelete);
           });
-        }
-        else if(typeof obj === 'object' && obj != null){
-          Object.getOwnPropertyNames(obj).forEach(function(key){
-            if(keysForDelete.indexOf(key) !== -1)delete obj[key];
-            else removeProps(obj[key],keysForDelete);
+        } else if (typeof obj === 'object' && obj != null) {
+          Object.getOwnPropertyNames(obj).forEach(function (key) {
+            if (keysForDelete.indexOf(key) !== -1) delete obj[key];
+            else removeProps(obj[key], keysForDelete);
           });
         }
         return obj;
@@ -720,9 +733,9 @@ const CryptoService = {
 
       let reducedTxs = [];
       for (const tx of txs) {
-  let result = JSON.parse(JSON.stringify(removeProps(tx), null, 4));
-  reducedTxs.push(result)
-}
+        let result = JSON.parse(JSON.stringify(removeProps(tx), null, 4));
+        reducedTxs.push(result);
+      }
 
       mainStore.SET_WALLET({
         utxo: balance, // sum of all utxo (except archived accounts)

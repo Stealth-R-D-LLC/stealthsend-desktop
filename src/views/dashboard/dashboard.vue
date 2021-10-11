@@ -51,7 +51,7 @@ export default {
     });
 
     async function scanWallet() {
-      console.log('scan wallet  24');
+      console.log('scan wallet 24');
       await CryptoService.scanWallet();
       utxo.value = mainStore.wallet.utxo;
       transactions.value = mainStore.wallet.txs;
@@ -64,7 +64,7 @@ export default {
 
     onMounted(async () => {
       mainStore.START_GLOBAL_LOADING();
-      console.log('scan wallet  25');
+      console.log('scan wallet 25');
 
       await scanWallet();
       mainStore.STOP_GLOBAL_LOADING();
