@@ -52,11 +52,10 @@ export default {
 
     async function scanWallet() {
       console.log('scan wallet  24');
-
-      const hdWallet = await CryptoService.scanWallet();
-      utxo.value = hdWallet.utxo;
-      transactions.value = hdWallet.txs;
-      accounts.value = hdWallet.accounts;
+      await CryptoService.scanWallet();
+      utxo.value = mainStore.wallet.utxo;
+      transactions.value = mainStore.wallet.txs;
+      accounts.value = mainStore.wallet.accounts;
     }
 
     const archiveAccount = (account) => {

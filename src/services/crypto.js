@@ -700,6 +700,11 @@ const CryptoService = {
         }
       }
       if (!targetAccount) await db.setItem('accounts', newAccounts);
+      mainStore.SET_WALLET({
+        utxo: balance, // sum of all utxo (except archived accounts)
+        txs: txs, // all transactions,
+        accounts: newAccounts,
+      })
       resolve({
         utxo: balance, // sum of all utxo (except archived accounts)
         txs: txs, // all transactions,
