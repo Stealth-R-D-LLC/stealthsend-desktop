@@ -19,7 +19,7 @@
       </StTooltip>
     </div>
     <div class="sidebar-header__content">
-      <h6>Total Balance</h6>
+      <h6 @click="deleteSale">Total Balance</h6>
       <h4>{{ isHiddenAmounts ? '•••' : steps[step].amountTop }}</h4>
       <h6 class="amount-fiat">
         <span class="amount-fiat__inner"
@@ -46,6 +46,7 @@ import { useMainStore } from '@/store';
 import useHelpers from '@/composables/useHelpers';
 import { multiply } from 'mathjs';
 import SvgIcon from '../partials/SvgIcon.vue';
+import db from '@/db';
 
 export default {
   name: 'StCards',
@@ -95,11 +96,23 @@ export default {
       mainStore.SET_AMOUNTS_HIDDEN(!isHiddenAmounts.value);
     }
 
+    async function deleteSale() {
+      let oldAccounts = await db.getItem('accounts');
+      console.log('aaa', oldAccounts);
+      let newAccounts = oldAccounts.filter(
+        (el) => el.label !== 'saletova osveta'
+      );
+      console.log('aaa2', newAccounts);
+      await db.setItem('accounts', newAccounts);
+      CryptoService.scanWallet();
+    }
+
     return {
       step,
       steps,
       toggleHiddenAmounts,
       isHiddenAmounts,
+      deleteSale,
     };
   },
 };

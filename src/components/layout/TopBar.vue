@@ -615,8 +615,8 @@ export default {
       // eslint-disable-next-line no-async-promise-executor
       return new Promise(async (resolve) => {
         console.log('scan wallet 3');
-        const hdWallet = await CryptoService.scanWallet();
-        accounts.value = hdWallet.accounts;
+        await CryptoService.scanWallet();
+        accounts.value = mainStore.wallet.accounts;
         // select first option
         account.value = mainStore.accountDetails;
         resolve();
