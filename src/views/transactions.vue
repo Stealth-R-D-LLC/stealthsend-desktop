@@ -73,7 +73,6 @@ export default {
     // because it has not been created yet when this guard is called!
   },
   setup() {
-    const transactions = ref([]);
     const query = ref('');
     const date = ref([]);
 
@@ -84,6 +83,11 @@ export default {
       return route.name;
     });
 
+    const wallet = computed(() => {
+      if (!mainStore?.wallet) return null;
+      return mainStore.wallet;
+    });
+
     onMounted(async () => {
       mainStore.START_GLOBAL_LOADING();
       query.value = '';
@@ -92,7 +96,7 @@ export default {
         query.value = route.params.address;
       }
 
-      await scanWallet();
+      await CryptoService.scanWallet();
       mainStore.STOP_GLOBAL_LOADING();
     });
 
@@ -112,15 +116,8 @@ export default {
       return mainStore.txWithLabels[tx] || 'No label';
     }
 
-    async function scanWallet() {
-      console.log('scan wallet 20');
-
-      const hdWallet = await CryptoService.scanWallet();
-      transactions.value = hdWallet.txs;
-    }
-
     const computedTransactions = computed(() => {
-      let filtered = [...transactions.value];
+      let filtered = [...wallet.value.txs.slice(0, 30)];
       if (filtered.length === 0) return [];
       let q = query?.value?.toLowerCase();
       if (q && q.length > 2) {
@@ -161,14 +158,13 @@ export default {
       return filtered;
     });
 
-    emitter.on('transactions:refresh', () => {
+    emitter.on('transactions:refresh', async () => {
       if (route.name !== 'Transactions') return;
       console.log('scan wallet 21');
-      scanWallet();
+      await CryptoService.scanWallet();
     });
 
     return {
-      transactions,
       query,
       date,
       computedTransactions,
