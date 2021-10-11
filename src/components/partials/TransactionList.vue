@@ -280,7 +280,6 @@ export default {
         transactionsTmp
       );
       let filtered = filterByPeriod(filter, filteredDirection);
-      console.log('fil', filtered);
       // group transactions by date
       txs.value = groupBy(filtered, 'blocktimeDate');
     }
@@ -300,7 +299,7 @@ export default {
     }
 
     function filterByPeriod(filter, transactions) {
-      if (!filter || filter === 7) return transactions;
+      if (!filter?.value || filter.value.length === 0) return transactions;
       return transactions.filter(
         (el) =>
           differenceInCalendarDays(new Date(), fromUnixTime(el.blocktime)) <
