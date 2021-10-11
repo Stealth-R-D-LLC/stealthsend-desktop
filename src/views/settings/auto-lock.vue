@@ -9,14 +9,6 @@
           recommended to enable Auto-lock. When enabled you will need your
           password to unlock your StealthSend app.
         </p>
-        <!-- <StSwitch
-          class="menu-expand"
-          type="simple"
-          @update:modelValue="toggleExpandedMenu"
-          v-model="menuExpanded"
-        >
-          Keep navigation expanded
-        </StSwitch> -->
         <StSwitch
           type="simple"
           @update:modelValue="toggleAutoLock"
@@ -44,12 +36,10 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { useMainStore } from '@/store';
 import { onMounted, ref } from 'vue';
 
-export default {
-  setup() {
     const mainStore = useMainStore();
     const options = ref([
       // interval config values are in seconds
@@ -111,34 +101,6 @@ export default {
         menuExpanded.value = mainStore.isMenuExpanded;
       }
     }
-
-    function toggleExpandedMenu() {
-      setTimeout(() => {
-        mainStore.SET_EXPANDED_MENU(menuExpanded.value);
-        localStorage.setItem(
-          'menubar',
-          JSON.stringify(mainStore.isMenuExpanded)
-        );
-        if (mainStore.isMenuExpanded) {
-          window.ipc.send('resize:menu');
-        } else {
-          window.ipc.send('resize:other');
-        }
-      }, 1);
-    }
-
-    return {
-      selectedInterval,
-      options,
-      isEnabled,
-      menuExpanded,
-
-      changeInterval,
-      toggleAutoLock,
-      toggleExpandedMenu,
-    };
-  },
-};
 </script>
 
 <style scoped>

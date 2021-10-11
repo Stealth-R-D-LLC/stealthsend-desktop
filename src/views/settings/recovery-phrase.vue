@@ -200,13 +200,11 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref, computed, watchEffect } from 'vue';
 import * as bip39 from 'bip39';
 import CryptoService from '@/services/crypto';
 import { useValidation } from 'vue3-form-validation';
-export default {
-  setup() {
     // VARIABLES
     const currentStep = ref(1);
     const understand = ref(false);
@@ -332,38 +330,6 @@ export default {
       let selectedWord = words && words[0];
       if (words && words.length) selectWord(selectedWord);
     }
-
-    return {
-      // VARIABLES
-      currentStep,
-      understand,
-      isVisible,
-      password,
-      form,
-      validateFields,
-      walletMnemonic,
-      selectedMnemonic,
-      wordlist,
-      mnemonic,
-      isError,
-      checkMnemonic,
-      isValidMnemonic,
-      savedPhrase,
-
-      // COMPUTED
-      searchedWords,
-
-      // FUNCTIONS
-      nextStep,
-      selectWord,
-      goBack,
-      removeSelectedWord,
-      closeModal,
-      openModal,
-      selectTabWord,
-    };
-  },
-};
 </script>
 
 <style scoped>

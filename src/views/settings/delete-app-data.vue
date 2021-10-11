@@ -42,17 +42,12 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue';
 import db from '@/db';
 import router from '@/router';
 import SvgIcon from '../../components/partials/SvgIcon.vue';
 
-export default {
-  components: {
-    SvgIcon,
-  },
-  setup() {
     const isCleared = ref(false);
     const timeout = ref(null);
     const counterTimeout = ref(null);
@@ -80,19 +75,6 @@ export default {
       counter.value = 5;
       isCleared.value = false;
     }
-
-    return {
-      // VARIABLES
-      counter,
-      isCleared,
-
-      // FUNCTIONS
-      countdown,
-      clearAppData,
-      cancelClearAppData,
-    };
-  },
-};
 </script>
 
 <style scoped>
