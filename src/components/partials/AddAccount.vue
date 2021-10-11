@@ -4,7 +4,7 @@
     :steps="activeStep === 'add-account' ? 0 : steps"
     :current-step="currentStep"
     :visible="isVisible"
-    :has-click-outside="false"
+    :has-click-outside="true"
     @close="closeModal"
     class="account-modal"
     :class="{ 'account-modal__hide-header': currentStep > 2 }"
@@ -162,7 +162,7 @@
           <div class="progress no-background">
             <SvgIcon name="icon-loader-success" />
           </div>
-          <StButton type="type-a" @click="openAccountDetails(account)"
+          <StButton type="type-a" @click="openAccountDetails"
             >View Account</StButton
           >
         </template>
@@ -313,7 +313,6 @@ export default {
       }
     }
     async function accountImport() {
-      console.log('import bokte');
       if (currentStep.value === 2) {
         try {
           await validateFields();
@@ -324,21 +323,12 @@ export default {
           );
 
           console.log('scan wallet 11');
-
           await CryptoService.scanWallet();
-          console.log('jel tu ikad dodje');
           let account = mainStore.wallet.accounts.find(
             (obj) => obj.label === accountName.value
           );
-          console.log('a tu');
-
-          emitter.emit('header:new-account', account); // lazy hack for XST-841 - refreshing account details screen
-
-          // setTimeout(() => {
-          //   // async emitter would be a better option in this case
-          //   nextStep();
-          // }, 5 * 1000);
-          console.log('sta je ovo brate');
+          mainStore.SET_ACCOUNT_DETAILS(account);
+          nextStep();
         } catch (e) {
           if (e instanceof ValidationError) {
             console.log(e);

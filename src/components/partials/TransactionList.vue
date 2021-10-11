@@ -280,6 +280,7 @@ export default {
         transactionsTmp
       );
       let filtered = filterByPeriod(filter, filteredDirection);
+      console.log('fil', filtered);
       // group transactions by date
       txs.value = groupBy(filtered, 'blocktimeDate');
     }
