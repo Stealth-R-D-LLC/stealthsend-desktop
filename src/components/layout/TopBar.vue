@@ -545,7 +545,7 @@ export default {
       }
     }
 
-    async function changeStep(step) {
+    async function changeStep(step, isManual) {
       activeStep.value = step;
       publicQrCode.value = '';
       privateQrCode.value = '';
@@ -554,8 +554,10 @@ export default {
       }
       privateKey.value = '';
       resetFields();
-      console.log('scan wallet 2');
-      await scanWallet();
+      if (!isManual) {
+        console.log('scan wallet 2');
+        await scanWallet();
+      }
       getPublicKey();
     }
 
@@ -702,7 +704,7 @@ export default {
     }
 
     // manually trigger retrieving keys
-    changeStep('public-key');
+    changeStep('public-key', true);
 
     return {
       toggleDrawer,

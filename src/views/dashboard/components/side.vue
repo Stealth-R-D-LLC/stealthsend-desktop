@@ -1,6 +1,6 @@
 <template>
   <div class="side">
-    <StCards :amount="utxo" @change="switcherChange"></StCards>
+    <StCards :amount="wallet?.utxo" @change="switcherChange"></StCards>
     <div class="side__accounts">
       <Card
         v-for="account in sortedAccounts"
@@ -19,11 +19,9 @@
 import StCards from '@/components/elements/StCards.vue';
 import Card from '@/components/elements/Card';
 import CryptoService from '@/services/crypto';
-import { ref, computed, watch } from 'vue';
+import { ref, computed } from 'vue';
 import { useMainStore } from '@/store';
 import router from '@/router';
-import emitter from '@/services/emitter';
-import { useRoute } from 'vue-router';
 
 export default {
   components: {
@@ -33,70 +31,19 @@ export default {
   setup() {
     const mainStore = useMainStore();
 
-    const accounts = ref([]);
-
-    const utxo = ref(0);
-    const txs = ref([]);
-    const route = useRoute();
-
-    watch(
-      () => mainStore.modals.receive,
-      (newVal) => {
-        // if receive any modal is now closed
-        if (!newVal) {
-          console.log('scan wallet  27');
-
-          scanWallet();
-        }
-      }
-    );
-
-    watch(
-      () => mainStore.modals.send,
-      (newVal) => {
-        // if send any modal is now closed
-        if (!newVal) {
-          console.log('scan wallet  28');
-
-          scanWallet();
-        }
-      }
-    );
-
-    watch(
-      () => mainStore.modals.account,
-      (newVal) => {
-        // if account any modal is now closed
-        if (!newVal) {
-          scanWallet();
-        }
-      }
-    );
-
-    async function scanWallet() {
-      console.log('scan wallet  29');
-
-      const hdWallet = await CryptoService.scanWallet();
-      utxo.value = Number(hdWallet.utxo);
-      txs.value = hdWallet.txs;
-      accounts.value = hdWallet.accounts
-        .filter((el) => !el.isArchived)
-        .sort((a, b) => {
-          return a.isFavourite === b.isFavourite ? 0 : a.isFavourite ? -1 : 1;
-        });
-    }
-    console.log('scan wallet  30');
-
-    scanWallet();
-
     const constraints = computed(() => {
       if (!CryptoService.constraints) return null;
       return CryptoService.constraints;
     });
 
+    const wallet = computed(() => {
+      return mainStore.wallet;
+    });
+
     const sortedAccounts = computed(() => {
+      if (!wallet.value) return [];
       // sort logic: by favorite position (imported or regular), then regular unfavorited accounts, then imported accounts
-      let tmpAccounts = accounts.value;
+      let tmpAccounts = wallet.value.accounts;
       const favourite = tmpAccounts
         .filter((el) => el.isFavourite)
         .sort((a, b) => a.favouritePosition - b.favouritePosition);
@@ -118,25 +65,10 @@ export default {
       router.push('/account/details');
     }
 
-    emitter.on('accounts:refresh', () => {
-      if (route.name !== 'Dashboard') return; // don't refresh if not on this screen
-      console.log('scan wallet  31');
-
-      scanWallet();
-    });
-    emitter.on('transactions:refresh', () => {
-      if (route.name !== 'Dashboard') return; // don't refresh if not on this screen
-      console.log('scan wallet  32');
-
-      scanWallet();
-    });
-
     return {
       openAccount,
-      accounts,
       switcherChange,
       step,
-      utxo,
       constraints,
       sortedAccounts,
     };
