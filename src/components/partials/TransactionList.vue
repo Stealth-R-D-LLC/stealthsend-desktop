@@ -259,7 +259,7 @@ export default {
     }
 
     function orderTransactions(
-      filter = { label: 'All', value: Infinity },
+      filter = { label: '3d', value: 3 },
       filterDirection = { label: 'All', value: '' }
     ) {
       // sort transactions by blocktime

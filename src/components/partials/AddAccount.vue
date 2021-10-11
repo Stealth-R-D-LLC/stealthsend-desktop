@@ -257,23 +257,6 @@ export default {
       },
     });
 
-    // WATCH
-    // watchEffect(() => {
-    //   if (currentStep.value === 3) {
-    //     setTimeout(() => {
-    //       nextStep();
-    //     }, 2000);
-    //   }
-    //   // if (currentStep.value === 4) {
-    //   //   setTimeout(() => {
-    //   //     currentStep.value = 1;
-    //   //     activeStep.value = 'add-account';
-    //   //     closeModal();
-    //   //   }, 2000);
-    //   // }
-    // });
-
-    // COMPUTED
     const isVisible = computed(() => {
       return mainStore.modals.account;
     });
@@ -296,23 +279,12 @@ export default {
         if (isVisible.value) {
           console.log('scan wallet 10');
 
-          let { accounts } = await CryptoService.scanWallet();
-          existingAccounts = accounts;
+          await CryptoService.scanWallet();
+          existingAccounts = mainStore.wallet.accounts;
           wallet = await CryptoService.getWalletFromDb();
-          isLastAccountEmpty.value = accounts.some((el) => el.utxo === 0);
-          // let next = await CryptoService.getNextAccountPath();
-          // // get current last existing account
-          // const { xpub: lastAccountPk } = CryptoService.getChildFromRoot(
-          //   next - 1 >= 0 ? next - 1 : 0,
-          //   0,
-          //   0
-          // );
-          // let lastHdAccount = await mainStore.rpc('gethdaccount', [
-          //   lastAccountPk,
-          // ]);
-          // if (lastHdAccount.length === 0) {
-          //   isLastAccountEmpty.value = true;
-          // }
+          isLastAccountEmpty.value = mainStore.wallet.accounts.some(
+            (el) => el.utxo === 0
+          );
         }
       }
     );
@@ -340,6 +312,7 @@ export default {
       }
     }
     async function accountImport() {
+      console.log('import bokte');
       if (currentStep.value === 2) {
         try {
           await validateFields();
@@ -351,8 +324,8 @@ export default {
 
           console.log('scan wallet 11');
 
-          const hdWallet = await CryptoService.scanWallet();
-          let account = hdWallet.accounts.find(
+          await CryptoService.scanWallet();
+          let account = mainStore.wallet.accounts.find(
             (obj) => obj.label === accountName.value
           );
 
