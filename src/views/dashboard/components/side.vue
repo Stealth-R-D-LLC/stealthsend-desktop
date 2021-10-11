@@ -15,7 +15,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import StCards from '@/components/elements/StCards.vue';
 import Card from '@/components/elements/Card';
 import CryptoService from '@/services/crypto';
@@ -23,62 +23,45 @@ import { ref, computed } from 'vue';
 import { useMainStore } from '@/store';
 import router from '@/router';
 
-export default {
-  components: {
-    StCards,
-    Card,
-  },
-  setup() {
-    const mainStore = useMainStore();
+const mainStore = useMainStore();
 
-    const constraints = computed(() => {
-      if (!CryptoService.constraints) return null;
-      return CryptoService.constraints;
+const constraints = computed(() => {
+  if (!CryptoService.constraints) return null;
+  return CryptoService.constraints;
+});
+
+const wallet = computed(() => {
+  return mainStore.wallet;
+});
+
+const amount = computed(() => {
+  return mainStore.wallet?.utxo;
+});
+
+const sortedAccounts = computed(() => {
+  if (!wallet.value) return [];
+  // sort logic: by favorite position (imported or regular), then regular unfavorited accounts, then imported accounts
+  let tmpAccounts = wallet.value.accounts;
+  const favourite = tmpAccounts
+    .filter((el) => el.isFavourite)
+    .sort((a, b) => a.favouritePosition - b.favouritePosition);
+  const rest = tmpAccounts
+    .filter((el) => !el.isFavourite)
+    .sort((a, b) => {
+      return a.isImported === b.isImported ? 0 : a.isImported ? 1 : -1;
     });
+  return favourite.concat(rest);
+});
 
-    const wallet = computed(() => {
-      return mainStore.wallet;
-    });
+const step = ref(0);
+function switcherChange(value) {
+  step.value = value;
+}
 
-    const amount = computed(() => {
-      return mainStore.wallet?.utxo;
-    });
-
-    const sortedAccounts = computed(() => {
-      if (!wallet.value) return [];
-      // sort logic: by favorite position (imported or regular), then regular unfavorited accounts, then imported accounts
-      let tmpAccounts = wallet.value.accounts;
-      const favourite = tmpAccounts
-        .filter((el) => el.isFavourite)
-        .sort((a, b) => a.favouritePosition - b.favouritePosition);
-      const rest = tmpAccounts
-        .filter((el) => !el.isFavourite)
-        .sort((a, b) => {
-          return a.isImported === b.isImported ? 0 : a.isImported ? 1 : -1;
-        });
-      return favourite.concat(rest);
-    });
-
-    const step = ref(0);
-    function switcherChange(value) {
-      step.value = value;
-    }
-
-    function openAccount(account) {
-      mainStore.SET_ACCOUNT_DETAILS(account);
-      router.push('/account/details');
-    }
-
-    return {
-      openAccount,
-      switcherChange,
-      step,
-      constraints,
-      sortedAccounts,
-      amount,
-    };
-  },
-};
+function openAccount(account) {
+  mainStore.SET_ACCOUNT_DETAILS(account);
+  router.push('/account/details');
+}
 </script>
 
 <style scoped>

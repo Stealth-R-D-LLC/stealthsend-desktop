@@ -2,7 +2,6 @@ const RpcError = () =>
   import('@/components/connection/NoStealthConnection.vue');
 const ArchivedAccounts = () => import('@/views/account/archived.vue');
 const AccountDetails = () => import('@/views/account/details.vue');
-const AddressBook = () => import('@/views/address-book.vue');
 const Dashboard = () => import('@/views/dashboard/dashboard.vue');
 const Lock = () => import('@/views/lock.vue');
 const SettingsAppNotifications = () =>
@@ -155,11 +154,6 @@ const routes = [
     path: '/account/archived',
     name: 'ArchivedAccounts',
     component: ArchivedAccounts,
-  },
-  {
-    path: '/address-book',
-    name: 'AddressBook',
-    component: AddressBook,
   },
   {
     path: '/welcome',

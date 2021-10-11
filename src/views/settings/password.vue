@@ -62,6 +62,12 @@
 </template>
 
 <script>
+export default {
+    name: 'StSettingsPassword',
+
+}
+</script>
+<script setup>
 import { ref } from 'vue';
 import CryptoService from '@/services/crypto';
 import cryptoJs from 'crypto-js';
@@ -70,9 +76,6 @@ import { useValidation } from 'vue3-form-validation';
 import router from '@/router';
 import zxcvbn from 'zxcvbn';
 
-export default {
-  name: 'StSettingsPassword',
-  setup() {
     const password = ref('');
     const newPassword = ref('');
     const confirmNewPassword = ref('');
@@ -216,19 +219,6 @@ export default {
 
       router.push('/lock');
     }
-
-    return {
-      //VARIABLES
-      password,
-      newPassword,
-      confirmNewPassword,
-      form,
-      //METHODS
-      validatePasswords,
-      changePassword,
-    };
-  },
-};
 </script>
 
 <style scoped>
