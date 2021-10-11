@@ -574,7 +574,9 @@ const CryptoService = {
           console.log('scanning imported acc...');
           let importedAccountBalance = 0;
           try {
-            importedAccountBalance = await mainStore.rpc('getaddressbalance', [account.address]);
+            importedAccountBalance = await mainStore.rpc('getaddressbalance', [
+              account.address,
+            ]);
           } catch (error) {
             console.log(
               'Cannot find address, probably no transactions, continuing anyways'
