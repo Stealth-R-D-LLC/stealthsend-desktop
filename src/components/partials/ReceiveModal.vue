@@ -288,14 +288,14 @@ export default {
     async function scanWallet() {
       console.log('scan wallet 15');
 
-      const hdWallet = await CryptoService.scanWallet();
-      accounts.value = hdWallet.accounts.filter((el) => !el.isArchived);
+      await CryptoService.scanWallet();
+      accounts.value = mainStore.wallet.accounts.filter((el) => !el.isArchived);
       if (pickedAccount.value) {
         // already picked from account details
         account.value = { ...pickedAccount.value };
       } else {
         // select first account so that we can immediately start finding the first available address
-        account.value = hdWallet.accounts[0];
+        account.value = accounts.value[0];
       }
     }
 

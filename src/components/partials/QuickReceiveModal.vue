@@ -55,7 +55,7 @@ import CryptoService from '@/services/crypto';
 import SvgIcon from '../partials/SvgIcon.vue';
 
 export default {
-  name: 'StReceiveModal',
+  name: 'StQuickReceiveModal',
   components: {
     SvgIcon,
   },
@@ -64,6 +64,10 @@ export default {
 
     const isVisible = computed(() => {
       return mainStore.modals.quickReceive;
+    });
+
+    const wallet = computed(() => {
+      return mainStore.wallet;
     });
 
     function closeModal() {
@@ -81,8 +85,8 @@ export default {
     async function scanWallet() {
       console.log('scan wallet 13');
 
-      const hdWallet = await CryptoService.scanWallet();
-      accounts.value = hdWallet.accounts;
+      await CryptoService.scanWallet();
+      accounts.value = wallet.value.accounts;
       // select first account so that we can immediately start finding the first available address
       account.value = accounts.value[0];
     }
