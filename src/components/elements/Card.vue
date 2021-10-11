@@ -51,7 +51,7 @@ import { multiply } from 'mathjs';
 import useHelpers from '@/composables/useHelpers';
 import CryptoService from '@/services/crypto';
 import router from '@/router';
-import emitter from '@/services/emitter';
+// import emitter from '@/services/emitter';
 import { onClickOutside } from '@vueuse/core';
 import SvgIcon from '../partials/SvgIcon.vue';
 
@@ -128,7 +128,9 @@ export default {
       } else {
         // open
         accountOptions.value = name;
-        emitter.emit('dashboard:card-open', name);
+        if (name !== accountOptions.value) {
+          accountOptions.value = '';
+        }
       }
     }
     const openAccountDetails = (account) => {
@@ -143,13 +145,6 @@ export default {
     function openModal(modal) {
       mainStore.SET_MODAL_VISIBILITY(modal, true);
     }
-
-    emitter.on('dashboard:card-open', (name) => {
-      // on open card details, close all other card details
-      if (name !== accountOptions.value) {
-        accountOptions.value = '';
-      }
-    });
 
     onClickOutside(card, () => {
       accountOptions.value = '';

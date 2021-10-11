@@ -430,7 +430,6 @@ export default {
     let accounts = ref([]);
     let isDraggedActive = ref(false);
     let isDraggedInactive = ref(false);
-    let isFavoriteRefresh = ref(false);
     const route = useRoute();
 
     const {
@@ -478,7 +477,6 @@ export default {
     onMounted(async () => {
       mainStore.START_GLOBAL_LOADING();
       console.log('scan wallet 6');
-
       await scanWallet();
       var elActive = document.getElementById('activeAccounts');
       var elArchived = document.getElementById('archivedAccounts');
@@ -645,7 +643,7 @@ export default {
           console.log(e);
         }
       } finally {
-        emitter.emit('accounts:refresh');
+        scanWallet();
       }
     }
 
@@ -663,14 +661,15 @@ export default {
 
     async function scanWallet() {
       let hdWallet = [];
-      if (isFavoriteRefresh.value) {
-        hdWallet = await CryptoService.getAccounts();
-      } else {
-        console.log('scan wallet 7');
+      hdWallet = await CryptoService.getAccounts();
+      // if (isFavoriteRefresh.value) {
+      //   hdWallet = await CryptoService.getAccounts();
+      // } else {
+      //   console.log('scan wallet 7');
 
-        await CryptoService.scanWallet();
-        hdWallet = mainStore.wallet.accounts;
-      }
+      //   // await CryptoService.scanWallet();
+      //   hdWallet = mainStore.wallet.accounts;
+      // }
       // accounts.value = hdWallet.accounts;
       let activeAccounts = hdWallet.filter((obj) => obj.isArchived === false);
 
@@ -703,21 +702,10 @@ export default {
       resetFields();
     }
 
-    emitter.on('favorite:refresh', () => {
+    emitter.on('favorite:refresh', async () => {
       if (route.name !== 'ArchivedAccounts') return; // don't refresh if not on this screen
-
-      isFavoriteRefresh.value = true;
       console.log('scan wallet 8');
-
-      scanWallet();
-    });
-
-    emitter.on('accounts:refresh', () => {
-      if (route.name !== 'ArchivedAccounts') return; // don't refresh if not on this screen
-      isFavoriteRefresh.value = false;
-      console.log('scan wallet 9');
-
-      scanWallet();
+      await scanWallet();
     });
 
     return {

@@ -227,11 +227,6 @@ export default {
       emitter.emit('favorite:refresh');
     }
 
-    emitter.on('favorite:refresh', () => {
-      if (mainStore.currentOffCanvas !== 'favourite-list') return; // don't refresh if not on this screen
-      scanWallet();
-    });
-
     return {
       // variables
       account,

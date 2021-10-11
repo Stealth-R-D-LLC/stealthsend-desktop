@@ -4,6 +4,7 @@
     :steps="activeStep === 'add-account' ? 0 : steps"
     :current-step="currentStep"
     :visible="isVisible"
+    :has-click-outside="false"
     @close="closeModal"
     class="account-modal"
     :class="{ 'account-modal__hide-header': currentStep > 2 }"
@@ -325,26 +326,19 @@ export default {
           console.log('scan wallet 11');
 
           await CryptoService.scanWallet();
+          console.log('jel tu ikad dodje');
           let account = mainStore.wallet.accounts.find(
             (obj) => obj.label === accountName.value
           );
+          console.log('a tu');
 
           emitter.emit('header:new-account', account); // lazy hack for XST-841 - refreshing account details screen
-
-          if (route.name === 'ArchivedAccounts') {
-            // refresh accoutns only in case you're on the archived accounts screen
-            emitter.emit('accounts:refresh');
-          }
-
-          emitter.on('accounts-refresh-done', () => {
-            nextStep();
-            emitter.off('accounts-refresh-done');
-          });
 
           // setTimeout(() => {
           //   // async emitter would be a better option in this case
           //   nextStep();
           // }, 5 * 1000);
+          console.log('sta je ovo brate');
         } catch (e) {
           if (e instanceof ValidationError) {
             console.log(e);
@@ -352,6 +346,12 @@ export default {
         }
       }
     }
+
+    emitter.on('accounts-refresh-done', () => {
+      console.log('acc ref done');
+      nextStep();
+      emitter.off('accounts-refresh-done');
+    });
 
     async function generateAccount() {
       let account = {};
@@ -389,8 +389,6 @@ export default {
 
       await CryptoService.storeAccountInDb(account);
       await CryptoService.scanWallet();
-      emitter.emit('accounts:refresh');
-      // mainStore.STOP_GLOBAL_LOADING();
       closeModal();
       accountName.value = '';
     }
@@ -421,13 +419,6 @@ export default {
     }
 
     async function openAccountDetails() {
-      // const hdWallet = await CryptoService.scanWallet();
-      // let account = hdWallet.accounts.find(
-      //   (obj) => obj.label === accountName.value
-      // );
-
-      // emitter.emit('header:new-account', account); // lazy hack for XST-841 - refreshing account details screen
-      // // emitter.emit('header:account-changed', account);
       if (route.name !== 'AccountDetails') {
         router.push('/account/details');
       }

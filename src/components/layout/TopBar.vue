@@ -30,35 +30,6 @@
 
             <SvgIcon name="icon-arrow-down" />
           </div>
-
-          <!-- <StMultiselect
-          v-model="account"
-          :class="{ 'multiselect-filled': account }"
-          :options="accounts"
-          track-by="address"
-          value-prop="address"
-          label="label"
-          :object="true"
-          :can-deselect="false"
-          placeholder="Select account"
-          @select="accountChanged"
-        >
-          <template #singleLabel>
-            <h6>
-              {{ account && account.label }}
-            </h6>
-          </template>
-
-          <template #option="{ option }">
-            <div class="flex-space-between">
-              <span>
-                {{ option.label }}
-              </span>
-              <span> {{ option.utxo }} XST </span>
-            </div>
-          </template>
-        </StMultiselect> -->
-
           <div class="icons-flex">
             <StTooltip
               class="tooltip"
@@ -377,7 +348,6 @@ import router from '@/router';
 import CryptoService from '@/services/crypto';
 import useHelpers from '@/composables/useHelpers';
 import { multiply } from 'mathjs';
-import emitter from '@/services/emitter';
 import VanillaQR from 'vanillaqr';
 import { useValidation } from 'vue3-form-validation';
 import db from '../../db';
@@ -391,8 +361,6 @@ export default {
     const mainStore = useMainStore();
     const { formatAmount } = useHelpers();
     const route = useRoute();
-    const account = ref(null);
-    const accounts = ref([]);
     const isVisible = ref(false);
     const accountVisible = ref(false);
     const rpcStatus = ref('');
@@ -432,6 +400,14 @@ export default {
 
     const currentRoute = computed(() => {
       return route.name;
+    });
+
+    const account = computed(() => {
+      return mainStore.accountDetails;
+    });
+
+    const accounts = computed(() => {
+      return mainStore.wallet.accounts;
     });
 
     const computedClass = computed(() => {
@@ -490,7 +466,7 @@ export default {
       async () => {
         if (isVisible.value) {
           console.log('scan wallet 1');
-          await scanWallet();
+          await CryptoService.scanWallet();
           getPublicKey();
         }
       }
@@ -507,11 +483,16 @@ export default {
     }
 
     function getPublicKey() {
-      if (!account.value) return;
-      if (account?.value?.isImported && account.value.wif) {
-        publicKey.value = account.value.publicKey;
+      if (!mainStore.accountDetails) return;
+      if (
+        mainStore.accountDetails?.isImported &&
+        mainStore.accountDetails.wif
+      ) {
+        publicKey.value = mainStore.accountDetails.publicKey;
       } else {
-        const path = CryptoService.breakAccountPath(account.value.path);
+        const path = CryptoService.breakAccountPath(
+          mainStore.accountDetails.path
+        );
         const { xpub } = CryptoService.getKeysForAccount(
           path.account,
           path.change,
@@ -522,11 +503,11 @@ export default {
     }
 
     async function getPrivateKey() {
-      if (account?.value?.isImported) {
+      if (mainStore.accountDetails?.isImported) {
         const wallet = await db.getItem('wallet');
         try {
           const secretKey = await CryptoService.AESDecrypt(
-            account.value.wif,
+            mainStore.accountDetails.wif,
             wallet.password
           );
           privateKey.value = secretKey;
@@ -535,7 +516,9 @@ export default {
           privateKey.value = '';
         }
       } else {
-        const path = CryptoService.breakAccountPath(account.value.path);
+        const path = CryptoService.breakAccountPath(
+          mainStore.accountDetails.path
+        );
         const { secretKey } = CryptoService.getKeysForAccount(
           path.account,
           path.change,
@@ -556,7 +539,7 @@ export default {
       resetFields();
       if (!isManual) {
         console.log('scan wallet 2');
-        await scanWallet();
+        await CryptoService.scanWallet();
       }
       getPublicKey();
     }
@@ -610,17 +593,6 @@ export default {
       setTimeout(() => {
         copyPending.value = false;
       }, 2000);
-    }
-    async function scanWallet() {
-      // eslint-disable-next-line no-async-promise-executor
-      return new Promise(async (resolve) => {
-        console.log('scan wallet 3');
-        await CryptoService.scanWallet();
-        accounts.value = mainStore.wallet.accounts;
-        // select first option
-        account.value = mainStore.accountDetails;
-        resolve();
-      });
     }
 
     function generatePublicQr() {
@@ -677,25 +649,17 @@ export default {
     const changedAccount = ref('');
 
     async function accountChanged(account) {
+      mainStore.START_GLOBAL_LOADING();
       mainStore.SET_ACCOUNT_DETAILS(account);
       console.log('scan wallet 4');
 
-      await scanWallet();
-      setTimeout(() => {
-        emitter.emit('header:account-changed', account);
-      }, 1);
+      await CryptoService.scanWallet();
       accountVisible.value = false;
+      mainStore.STOP_GLOBAL_LOADING();
     }
 
-    emitter.on('header:new-account', async (acc) => {
-      console.log('scan wallet 5');
-
-      await scanWallet();
-      emitter.emit('header:account-changed', acc);
-    });
-
     function openAccountModal() {
-      showArrow.value = account.value.label;
+      showArrow.value = mainStore.accountDetails.label;
       accountVisible.value = true;
     }
 
@@ -733,10 +697,8 @@ export default {
       generatePublicQr,
       openBlockExplorer,
       validatePassword,
-
-      scanWallet,
-      account,
       accounts,
+      account,
       changedAccount,
       toggleHiddenAmounts,
       isHiddenAmounts,
