@@ -177,7 +177,6 @@ import { computed, ref, watch } from 'vue';
 import CryptoService from '@/services/crypto';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import CircleProgress from '../partials/CircleProgress.vue';
-import emitter from '@/services/emitter';
 import { QrStream } from 'vue3-qr-reader';
 import router from '@/router';
 import SvgIcon from '../partials/SvgIcon.vue';
@@ -336,12 +335,6 @@ export default {
         }
       }
     }
-
-    emitter.on('accounts-refresh-done', () => {
-      console.log('acc ref done');
-      nextStep();
-      emitter.off('accounts-refresh-done');
-    });
 
     async function generateAccount() {
       let account = {};

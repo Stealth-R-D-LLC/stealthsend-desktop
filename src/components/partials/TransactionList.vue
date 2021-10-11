@@ -348,11 +348,6 @@ export default {
       }
     );
 
-    /* emitter.on('transactions:refresh', () => {
-      orderTransactions();
-      CryptoService.getTxWithLabels();
-    }); */
-
     return {
       isExpanded,
       expandIcons,

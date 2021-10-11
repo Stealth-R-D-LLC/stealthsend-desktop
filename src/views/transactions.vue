@@ -45,7 +45,6 @@ import isWithinInterval from 'date-fns/isWithinInterval';
 import isSameDay from 'date-fns/isSameDay';
 import { useMainStore } from '@/store';
 import { useRoute } from 'vue-router';
-import emitter from '@/services/emitter';
 import SvgIcon from '../components/partials/SvgIcon.vue';
 
 export default {
@@ -156,12 +155,6 @@ export default {
         }
       }
       return filtered;
-    });
-
-    emitter.on('transactions:refresh', async () => {
-      if (route.name !== 'Transactions') return;
-      console.log('scan wallet 21');
-      // await CryptoService.scanWallet();
     });
 
     return {
