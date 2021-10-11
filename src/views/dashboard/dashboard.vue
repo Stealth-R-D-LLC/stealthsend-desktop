@@ -72,7 +72,7 @@ export default {
 
     emitter.on('transactions:refresh', async () => {
       if (route.name !== 'Dashboard') return; // don't refresh if not on this screen
-      console.log('scan wallet  26');
+      console.log('scan wallet 26');
 
       await scanWallet();
     });

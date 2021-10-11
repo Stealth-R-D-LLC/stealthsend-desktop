@@ -424,12 +424,11 @@ export default {
     watch(
       () => isVisible.value,
       () => {
-        console.log('scan wallet 17');
-
-        scanWallet();
         if (!isVisible.value) {
           closeModal();
         } else {
+          console.log('scan wallet 17');
+          scanWallet();
           mainStore.checkRpcStatus();
         }
       }
