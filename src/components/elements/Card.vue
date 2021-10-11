@@ -1,45 +1,65 @@
 <template>
-  <div
-    v-if="steps.length > 0"
-    class="st-card"
-    :class="{ 'st-card--is-archived': account.isArchived }"
-    @click="handleClick(account)"
-  >
-    <a
-      v-if="archiveable"
-      href=""
-      class="archive"
-      @click.prevent="archive(account)"
-    ></a>
-    <a
-      v-if="unarchiveable"
-      href=""
-      class="unarchive"
-      @click.prevent="unarchive(account)"
-    ></a>
-    <div class="st-card__row">
-      <span class="item title">{{ account.label }}</span>
-      <span class="itemu type"><span class="bold">XST</span>/USD</span>
+  <div class="card" ref="card">
+    <div class="card__inner" @click="$emit('click')">
+      <div class="card-header">
+        <h6 class="semi-bold">{{ account.label }}</h6>
+        <div
+          class="info-container"
+          @click.stop="toggleAccountOptions(account.label)"
+        >
+          <SvgIcon name="icon-hamburger-menu-primary" class="info" />
+        </div>
+      </div>
+      <div class="amount-container" v-if="steps && steps[type]">
+        <h6 class="currency">
+          {{ isHiddenAmounts ? '••• XST' : steps[type].amountLeft }}
+        </h6>
+        <p class="medium grey">
+          ~
+          {{ isHiddenAmounts ? '$••• USD' : steps[type].amountRight + ' USD' }}
+          <SvgIcon
+            name="icon-favorite"
+            v-if="account.isFavourite"
+            class="star"
+          />
+        </p>
+      </div>
     </div>
-    <div class="st-card__row">
-      <span class="item amount">{{
-        isHiddenAmounts ? '****' : steps[type].amountLeft
-      }}</span>
-      <span class="item fiat">{{
-        isHiddenAmounts ? '****' : steps[type].amountRight
-      }}</span>
-    </div>
+    <transition name="fill">
+      <div v-if="accountOptions === account.label" class="account-options">
+        <SvgIcon name="icon-close" class="close" @click="accountOptions = ''" />
+        <ul>
+          <li>
+            <a @click="toggleModal('send', account)">Send</a>
+          </li>
+          <li>
+            <a @click="toggleModal('receive', account)">Receive</a>
+          </li>
+          <li>
+            <a @click="openAccountDetails(account)">View Account</a>
+          </li>
+        </ul>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script>
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useMainStore } from '@/store';
 import { multiply } from 'mathjs';
 import useHelpers from '@/composables/useHelpers';
+import CryptoService from '@/services/crypto';
+import router from '@/router';
+import emitter from '@/services/emitter';
+import { onClickOutside } from '@vueuse/core';
+import SvgIcon from '../partials/SvgIcon.vue';
 
 export default {
   name: 'StCard',
+  components: {
+    SvgIcon,
+  },
   props: {
     type: {
       type: Number,
@@ -74,39 +94,26 @@ export default {
   setup(props, context) {
     const mainStore = useMainStore();
     const { formatAmount } = useHelpers();
+    const accountOptions = ref('');
+    const card = ref(null);
 
     const steps = computed(() => {
       if (!props.rates) return [];
-      // TODO: hardcoded stuff
       return [
         {
-          assetA: 'XST',
-          assetB: 'USD',
-          amountLeft: `${formatAmount(props.account.utxo, true, 8)} XST`,
+          asset: 'XST',
+          amountLeft: `${formatAmount(props.account.utxo, false, 6, 6)} XST`,
           amountRight: `$${formatAmount(
-            multiply(props.account.utxo, props.rates.XST_USD, true, 2)
+            multiply(props.account.utxo, CryptoService.constraints.XST_USD),
+            false,
+            4,
+            4
           )}`,
-          percentage: `+100`,
-        },
-        {
-          assetA: 'USD',
-          assetB: 'XST',
-          amountLeft: `$${formatAmount(
-            multiply(props.account.utxo, props.rates.XST_USD, true, 2)
-          )}`,
-          amountRight: `${formatAmount(props.account.utxo, true, 8)} XST`,
-          percentage: `+90`,
-        },
-        {
-          assetA: 'BTC',
-          assetB: 'XST',
-          amountLeft: formatAmount(
-            multiply(props.account.utxo, props.rates.XST_BTC),
-            true,
-            8
+          percentage: formatAmount(
+            CryptoService.constraints.changePercent24Hr,
+            false,
+            2
           ),
-          amountRight: `${formatAmount(props.account.utxo, true, 8)} XST`,
-          percentage: `+22`,
         },
       ];
     });
@@ -114,18 +121,48 @@ export default {
     const handleClick = (account) => {
       context.emit('click', account);
     };
+    function toggleAccountOptions(name) {
+      if (accountOptions.value === name) {
+        // close
+        accountOptions.value = '';
+      } else {
+        // open
+        accountOptions.value = name;
+        emitter.emit('dashboard:card-open', name);
+      }
+    }
+    const openAccountDetails = (account) => {
+      mainStore.SET_ACCOUNT_DETAILS(account);
+      router.push('/account/details');
+    };
+    function toggleModal(modal, account) {
+      accountOptions.value = '';
+      mainStore.SET_ACCOUNT_DETAILS(account);
+      openModal(modal);
+    }
+    function openModal(modal) {
+      mainStore.SET_MODAL_VISIBILITY(modal, true);
+    }
 
-    const archive = (account) => {
-      context.emit('archived', account);
-    };
-    const unarchive = (account) => {
-      context.emit('unarchived', account);
-    };
+    emitter.on('dashboard:card-open', (name) => {
+      // on open card details, close all other card details
+      if (name !== accountOptions.value) {
+        accountOptions.value = '';
+      }
+    });
+
+    onClickOutside(card, () => {
+      accountOptions.value = '';
+    });
+
     return {
-      archive,
-      unarchive,
+      accountOptions,
+      toggleAccountOptions,
+      openAccountDetails,
+      toggleModal,
       handleClick,
       steps,
+      card,
       isHiddenAmounts: computed(() => mainStore.isAmountsHidden),
     };
   },
@@ -133,78 +170,123 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.st-card {
-  padding: 12px 16px;
-  /* min-width: 320px; */
-  width: 100%;
-  height: 80px;
-  background: white;
-  border: 1px solid #eeeff9;
-  display: inline-flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-sizing: border-box;
-  box-shadow: 0px 8px 24px -8px rgba(34, 3, 101, 0.1);
-  margin: 10px 0;
+.fill-enter-active {
+  animation: fill 0.7s;
+}
+.fill-leave-active {
+  animation: fill 0.5s reverse;
+}
+@keyframes fill {
+  0% {
+    width: 0;
+    height: 0;
+    border-radius: 0 0 0 250px;
+  }
+
+  100% {
+    width: calc(100% - 40px);
+    height: calc(100% - 40px);
+    border-radius: 0;
+  }
+}
+.card + .card {
+  margin-top: 10px;
+}
+.card:last-child {
+  margin-bottom: 20px;
+}
+.card {
   position: relative;
+  background: #fefefe;
+  border: 1px solid var(--purple50);
+  box-shadow: 0px 8px 24px -8px rgba(34, 3, 101, 0.1);
+  border-radius: 2px;
+}
+.archived {
+  margin-top: 64px;
+}
+.info-container {
+  padding: 10px 12px;
+  position: absolute;
+  right: 8px;
+  top: 10px;
+}
+.info path {
+  transition: 0.3s;
+}
+.info:hover path {
+  stroke: var(--marine200);
+}
+.info-grey path {
+  transition: 0.3s;
+}
+.info-grey:hover path {
+  stroke: var(--marine700);
+}
+.card__inner {
+  padding: 16px 20px 24px;
   cursor: pointer;
 }
-
-.st-card:hover {
-  transition: all 0.2s ease-out;
-  background-color: var(--background50);
-  box-shadow: 0px 8px 24px -4px rgba(34, 3, 101, 0.1);
+.account-options {
+  position: absolute;
+  top: 0;
+  width: calc(100% - 40px);
+  right: 0;
+  bottom: 0;
+  padding: 12px 20px 26px;
+  background-color: var(--marine800);
+  border: 1px solid var(--marine700);
+  border-radius: 2px;
+  overflow: hidden;
 }
-
-.st-card__row {
+.account-options > .close {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+}
+.account-options ul > li + li {
+  margin-top: 12px;
+}
+.account-options ul > li > a {
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  color: var(--white);
+  font-family: var(--secondary-font);
+  font-size: 14px;
+  line-height: 24px;
+  transition: 0.3s;
+}
+.account-options ul > li > a:hover {
+  color: var(--marine200);
+}
+.card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.st-card .item.title {
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 24px;
-  letter-spacing: 0.32px;
-
-  width: 50%;
+.card-header h6 {
+  display: inline-block;
+  width: 260px;
   white-space: nowrap;
-  overflow: hidden;
+  overflow: hidden !important;
   text-overflow: ellipsis;
 }
-.st-card .item.type {
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 24px;
-  letter-spacing: 0.32px;
+.amount-container {
+  margin-top: 18px;
 }
-.st-card .item.amount {
-  font-size: 16px;
-  line-height: 24px;
-  letter-spacing: 0.12px;
-  font-family: var(--secondary-font);
+.grey {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--grey500);
 }
-.st-card .item.fiat {
-  font-family: var(--secondary-font);
+svg.info,
+.account-options > svg {
+  cursor: pointer;
 }
-
-/* .st-card .archive,
-.st-card .unarchive {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: pink;
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  display: none;
-} */
-
-.st-card:not(.st-card--is-archived):hover .archive {
-  display: block;
-}
-.st-card:hover .unarchive {
-  display: block;
+.star {
+  cursor: auto;
 }
 </style>

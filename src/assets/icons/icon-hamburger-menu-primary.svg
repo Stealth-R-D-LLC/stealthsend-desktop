@@ -1,0 +1,26 @@
+<svg
+  width="12"
+  height="10"
+  viewBox="0 0 12 10"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M0 1H8"
+    stroke="#4E00F6"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M0 5H12"
+    stroke="#4E00F6"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M0 9H12"
+    stroke="#4E00F6"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+</svg>

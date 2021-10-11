@@ -18,7 +18,7 @@ export default {
     },
     bold: {
       type: Boolean,
-      required: true,
+      required: false,
       default: () => {
         return false;
       },
@@ -58,6 +58,6 @@ export default {
   letter-spacing: 0.32px;
 
   color: var(--text);
-  margin-top: 12px;
+  margin-top: 8px;
 }
 </style>

@@ -1,10 +1,10 @@
 :root {
   --zApp: 1;
   --zDropdown: 2;
-  --zModal: 3;
-  --zTooltip: 4;
-  --zGlobalLoading: 5;
-  --zAside: 6;
+  --zTooltip: 3;
+  --zGlobalLoading: 4;
+  --zAside: 5;
+  --zModal: 6;
 }
 
 #app {
@@ -20,14 +20,13 @@
 }
 
 .layout__header {
-  padding: 35px 0 24px 0;
+  padding: 43px 0 29px;
   margin: 0 24px;
 }
 .layout__main {
   flex: 1;
   overflow: auto;
   position: relative;
-  margin-left: 64px; /*for fixed sidebar */
   display: flex;
 }
 
@@ -35,7 +34,6 @@
     flex: 1;
     overflow: auto;
     position: relative;
-    margin-left: 64px; /*for fixed sidebar */
 }
 
 .layout__main .triangle {
@@ -49,10 +47,11 @@
 }
 
 .layout__aside {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   background-color: var(--marine900);
-  width: 280px;
   /* fixed and no scrolling  */
-  position: fixed;
   z-index: var(--zAside);
-  height: 100%;
+  height: 100vh;
 }

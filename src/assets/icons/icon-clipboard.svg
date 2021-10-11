@@ -1,0 +1,24 @@
+<svg
+  width="18"
+  height="22"
+  viewBox="0 0 18 22"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M13 6H1V21H13V6Z"
+    stroke="#4E00F6"
+    stroke-width="2"
+  />
+  <line
+    x1="17"
+    y1="18"
+    x2="17"
+    stroke="#4E00F6"
+    stroke-width="2"
+  />
+  <path
+    d="M3 1L18 1"
+    stroke="#4E00F6"
+    stroke-width="2"
+  /></svg>

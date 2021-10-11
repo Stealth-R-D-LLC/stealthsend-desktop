@@ -1,30 +1,32 @@
 .mx-datepicker {
-    margin: 20px 0 0;
     width: 100%;
 }
 .mx-input {
     display: inline-block;
     box-sizing: border-box;
     width: 100%;
-    padding: 8px 30px 8px;
-    padding-left: 0;
+    padding: 8px 30px 8px 0;
+    font-family: var(--secondary-font);
     font-size: 12px;
     line-height: 24px;
+    letter-spacing: 0.12px;
     color: var(--grey900);
     background-color: transparent;
     border: none;
-    border-bottom: 2px solid var(--grey100);
+    border-bottom: 1.5px solid var(--grey200);
     border-radius: 0;
     box-shadow: none;
+}
+.mx-input::placeholder {
+    color: var(--grey900);
 }
 .mx-input-wrapper {
     position: relative;
 }
 .mx-input-wrapper::after {
     content: '';
-    height: 2px;
-    width: 60px;
-    background-color: var(--marine400);
+    width: 0;
+    border-bottom: 1.5px solid var(--marine400);
     position: absolute;
     left: 0;
     right: 0;
@@ -32,7 +34,7 @@
     transition: 0.3s;
 }
 .mx-input-wrapper:focus-within::after{
-    width: 100%;
+    width: 60px;
 }
 .mx-datepicker__filled .mx-input-wrapper::after {
     width: 100%;
@@ -42,6 +44,9 @@
 }
 .mx-icon-calendar {
     display: none;
+}
+.mx-calendar-header button, .mx-calendar-content {
+    font-family: var(--secondary-font);
 }
 .mx-calendar-header .mx-btn, .mx-calendar-header-label {
     color: var(--text);

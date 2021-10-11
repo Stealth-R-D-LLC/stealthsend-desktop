@@ -1,16 +1,14 @@
 <template>
   <div class="side">
-    <StSwitcher :amount="utxo" @change="switcherChange"></StSwitcher>
+    <StCards :amount="utxo" @change="switcherChange"></StCards>
     <div class="side__accounts">
       <Card
-        v-for="account in accounts"
+        v-for="account in sortedAccounts"
         :key="account.address"
-        class="list-item"
         :account="account"
         :type="step"
         :rates="constraints"
-        @click="openAccountDetails"
-        @archived="archiveAccount"
+        @click="openAccount(account)"
       >
       </Card>
     </div>
@@ -18,16 +16,18 @@
 </template>
 
 <script>
-import StSwitcher from '@/components/elements/StSwitcher.vue';
+import StCards from '@/components/elements/StCards.vue';
 import Card from '@/components/elements/Card';
 import CryptoService from '@/services/crypto';
 import { ref, computed, watch } from 'vue';
 import { useMainStore } from '@/store';
 import router from '@/router';
+import emitter from '@/services/emitter';
+import { useRoute } from 'vue-router';
 
 export default {
   components: {
-    StSwitcher,
+    StCards,
     Card,
   },
   setup() {
@@ -37,6 +37,7 @@ export default {
 
     const utxo = ref(0);
     const txs = ref([]);
+    const route = useRoute();
 
     watch(
       () => mainStore.modals.receive,
@@ -70,10 +71,13 @@ export default {
 
     async function scanWallet() {
       const hdWallet = await CryptoService.scanWallet();
-      console.log('scanned wallet: ', hdWallet);
       utxo.value = Number(hdWallet.utxo);
       txs.value = hdWallet.txs;
-      accounts.value = hdWallet.accounts.filter((el) => !el.isArchived);
+      accounts.value = hdWallet.accounts
+        .filter((el) => !el.isArchived)
+        .sort((a, b) => {
+          return a.isFavourite === b.isFavourite ? 0 : a.isFavourite ? -1 : 1;
+        });
     }
     scanWallet();
 
@@ -82,27 +86,49 @@ export default {
       return CryptoService.constraints;
     });
 
-    const openAccountDetails = (account) => {
-      mainStore.SET_ACCOUNT_DETAILS(account);
-      router.push('/account/details');
-    };
-    const archiveAccount = (account) => {
-      CryptoService.archiveAccount(account);
-    };
+    const sortedAccounts = computed(() => {
+      // sort logic: by favorite position (imported or regular), then regular unfavorited accounts, then imported accounts
+      let tmpAccounts = accounts.value;
+      const favourite = tmpAccounts
+        .filter((el) => el.isFavourite)
+        .sort((a, b) => a.favouritePosition - b.favouritePosition);
+      const rest = tmpAccounts
+        .filter((el) => !el.isFavourite)
+        .sort((a, b) => {
+          return a.isImported === b.isImported ? 0 : a.isImported ? 1 : -1;
+        });
+      return favourite.concat(rest);
+    });
 
     const step = ref(0);
     function switcherChange(value) {
       step.value = value;
     }
 
+    function openAccount(account) {
+      mainStore.SET_ACCOUNT_DETAILS(account);
+      router.push('/account/details');
+    }
+
+    emitter.on('accounts:refresh', () => {
+      if (route.name !== 'Dashboard') return; // don't refresh if not on this screen
+
+      scanWallet();
+    });
+    emitter.on('transactions:refresh', () => {
+      if (route.name !== 'Dashboard') return; // don't refresh if not on this screen
+
+      scanWallet();
+    });
+
     return {
-      openAccountDetails,
+      openAccount,
       accounts,
-      archiveAccount,
       switcherChange,
       step,
       utxo,
       constraints,
+      sortedAccounts,
     };
   },
 };
@@ -110,23 +136,27 @@ export default {
 
 <style scoped>
 .side {
-  min-width: 346px;
-  width: 346px;
-  padding: 29px 24px 0;
+  box-sizing: border-box;
+  min-width: 392px;
+  width: 392px;
+  padding: 36px 24px 0;
   background: var(--background100);
 }
 
 .side__accounts {
   overflow: auto;
-  height: calc(100vh - 210px);
-  margin: 8px 0 0;
-  width: calc(100% + 5px);
+  height: calc(100vh - 222px);
+  margin: 20px 0 0;
+  width: calc(100% + 4px);
   padding-right: 10px;
 }
 .side__accounts::-webkit-scrollbar {
   width: 4px;
 }
-.side__accounts::-webkit-scrollbar-thumb {
+.side__accounts:hover::-webkit-scrollbar-thumb {
   background: var(--grey100);
+}
+.side__accounts::-webkit-scrollbar-thumb {
+  background: transparent;
 }
 </style>

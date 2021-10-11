@@ -1,7 +1,7 @@
 <template>
   <StModal
     light
-    :steps="steps"
+    :steps="activeStep === 'add-account' ? 0 : steps"
     :current-step="currentStep"
     :visible="isVisible"
     @close="closeModal"
@@ -22,28 +22,47 @@
           >Import Account</a
         >
       </div>
-      <div v-if="activeStep === 'add-account'">
-        <div class="desc">
-          <p>
-            You can create an unlimited number of accounts; they are all derived
-            from the same Recovery Phrase. Your previously created Recovery
-            Phrase protects all of your accounts.
-          </p>
-        </div>
-        <StFormItem
-          label="Account Name"
-          :error-message="form.accountName.$errors"
-        >
-          <StInput
-            v-model="form.accountName.$value"
-            placeholder="Please add Unique Account Name"
-          ></StInput>
-        </StFormItem>
-        <div class="buttons">
-          <StButton color="secondary" @click="closeModal">Cancel</StButton>
-          <StButton @click="generateAccount" :disabled="!accountName.length"
-            >Add</StButton
+      <div class="add-account" v-if="activeStep === 'add-account'">
+        <div class="add-account__content">
+          <div class="desc" :class="{ 'desc-red': isLastAccountEmpty }">
+            <p v-if="isLastAccountEmpty">
+              You can only have one account with a zero balance. Please add XST
+              to your previous account prior to opening a new one.
+            </p>
+            <p v-else>
+              You can create an unlimited number of accounts; they are all
+              derived from the same Recovery Phrase. Your previously created
+              Recovery Phrase protects all of your accounts.
+            </p>
+          </div>
+          <StFormItem
+            :disabled="isLastAccountEmpty"
+            label="Account Name"
+            :class="{
+              'st-form-item__error': form.accountName.$value.length > 50,
+            }"
+            :filled="form.accountName.$value"
+            :error-message="form.accountName.$errors"
           >
+            <StInput
+              v-model="form.accountName.$value"
+              placeholder="Enter Account Name"
+              :disabled="isLastAccountEmpty"
+            ></StInput>
+            <template v-if="form.accountName.$value.length > 50" #description>
+              <span class="error">Name too long</span>
+            </template>
+          </StFormItem>
+        </div>
+        <div class="add-account__actions">
+          <div class="buttons">
+            <StButton type="type-b" @click="closeModal">Cancel</StButton>
+            <StButton
+              @click="generateAccount"
+              :disabled="!accountName.length || isLastAccountEmpty"
+              >Add</StButton
+            >
+          </div>
         </div>
       </div>
       <div v-if="activeStep === 'import-account'">
@@ -69,63 +88,82 @@
           </div>
         </template>
         <template v-if="currentStep === 2">
-          <StFormItem label="Account Name">
-            <StInput v-model="accountName" placeholder="Enter Account Name" />
-          </StFormItem>
-          <StFormItem label="Private Key">
+          <StModal
+            light
+            :visible="isScanning"
+            @close="isScanning = false"
+            class="scan-modal"
+          >
+            <template #header>Scan XST Address</template>
+            <template #body>
+              <div class="no-camera" v-show="!cameraAllowed">
+                <SvgIcon name="icon-no-camera" />
+                <h6>There is no connected camera</h6>
+              </div>
+              <div v-show="isCameraLoading" class="loading-gif">
+                <img src="../../../static/xstloader.gif" alt="Test gif" />
+              </div>
+              <div v-show="!isCameraLoading">
+                <div v-show="cameraAllowed" class="stream">
+                  <qr-stream @decode="onDecode" class="mb">
+                    <div class="frame" />
+                  </qr-stream>
+                </div>
+              </div>
+            </template>
+          </StModal>
+          <StFormItem
+            label="Account Name"
+            :filled="form.accountName.$value"
+            :class="{
+              'st-form-item__error': form.accountName.$value.length > 50,
+            }"
+            :error-message="form.accountName.$errors"
+          >
             <StInput
-              v-model="privateKey"
+              v-model="form.accountName.$value"
+              placeholder="Enter Account Name"
+            />
+            <template v-if="form.accountName.$value.length > 50" #description>
+              <span class="error">Name too long</span>
+            </template>
+          </StFormItem>
+          <StFormItem
+            class="st-form-item__key"
+            label="Private Key"
+            :filled="form.privateKey.$value"
+            :error-message="form.privateKey.$errors"
+          >
+            <StInput
+              v-model="form.privateKey.$value"
               placeholder="Scan or paste your private key"
             >
-              <StTooltip
-                class="tooltip"
-                :tooltip-text="
-                  copyPending ? 'Copied to clipboard!' : 'Click to copy'
-                "
-              >
-                <StClipboard :content="privateKey" @click="handleCopy"
-                  ><svg
-                    width="19"
-                    height="19"
-                    viewBox="0 0 19 19"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M12.7692 5.29395H1V17.9998H12.7692V5.29395Z"
-                      stroke="#4E00F6"
-                      stroke-width="2"
-                    />
-                    <path
-                      d="M18 14.8232L18 -0.000279405"
-                      stroke="#4E00F6"
-                      stroke-width="2"
-                    />
-                    <path
-                      d="M2.30762 1.05859L17.9999 1.05859"
-                      stroke="#4E00F6"
-                      stroke-width="2"
-                    />
-                  </svg>
-                </StClipboard>
-              </StTooltip>
+              <SvgIcon name="icon-qr-code" @click="startScanner" />
             </StInput>
           </StFormItem>
-          <div class="button">
-            <StButton @click="nextStep">Import</StButton>
+          <div class="button button-import">
+            <StButton @click="accountImport">Import</StButton>
           </div>
         </template>
         <template v-if="currentStep === 3">
           <h5>Importing Private Key</h5>
-          <p class="medium">
-            Please be patient and don’t turn off the phone or exit the
-            application
-          </p>
+          <p class="medium">Please be patient and don’t exit the application</p>
+          <div class="progress">
+            <!-- <SvgIcon name="icon-loader" class="progress-animated" /> -->
+            <CircleProgress></CircleProgress>
+            <div class="overlay-progress"></div>
+          </div>
         </template>
         <template v-if="currentStep === 4">
           <h5>Success</h5>
           <p class="medium">Your account has been successfully imported.</p>
           <p class="medium">You may now access your funds.</p>
+          <div class="progress no-background">
+            <SvgIcon name="icon-loader-success" />
+          </div>
+          <StButton type="type-a" @click="openAccountDetails(account)"
+            >View Account</StButton
+          >
         </template>
       </div>
     </template>
@@ -134,12 +172,23 @@
 
 <script>
 import { useMainStore } from '@/store';
-import { computed, ref, watchEffect, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import CryptoService from '@/services/crypto';
-import { useValidation } from 'vue3-form-validation';
+import { useValidation, ValidationError } from 'vue3-form-validation';
+import CircleProgress from '../partials/CircleProgress.vue';
+import emitter from '@/services/emitter';
+import { QrStream } from 'vue3-qr-reader';
+import router from '@/router';
+import SvgIcon from '../partials/SvgIcon.vue';
+import { useRoute } from 'vue-router';
 
 export default {
   name: 'StAccountModal',
+  components: {
+    QrStream,
+    SvgIcon,
+    CircleProgress,
+  },
   setup() {
     // VARIABLES
     const mainStore = useMainStore();
@@ -149,6 +198,12 @@ export default {
     const understand = ref(false);
     const privateKey = ref('');
     const copyPending = ref(false);
+    const isScanning = ref(false);
+    const QRData = ref(null);
+    const cameraAllowed = ref(false);
+    const isCameraLoading = ref(false);
+
+    const route = useRoute();
 
     const {
       form,
@@ -162,11 +217,40 @@ export default {
         $value: accountName,
         $rules: [
           (accountName) => {
-            if (isLastAccountEmpty) {
-              return 'You can only have one account with zero balance. Please add XST to your previous account prior to opening a new one.';
+            if (accountName.length <= 0) {
+              return 'Name is required';
             }
             if (existingAccounts.some((el) => el.label === accountName)) {
               return 'Account name already exists.';
+            }
+            if (accountName.length > 50) {
+              return 'Name too long';
+            }
+          },
+        ],
+      },
+      privateKey: {
+        $value: privateKey,
+        $rules: [
+          (privateKey) => {
+            if (
+              existingAccounts.some((el) => {
+                if (!el.isImported) {
+                  return false;
+                }
+                const decryptedWIF = CryptoService.AESDecrypt(
+                  el.wif,
+                  wallet.password
+                );
+                return decryptedWIF && decryptedWIF === privateKey;
+              })
+            ) {
+              return 'Account already imported.';
+            }
+            if (activeStep.value === 'import-account') {
+              if (!CryptoService.isWIFValid(privateKey)) {
+                return 'Invalid private key';
+              }
             }
           },
         ],
@@ -174,18 +258,20 @@ export default {
     });
 
     // WATCH
-    watchEffect(() => {
-      if (currentStep.value === 3) {
-        setTimeout(() => {
-          nextStep();
-        }, 2000);
-      }
-      if (currentStep.value === 4) {
-        setTimeout(() => {
-          closeModal();
-        }, 2000);
-      }
-    });
+    // watchEffect(() => {
+    //   if (currentStep.value === 3) {
+    //     setTimeout(() => {
+    //       nextStep();
+    //     }, 2000);
+    //   }
+    //   // if (currentStep.value === 4) {
+    //   //   setTimeout(() => {
+    //   //     currentStep.value = 1;
+    //   //     activeStep.value = 'add-account';
+    //   //     closeModal();
+    //   //   }, 2000);
+    //   // }
+    // });
 
     // COMPUTED
     const isVisible = computed(() => {
@@ -202,12 +288,29 @@ export default {
     });
 
     let existingAccounts = [];
+    let wallet = {};
+    let isLastAccountEmpty = ref(false);
     watch(
       () => isVisible.value,
       async () => {
         if (isVisible.value) {
-          existingAccounts = await CryptoService.getAccounts();
-          console.log('eeee', existingAccounts);
+          let { accounts } = await CryptoService.scanWallet();
+          existingAccounts = accounts;
+          wallet = await CryptoService.getWalletFromDb();
+          isLastAccountEmpty.value = accounts.some((el) => el.utxo === 0);
+          // let next = await CryptoService.getNextAccountPath();
+          // // get current last existing account
+          // const { xpub: lastAccountPk } = CryptoService.getChildFromRoot(
+          //   next - 1 >= 0 ? next - 1 : 0,
+          //   0,
+          //   0
+          // );
+          // let lastHdAccount = await mainStore.rpc('gethdaccount', [
+          //   lastAccountPk,
+          // ]);
+          // if (lastHdAccount.length === 0) {
+          //   isLastAccountEmpty.value = true;
+          // }
         }
       }
     );
@@ -215,7 +318,11 @@ export default {
     // METHODS
     function closeModal() {
       mainStore.SET_MODAL_VISIBILITY('account', false);
+      activeStep.value === 'add-account';
+      currentStep.value = 1;
       accountName.value = '';
+      understand.value = false;
+      privateKey.value = '';
       resetFields();
     }
     function changeStep(name) {
@@ -230,54 +337,74 @@ export default {
         currentStep.value += 1;
       }
     }
-    function handleCopy() {
-      copyPending.value = true;
-      setTimeout(() => {
-        copyPending.value = false;
-      }, 2000);
+    async function accountImport() {
+      if (currentStep.value === 2) {
+        try {
+          await validateFields();
+          nextStep();
+          await CryptoService.importAccount(
+            accountName.value,
+            privateKey.value
+          );
+
+          const hdWallet = await CryptoService.scanWallet();
+          let account = hdWallet.accounts.find(
+            (obj) => obj.label === accountName.value
+          );
+
+          emitter.emit('header:new-account', account); // lazy hack for XST-841 - refreshing account details screen
+
+          if (route.name === 'ArchivedAccounts') {
+            // refresh accoutns only in case you're on the archived accounts screen
+            emitter.emit('accounts:refresh');
+          }
+
+          emitter.on('accounts-refresh-done', () => {
+            nextStep();
+            emitter.off('accounts-refresh-done');
+          });
+
+          // setTimeout(() => {
+          //   // async emitter would be a better option in this case
+          //   nextStep();
+          // }, 5 * 1000);
+        } catch (e) {
+          if (e instanceof ValidationError) {
+            console.log(e);
+          }
+        }
+      }
     }
 
-    let isLastAccountEmpty = false;
     async function generateAccount() {
-      isLastAccountEmpty = false;
       let account = {};
-      // mainStore.SET_MODAL_VISIBILITY('account', false);
-      // mainStore.START_GLOBAL_LOADING();
+
+      await validateFields();
 
       let next = await CryptoService.getNextAccountPath();
 
       // get current last existing account
-      const { pk: lastAccountPk } = CryptoService.getChildFromRoot(
+      const { xpub: lastAccountPk } = CryptoService.getChildFromRoot(
         next - 1 >= 0 ? next - 1 : 0,
         0,
         0
       );
 
-      // check if last existing account has transactions
-      const lastHdAccount = await mainStore.rpc('gethdaccount', [
-        lastAccountPk,
-      ]);
+      await mainStore.rpc('gethdaccount', [lastAccountPk]);
 
-      // if does have transactions, don't create new account
-      if (lastHdAccount.length === 0) {
-        isLastAccountEmpty = true;
-        await validateFields();
-        return;
-      }
-
-      await validateFields();
-
-      const { address, path, pk, wif } = CryptoService.getChildFromRoot(
+      const { address, path, xpub, wif } = CryptoService.getChildFromRoot(
         next,
         0,
         0
       );
       account = {
-        pk: pk,
+        xpub: xpub,
         address: address,
         label: accountName.value,
         utxo: 0,
         isArchived: false,
+        isFavourite: false,
+        isImported: false,
         asset: 'XST',
         wif: wif,
         path: path,
@@ -285,7 +412,47 @@ export default {
       accountName.value = '';
 
       await CryptoService.storeAccountInDb(account);
+      emitter.emit('accounts:refresh');
       // mainStore.STOP_GLOBAL_LOADING();
+      closeModal();
+    }
+
+    function startScanner() {
+      navigator.mediaDevices.enumerateDevices().then((devices) => {
+        let camera = devices.filter((obj) => obj.kind === 'videoinput');
+        if (camera[0].kind === 'videoinput' && camera[0].label) {
+          cameraAllowed.value = true;
+          isCameraLoading.value = true;
+          setTimeout(() => (isCameraLoading.value = false), 2000);
+        } else {
+          cameraAllowed.value = false;
+        }
+      });
+      QRData.value = null;
+      isScanning.value = true;
+      form.privateKey.$value = '';
+    }
+
+    function onDecode(data) {
+      QRData.value = data;
+      if (QRData.value) {
+        isScanning.value = false;
+        let privateKey = QRData.value.replace(/[^a-z0-9]/gi, '');
+        form.privateKey.$value = privateKey;
+      }
+    }
+
+    async function openAccountDetails() {
+      // const hdWallet = await CryptoService.scanWallet();
+      // let account = hdWallet.accounts.find(
+      //   (obj) => obj.label === accountName.value
+      // );
+
+      // emitter.emit('header:new-account', account); // lazy hack for XST-841 - refreshing account details screen
+      // // emitter.emit('header:account-changed', account);
+      if (route.name !== 'AccountDetails') {
+        router.push('/account/details');
+      }
       closeModal();
     }
 
@@ -297,6 +464,9 @@ export default {
       understand,
       privateKey,
       copyPending,
+      isScanning,
+      cameraAllowed,
+      isCameraLoading,
 
       // COMPUTED
       isVisible,
@@ -307,7 +477,10 @@ export default {
       changeStep,
       nextStep,
       generateAccount,
-      handleCopy,
+      accountImport,
+      startScanner,
+      onDecode,
+      openAccountDetails,
 
       form,
       errors,
@@ -319,11 +492,15 @@ export default {
 
 <style scoped>
 :deep .st-modal-container {
-  width: 416px;
-  min-height: 512px;
+  width: 480px;
+  height: 520px;
+  min-height: 520px;
+  box-sizing: border-box;
 }
 :deep .st-modal__body {
+  margin-top: 36px;
   margin-bottom: 0;
+  height: 100%;
 }
 .account-modal__hide-header :deep .st-modal__header {
   display: none;
@@ -331,6 +508,9 @@ export default {
 .account-modal__hide-header :deep .st-modal__body {
   margin-top: 0;
   text-align: center;
+}
+.account-modal :deep .st-modal__footer {
+  display: none;
 }
 .account-modal__hide-header h5 {
   margin-bottom: 36px;
@@ -348,8 +528,8 @@ export default {
   line-height: 24px;
   letter-spacing: 0.32px;
   color: var(--grey900);
-  padding-bottom: 12px;
-  padding-right: 20px;
+  padding-bottom: 9px;
+  font-family: var(--secondary-font);
   border-bottom: 3px solid var(--grey200);
   transition: 0.3s;
 }
@@ -386,17 +566,36 @@ export default {
   background-color: var(--background100);
   border-radius: 4px;
 }
+.desc-red {
+  background-color: var(--red50) !important;
+}
+.desc-red p {
+  color: var(--red600);
+}
+.add-account__actions {
+  position: absolute;
+  left: 32px;
+  right: 32px;
+  bottom: 60px;
+}
+.add-account__actions .buttons button {
+  margin: 0;
+}
+.st-form-item .st-input {
+  margin-bottom: 0;
+}
 .buttons {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 54px;
+  margin-top: 62px;
 }
 :deep .custom-checkbox.st-checkbox {
   margin-top: 24px;
   padding-left: 36px;
   font-size: 12px;
   line-height: 20px;
+  font-family: var(--secondary-font);
 }
 :deep .custom-checkbox .st-checkbox__checkmark {
   border-radius: 4px;
@@ -414,6 +613,9 @@ export default {
   width: 100%;
   text-align: center;
 }
+.button-import {
+  margin-top: 97px;
+}
 .button .st-button {
   min-width: 177px;
 }
@@ -422,5 +624,114 @@ export default {
   left: 0;
   right: 0;
   bottom: 32px;
+}
+:deep .disabled {
+  opacity: 1;
+  background: linear-gradient(
+      153.43deg,
+      rgba(184, 183, 187, 0.15) 0%,
+      rgba(229, 228, 232, 0.15) 83.33%
+    ),
+    var(--grey100);
+  border: 1px solid rgba(207, 205, 209, 0.25);
+  color: var(--grey300);
+}
+
+:deep .st-form-item__message--is-error {
+  line-height: 18px;
+}
+.st-form-item__key :deep .st-input input {
+  padding-right: 27px;
+}
+:deep .st-form-item .st-form-item__error,
+.error {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: left;
+}
+.scan-modal {
+  background-color: transparent;
+  backdrop-filter: unset;
+}
+/* svg path,
+svg circle {
+  transition: 0.3s;
+} */
+.progress-animated {
+  position: relative;
+  top: -2px;
+  left: -2px;
+  width: 104px;
+  height: 104px;
+}
+.progress {
+  margin: 96px auto 44px;
+  position: relative;
+  width: 100px;
+  height: 100px;
+  /* background: rgba(195, 169, 251, 0.3); */
+  border-radius: 100px;
+}
+.overlay-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: 0.12px;
+  font-family: var(--secondary-font);
+  background-color: #fff;
+  border-radius: 100%;
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  bottom: 5px;
+  left: 1px;
+  width: 98px;
+  height: 97px;
+}
+.no-camera {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100% - 80px);
+}
+.no-camera svg {
+  display: block;
+  margin: 0 auto 24px;
+  width: 140px;
+}
+.no-camera svg path {
+  fill: var(--gray900);
+}
+.loading-gif {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.loading-gif img {
+  display: block;
+  height: 28px;
+  position: absolute;
+}
+
+:deep.circle-progress__wrapper .rightcircle {
+  border-top: 2px solid var(--marine200);
+  border-right: 2px solid var(--marine200);
+  right: 0;
+}
+:deep.circle-progress__wrapper .leftcircle {
+  border-bottom: 2px solid var(--marine200);
+  border-left: 2px solid var(--marine200);
+  left: 0;
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
 }
 </style>

@@ -6,7 +6,7 @@ import {
   StCheckbox,
   StClipboard,
   StDropdown,
-  StIcon,
+  StFormItem,
   StInput,
   StLink,
   StLoading,
@@ -19,14 +19,13 @@ import {
   StTag,
   StTooltip,
 } from 'stealth-kit';
-import StFormItem from '@/components/elements/StFormItem.vue';
-
 import { createApp } from 'vue';
 import VueMultiselect from 'vue-multiselect';
 import App from './App.vue';
 import directives from './directives/';
 import './index.css';
 import router from './router';
+import Popper from 'vue3-popper';
 
 const app = createApp(App);
 app.use(createPinia());
@@ -50,8 +49,8 @@ app.component('StDropdown', StDropdown);
 app.component('StLoading', StLoading);
 app.component('StCard', StCard);
 app.component('StTag', StTag);
-app.component('StIcon', StIcon);
 app.component('StFormItem', StFormItem);
+app.component('StPopper', Popper);
 // end global components
 
 // register all directives

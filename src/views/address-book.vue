@@ -1,5 +1,5 @@
 <template>
-  <div class="address-book-container">Address book</div>
+  <div class="address-book-container">Address Book</div>
 </template>
 
 <script>

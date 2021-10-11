@@ -6,12 +6,14 @@
 @import 'css/design-tokens/fonts.css';
 @import 'css/design-tokens/typography.css';
 
-
 @import 'css/tools/transitions.css';
 
 /* @import '../node_modules/@vueform/multiselect/themes/default.css'; */
 @import 'css/components/multiselect.css';
-@import 'css/components/datepicker.css';
+/* @import 'css/components/datepicker.css'; */
+@import 'css/components/inputs.css';
+@import 'css/components/popper.css';
+@import 'css/components/modal.css';
 @import 'css/skeleton/layout.css';
 
 @import 'css/utilities/modifiers.css';

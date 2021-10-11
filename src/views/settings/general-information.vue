@@ -2,18 +2,23 @@
   <div class="st-settings-child st-password-container">
     <div class="st-settings-child__overflow">
       <h2 class="title">General Information</h2>
-      <p class="subtitle">Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum</p>
+      <p class="subtitle">Information about Stealth and StealthSend</p>
       <div class="content">
         <p class="page-title">Stealth: The Fastest Private Digital Currency</p>
         <p class="text">
           We are building the Holy Grail of Crypto: a fast, feeless, private and
           scalable digital currency
         </p>
-        <p class="text">Application version: v1.0.0.0.</p>
+        <p class="text">Application version: v{{ version }}</p>
         <p class="text">
           Github Source Repository
           <br />
-          <StLink> https://github.com/Stealth-R-D-LLC/Stealth </StLink>
+          <a
+            class="link"
+            href="https://github.com/Stealth-R-D-LLC/Stealth"
+            target="_blank"
+            >https://github.com/Stealth-R-D-LLC/Stealth</a
+          >
         </p>
 
         <p class="text">
@@ -23,7 +28,9 @@
         <p class="text">
           Exchange rate source
           <br />
-          <StLink> coincap.io </StLink>
+          <a class="link" href="https://coincap.io/" target="_blank"
+            >coincap.io</a
+          >
         </p>
       </div>
     </div>
@@ -31,15 +38,21 @@
 </template>
 
 <script>
+import pkgjson from '@/../package.json';
+import { ref } from 'vue';
 export default {
   setup() {
-    return {};
+    const version = ref(pkgjson.version);
+    return {
+      version,
+    };
   },
 };
 </script>
 
 <style scoped>
 .content {
+  max-width: 503px;
   margin-top: 40px;
   font-family: var(--secondary-font);
   color: var(--grey900);
@@ -48,6 +61,7 @@ export default {
   letter-spacing: 0.12px;
 }
 .content .page-title {
+  font-size: 14px;
   font-weight: 700;
   margin-bottom: 26px;
 }
@@ -55,7 +69,7 @@ export default {
 .content .text {
   font-weight: normal;
   margin-bottom: 26px;
-  font-size: 14px;
+  font-size: 12px;
   letter-spacing: 0.12px;
   line-height: 24px;
 }
@@ -63,7 +77,7 @@ export default {
 .content .st-link {
   font-weight: normal;
   margin-bottom: 26px;
-  font-size: 14px;
+  font-size: 12px;
   letter-spacing: 0.12px;
   line-height: 24px;
 }
