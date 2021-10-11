@@ -1245,62 +1245,59 @@ const isAccountFinished = ref(false);
 const isAnimationFinished = ref(false);
 const version = ref(pkgjson.version);
 
-const { form, validateFields, resetFields } = useValidation(
-  {
-    password: {
-      $value: password,
-      $rules: [
-        {
-          rule: () => {
-            let details = zxcvbn(password.value);
-            if (details.feedback.warning.length) {
-              if (details.feedback.warning.includes('Repeats like')) {
-                return 'Repeats like "aaa" or "abcabc" are easy to guess';
-              }
-              return details.feedback.warning;
+const { form, validateFields, resetFields } = useValidation({
+  password: {
+    $value: password,
+    $rules: [
+      {
+        rule: () => {
+          let details = zxcvbn(password.value);
+          if (details.feedback.warning.length) {
+            if (details.feedback.warning.includes('Repeats like')) {
+              return 'Repeats like "aaa" or "abcabc" are easy to guess';
             }
-            if (details.feedback.suggestions.length) {
-              if (
-                'Add another word or two. Uncommon words are better.' ===
-                details.feedback.suggestions[0]
-              ) {
-                // replace with
-                return 'Use a longer keyboard pattern with more turns.';
-              }
-              return details.feedback.suggestions[0];
+            return details.feedback.warning;
+          }
+          if (details.feedback.suggestions.length) {
+            if (
+              'Add another word or two. Uncommon words are better.' ===
+              details.feedback.suggestions[0]
+            ) {
+              // replace with
+              return 'Use a longer keyboard pattern with more turns.';
+            }
+            return details.feedback.suggestions[0];
+          } else {
+            if (details.score < 3) {
+              return 'Use a longer keyboard pattern with more turns.';
             } else {
-              if (details.score < 3) {
-                return 'Use a longer keyboard pattern with more turns.';
-              } else {
-                return true;
-              }
+              return true;
             }
-          },
+          }
         },
-        {
-          key: 'pw',
-          rule: () =>
-            password.value === confirmPassword.value ||
-            'Passwords do not match',
-        },
-      ],
-    },
-    confirmPassword: {
-      $value: confirmPassword,
-      $rules: [
-        {
-          rule: () =>
-            confirmPassword.value.length || 'Confirm password is required',
-        },
-        {
-          key: 'pw',
-          rule: () =>
-            password.value === confirmPassword.value ||
-            'Passwords do not match',
-        },
-      ],
-    },
-    /* paymentCode: {
+      },
+      {
+        key: 'pw',
+        rule: () =>
+          password.value === confirmPassword.value || 'Passwords do not match',
+      },
+    ],
+  },
+  confirmPassword: {
+    $value: confirmPassword,
+    $rules: [
+      {
+        rule: () =>
+          confirmPassword.value.length || 'Confirm password is required',
+      },
+      {
+        key: 'pw',
+        rule: () =>
+          password.value === confirmPassword.value || 'Passwords do not match',
+      },
+    ],
+  },
+  /* paymentCode: {
           $value: paymentCode,
           $rules: [
             {
@@ -1320,7 +1317,7 @@ const { form, validateFields, resetFields } = useValidation(
           }
           ],
         }, */
-    /* confirmPaymentCode: {
+  /* confirmPaymentCode: {
         $value: confirmPaymentCode,
         $rules: [
           {
@@ -1338,27 +1335,26 @@ const { form, validateFields, resetFields } = useValidation(
           }
         ]
       } */
-    account: {
-      $value: account,
-      $rules: [
-        {
-          rule: () => {
-            if (currentStep.value === 6) {
-              return !account.value && 'Account name is required';
-            }
-          },
+  account: {
+    $value: account,
+    $rules: [
+      {
+        rule: () => {
+          if (currentStep.value === 6) {
+            return !account.value && 'Account name is required';
+          }
         },
-        {
-          rule: () => {
-            if (currentStep.value === 6) {
-              return account.value.length > 50 && 'Name too long';
-            }
-          },
+      },
+      {
+        rule: () => {
+          if (currentStep.value === 6) {
+            return account.value.length > 50 && 'Name too long';
+          }
         },
-      ],
-    },
-  }
-);
+      },
+    ],
+  },
+});
 const {
   form: recoveryForm,
   validateFields: validateRecoveryFields,
