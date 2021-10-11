@@ -413,12 +413,13 @@ export default {
         wif: wif,
         path: path,
       };
-      accountName.value = '';
 
       await CryptoService.storeAccountInDb(account);
+      await CryptoService.scanWallet();
       emitter.emit('accounts:refresh');
       // mainStore.STOP_GLOBAL_LOADING();
       closeModal();
+      accountName.value = '';
     }
 
     function startScanner() {
