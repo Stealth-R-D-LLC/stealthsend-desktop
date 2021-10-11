@@ -704,7 +704,7 @@ const CryptoService = {
         utxo: balance, // sum of all utxo (except archived accounts)
         txs: txs, // all transactions,
         accounts: newAccounts,
-      })
+      });
       resolve({
         utxo: balance, // sum of all utxo (except archived accounts)
         txs: txs, // all transactions,
