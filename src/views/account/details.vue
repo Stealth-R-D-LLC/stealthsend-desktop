@@ -77,144 +77,89 @@
 </template>
 
 <script>
+export default {
+  name: 'StAccountDetails',
+};
+</script>
+<script setup>
 import { useMainStore } from '@/store';
-import { computed, ref, onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 import StLabel from '@/components/elements/StLabel';
 import Chart from '@/views/dashboard/components/chart';
 import TransactionList from '@/components/partials/TransactionList';
 import CryptoService from '@/services/crypto';
-import router from '@/router';
 import { onBeforeRouteLeave } from 'vue-router';
 import emitter from '@/services/emitter';
 import useHelpers from '@/composables/useHelpers';
 import SvgIcon from '../../components/partials/SvgIcon.vue';
 import { useRoute } from 'vue-router';
 
-export default {
-  name: 'StAccountDetails',
-  components: {
-    Chart,
-    TransactionList,
-    StLabel,
-    SvgIcon,
-  },
-  setup() {
-    const mainStore = useMainStore();
-    const { formatAmount } = useHelpers();
-    const route = useRoute();
+const mainStore = useMainStore();
+const { formatAmount } = useHelpers();
+const route = useRoute();
 
-    onBeforeRouteLeave(() => {
-      mainStore.SET_ACCOUNT_DETAILS(null);
-    });
+onBeforeRouteLeave(() => {
+  mainStore.SET_ACCOUNT_DETAILS(null);
+});
 
-    function openTransaction(trx) {
-      router.push(`/transaction/${trx.txid}`);
-    }
+const account = computed(() => {
+  return mainStore.accountDetails;
+});
 
-    const account = computed(() => {
-      return mainStore.accountDetails;
-    });
+const refreshChart = computed(() => {
+  return mainStore.resetChart;
+});
 
-    const refreshChart = computed(() => {
-      return mainStore.resetChart;
-    });
+const wallet = computed(() => {
+  return mainStore.wallet;
+});
 
-    const wallet = computed(() => {
-      return mainStore.wallet;
-    });
+onMounted(async () => {
+  mainStore.START_GLOBAL_LOADING();
+  if (!componentVisibility.value.chart) {
+    toggleComponentVisibility('chart');
+  }
+  if (!componentVisibility.value.txDashboard) {
+    toggleComponentVisibility('txDashboard');
+  }
+  mainStore.STOP_GLOBAL_LOADING();
+});
 
-    // const addressInfo = ref({});
-    // const qrSrc = ref('');
+function openModal(modal) {
+  mainStore.SET_MODAL_VISIBILITY(modal, true);
+}
 
-    let copyPending = ref(false);
-    function handleCopy() {
-      copyPending.value = true;
-      setTimeout(() => {
-        copyPending.value = false;
-      }, 2000);
-    }
+const componentVisibility = computed(() => {
+  return mainStore.componentVisibility;
+});
 
-    onMounted(async () => {
-      mainStore.START_GLOBAL_LOADING();
-      if (!componentVisibility.value.chart) {
-        toggleComponentVisibility('chart');
-      }
-      if (!componentVisibility.value.txDashboard) {
-        toggleComponentVisibility('txDashboard');
-      }
-      mainStore.STOP_GLOBAL_LOADING();
-    });
+const usdAmount = computed(() => {
+  return Number(account.value.utxo) * CryptoService.constraints.XST_USD || 0;
+});
+const btcAmount = computed(() => {
+  return Number(account.value.utxo) * CryptoService.constraints.XST_BTC || 0;
+});
+const changePercent24Hr = computed(() => {
+  return formatAmount(CryptoService.constraints.changePercent24Hr);
+});
 
-    async function refreshAccount() {
-      console.log('scan wallet  23');
-      // await CryptoService.scanWallet(account.value);
-      mainStore.SET_ACCOUNT_DETAILS(
-        mainStore.wallet.accounts.find(
-          (el) => el.address === account.value.address
-        )
-      );
-    }
+function toggleComponentVisibility(component) {
+  mainStore.SET_COMPONENT_VISIBILITY(
+    component,
+    !componentVisibility.value[component]
+  );
+  if (component === 'txDashboard') {
+    mainStore.REFRESH_CHART(true);
+    setTimeout(() => mainStore.REFRESH_CHART(false), 1);
+  }
+}
 
-    function openModal(modal) {
-      mainStore.SET_MODAL_VISIBILITY(modal, true);
-    }
-
-    const componentVisibility = computed(() => {
-      return mainStore.componentVisibility;
-    });
-
-    const usdAmount = computed(() => {
-      return (
-        Number(account.value.utxo) * CryptoService.constraints.XST_USD || 0
-      );
-    });
-    const btcAmount = computed(() => {
-      return (
-        Number(account.value.utxo) * CryptoService.constraints.XST_BTC || 0
-      );
-    });
-    const changePercent24Hr = computed(() => {
-      return formatAmount(CryptoService.constraints.changePercent24Hr);
-    });
-
-    function toggleComponentVisibility(component) {
-      mainStore.SET_COMPONENT_VISIBILITY(
-        component,
-        !componentVisibility.value[component]
-      );
-      if (component === 'txDashboard') {
-        mainStore.REFRESH_CHART(true);
-        setTimeout(() => mainStore.REFRESH_CHART(false), 1);
-      }
-    }
-
-    emitter.on('transactions:refresh', async () => {
-      if (route.name !== 'AccountDetails') return; // don't refresh if not on this screen
-      mainStore.SET_ACCOUNT_DETAILS(
-        mainStore.wallet.accounts.find(
-          (el) => el.address === account.value.address
-        )
-      );
-    });
-    return {
-      account,
-      copyPending,
-      handleCopy,
-      openTransaction,
-      wallet,
-      usdAmount,
-      btcAmount,
-      openModal,
-      formatAmount,
-      changePercent24Hr,
-      isHiddenAmounts: computed(() => mainStore.isAmountsHidden),
-      componentVisibility,
-      toggleComponentVisibility,
-      refreshChart,
-      refreshAccount,
-    };
-  },
-};
+emitter.on('transactions:refresh', async () => {
+  if (route.name !== 'AccountDetails') return; // don't refresh if not on this screen
+  mainStore.SET_ACCOUNT_DETAILS(
+    mainStore.wallet.accounts.find((el) => el.address === account.value.address)
+  );
+});
 </script>
 
 <style scoped>
