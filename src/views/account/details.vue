@@ -183,106 +183,109 @@ export default {
     }
 
     async function getData() {
-      addressInfo.value = {};
-      transactions.value = [];
-      await mainStore
-        .rpc('getaddressinfo', [account.value.address])
-        .then((res) => {
-          addressInfo.value = res;
-        })
-        .catch((err) => {
-          return err;
-        });
-      let allTransactions = [];
-      if (account.value.isImported && account.value.wif) {
-        await mainStore
-          .rpc('getaddressinputs', [account.value.address])
-          .then(async (inputs) => {
-            const allInputsTxIdArray = inputs.map((input) => [input.txid]);
-            let inputsTransactions = await mainStore.rpcMulti(
-              'gettransaction',
-              allInputsTxIdArray
-            );
-            for (let txIndex in inputsTransactions) {
-              let indexOfDestination = inputsTransactions[
-                txIndex
-              ].vout.findIndex(
-                (dest) =>
-                  dest.scriptPubKey.addresses &&
-                  dest.scriptPubKey.addresses[0] !== account.value.address
-              );
+      console.log('rucni sken', account.value);
+      const wallet = await CryptoService.scanWallet(account.value);
+      transactions.value = wallet.txs;
+      // addressInfo.value = {};
+      // transactions.value = [];
+      // await mainStore
+      //   .rpc('getaddressinfo', [account.value.address])
+      //   .then((res) => {
+      //     addressInfo.value = res;
+      //   })
+      //   .catch((err) => {
+      //     return err;
+      //   });
+      // let allTransactions = [];
+      // if (account.value.isImported && account.value.wif) {
+      //   await mainStore
+      //     .rpc('getaddressinputs', [account.value.address])
+      //     .then(async (inputs) => {
+      //       const allInputsTxIdArray = inputs.map((input) => [input.txid]);
+      //       let inputsTransactions = await mainStore.rpcMulti(
+      //         'gettransaction',
+      //         allInputsTxIdArray
+      //       );
+      //       for (let txIndex in inputsTransactions) {
+      //         let indexOfDestination = inputsTransactions[
+      //           txIndex
+      //         ].vout.findIndex(
+      //           (dest) =>
+      //             dest.scriptPubKey.addresses &&
+      //             dest.scriptPubKey.addresses[0] !== account.value.address
+      //         );
 
-              allTransactions.push({
-                ...inputs[txIndex],
-                account: account.value.label,
-                amount: -inputs[txIndex].amount,
-                txinfo: {
-                  ...inputsTransactions[txIndex],
-                },
-                output:
-                  indexOfDestination === -1
-                    ? []
-                    : [
-                        inputsTransactions[txIndex].vout[indexOfDestination]
-                          .scriptPubKey,
-                      ],
-              });
-            }
-          });
-        await mainStore
-          .rpc('getaddressoutputs', [account.value.address])
-          .then(async (outputs) => {
-            const allOutputsTxIdArray = outputs.map((output) => [output.txid]);
-            let outputTransactions = await mainStore.rpcMulti(
-              'gettransaction',
-              allOutputsTxIdArray
-            );
-            for (let txIndex in outputTransactions) {
-              allTransactions.push({
-                ...outputs[txIndex],
-                account: account.value.label,
-                txinfo: {
-                  ...outputTransactions[txIndex],
-                },
-                output: [
-                  outputTransactions[txIndex].vout[outputs[txIndex].vout]
-                    .scriptPubKey,
-                ],
-              });
-            }
-          });
+      //         allTransactions.push({
+      //           ...inputs[txIndex],
+      //           account: account.value.label,
+      //           amount: -inputs[txIndex].amount,
+      //           txinfo: {
+      //             ...inputsTransactions[txIndex],
+      //           },
+      //           output:
+      //             indexOfDestination === -1
+      //               ? []
+      //               : [
+      //                   inputsTransactions[txIndex].vout[indexOfDestination]
+      //                     .scriptPubKey,
+      //                 ],
+      //         });
+      //       }
+      //     });
+      //   await mainStore
+      //     .rpc('getaddressoutputs', [account.value.address])
+      //     .then(async (outputs) => {
+      //       const allOutputsTxIdArray = outputs.map((output) => [output.txid]);
+      //       let outputTransactions = await mainStore.rpcMulti(
+      //         'gettransaction',
+      //         allOutputsTxIdArray
+      //       );
+      //       for (let txIndex in outputTransactions) {
+      //         allTransactions.push({
+      //           ...outputs[txIndex],
+      //           account: account.value.label,
+      //           txinfo: {
+      //             ...outputTransactions[txIndex],
+      //           },
+      //           output: [
+      //             outputTransactions[txIndex].vout[outputs[txIndex].vout]
+      //               .scriptPubKey,
+      //           ],
+      //         });
+      //       }
+      //     });
 
-        allTransactions = CryptoService.processImportedTxs(allTransactions);
-      } else {
-        await mainStore
-          .rpc('gethdaccount', [account.value.xpub])
-          .then((hdAccount) => {
-            for (let tx of hdAccount) {
-              let outputAddresses = tx.outputs.map((output) => output.address);
-              let indexOfDestination;
-              if (tx.account_balance_change < 0) {
-                indexOfDestination = tx.txinfo.destinations.findIndex(
-                  (dest) => outputAddresses.indexOf(dest.addresses[0]) === -1
-                );
-              } else {
-                indexOfDestination = tx.txinfo.destinations.findIndex(
-                  (dest) => dest.amount === tx.account_balance_change
-                );
-              }
-              if (indexOfDestination === -1) {
-                indexOfDestination = 0;
-              }
-              allTransactions.push({
-                ...tx,
-                output: [tx.txinfo.destinations[indexOfDestination]],
-                amount: tx.account_balance_change,
-                blocktime: tx.txinfo.blocktime,
-                account: account.value.label,
-              });
-            }
-          });
-      }
-      transactions.value = allTransactions;
+      //   allTransactions = CryptoService.processImportedTxs(allTransactions);
+      // } else {
+      //   await mainStore
+      //     .rpc('gethdaccount', [account.value.xpub])
+      //     .then((hdAccount) => {
+      //       for (let tx of hdAccount) {
+      //         let outputAddresses = tx.outputs.map((output) => output.address);
+      //         let indexOfDestination;
+      //         if (tx.account_balance_change < 0) {
+      //           indexOfDestination = tx.txinfo.destinations.findIndex(
+      //             (dest) => outputAddresses.indexOf(dest.addresses[0]) === -1
+      //           );
+      //         } else {
+      //           indexOfDestination = tx.txinfo.destinations.findIndex(
+      //             (dest) => dest.amount === tx.account_balance_change
+      //           );
+      //         }
+      //         if (indexOfDestination === -1) {
+      //           indexOfDestination = 0;
+      //         }
+      //         allTransactions.push({
+      //           ...tx,
+      //           output: [tx.txinfo.destinations[indexOfDestination]],
+      //           amount: tx.account_balance_change,
+      //           blocktime: tx.txinfo.blocktime,
+      //           account: account.value.label,
+      //         });
+      //       }
+      //     });
+      // }
+      // transactions.value = allTransactions;
     }
 
     emitter.on('header:account-changed', async () => {

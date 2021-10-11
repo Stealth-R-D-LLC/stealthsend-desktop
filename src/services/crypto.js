@@ -737,11 +737,14 @@ const CryptoService = {
         reducedTxs.push(result);
       }
 
-      mainStore.SET_WALLET({
-        utxo: balance, // sum of all utxo (except archived accounts)
-        txs: reducedTxs, // all transactions,
-        accounts: newAccounts,
-      });
+      if (!targetAccount) {
+        // do not store in store in case we are searching only for one account
+        mainStore.SET_WALLET({
+          utxo: balance, // sum of all utxo (except archived accounts)
+          txs: reducedTxs, // all transactions,
+          accounts: newAccounts,
+        });
+      }
       resolve({
         utxo: balance, // sum of all utxo (except archived accounts)
         txs: reducedTxs, // all transactions,

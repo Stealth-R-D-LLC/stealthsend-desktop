@@ -117,7 +117,7 @@ export default {
     }
 
     const computedTransactions = computed(() => {
-      let filtered = [...wallet.value.txs.slice(0, 30)];
+      let filtered = [...wallet.value.txs];
       if (filtered.length === 0) return [];
       let q = query?.value?.toLowerCase();
       if (q && q.length > 2) {

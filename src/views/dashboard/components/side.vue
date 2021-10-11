@@ -1,6 +1,6 @@
 <template>
   <div class="side">
-    <StCards :amount="wallet?.utxo" @change="switcherChange"></StCards>
+    <StCards :amount="amount" @change="switcherChange"></StCards>
     <div class="side__accounts">
       <Card
         v-for="account in sortedAccounts"
@@ -40,6 +40,10 @@ export default {
       return mainStore.wallet;
     });
 
+    const amount = computed(() => {
+      return mainStore.wallet?.utxo;
+    });
+
     const sortedAccounts = computed(() => {
       if (!wallet.value) return [];
       // sort logic: by favorite position (imported or regular), then regular unfavorited accounts, then imported accounts
@@ -71,6 +75,7 @@ export default {
       step,
       constraints,
       sortedAccounts,
+      amount,
     };
   },
 };

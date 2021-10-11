@@ -668,8 +668,8 @@ export default {
       } else {
         console.log('scan wallet 7');
 
-        let wallet = await CryptoService.scanWallet();
-        hdWallet = wallet.accounts;
+        await CryptoService.scanWallet();
+        hdWallet = mainStore.wallet.accounts;
       }
       // accounts.value = hdWallet.accounts;
       let activeAccounts = hdWallet.filter((obj) => obj.isArchived === false);
