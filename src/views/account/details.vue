@@ -117,7 +117,7 @@ export default {
       return mainStore.resetChart;
     });
 
-    const addressInfo = ref({});
+    // const addressInfo = ref({});
     const transactions = ref([]);
     // const qrSrc = ref('');
 
@@ -145,8 +145,12 @@ export default {
 
     async function refreshAccount() {
       console.log('scan wallet  23');
-      let res = await CryptoService.scanWallet(account.value);
-      mainStore.SET_ACCOUNT_DETAILS(res.accounts[0]);
+      // await CryptoService.scanWallet(account.value);
+      mainStore.SET_ACCOUNT_DETAILS(
+        mainStore.wallet.accounts.find(
+          (el) => el.address === account.value.address
+        )
+      );
     }
 
     function openModal(modal) {
@@ -184,108 +188,8 @@ export default {
 
     async function getData() {
       console.log('rucni sken', account.value);
-      const wallet = await CryptoService.scanWallet(account.value);
-      transactions.value = wallet.txs;
-      // addressInfo.value = {};
-      // transactions.value = [];
-      // await mainStore
-      //   .rpc('getaddressinfo', [account.value.address])
-      //   .then((res) => {
-      //     addressInfo.value = res;
-      //   })
-      //   .catch((err) => {
-      //     return err;
-      //   });
-      // let allTransactions = [];
-      // if (account.value.isImported && account.value.wif) {
-      //   await mainStore
-      //     .rpc('getaddressinputs', [account.value.address])
-      //     .then(async (inputs) => {
-      //       const allInputsTxIdArray = inputs.map((input) => [input.txid]);
-      //       let inputsTransactions = await mainStore.rpcMulti(
-      //         'gettransaction',
-      //         allInputsTxIdArray
-      //       );
-      //       for (let txIndex in inputsTransactions) {
-      //         let indexOfDestination = inputsTransactions[
-      //           txIndex
-      //         ].vout.findIndex(
-      //           (dest) =>
-      //             dest.scriptPubKey.addresses &&
-      //             dest.scriptPubKey.addresses[0] !== account.value.address
-      //         );
-
-      //         allTransactions.push({
-      //           ...inputs[txIndex],
-      //           account: account.value.label,
-      //           amount: -inputs[txIndex].amount,
-      //           txinfo: {
-      //             ...inputsTransactions[txIndex],
-      //           },
-      //           output:
-      //             indexOfDestination === -1
-      //               ? []
-      //               : [
-      //                   inputsTransactions[txIndex].vout[indexOfDestination]
-      //                     .scriptPubKey,
-      //                 ],
-      //         });
-      //       }
-      //     });
-      //   await mainStore
-      //     .rpc('getaddressoutputs', [account.value.address])
-      //     .then(async (outputs) => {
-      //       const allOutputsTxIdArray = outputs.map((output) => [output.txid]);
-      //       let outputTransactions = await mainStore.rpcMulti(
-      //         'gettransaction',
-      //         allOutputsTxIdArray
-      //       );
-      //       for (let txIndex in outputTransactions) {
-      //         allTransactions.push({
-      //           ...outputs[txIndex],
-      //           account: account.value.label,
-      //           txinfo: {
-      //             ...outputTransactions[txIndex],
-      //           },
-      //           output: [
-      //             outputTransactions[txIndex].vout[outputs[txIndex].vout]
-      //               .scriptPubKey,
-      //           ],
-      //         });
-      //       }
-      //     });
-
-      //   allTransactions = CryptoService.processImportedTxs(allTransactions);
-      // } else {
-      //   await mainStore
-      //     .rpc('gethdaccount', [account.value.xpub])
-      //     .then((hdAccount) => {
-      //       for (let tx of hdAccount) {
-      //         let outputAddresses = tx.outputs.map((output) => output.address);
-      //         let indexOfDestination;
-      //         if (tx.account_balance_change < 0) {
-      //           indexOfDestination = tx.txinfo.destinations.findIndex(
-      //             (dest) => outputAddresses.indexOf(dest.addresses[0]) === -1
-      //           );
-      //         } else {
-      //           indexOfDestination = tx.txinfo.destinations.findIndex(
-      //             (dest) => dest.amount === tx.account_balance_change
-      //           );
-      //         }
-      //         if (indexOfDestination === -1) {
-      //           indexOfDestination = 0;
-      //         }
-      //         allTransactions.push({
-      //           ...tx,
-      //           output: [tx.txinfo.destinations[indexOfDestination]],
-      //           amount: tx.account_balance_change,
-      //           blocktime: tx.txinfo.blocktime,
-      //           account: account.value.label,
-      //         });
-      //       }
-      //     });
-      // }
-      // transactions.value = allTransactions;
+      await CryptoService.scanWallet(account.value);
+      transactions.value = mainStore.wallet.txs;
     }
 
     emitter.on('header:account-changed', async () => {
@@ -294,7 +198,8 @@ export default {
       // account.value = acc;
       mainStore.START_GLOBAL_LOADING();
 
-      await getData();
+      // await getData();
+      transactions.value = mainStore.wallet.txs;
       emitter.emit('accounts-refresh-done');
       // setTimeout(async () => {
       // }, 1);
@@ -303,22 +208,19 @@ export default {
     emitter.on('transactions:refresh', async () => {
       if (route.name !== 'AccountDetails') return; // don't refresh if not on this screen
       mainStore.START_GLOBAL_LOADING();
-
-      // setTimeout(async () => {
-      //   const hdWallet = await CryptoService.scanWallet();
-      //   let refreshAccount = hdWallet.accounts.find(
-      //     (obj) => obj.label === account.value?.label
-      //   );
-      await getData();
-      await refreshAccount();
+      transactions.value = mainStore.wallet.txs;
+      // await refreshAccount();
+      mainStore.SET_ACCOUNT_DETAILS(
+        mainStore.wallet.accounts.find(
+          (el) => el.address === account.value.address
+        )
+      );
       mainStore.STOP_GLOBAL_LOADING();
 
-      //   mainStore.SET_ACCOUNT_DETAILS(refreshAccount);
       // }, 5000);
     });
     return {
       account,
-      addressInfo,
       copyPending,
       handleCopy,
       openTransaction,

@@ -74,7 +74,10 @@ export default {
       if (route.name !== 'Dashboard') return; // don't refresh if not on this screen
       console.log('scan wallet 26');
 
-      await scanWallet();
+      // await scanWallet();
+      utxo.value = mainStore.wallet.utxo;
+      transactions.value = mainStore.wallet.txs;
+      accounts.value = mainStore.wallet.accounts;
     });
 
     return {
