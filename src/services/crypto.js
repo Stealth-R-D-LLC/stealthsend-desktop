@@ -2,7 +2,7 @@ import router from '@/router';
 import { useMainStore } from '@/store';
 import * as bip32 from 'bip32';
 import * as bip39 from 'bip39';
-import * as bitcoin from 'bitcoinjs-lib';
+import * as bitcoin from '../../bitcoinjs-lib-feeless/src/index.js';
 import { Buffer } from 'buffer';
 import cryptoJs from 'crypto-js';
 import { add, format } from 'mathjs';
@@ -31,41 +31,20 @@ if (process.env.VUE_APP_NETWORK === 'mainnet') {
     wif: 0xbe,
   };
 }
-// libs.bitcoin.networks.stealthtestnet = {
-//   messagePrefix: 'unused',
-//   bip32: {
-// public: 0x043587cf,
-// private: 0x04358394,
-//   },
-//   pubKeyHash: 0x6f,
-//   scriptHash: 0xc4,
-//   wif: 0xef
-// };
-
-// libs.bitcoin.networks.stealth = {
-//   messagePrefix: 'unused',
-//   bip32: {
-// public: 0x0488b21e,
-// private: 0x0488ade4
-//   },
-//   pubKeyHash: 0x3e,
-//   scriptHash: 0x85,
-//   wif: 0xbe
-// };
 
 const CryptoService = {
   constraints: {
     XST_USD: 0.199,
     XST_BTC: 0.00000364,
     changePercent24Hr: 0,
-    MINIMAL_CHANGE: 0,
+    MINIMAL_CHANGE: 0.01,
+    MINIMUM_XST_FOR_SEND: 0.05,
   },
   isFirstArrival: true,
   network: networkConfig,
   master: null,
   seed: null,
   txWithLabels: {},
-  // password: '',
 
   async init() {
     // check if there's already a wallet stored in the db
@@ -82,7 +61,6 @@ const CryptoService = {
     }
   },
   async unlock(password) {
-    console.log('Unlocking password!', password);
     // no need to validate password because it is validated before calling this method
     // const isPasswordValid = await this.validatePassword(password) // compare user prompted password with stored
     // get password hash so that we can decrypt everything
@@ -91,26 +69,33 @@ const CryptoService = {
     // seed is stored in a string format because it's the easies to store
     // when retrieving, we need to have the seed in buffer type so we can work with it
     // that's why we are converting the seed from string -> uint8array -> buffer
-    // console.log('hash', hash);
-    // console.log('wall', this.hexToArray(this.AESDecrypt(wallet[0].seed, hash).toString(cryptoJs.enc.Utf8)));
-    // console.log('dec', cryptoJs.AES.decrypt(wallet[0].seed, hash));
-    // console.log('deccc', this.AESDecrypt(wallet[0].seed, hash));
     // master key
-    this.master = await bip32.fromSeed(
-      Buffer.from(
-        this.hexToArray(
-          this.AESDecrypt(wallet.seed, hash).toString(cryptoJs.enc.Utf8)
-        )
-      ),
-      this.network
-    );
+    try {
+      this.master = await bip32.fromSeed(
+        Buffer.from(
+          this.hexToArray(
+            this.AESDecrypt(wallet.seed, hash).toString(cryptoJs.enc.Utf8)
+          )
+        ),
+        this.network
+      );
+    } catch (e) {
+      console.log(e);
+      router.push('/lock');
+    }
     router.push('/dashboard');
-    // this.accountDiscovery()
   },
   WIFtoPK(wif) {
     const keyPair = bitcoin.ECPair.fromWIF(wif, this.network);
-    // const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: this.network })
     return keyPair;
+  },
+  isWIFValid(WIF) {
+    try {
+      bitcoin.ECPair.fromWIF(WIF, this.network);
+      return true;
+    } catch (err) {
+      return false;
+    }
   },
   hexToArray(hexString) {
     // convert hex string to uint8array
@@ -119,23 +104,20 @@ const CryptoService = {
       hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16))
     );
   },
-  async generateMnemonicAndSeed() {
+  async generateMnemonicAndSeed(wordsLength = 12) {
+    let strength = (wordsLength / 3) * 32;
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve) => {
       // HD wallets are created from a single root seed, which is a 128-, 256-, or 512-bit random number.
       // Everything else in the HD wallet is deterministically derived from this root seed,
       // which makes it possible to re-create the entire HD wallet from that seed in any compatible HD wallet
-      const mnemonic = await bip39.generateMnemonic();
+      const mnemonic = await bip39.generateMnemonic(strength);
       const seed = await bip39.mnemonicToSeedSync(mnemonic); // recovery seed of the master bip32 seed.?
       const master = await bip32.fromSeed(seed, this.network); // aka. root
       this.master = master;
       this.seed = seed;
-      // console.log('mnemonic: ', this.mnemonic)
-      // console.log('seed: ', this.seed)
-      // console.log('master: ', this.master)
       resolve({
         mnemonic,
-        // seed,
         master,
       });
     });
@@ -151,6 +133,31 @@ const CryptoService = {
       address,
     };
   },
+  getKeysForAccount(account = 0, change = 0, address = 0) {
+    if (!this.master) {
+      return {
+        xpub: '',
+        publicKey: '',
+        secretKey: '',
+      };
+    }
+    const keypair = this.master.derivePath(
+      `m/44'/${
+        process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
+      }'/${account}'/${change}/${address}`
+    );
+    let acc = this.master.derivePath(
+      `m/44'/${
+        process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
+      }'/${account}'`
+    );
+
+    return {
+      xpub: String(acc.neutered().toBase58()),
+      publicKey: keypair.publicKey.toString('hex'),
+      secretKey: keypair.toWIF(),
+    };
+  },
   getChildFromRoot(account, change, address) {
     // With non-hardened keys, you can prove a child public key is linked to a parent public key
     // using just the public keys.
@@ -160,21 +167,20 @@ const CryptoService = {
     const keypair = this.master.derivePath(
       `m/44'/${
         process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
-      }'/${account}'/${change}/${address}` // TODO CHANGE 1 (TESTNET) TO 125 (XST)
+      }'/${account}'/${change}/${address}`
     );
     let acc = this.master.derivePath(
       `m/44'/${
         process.env.VUE_APP_NETWORK === 'mainnet' ? 125 : 1
       }'/${account}'`
-    ); // TODO CHANGE 1 (TESTNET) TO 125 (XST)
-    // this.WIFtoPK(child.toWIF()) // decrypt
+    );
     return {
       address: bitcoin.payments.p2pkh({
         pubkey: keypair.publicKey,
         network: this.network,
       }).address,
       keyPair: keypair,
-      pk: String(acc.neutered().toBase58()),
+      xpub: String(acc.neutered().toBase58()),
       wif: keypair.toWIF(),
       // sk: child.privateKey,
       path: `${account}'/${change}/${address}`,
@@ -184,23 +190,13 @@ const CryptoService = {
     const isValid = bip39.validateMnemonic(mnemonic);
     return isValid;
   },
-  // generateChildAddress(i) {
-  //   // https://github.com/satoshilabs/slips/blob/master/slip-0044.md
-  //   const path = `m/44'/125'/0'/0/${i}`
-  //   const child1 = this.master.derivePath(path)
-  //   // private key: child1.privateKey
-  //   return bitcoin.payments.p2pkh({
-  //     pubkey: child1.publicKey,
-  //     network: this.network
-  //   }).address
-  // },
   async getWalletFromDb() {
     return await db.getItem('wallet');
   },
   async getAccounts() {
     // TODO deprecated. use scanWallet() instead
     let accounts = (await db.getItem('accounts')) || [];
-    console.log('Accounts: ', accounts);
+    // console.log('Accounts: ', accounts);
     return accounts;
   },
   async storeTxAndLabel(txid, label) {
@@ -236,36 +232,82 @@ const CryptoService = {
       address: account.address,
       label: account.label,
       isArchived: account.isArchived,
+      isFavourite: account.isFavourite,
+      isImported: account.isImported,
       utxo: account.utxo,
       path: account.path,
-      pk: account.pk,
+      xpub: account.xpub,
       asset: account.asset,
+      favouritePosition: account.favouritePosition,
     });
 
-    // this.getAccounts()
     return db.setItem('accounts', dbAccounts);
   },
   async archiveAccount(account) {
     let accounts = await db.getItem('accounts');
     if (accounts.length < 1) {
       console.error('Accounts do not exist');
-      return this.getAccounts();
+      return;
     }
 
     const wantedIndex = accounts.findIndex(
       (item) => item.address === account.address
     );
 
-    if (accounts[wantedIndex].utxo > 0) {
-      console.error('Cannot archive account with balance > 0');
-      return this.getAccounts();
-    }
+    // if (accounts[wantedIndex].utxo > 0) {
+    //   console.error('Cannot archive account with balance > 0');
+    //   return this.scanWallet();
+    // }
 
     accounts[wantedIndex].isArchived = true;
+    // archived accounts are removed from the favourite list
+    accounts[wantedIndex].isFavourite = false;
+    accounts[wantedIndex].favouritePosition = null;
 
     await db.setItem('accounts', accounts);
+  },
 
-    return this.getAccounts();
+  async favouriteAccount(account) {
+    let accounts = await db.getItem('accounts');
+    if (accounts.length < 1) {
+      console.error('Accounts do not exist');
+      return;
+    }
+
+    const wantedIndex = accounts.findIndex(
+      (item) => item.address === account.address
+    );
+
+    let countFavourites = accounts.filter((el) => el.favouritePosition);
+
+    accounts[wantedIndex].isFavourite = true;
+    accounts[wantedIndex].favouritePosition = countFavourites.length + 1;
+    await db.setItem('accounts', accounts);
+  },
+
+  async unfavouriteAccount(account) {
+    let accounts = await db.getItem('accounts');
+    if (accounts.length < 1) {
+      console.error('Accounts do not exist');
+      return this.scanWallet();
+    }
+
+    const wantedIndex = accounts.findIndex(
+      (item) => item.address === account.address
+    );
+
+    accounts[wantedIndex].isFavourite = false;
+    accounts[wantedIndex].favouritePosition = null;
+
+    // lower favourite position for remaining accounts
+    for (let i = 0; i < accounts.length; i++) {
+      if (accounts[i].favouritePosition > account.favouritePosition) {
+        // lower position only for accounts that were beneath the removed account
+        accounts[i].favouritePosition = accounts[i].favouritePosition - 1;
+      }
+    }
+
+    await db.setItem('accounts', accounts);
   },
 
   async activateAccount(account) {
@@ -280,8 +322,6 @@ const CryptoService = {
     accounts[wantedIndex].isArchived = false;
 
     await db.setItem('accounts', accounts);
-
-    return this.getAccounts();
   },
 
   async changeAccountName(account, accountName) {
@@ -296,8 +336,20 @@ const CryptoService = {
     accounts[wantedIndex].label = accountName;
 
     await db.setItem('accounts', accounts);
+  },
 
-    return this.getAccounts();
+  async changeAccountFavouritePosition(account, position = null) {
+    let accounts = await db.getItem('accounts');
+    if (accounts.length < 1) {
+      return;
+    }
+
+    const wantedIndex = accounts.findIndex(
+      (item) => item.address === account.address
+    );
+    accounts[wantedIndex]['favouritePosition'] = position;
+
+    await db.setItem('accounts', accounts);
   },
 
   async addToAddressBook(addressBookItem) {
@@ -357,7 +409,6 @@ const CryptoService = {
     let wallet = await this.getWalletFromDb();
     let salt = null;
     if (wallet && wallet.salt) {
-      // console.log('ima vec salt ', wallet[0].salt);
       salt = wallet.salt;
     } else {
       salt = cryptoJs.lib.WordArray.random(128 / 8);
@@ -366,56 +417,24 @@ const CryptoService = {
       keySize: 512 / 32,
       iterations: 1000,
     });
-    // console.log('passses', {
-    //   storedPassword: wallet[0].password,
-    //   hash: hash,
-    //   hashHex: hash.toString(cryptoJs.enc.Hex)
-    // });
-    // this.password = hash.toString(cryptoJs.enc.Hex);
     return {
       salt: salt,
       hash: hash.toString(cryptoJs.enc.Hex),
     };
   },
   async storeWalletInDb(password) {
-    console.log('storeWalletInDb - password', password);
     let { hash, salt } = await this.hashPassword(password);
 
     // user security is ultimately dependent on a password,
     // and because a password usually can't be used directly as a cryptographic key,
     // some processing is required
     // hash the password and store it in the db. PBKDF2 is a one-way hashing algorithm
-    // we'll use the hash to encrypt sensitive data like the seed
-    // const salt = cryptoJs.lib.WordArray.random(128 / 8)
-    // const hash = cryptoJs.PBKDF2(password, salt, {
-    //   keySize: 512 / 32,
-    //   iterations: 1000
-    // })
-
-    // let a = cryptoJs.AES.encrypt('poruka', '123')
-    // console.log('---a', a.toString());
-    // console.log('---', cryptoJs.AES.decrypt(a, '123').toString(cryptoJs.enc.Utf8));
-    // console.log('---', Buffer.from(cryptoJs.AES.decrypt(a, '123').words, 'hex'));
-
+    // we'll use the hash to encrypt sensitive data like the seed;
     // encrypt the seed with the hashed password
     // to decrypt the seed, we need to ask the user for his password and then hash it again.
     // if the resulted hash is the same as the hashed password,
     // then the user entered the correct password and the seed can be decrypted
-    // console.log('sad cu kriptirati ovaj seed', this.seed.toString('hex'));
-    // console.log('s ovim hashom', hash.toString(cryptoJs.enc.Hex));
-    // console.log('hash', hash);
-    // const encryptedSeed = cryptoJs.AES.encrypt(
-    //   this.seed.toString('hex'),
-    //   hash
-    // )
     const encryptedSeed = this.AESEncrypt(this.seed.toString('hex'), hash);
-    // console.log('seed', this.seed);
-    // console.log('seed hex', this.seed.toString('hex'));
-    // console.log('pokusaj smrti', this.hexToArray(this.seed.toString('hex')));
-    // console.log('enc seed encrypted raw', encryptedSeed);
-    // console.log('enc seed stored: ', encryptedSeed.ciphertext.toString(cryptoJs.enc.Hex));
-    // console.log('decrypted', cryptoJs.AES.decrypt(encryptedSeed, hash.toString(cryptoJs.enc.Hex)).toString(cryptoJs.enc.Utf8));
-    // console.log('parsed: ', cryptoJs.enc.Hex.parse(encryptedSeed.ciphertext.toString(cryptoJs.enc.Hex)));
     const wallet = {
       name: 'wallet',
       archived: false,
@@ -428,9 +447,21 @@ const CryptoService = {
 
     return wallet;
   },
-  async accountDiscovery(n = 0) {
+
+  async storeMnemonicInWallet(mnemonic) {
+    let wallet = await CryptoService.getWalletFromDb();
+
+    if (!wallet.password) {
+      return;
+    }
+
+    wallet.mnemonic = CryptoService.AESEncrypt(mnemonic, wallet.password);
+    await db.setItem('wallet', wallet);
+
+    return wallet;
+  },
+  async accountDiscovery(n = 0, change = 0) {
     const mainStore = useMainStore();
-    // console.log('start account discovery');
     //  Address gap limit is currently set  to 20. If the software hits 20 unused addresses in a row,
     // it expects there are no used addresses beyond this point and stops searching the address chain.
     // We scan just the external chains, because internal chains receive only coins that come from the associated external chains.
@@ -438,34 +469,18 @@ const CryptoService = {
 
     let emptyInARow = 0;
     let freeAddresses = [];
-    for (let i = 0; i < GAP_LIMIT; i++) {
+    for (let i = 0; i < Infinity; i++) {
       // derive the first account's node (index = 0)
       // derive the external chain node of this account
-      const acc = this.getChildFromRoot(n, 0, i);
-      // console.log('acc.address', acc.address);
+      const acc = this.getChildFromRoot(n, change, i);
       // scan addresses of the external chain; respect the gap limit described below
-      // console.log('hdacc', hdAccount);
       const outputs = await mainStore.rpc('getaddressoutputs', [
         acc.address,
         1,
         1,
       ]);
       if (outputs.length > 0) {
-        console.log('discovered account: ', acc.path);
-        // save account in db?
-        // this.storeAccountInDb({
-        //   address: acc.address,
-        //   path: acc.path,
-        //   pk: acc.pk,
-        //   name: 'account',
-        //   label: 'Account ' + i + 1,
-        //   isArchived: false,
-        //   utxo: 0,
-        //   asset: 'XST'
-        // })
-        // get account balance
         // if there are some transactions, increase the account index and go to step 1
-        // this.accountDiscovery(n+1)
         emptyInARow = 0;
         continue;
       }
@@ -474,20 +489,51 @@ const CryptoService = {
       freeAddresses.push(acc.path);
 
       // If the software hits 20 unused addresses in a row, it expects there are no used addresses beyond this point and stops searching the address chain
-      if (emptyInARow >= 20) break;
+      if (emptyInARow >= GAP_LIMIT) break;
     }
     // Return free account addresses to the calling code
     return {
       freeAddresses,
     };
-    // grace concert hunt glide million orange enact habit amazing deal object nurse
+  },
+
+  async findLastUsedAccountPath() {
+    const mainStore = useMainStore();
+
+    let emptyInARow = 0;
+    let lastAccountPath = '';
+    for (let i = 0; i < Infinity; i++) {
+      const acc = this.getChildFromRoot(i, 0, 0);
+      const hdAccount = await mainStore.rpc('gethdaccount', [acc.xpub]);
+
+      if (hdAccount.length > 0) {
+        lastAccountPath = acc.path;
+        emptyInARow = 0;
+        continue;
+      }
+
+      emptyInARow += 1;
+      if (emptyInARow >= 20) break;
+    }
+    return parseInt(lastAccountPath);
   },
 
   isAddressValid(address) {
     try {
-      bitcoin.address.fromBase58Check(address);
-      return true;
-    } catch (error) {
+      const { version } = bitcoin.address.fromBase58Check(address);
+      return version === 62;
+      // const isMainnet = process.env.VUE_APP_NETWORK === 'mainnet';
+      // // https://en.bitcoin.it/wiki/Base58Check_encoding
+      // if (isMainnet && version === 62) {
+      //   // 62 is for mainnet
+      //   return true;
+      // } else if (!isMainnet && version === 111) {
+      //   // 111 is for testnet
+      //   return true;
+      // } else {
+      //   return false;
+      // }
+    } catch (e) {
       return false;
     }
   },
@@ -500,14 +546,14 @@ const CryptoService = {
     return encData;
   },
   AESDecrypt(payload, key = '123456789') {
-    console.log('&&&&payload&&&&', payload);
     let decData = cryptoJs.enc.Base64.parse(payload).toString(
       cryptoJs.enc.Utf8
     );
     let bytes = cryptoJs.AES.decrypt(decData, key).toString(cryptoJs.enc.Utf8);
     return JSON.parse(bytes);
   },
-  async scanWallet() {
+  async scanWallet(targetAccount = null) {
+    // extend function with targetAccount argument in case you want to refresh the state of a particular account (XST-801)
     const mainStore = useMainStore();
     // initially scan all accounts in the wallet for utxos
     // gethdaccounts retrieves all transactions for a particular account
@@ -518,39 +564,141 @@ const CryptoService = {
       let txs = [];
       let newAccounts = [];
       for (let account of accounts) {
+        if (targetAccount && account.address !== targetAccount.address)
+          continue; // in case a target account is passed, run the scan only for that account
         let accUtxo = 0;
-        if (account.pk.length > 0) {
-          const hdAccount = await mainStore.rpc('gethdaccount', [account.pk]);
-          for (let tx of hdAccount) {
-            accUtxo = add(accUtxo, tx.account_balance_change);
-            accUtxo = format(accUtxo, { precision: 14 });
-            txs.push({
-              outputs: tx.outputs,
-              amount: tx.account_balance_change,
-              txid: tx.txid,
-              blocktime: tx.txinfo.blocktime,
-              account: account.label,
-              pk: account.pk,
-            });
+        let allTransactions = [];
+        if (account.isImported && account.wif) {
+          let importedAccountBalance = 0;
+          try {
+            await mainStore.rpc('getaddressbalance', [account.address]);
+          } catch (error) {
+            console.log(
+              'Cannot find address, probably no transactions, continuing anyways'
+            );
           }
+
+          await mainStore
+            .rpc('getaddressinputs', [account.address, 1, 10000])
+            .then(async (inputs) => {
+              const allInputsTxIdArray = inputs.map((input) => [input.txid]);
+              let inputsTransactions = await mainStore.rpcMulti(
+                'gettransaction',
+                allInputsTxIdArray
+              );
+              for (let txIndex in inputsTransactions) {
+                let indexOfDestination = inputsTransactions[
+                  txIndex
+                ].vout.findIndex(
+                  (dest) =>
+                    dest.scriptPubKey.addresses &&
+                    dest.scriptPubKey.addresses[0] !== account.address
+                );
+                allTransactions.push({
+                  ...inputs[txIndex],
+                  account: account.label,
+                  amount: -inputs[txIndex].amount,
+                  txinfo: {
+                    ...inputsTransactions[txIndex],
+                  },
+                  output:
+                    indexOfDestination === -1
+                      ? []
+                      : [
+                          inputsTransactions[txIndex].vout[indexOfDestination]
+                            .scriptPubKey,
+                        ],
+                });
+              }
+            });
+          await mainStore
+            .rpc('getaddressoutputs', [account.address, 1, 10000])
+            .then(async (outputs) => {
+              const allOutputsTxIdArray = outputs.map((output) => [
+                output.txid,
+              ]);
+              let outputTransactions = await mainStore.rpcMulti(
+                'gettransaction',
+                allOutputsTxIdArray
+              );
+              for (let txIndex in outputTransactions) {
+                allTransactions.push({
+                  ...outputs[txIndex],
+                  account: account.label,
+                  txinfo: {
+                    ...outputTransactions[txIndex],
+                  },
+                  output: [
+                    outputTransactions[txIndex].vout[outputs[txIndex].vout]
+                      .scriptPubKey,
+                  ],
+                });
+              }
+            });
+
+          accUtxo = add(accUtxo, importedAccountBalance);
+          accUtxo = format(accUtxo, { precision: 14 });
+
+          newAccounts.push({
+            ...account,
+            utxo: accUtxo,
+          });
+
+          const processed = this.processImportedTxs(allTransactions);
+          allTransactions = processed;
+        } else {
+          await mainStore
+            .rpc('gethdaccount', [account.xpub])
+            .then((hdAccount) => {
+              for (let tx of hdAccount) {
+                accUtxo = add(accUtxo, tx.account_balance_change);
+                accUtxo = format(accUtxo, { precision: 14 });
+
+                let outputAddresses = tx.outputs.map(
+                  (output) => output.address
+                );
+                let indexOfDestination;
+                if (tx.account_balance_change < 0) {
+                  indexOfDestination = tx.txinfo.destinations.findIndex(
+                    (dest) => outputAddresses.indexOf(dest.addresses[0]) === -1
+                  );
+                } else {
+                  indexOfDestination = tx.txinfo.destinations.findIndex(
+                    (dest) => dest.amount === tx.account_balance_change
+                  );
+                }
+                if (indexOfDestination === -1) {
+                  indexOfDestination = 0;
+                }
+
+                allTransactions.push({
+                  ...tx,
+                  output: [tx.txinfo.destinations[indexOfDestination]],
+                  amount: tx.account_balance_change,
+                  blocktime: tx.txinfo.blocktime,
+                  account: account.label,
+                });
+              }
+            });
+
           newAccounts.push({
             ...account,
             utxo: Number(accUtxo),
           });
-        } else {
-          newAccounts.push({
-            ...account,
-            utxo: Number(account.utxo),
-          });
         }
+        txs.push(...allTransactions);
         // When a user looks at their wallet, the software aggregates the sum of value of all their
         // UTXOs and presents it to them as their "balance".
         // Bitcoin doesn’t know balances associated with an account or username as they appear in banking.
-        balance = add(balance, accUtxo);
-        balance = format(balance, { precision: 14 });
+        if (!account.isArchived) {
+          // do not include archived accounts into calculating the whole balance of the wallet XST-167
+          balance = add(balance, accUtxo);
+          balance = format(balance, { precision: 14 });
+        }
       }
+      if (!targetAccount) await db.setItem('accounts', newAccounts);
       resolve({
-        utxo: balance, // sum of all utxo
+        utxo: balance, // sum of all utxo (except archived accounts)
         txs: txs, // all transactions,
         accounts: newAccounts,
       });
@@ -578,13 +726,88 @@ const CryptoService = {
 
   async getNextAccountPath() {
     let accounts = await this.getAccounts();
-    let largest = 0;
+    let largest = -1;
     for (let acc of accounts) {
-      if (parseInt(acc.path) > largest) {
+      if (acc.path && parseInt(acc.path) > largest) {
         largest = parseInt(acc.path);
       }
     }
     return largest + 1;
+  },
+
+  async importAccount(accountName, accountPrivateKey) {
+    const keypair = bitcoin.ECPair.fromWIF(accountPrivateKey, this.network);
+
+    const payment = bitcoin.payments.p2pkh({
+      pubkey: keypair.publicKey,
+      network: this.network,
+    });
+
+    const address = payment.address;
+    const mainStore = useMainStore();
+
+    let balance = 0;
+
+    try {
+      balance = await mainStore.rpc('getaddressbalance', [address]);
+    } catch (error) {
+      console.log(
+        'Cannot find address, probably no transactions, continuing anyways'
+      );
+    }
+
+    let accounts = await this.getAccounts();
+    let wallet = await this.getWalletFromDb();
+    const foundAccount = accounts.some((account) => {
+      return account.address === address;
+    });
+    if (foundAccount) return foundAccount;
+
+    const encryptedWIF = await CryptoService.AESEncrypt(
+      accountPrivateKey,
+      wallet.password
+    );
+
+    accounts.push({
+      address,
+      label: accountName,
+      isArchived: false,
+      isFavourite: false,
+      isImported: true,
+      utxo: balance,
+      asset: 'XST',
+      wif: encryptedWIF,
+      favouritePosition: null,
+      publicKey: keypair.publicKey.toString('hex'),
+    });
+
+    await db.setItem('accounts', accounts);
+
+    return accounts;
+  },
+  sumOf(x = 0, y = 0) {
+    let sum = add(x, y);
+    sum = format(sum, { precision: 14 });
+    return Number(sum);
+  },
+
+  processImportedTxs(transactions) {
+    let self = this;
+    let helper = {};
+
+    return transactions.reduce((r, o) => {
+      let key = o.blocktime + '-' + o.txid;
+
+      if (!helper[key]) {
+        helper[key] = Object.assign({}, o);
+
+        r.push(helper[key]);
+      } else {
+        helper[key].amount = self.sumOf(helper[key].amount, o.amount);
+      }
+
+      return r;
+    }, []);
   },
 };
 

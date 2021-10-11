@@ -1,39 +1,20 @@
 <template>
   <div class="transactions-container">
     <div class="controls">
-      <StFormItem label="Search">
+      <StFormItem label="Search" :filled="query">
         <StInput
           label="Search"
           v-model="query"
-          placeholder="You may enter an Account, Address, Amount or Label"
-          ><svg
-            width="18"
-            height="19"
-            viewBox="0 0 18 19"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M13.2222 14L17 18"
-              stroke="#6B2AF7"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-            <ellipse
-              cx="8.50003"
-              cy="9"
-              rx="6.61111"
-              ry="7"
-              stroke="#4E00F6"
-              stroke-width="2"
-            />
-          </svg>
+          placeholder="You may enter an Account, Address, Amount, Label, or Transaction ID"
+        >
+          <SvgIcon name="icon-search" />
         </StInput>
       </StFormItem>
+
       <StFormItem label="Range">
         <date-picker
           :class="{ 'mx-datepicker__filled': date.length }"
-          placeholder="Filter list using date range"
+          placeholder="Select start and end date"
           v-model="date"
           value-type="format"
           range
@@ -43,39 +24,11 @@
             }
           "
         ></date-picker>
-        <svg
-          class="calendar"
-          width="19"
-          height="19"
-          viewBox="0 0 19 19"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M11.625 2.40039H7.375M3.125 3.60039H1V18.0004H18V3.60039H15.875"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
-          <path d="M4.1875 8.40039H6.3125" stroke="#4E00F6" stroke-width="2" />
-          <path d="M5.25 4.8V0" stroke="#4E00F6" stroke-width="2" />
-          <path d="M13.75 4.8V0" stroke="#4E00F6" stroke-width="2" />
-          <path d="M4.1875 13.2002H6.3125" stroke="#4E00F6" stroke-width="2" />
-          <path d="M8.4375 8.40039H10.5625" stroke="#4E00F6" stroke-width="2" />
-          <path
-            d="M12.6875 8.40039H14.8125"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
-          <path d="M8.4375 13.2002H10.5625" stroke="#4E00F6" stroke-width="2" />
-          <path
-            d="M12.6875 13.2002H14.8125"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
-        </svg>
+        <SvgIcon name="icon-calendar" class="calendar" />
       </StFormItem>
     </div>
     <TransactionList
+      class="transactions-table"
       :transactions="computedTransactions"
       has-table-header
     ></TransactionList>
@@ -92,22 +45,23 @@ import isWithinInterval from 'date-fns/isWithinInterval';
 import isSameDay from 'date-fns/isSameDay';
 import { useMainStore } from '@/store';
 import { useRoute } from 'vue-router';
-import StFormItem from '@/components/elements/StFormItem.vue';
+import emitter from '@/services/emitter';
+import SvgIcon from '../components/partials/SvgIcon.vue';
 
 export default {
   name: 'Transactions',
   components: {
     TransactionList,
     DatePicker,
-    StFormItem,
+    SvgIcon,
   },
-  beforeRouteLeave() {
-    //const mainStore = useMainStore();
-    //mainStore.SET_ACTIVE_TRANSACTION_ADDRESS('')
-    // called when the route that renders this component is about to
-    // be navigated away from.
-    // has access to `this` component instance.
-  },
+  // beforeRouteLeave() {
+  //const mainStore = useMainStore();
+  //mainStore.SET_ACTIVE_TRANSACTION_ADDRESS('')
+  // called when the route that renders this component is about to
+  // be navigated away from.
+  // has access to `this` component instance.
+  // },
   beforeRouteEnter(to, from, next) {
     const mainStore = useMainStore();
 
@@ -120,26 +74,42 @@ export default {
   },
   setup() {
     const transactions = ref([]);
-    let query = ref('');
+    const query = ref('');
     const date = ref([]);
 
     const route = useRoute();
     const mainStore = useMainStore();
 
-    onMounted(() => {
+    const currentRoute = computed(() => {
+      return route.name;
+    });
+
+    onMounted(async () => {
+      mainStore.START_GLOBAL_LOADING();
       query.value = '';
 
       if (route.params.address) {
         query.value = route.params.address;
       }
+
+      await scanWallet();
+      mainStore.STOP_GLOBAL_LOADING();
     });
 
     watchEffect(() => {
-      query.value = route.params.address;
+      if (currentRoute.value === 'TransactionsQuery') {
+        setTimeout(() => {
+          query.value = route.params.address;
+        }, 1);
+      } else {
+        setTimeout(() => {
+          query.value = route.params.address;
+        }, 1);
+      }
     });
 
     function findLabelForTx(tx) {
-      return mainStore.txWithLabels[tx];
+      return mainStore.txWithLabels[tx] || 'No label';
     }
 
     async function scanWallet() {
@@ -147,19 +117,23 @@ export default {
       transactions.value = hdWallet.txs;
     }
 
-    scanWallet();
-
     const computedTransactions = computed(() => {
       let filtered = [...transactions.value];
       if (filtered.length === 0) return [];
-
-      if (query && query.value.length > 0) {
+      let q = query?.value?.toLowerCase();
+      if (q && q.length > 2) {
         filtered = filtered.filter((el) => {
           return (
-            el.account === query.value ||
-            String(el.amount) === query.value ||
-            el.txid === query.value ||
-            findLabelForTx(el.txid) === query.value
+            el?.account?.toLowerCase().indexOf(q) > -1 ||
+            String(el.amount).indexOf(q) > -1 ||
+            el?.txid?.toLowerCase().indexOf(q) > -1 ||
+            findLabelForTx(el.txid)?.toLowerCase().indexOf(q) > -1 ||
+            el.outputs?.some(
+              (el) => el?.address?.toLowerCase().indexOf(q) > -1
+            ) ||
+            el.txinfo.destinations?.some((el) =>
+              el.addresses.some((addr) => addr?.toLowerCase().indexOf(q) > -1)
+            )
           );
         });
       }
@@ -185,6 +159,10 @@ export default {
       return filtered;
     });
 
+    emitter.on('transactions:refresh', () => {
+      scanWallet();
+    });
+
     return {
       transactions,
       query,
@@ -196,19 +174,77 @@ export default {
 </script>
 
 <style scoped>
+@import '../css/components/datepicker.css';
+
 .controls {
-  margin: 0 24px;
+  margin: 14px 24px 0;
   display: grid;
   grid-template-columns: 9fr 3fr;
   grid-gap: 0 47px;
 }
-.st-form-item {
-  margin: 40px 0 10px;
+.st-form-item .st-input {
+  margin-bottom: 0px;
 }
 .calendar {
   pointer-events: none;
   position: absolute;
-  bottom: calc(50% - 15px);
+  top: calc(50% + 7px);
   right: 0;
+}
+.transactions-table :deep td:nth-child(2) {
+  width: 85px;
+}
+.transactions-table :deep td:nth-child(3) {
+  width: 140px;
+}
+.transactions-table :deep td:nth-child(3) div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
+}
+.transactions-table :deep td:nth-child(4),
+:deep th:nth-child(4) {
+  display: revert;
+}
+@media only screen and (max-width: 1299px) {
+  .transactions-table :deep td:nth-child(4),
+  :deep th:nth-child(4) {
+    display: none;
+  }
+}
+.transactions-table :deep td:nth-child(4) {
+  width: 300px;
+}
+.transactions-table :deep td:nth-child(5) {
+  width: 230px;
+  /* overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  word-break: break-all; */
+}
+.transactions-table :deep td:nth-child(5) div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
+}
+.transactions-table :deep td:nth-child(6) {
+  width: 121px;
+}
+.transactions-table :deep td:nth-child(7) {
+  width: 121px;
+}
+.transactions-table :deep td:nth-child(7) .move-left {
+  transform: translateX(-100px) !important;
+}
+:deep .overflow {
+  height: calc(100vh - 225px);
 }
 </style>

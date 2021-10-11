@@ -3,7 +3,7 @@
     <div
       class="off-canvas-wrapper"
       :class="{ open: isOpen }"
-      :aria-hidden="open ? 'true' : 'false'"
+      :aria-hidden="isOpen ? 'true' : 'false'"
       @click="closeCanvas"
     >
       <div class="off-canvas-menu" :class="{ open: isOpen }" @click.stop>
@@ -84,6 +84,7 @@ export default {
 }
 .off-canvas-menu.open {
   right: 0;
+  box-shadow: -15px 15px 30px rgba(20, 4, 53, 0.05);
 }
 
 .off-canvas-wrapper {
@@ -108,7 +109,6 @@ export default {
   top: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.4);
 }
 
 .off-canvas__open-toggle {

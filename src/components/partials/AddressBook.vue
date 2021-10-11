@@ -1,73 +1,54 @@
 <template>
   <div class="address-book">
+    <StModal
+      light
+      :visible="isScanning"
+      @close="isScanning = false"
+      class="scan-address__modal"
+    >
+      <template #header>Scan XST Address</template>
+      <template #body>
+        <div class="no-camera" v-show="!cameraAllowed">
+          <SvgIcon name="icon-no-camera" />
+          <h6>There is no connected camera</h6>
+        </div>
+        <div v-show="isCameraLoading" class="loading-gif">
+          <img src="../../../static/xstloader.gif" alt="Test gif" />
+        </div>
+        <div v-show="!isCameraLoading">
+          <div v-show="cameraAllowed" class="stream">
+            <qr-stream @decode="onDecode" class="mb">
+              <div class="frame" />
+            </qr-stream>
+          </div>
+        </div>
+      </template>
+    </StModal>
     <div class="top">
-      <span v-if="activeTab === 'address-book'" class="title"
-        >Address book</span
-      >
-      <span v-if="activeTab === 'contact-details'" class="title"
-        >Contact details</span
-      >
-      <span v-if="activeTab === 'add-contact'" class="title">Add contact</span>
-      <span v-if="activeTab === 'edit-contact'" class="title"
-        >Edit contact</span
-      >
+      <h6 v-if="activeTab === 'address-book'">Address Book</h6>
+      <h6 v-if="activeTab === 'contact-details'">Contact Details</h6>
+      <h6 v-if="activeTab === 'add-contact'">Add Contact</h6>
+      <h6 v-if="activeTab === 'edit-contact'">Edit Contact</h6>
       <div class="icons">
-        <svg
+        <SvgIcon
+          name="icon-add-contact"
           v-if="activeTab === 'address-book'"
-          width="18"
-          height="18"
-          viewBox="0 0 18 18"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
           @click="changeTab('add-contact')"
-        >
-          <path d="M12 13H18M15 10V16" stroke="#4E00F6" stroke-width="2" />
-          <circle cx="8" cy="5" r="4" stroke="#4E00F6" stroke-width="2" />
-          <path
-            d="M11 9.59532C10.2091 9.22076 9.29818 9 8.3125 9C5.0625 9 9.9375 9 6.6875 9C3.4375 9 1 11.4 1 13.8C1 16.2 1 17 1 17H11"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
-        </svg>
-        <svg
+        />
+
+        <SvgIcon
+          name="icon-arrow-left"
           v-if="activeTab === 'add-contact' || activeTab === 'contact-details'"
-          width="19"
-          height="14"
-          viewBox="0 0 19 14"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
           @click="changeTab('address-book')"
-        >
-          <path d="M2 7H19" stroke="#4E00F6" stroke-width="2" />
-          <path d="M8 13L2 7L8 1" stroke="#4E00F6" stroke-width="2" />
-        </svg>
-        <svg
+        />
+
+        <SvgIcon
+          name="icon-arrow-left"
           v-if="activeTab === 'edit-contact'"
-          width="19"
-          height="14"
-          viewBox="0 0 19 14"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
           @click="changeTab('contact-details')"
-        >
-          <path d="M2 7H19" stroke="#4E00F6" stroke-width="2" />
-          <path d="M8 13L2 7L8 1" stroke="#4E00F6" stroke-width="2" />
-        </svg>
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 18 18"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          @click="closeCanvas"
-        >
-          <path
-            d="M3 3l12 12M3 15L15 3"
-            stroke="#4E00F6"
-            stroke-width="2"
-            stroke-linejoin="round"
-          />
-        </svg>
+        />
+
+        <SvgIcon name="icon-close-primary" @click="closeCanvas" />
       </div>
     </div>
     <!-- ADDRESS BOOK -->
@@ -85,18 +66,24 @@
                 class="address-list__inner--redirect"
                 @click="prePopulateForm(item)"
               >
-                <p>
-                  <span class="bold medium">{{ item.name }}</span
-                  >, {{ item.description }}
+                <p class="address-list__description">
+                  <span class="bold medium">{{
+                    formatDescriptionString(item.name)
+                  }}</span
+                  ><span v-if="item.description"
+                    >, {{ formatDescriptionString(item.description) }}</span
+                  >
                 </p>
-                <p class="medium">{{ item.address }}</p>
+                <p class="medium">
+                  {{ formatDescriptionString(item.address) }}
+                </p>
               </div>
             </div>
           </div>
-          <div :id="id" v-for="(addressList, id) in orderByName" :key="id">
+          <div :id="id" v-for="(sublist, id) in orderByName" :key="id">
             <div
               class="address-list__inner"
-              v-for="(item, index) in addressList"
+              v-for="(item, index) in sublist"
               :key="item.address"
             >
               <p v-if="index === 0" class="bold letter">
@@ -106,11 +93,17 @@
                 class="address-list__inner--redirect"
                 @click="prePopulateForm(item)"
               >
-                <p>
-                  <span class="bold medium">{{ item.name }}</span
-                  >, {{ item.description }}
+                <p class="address-list__description">
+                  <span class="bold medium">{{
+                    formatDescriptionString(item.name)
+                  }}</span
+                  ><span v-if="item.description"
+                    >, {{ formatDescriptionString(item.description) }}</span
+                  >
                 </p>
-                <p class="medium">{{ item.address }}</p>
+                <p class="medium">
+                  {{ formatDescriptionString(item.address) }}
+                </p>
               </div>
             </div>
           </div>
@@ -120,251 +113,182 @@
         </template>
       </div>
       <div v-if="addressList.length" class="alphabet">
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 12 12"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M6 1.32668L7.49737 3.51153C7.5949 3.65383 7.73849 3.75816 7.90396 3.80693L10.4446 4.55586L8.82939 6.65511C8.72419 6.79183 8.66934 6.96064 8.67409 7.13308L8.74691 9.7808L6.25129 8.89335C6.08875 8.83555 5.91125 8.83555 5.74871 8.89335L3.25309 9.7808L3.32591 7.13308C3.33066 6.96064 3.27581 6.79183 3.17061 6.65511L1.55541 4.55586L4.09604 3.80693C4.26151 3.75816 4.4051 3.65383 4.50263 3.51153L6 1.32668Z"
-            stroke="#4E00F6"
-            stroke-width="1.5"
-            stroke-linejoin="round"
-          />
-        </svg>
+        <SvgIcon name="icon-favorite-small" />
         <a
           class="letter"
           :class="{ 'letter-active': isActive === item.id }"
           v-for="item in alphabet"
           :key="item.id"
+          :id="item.id"
           @click="scrollToElement(item.id)"
           >{{ item.letter }}</a
         >
       </div>
     </div>
+
     <!-- CONTACT DETAILS -->
     <div class="contact-details" v-if="activeTab === 'contact-details'">
       <div>
-        <div class="input-container">
+        <StFormItem label="Name" :filled="editContactForm.name" readonly>
           <StInput
             readonly
-            v-model="addContactForm.name"
-            label="Name"
+            v-model="editContactForm.name"
             placeholder="Please enter a contact name"
           />
-        </div>
-        <div class="input-container">
+        </StFormItem>
+        <StFormItem
+          label="Description"
+          :filled="editContactForm.description"
+          readonly
+        >
           <StInput
             readonly
-            v-model="addContactForm.description"
-            label="Description"
+            v-model="editContactForm.description"
             placeholder="Please enter a description"
           />
-        </div>
-        <div class="input-container">
+        </StFormItem>
+        <StFormItem label="Address" :filled="editContactForm.address" readonly>
           <StInput
             readonly
-            v-model="addContactForm.address"
-            label="Address"
+            v-model="editContactForm.address"
             placeholder="Please enter a valid XST address"
           />
-        </div>
+        </StFormItem>
         <StCheckbox
-          class="custom-checkbox disabled-checkbox"
-          v-model="addContactForm.favorite"
-          >Favorite list</StCheckbox
+          class="custom-checkbox"
+          v-model="editContactForm.favorite"
+          >{{
+            editContactForm.favorite ? 'Favorite' : 'Add to Favorites'
+          }}</StCheckbox
         >
         <p @click="viewTransactions" class="transactions">
-          <svg
-            width="18"
-            height="12"
-            viewBox="0 0 18 12"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M4 1H18"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M0 1H2"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M4 6H18"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M0 6H2"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M4 11H18"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M0 11H2"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-          </svg>
-          View transactions
+          <SvgIcon name="icon-dashboard-transactions" />
+          View Transactions
         </p>
       </div>
       <div class="add-contact__bottom">
         <p @click="editContact">
-          <svg
-            width="20"
-            height="21"
-            viewBox="0 0 20 21"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M0 7H6"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M0 3H9"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-            <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="M18 5L7 17L3 19L2 18L4 14L15 2L18 5Z"
-              stroke="#4E00F6"
-              stroke-width="2"
-            />
-            <path d="M5 13L8 16" stroke="#4E00F6" stroke-width="2" />
-            <path d="M13 5L15 7" stroke="#4E00F6" stroke-width="2" />
-          </svg>
-
-          Edit contact
+          <SvgIcon name="icon-edit" />
+          Edit Contact
         </p>
-        <StButton>Send</StButton>
+        <StButton @click="openModal('send')">Send</StButton>
       </div>
     </div>
+
+    <!-- EDIT CONTACT -->
     <div class="edit-contact" v-if="activeTab === 'edit-contact'">
       <div>
-        <div class="input-container">
+        <StFormItem
+          label="Name"
+          :class="{ 'st-form-item__error': editContactForm.name.length > 50 }"
+          :filled="editContactForm.name"
+          :error-message="editForm.editName.$errors"
+        >
           <StInput
             v-model="editContactForm.name"
-            label="Name"
             placeholder="Please enter a contact name"
           />
-        </div>
-        <div class="input-container">
+          <template v-if="editContactForm.name.length > 50" #description>
+            <span class="error">Name too long</span>
+          </template>
+        </StFormItem>
+        <StFormItem
+          label="Description"
+          :class="{
+            'st-form-item__error': editContactForm.description.length > 50,
+          }"
+          :filled="editContactForm.description"
+          :error-message="editForm.editDescription.$errors"
+        >
           <StInput
             v-model="editContactForm.description"
-            label="Description"
             placeholder="Please enter a description"
           />
-        </div>
-        <div class="input-container">
+          <template v-if="editContactForm.description.length > 50" #description>
+            <span class="error">Description too long</span>
+          </template>
+        </StFormItem>
+        <StFormItem
+          label="Address"
+          :filled="editContactForm.address"
+          :error-message="editForm.editAddress.$errors"
+        >
           <StInput
             v-model="editContactForm.address"
-            label="Address"
             placeholder="Please enter a valid XST address"
-          />
-        </div>
-        <StCheckbox class="custom-checkbox" v-model="editContactForm.favorite"
-          >Favorite list</StCheckbox
-        >
+          >
+            <StTooltip tooltip="Scan Address">
+              <SvgIcon name="icon-qr-code" @click="startScanner" />
+            </StTooltip>
+          </StInput>
+        </StFormItem>
       </div>
       <div class="add-contact__bottom">
         <p @click="deleteContact">
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M3 3L15 15"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M3 15L15 3"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-          </svg>
-          Delete contact
+          <SvgIcon name="icon-close-primary" />
+          Delete Contact
         </p>
         <StButton @click="confirmEdit">Save</StButton>
       </div>
     </div>
+
     <!-- ADD CONTACT -->
     <div class="add-contact" v-if="activeTab === 'add-contact'">
       <div>
-        <div class="input-container">
+        <StFormItem
+          label="Name"
+          :class="{ 'st-form-item__error': addContactForm.name.length > 50 }"
+          :filled="addContactForm.name"
+          :error-message="addForm.newName.$errors"
+        >
           <StInput
             v-model="addContactForm.name"
-            label="Name"
-            placeholder="Please enter a contact name"
+            placeholder="Please enter a name"
           />
-        </div>
-        <div class="input-container">
+          <template v-if="addContactForm.name.length > 50" #description>
+            <span class="error">Name too long</span>
+          </template>
+        </StFormItem>
+        <StFormItem
+          label="Description"
+          :class="{
+            'st-form-item__error': addContactForm.description.length > 50,
+          }"
+          :filled="addContactForm.description"
+          :error-message="addForm.newDescription.$errors"
+        >
           <StInput
             v-model="addContactForm.description"
-            label="Description"
             placeholder="Please enter a description"
           />
-        </div>
-        <div class="input-container">
+          <template v-if="addContactForm.description.length > 50" #description>
+            <span class="error">Description too long</span>
+          </template>
+        </StFormItem>
+        <StFormItem
+          label="Address"
+          :filled="addContactForm.address"
+          :error-message="addForm.newAddress.$errors"
+        >
           <StInput
             v-model="addContactForm.address"
-            label="Address"
             placeholder="Please enter a valid XST address"
-          />
-        </div>
+          >
+            <StTooltip tooltip="Scan Address">
+              <SvgIcon name="icon-qr-code" @click="startScanner" />
+            </StTooltip>
+          </StInput>
+          <template #description>
+            Scan QR code or paste from clipboard
+          </template>
+        </StFormItem>
         <StCheckbox class="custom-checkbox" v-model="addContactForm.favorite"
-          >Favorite list</StCheckbox
+          >Add to Favorites</StCheckbox
         >
       </div>
       <div class="add-contact__bottom">
         <p @click="changeTab('address-book')">
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M3 3L15 15"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M3 15L15 3"
-              stroke="#4E00F6"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-          </svg>
+          <SvgIcon name="icon-close-primary" />
           Cancel
         </p>
         <StButton @click="addContact">Save</StButton>
@@ -374,14 +298,21 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import useHelpers from '@/composables/useHelpers';
 import { useMainStore } from '@/store';
 import CryptoService from '../../services/crypto';
 import router from '@/router';
+import { useValidation } from 'vue3-form-validation';
+import { QrStream } from 'vue3-qr-reader';
+import SvgIcon from '../partials/SvgIcon.vue';
 
 export default {
   name: 'AddressBook',
+  components: {
+    QrStream,
+    SvgIcon,
+  },
   setup() {
     const mainStore = useMainStore();
     const { groupBy } = useHelpers();
@@ -495,28 +426,143 @@ export default {
         letter: '#',
       },
     ]);
+    const isScanning = ref(false);
+    const QRData = ref(null);
     let addressList = ref([]);
-    const isActive = ref('');
-    let addContactForm = ref({});
-
-    addContactForm.value = {
+    const isActive = ref('A');
+    let addContactForm = ref({
       name: '',
       description: '',
       address: '',
       favorite: false,
-    };
-
-    let editContactForm = ref({});
-    editContactForm.value = {
+    });
+    let editContactForm = ref({
       id: '',
       name: '',
       description: '',
       address: '',
       favorite: false,
-    };
+    });
+    const cameraAllowed = ref(false);
+    const isCameraLoading = ref(false);
+
+    const {
+      form: addForm,
+      validateFields: validateAddFields,
+      resetFields: resetAddFields,
+    } = useValidation({
+      newName: {
+        $value: addContactForm.value.name,
+        $rules: [
+          {
+            rule: () => {
+              return !addContactForm.value.name && 'Name required';
+            },
+          },
+          {
+            rule: () => {
+              return addContactForm.value.name.length > 50 && 'Name too long';
+            },
+          },
+        ],
+      },
+      newDescription: {
+        $value: addContactForm.value.description,
+        $rules: [
+          {
+            rule: () => {
+              return (
+                addContactForm.value.description.length > 50 &&
+                'Description too long'
+              );
+            },
+          },
+        ],
+      },
+      newAddress: {
+        $value: addContactForm.value.address,
+        $rules: [
+          {
+            rule: () => {
+              return (
+                addContactForm.value.address.length || 'Address is required'
+              );
+            },
+          },
+          {
+            rule: () => {
+              return (
+                CryptoService.isAddressValid(addContactForm.value.address) ||
+                'Please enter a valid XST address'
+              );
+            },
+          },
+        ],
+      },
+    });
+
+    const {
+      form: editForm,
+      validateFields: validateEditFields,
+      resetFields: resetEditFields,
+    } = useValidation({
+      editName: {
+        $value: editContactForm.value.name,
+        $rules: [
+          {
+            rule: () => {
+              return !editContactForm.value.name && 'Name required';
+            },
+          },
+          {
+            rule: () => {
+              return editContactForm.value.name.length > 50 && 'Name too long';
+            },
+          },
+        ],
+      },
+      editDescription: {
+        $value: editContactForm.value.description,
+        $rules: [
+          {
+            rule: () => {
+              return (
+                editContactForm.value.description.length > 50 &&
+                'Description too long'
+              );
+            },
+          },
+        ],
+      },
+      editAddress: {
+        $value: editContactForm.value.address,
+        $rules: [
+          {
+            rule: () => {
+              return !editContactForm.value.address && 'Address is required';
+            },
+          },
+          {
+            rule: () => {
+              return (
+                CryptoService.isAddressValid(editContactForm.value.address) ||
+                'Please enter a valid XST address'
+              );
+            },
+          },
+        ],
+      },
+    });
+
+    watch(
+      () => editContactForm.value.favorite,
+      () => {
+        confirmEdit();
+      }
+    );
 
     onMounted(async () => {
-      addressList.value = await CryptoService.getAddressBook();
+      await filterAlphabetically();
     });
 
     const activeTab = computed(() => {
@@ -531,10 +577,20 @@ export default {
       return groupBy(
         addressList.value.filter((obj) => !obj.favorite),
         (obj) => {
-          return obj.name.charAt(0);
+          return obj.name.charAt(0).toUpperCase();
         }
       );
     });
+    async function filterAlphabetically() {
+      const addresses = await CryptoService.getAddressBook();
+      addressList.value = addresses.sort((a, b) =>
+        a.name.toUpperCase() > b.name.toUpperCase()
+          ? 1
+          : b.name.toUpperCase() > a.name.toUpperCase()
+          ? -1
+          : 0
+      );
+    }
 
     function closeCanvas() {
       mainStore.TOGGLE_DRAWER(false);
@@ -552,18 +608,18 @@ export default {
         activeTab.value !== 'contact-details'
       ) {
         resetForm();
+        resetAddFields();
+        resetEditFields();
       }
     }
 
     async function addContact() {
-      if (!CryptoService.isAddressValid(addContactForm.value.address)) {
-        console.error('Address invalid');
-        return;
-      }
+      await validateAddFields();
 
       addressList.value = await CryptoService.addToAddressBook(
         addContactForm.value
       );
+      await filterAlphabetically();
       changeTab('address-book');
     }
 
@@ -571,6 +627,7 @@ export default {
       addressList.value = await CryptoService.deleteFromAddressBook(
         editContactForm.value
       );
+      await filterAlphabetically();
       changeTab('address-book');
     }
 
@@ -583,19 +640,26 @@ export default {
       changeTab('address-book');
     }
 
-    function prePopulateForm(item) {
+    async function prePopulateForm(item) {
       changeTab('contact-details');
+
+      const addressBook = await CryptoService.getAddressBook();
+
+      const currentContact = addressBook.find(
+        (contact) => contact.id === item.id
+      );
+
       addContactForm.value = {
-        name: item.name,
-        description: item.description,
-        address: item.address,
-        favorite: item.favorite,
+        name: currentContact.name,
+        description: currentContact.description,
+        address: currentContact.address,
+        favorite: currentContact.favorite,
       };
-      editContactForm.value = item;
+      editContactForm.value = currentContact;
     }
 
     function scrollToElement(id) {
-      var element = document.getElementById(id);
+      const element = document.getElementById(id);
       if (element) {
         isActive.value = id;
         element.scrollIntoView({
@@ -617,20 +681,66 @@ export default {
       };
     }
 
+    function openModal(modal) {
+      mainStore.SET_MODAL_VISIBILITY(modal, true);
+      mainStore.SET_SEND_ADDRESS(addContactForm.value.address);
+      closeCanvas();
+    }
+
     function editContact() {
       changeTab('edit-contact');
     }
 
     async function confirmEdit() {
-      if (!CryptoService.isAddressValid(editContactForm.value.address)) {
-        console.error('Address invalid');
-        return;
-      }
+      await validateEditFields();
 
       addressList.value = await CryptoService.updateAddressBook(
         editContactForm.value
       );
-      changeTab('address-book');
+      changeTab('contact-details');
+    }
+
+    function formatDescriptionString(description, numOfCharacters = 35) {
+      if (description.length > numOfCharacters) {
+        return `${description.slice(0, numOfCharacters - 1)}...`;
+      } else {
+        return description;
+      }
+    }
+
+    function startScanner() {
+      navigator.mediaDevices.enumerateDevices().then((devices) => {
+        let camera = devices.filter((obj) => obj.kind === 'videoinput');
+        if (camera[0].kind === 'videoinput' && camera[0].label) {
+          cameraAllowed.value = true;
+          isCameraLoading.value = true;
+          setTimeout(() => (isCameraLoading.value = false), 2000);
+        } else {
+          cameraAllowed.value = false;
+        }
+      });
+      QRData.value = null;
+      isScanning.value = true;
+      if (activeTab.value === 'add-contact') {
+        addContactForm.value.address = '';
+      }
+      if (activeTab.value === 'edit-contact') {
+        editContactForm.value.address = '';
+      }
+    }
+
+    function onDecode(data) {
+      QRData.value = data;
+      if (QRData.value) {
+        isScanning.value = false;
+        let address = QRData.value.replace(/[^a-z0-9]/gi, '');
+        if (activeTab.value === 'add-contact') {
+          addContactForm.value.address = address;
+        }
+        if (activeTab.value === 'edit-contact') {
+          editContactForm.value.address = address;
+        }
+      }
     }
 
     return {
@@ -641,6 +751,11 @@ export default {
       editContactForm,
       isActive,
       addressList,
+      addForm,
+      editForm,
+      isScanning,
+      cameraAllowed,
+      isCameraLoading,
 
       // Computed
       orderByName,
@@ -653,9 +768,13 @@ export default {
       deleteContact,
       prePopulateForm,
       editContact,
+      formatDescriptionString,
       confirmEdit,
       scrollToElement,
       viewTransactions,
+      openModal,
+      startScanner,
+      onDecode,
       /* toggleFavorite */
     };
   },
@@ -671,7 +790,7 @@ export default {
 }
 .icons {
   display: flex;
-  align-items: c;
+  align-items: center;
 }
 .icons svg + svg {
   margin-left: 25px;
@@ -689,20 +808,22 @@ svg:hover circle {
   stroke: var(--marine200);
 }
 .address-list {
-  display: grid;
-  grid-template-columns: 11fr 13px;
-  grid-gap: 0 10px;
+  position: relative;
+  width: 105%;
 }
 .overflow-address {
-  padding-right: 15px;
+  padding-right: 41px;
   height: calc(100vh - 86px);
   overflow: auto;
 }
 .overflow-address::-webkit-scrollbar {
   width: 4px;
 }
-.overflow-address::-webkit-scrollbar-thumb {
+.overflow-address:hover::-webkit-scrollbar-thumb {
   background: var(--grey100);
+}
+.overflow-address::-webkit-scrollbar-thumb {
+  background: transparent;
 }
 .favorite-list .favorite {
   margin-bottom: 16px;
@@ -723,6 +844,10 @@ svg:hover circle {
 }
 .alphabet {
   text-align: center;
+  position: absolute;
+  right: 15px;
+  top: 0;
+  height: 100%;
 }
 .alphabet .letter {
   cursor: pointer;
@@ -754,6 +879,12 @@ svg:hover circle {
   width: 16px;
   height: 16px;
 }
+:deep .custom-checkbox .st-checkbox__label {
+  font-size: 12px;
+  letter-spacing: 0.12px;
+  line-height: 24px;
+  font-family: var(--secondary-font);
+}
 :deep .custom-checkbox .st-checkbox__checkmark .check {
   top: 2px;
   left: 6px;
@@ -764,6 +895,7 @@ svg:hover circle {
   cursor: pointer;
   display: flex;
   align-items: center;
+  width: fit-content;
 }
 .transactions svg path {
   transition: 0.3s;
@@ -773,6 +905,10 @@ svg:hover circle {
 }
 .transactions svg {
   margin-right: 15px;
+}
+
+.st-form-item {
+  margin-bottom: 20px;
 }
 
 /* ADD CONTACT */
@@ -789,21 +925,84 @@ svg:hover circle {
   align-items: center;
   justify-content: space-between;
 }
+.add-contact__bottom button {
+  margin: 0;
+}
 .add-contact__bottom p {
   cursor: pointer;
   display: flex;
   align-items: center;
 }
 .add-contact__bottom p svg {
-  margin-right: 23px;
+  margin-right: 20px;
 }
-.add-contact__bottom p svg path {
+.add-contact__bottom p :deep svg path {
   transition: 0.3s;
 }
-.add-contact__bottom p:hover svg path {
+.add-contact__bottom p:hover :deep svg path {
   stroke: var(--marine200);
 }
-.input-container + .input-container {
+.contact-details :deep .label {
+  margin-bottom: 0;
+}
+/* .input-container + .input-container {
   margin-top: 48px;
+} */
+.st-button {
+  padding: 5px 64px;
+  min-width: 157px;
+  font-family: var(--secondary-font);
+}
+
+:deep .st-form-item__readonly .label {
+  color: var(--grey1000);
+}
+
+.address-list__description {
+  font-size: 14px;
+}
+.scan-address__modal :deep .st-modal-container {
+  width: 480px;
+  height: 520px;
+  box-sizing: border-box;
+}
+:deep .contact-details .st-input__inner {
+  padding-top: 8px;
+}
+:deep .contact-details .st-input__inner[readonly] {
+  padding-bottom: 12px;
+}
+:deep .contact-details .st-checkbox {
+  margin-bottom: 16px;
+}
+.no-camera {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100% - 80px);
+}
+.no-camera svg {
+  display: block;
+  margin: 0 auto 24px;
+  width: 140px;
+}
+.no-camera svg path {
+  fill: var(--gray900);
+}
+.loading-gif {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.loading-gif img {
+  display: block;
+  height: 28px;
+  position: absolute;
 }
 </style>

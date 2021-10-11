@@ -10,11 +10,21 @@ export default function useHelpers() {
 
   // 2nd argument is usually for rounding fiat to 2 decimal places
   // without 2nd argument, the function will just add the decimal dots and comma separators
-  function formatAmount(amount, roundDecimals = false, decimals = 2) {
+  function formatAmount(
+    amount = 0,
+    roundDecimals = false,
+    decimals = 2,
+    minimumFractionDigits = 2
+  ) {
     if (roundDecimals) {
-      return new Intl.NumberFormat('en-IN').format(amount);
+      return new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: minimumFractionDigits,
+        maximumFractionDigits: 8,
+      }).format(amount, decimals);
     }
-    return new Intl.NumberFormat('en-IN').format(round(amount, decimals));
+    return new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: minimumFractionDigits,
+    }).format(round(amount, decimals));
   }
 
   // used for grouping transactions by date

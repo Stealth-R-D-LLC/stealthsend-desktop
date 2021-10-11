@@ -1,23 +1,40 @@
 <template>
   <div class="st-settings-child st-password-container">
     <div class="st-settings-child__overflow">
-      <h2 class="title">Auto Lock</h2>
-      <p class="subtitle">Automatically lock StealthSend after inactivity.</p>
+      <h2 class="title">Auto-lock</h2>
+      <p class="subtitle">Automatically lock StealthSend after inactivity</p>
       <div class="content">
         <p class="notice">
-          <span class="bold">Note:</span> For enhanced security it is
+          <span class="bold">Notice:</span> For enhanced security it is
           recommended to enable Auto-lock. When enabled you will need your
           password to unlock your StealthSend app.
         </p>
+        <!-- <StSwitch
+          class="menu-expand"
+          type="simple"
+          @update:modelValue="toggleExpandedMenu"
+          v-model="menuExpanded"
+        >
+          Keep navigation expanded
+        </StSwitch> -->
+        <StSwitch
+          type="simple"
+          @update:modelValue="toggleAutoLock"
+          v-model="isEnabled"
+        >
+          Enable Auto-lock
+        </StSwitch>
         <div class="minutes-picker" v-if="isEnabled">
           <p>Select one of the following options:</p>
           <div class="options">
             <span
               class="option"
-              :class="{ 'option--is-selected': option.value === selected }"
+              :class="{
+                'option--is-selected': option.value === selectedInterval,
+              }"
               v-for="option in options"
               :key="option.value"
-              @click="selected = option.value"
+              @click="changeInterval(option.value)"
               >{{ option.label }}</span
             >
           </div>
@@ -28,23 +45,97 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { useMainStore } from '@/store';
+import { onMounted, ref } from 'vue';
+
 export default {
   setup() {
+    const mainStore = useMainStore();
     const options = ref([
-      { label: '1 minute', value: 1 },
-      { label: '5 minutes', value: 5 },
-      { label: '10 minutes', value: 10 },
-      { label: '15 minutes', value: 15 },
-      { label: '30 minutes', value: 30 },
-      { label: '1 hour', value: 60 },
+      // interval config values are in seconds
+      { label: '1 minute', value: 60 },
+      { label: '5 minutes', value: 300 },
+      { label: '10 minutes', value: 600 },
+      { label: '15 minutes', value: 900 },
+      { label: '30 minutes', value: 1800 },
+      // { label: '1 hour', value: 3600 },
     ]);
-    const selected = ref(1);
-    const isEnabled = ref(TextTrackCueList);
+    const selectedInterval = ref(60);
+    const isEnabled = ref(false);
+    const menuExpanded = ref(false);
+
+    onMounted(async () => {
+      getIntervalFromStorage();
+      getExpandedMenu();
+    });
+
+    // interval config is set in local storage to avoid reading the db every second
+
+    function storeIntervalInStorage() {
+      localStorage.setItem(
+        'autolock',
+        JSON.stringify({
+          interval: selectedInterval.value,
+          isEnabled: isEnabled.value,
+        })
+      );
+    }
+
+    async function getIntervalFromStorage() {
+      let config = JSON.parse(localStorage.getItem('autolock'));
+      if (config) {
+        selectedInterval.value = config.interval;
+        isEnabled.value = config.isEnabled;
+      }
+    }
+
+    function changeInterval(interval) {
+      selectedInterval.value = interval;
+      setTimeout(() => {
+        storeIntervalInStorage();
+      }, 1);
+    }
+
+    function toggleAutoLock() {
+      setTimeout(() => {
+        storeIntervalInStorage();
+      }, 1);
+    }
+
+    function getExpandedMenu() {
+      let menu = JSON.parse(localStorage.getItem('menubar'));
+      if (menu) {
+        mainStore.SET_EXPANDED_MENU(
+          JSON.parse(localStorage.getItem('menubar'))
+        );
+        menuExpanded.value = mainStore.isMenuExpanded;
+      }
+    }
+
+    function toggleExpandedMenu() {
+      setTimeout(() => {
+        mainStore.SET_EXPANDED_MENU(menuExpanded.value);
+        localStorage.setItem(
+          'menubar',
+          JSON.stringify(mainStore.isMenuExpanded)
+        );
+        if (mainStore.isMenuExpanded) {
+          window.ipc.send('resize:menu');
+        } else {
+          window.ipc.send('resize:other');
+        }
+      }, 1);
+    }
+
     return {
-      selected,
+      selectedInterval,
       options,
       isEnabled,
+      menuExpanded,
+
+      changeInterval,
+      toggleAutoLock,
+      toggleExpandedMenu,
     };
   },
 };
@@ -52,7 +143,7 @@ export default {
 
 <style scoped>
 .notice {
-  padding: 24px;
+  padding: 16px 20px;
   background-color: var(--background100);
   font-family: var(--secondary-font);
   font-size: 12px;
@@ -72,9 +163,9 @@ export default {
 .option {
   padding: 6px 12px;
   font-family: var(--secondary-font);
-  font-size: 10px;
-  line-height: 16px;
-  letter-spacing: 0.16px;
+  font-size: 12px;
+  line-height: 24px;
+  letter-spacing: 0.12px;
   color: var(--grey900);
 
   background: linear-gradient(
@@ -108,6 +199,7 @@ export default {
 }
 
 .minutes-picker {
+  margin: 24px 0 0 0;
   padding: 24px 0;
   border-top: 1px solid var(--grey100);
 }
@@ -117,5 +209,9 @@ export default {
   line-height: 24px;
   letter-spacing: 0.12px;
   color: var(--grey900);
+}
+
+.menu-expand {
+  margin-bottom: 24px;
 }
 </style>

@@ -1,114 +1,236 @@
 <template>
   <div class="favourite-list">
     <div class="top">
-      <span class="title">Favourite list</span>
-      <svg
-        @click="closeCanvas"
-        class="close"
-        width="18"
-        height="18"
-        viewBox="0 0 18 18"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M3 3L15 15"
-          stroke="#4E00F6"
-          stroke-width="2"
-          stroke-linejoin="round"
-        />
-        <path
-          d="M3 15L15 3"
-          stroke="#4E00F6"
-          stroke-width="2"
-          stroke-linejoin="round"
-        />
-      </svg>
+      <span class="title">Favorite List</span>
+      <SvgIcon name="icon-close-primary" class="close" @click="closeCanvas" />
     </div>
-    <p class="paragraph">Short list your Favourite Accounts in ordered list.</p>
-    <label for="multiselect" class="multiselect-label">
-      <span>Add Favourite to list</span>
-      <a>Add</a>
-    </label>
-    <StMultiselect
-      v-model="account"
-      :class="{ 'multiselect-filled': account }"
-      :options="accounts"
-      track-by="_id"
-      value-prop="address"
-      label="Add favourite to list"
-      placeholder="Select Account from the dropdown"
-    >
-      <template #singlelabel="{ value }">
-        <div class="multiselect-single-label">
-          <p class="account-label">
-            {{ value.label }}
-          </p>
-          <p class="account-utxo">
-            {{ value.utxo }}
-          </p>
-        </div>
-      </template>
+    <p v-if="favouritedAccounts.length" class="paragraph">
+      Arrange up to 10 favorite accounts
+    </p>
+    <p v-else class="paragraph">You don't have any favorite accounts</p>
+    <StFormItem label="Choose an Account" :error-message="form.account.$errors">
+      <template #labelRight v-if="favouritedAccounts.length < 10"
+        ><a @click="addToFavouriteList">Add</a></template
+      >
+      <StMultiselect
+        v-model="account"
+        :class="{ 'multiselect-filled': account }"
+        :options="unfavouritedAccounts"
+        track-by="address"
+        value-prop="address"
+        :object="true"
+        placeholder="Select from dropdown"
+      >
+        <template #singleLabel>
+          <div class="multiselect-single-label">
+            <p class="account-label">
+              {{ account && account.label }}
+            </p>
+            <p class="account-utxo">
+              {{ account && formatAmount(account.utxo, false, 6, 6) }}
+            </p>
+          </div>
+        </template>
 
-      <template #option="{ option }">
-        {{ option.label }} ({{ option.utxo }})
-      </template>
-    </StMultiselect>
-    <div class="accounts-list">
+        <template #option="{ option }">
+          <div class="flex-space-between">
+            <span class="option">
+              {{ option.label }}
+            </span>
+            <span class="amount"
+              >{{ formatAmount(option.utxo, false, 6, 6) }} XST</span
+            >
+          </div>
+        </template>
+      </StMultiselect>
+    </StFormItem>
+    <div id="favouriteList" class="accounts-list">
       <div
         class="account-grid"
-        v-for="(accounsList, index) in 100"
-        :key="index"
+        v-for="(acc, index) in favouritedAccounts"
+        :key="acc.address"
+        :data-id="JSON.stringify(acc)"
       >
         <p class="bold">{{ index + 1 }}.</p>
         <div>
-          <p class="flex-paragraph">
-            <span class="bold">Oh, yeah I have it all</span>
-            <span><span class="bold">XST</span>/USD</span>
+          <p class="account-name medium bold">{{ acc.label }}</p>
+          <p class="medium">
+            {{ formatAmount(Math.abs(acc.utxo), false, 6, 6) }} XST
           </p>
-          <p>3,874,266,900.00000000 ~ $27,119,868,300.00 USD</p>
+          <p class="amount-fiat">
+            ~ $
+            <template v-if="Number(acc.utxo) * XST_USD_RATE < 1">
+              {{ formatAmount(Math.abs(acc.utxo * XST_USD_RATE), true, 4, 4) }}
+            </template>
+            <template v-else>
+              {{ formatAmount(Math.abs(acc.utxo * XST_USD_RATE), false, 4, 4) }}
+            </template>
+            USD
+          </p>
         </div>
-        <svg
-          v-if="index + 1 > 1"
-          class="order"
-          width="12"
-          height="16"
-          viewBox="0 0 12 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M6 16L6 2" stroke="#A2A1A4" stroke-width="2" />
-          <path d="M11 7L6 2L1 7" stroke="#A2A1A4" stroke-width="2" />
-        </svg>
+        <div class="account-icons">
+          <StTooltip tooltip="Remove from Favorites">
+            <SvgIcon
+              name="icon-favorite-remove"
+              @click="removeFromFavoriteList(acc)"
+            />
+          </StTooltip>
+          <StTooltip tooltip="Drag to rearrange">
+            <SvgIcon name="icon-options" class="handle" />
+          </StTooltip>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, computed, watch } from 'vue';
 import CryptoService from '@/services/crypto';
+import useHelpers from '@/composables/useHelpers';
 import { useMainStore } from '@/store';
+import emitter from '@/services/emitter';
+import Sortable from 'sortablejs';
+import { useValidation, ValidationError } from 'vue3-form-validation';
+import SvgIcon from '../partials/SvgIcon.vue';
+
 export default {
   name: 'FavouriteList',
+  components: {
+    SvgIcon,
+  },
   setup() {
     const mainStore = useMainStore();
     const account = ref(null);
     const accounts = ref([]);
+    const { formatAmount } = useHelpers();
+    const XST_USD_RATE = computed(() => {
+      return CryptoService.constraints.XST_USD || 1;
+    });
+    const favouritedAccounts = ref([]);
+
+    const { form, validateFields } = useValidation({
+      account: {
+        $value: account,
+        $rules: [
+          {
+            rule: () => {
+              return (
+                favouritedAccounts.value.length >= 10 &&
+                'You can only have 10 favorite accounts'
+              );
+            },
+          },
+        ],
+      },
+    });
 
     async function scanWallet() {
-      const hdWallet = await CryptoService.scanWallet();
-      accounts.value = hdWallet.accounts;
+      let hdWallet = await CryptoService.getAccounts();
+      accounts.value = hdWallet;
+      // with this we will be able to have accounts with balance > 0 as favorites
+      await Promise.allSettled(
+        accounts.value.map((account) => {
+          if (account.utxo <= 0 && account.isFavourite) {
+            return CryptoService.unfavouriteAccount(account);
+          } else {
+            return true;
+          }
+        })
+      );
+      hdWallet = await CryptoService.getAccounts();
+      accounts.value = hdWallet;
+      favouritedAccounts.value = accounts.value
+        .filter((el) => el.isFavourite)
+        .sort((a, b) => a.favouritePosition - b.favouritePosition);
     }
     scanWallet();
 
+    var sortable = null;
+
     function closeCanvas() {
       mainStore.TOGGLE_DRAWER(false);
+      account.value = null;
       setTimeout(() => {
         mainStore.SET_OFF_CANVAS_DATA(null);
         mainStore.SET_CURRENT_CANVAS('transaction-details');
       }, 300);
     }
+
+    watch(
+      () => mainStore.currentOffCanvas,
+      async () => {
+        if (mainStore.currentOffCanvas === 'favourite-list') {
+          scanWallet();
+          if (!sortable) {
+            var el = document.getElementById('favouriteList');
+            sortable = Sortable.create(el, {
+              animation: 150,
+              handle: '.handle',
+              draggagle: '.account-grid',
+              store: {
+                set: async function (sortable) {
+                  let newOrder = sortable.toArray().map((el) => JSON.parse(el));
+                  for (let index in newOrder) {
+                    const i = parseInt(index);
+                    newOrder[i]['favouritePosition'] = i + 1;
+                  }
+                  for (let acc of newOrder) {
+                    await CryptoService.changeAccountFavouritePosition(
+                      acc,
+                      acc.favouritePosition
+                    );
+                  }
+                  scanWallet();
+                },
+              },
+            });
+          }
+        }
+      },
+      { deep: true }
+    );
+
+    const unfavouritedAccounts = computed(() => {
+      return accounts.value.filter(
+        (el) => !el.isFavourite && !el.isArchived && el.utxo > 0
+      );
+    });
+
+    async function addToFavouriteList() {
+      try {
+        await validateFields();
+        if (!account.value || account.value.utxo === 0) {
+          return;
+        }
+        await CryptoService.favouriteAccount(account.value);
+        const scannedAccounts = await CryptoService.getAccounts();
+        /* const scannedAccounts = await CryptoService.scanWallet(); */
+        /* accounts.value = scannedAccounts.accounts; */
+        favouritedAccounts.value = scannedAccounts
+          .filter((el) => el.isFavourite)
+          .sort((a, b) => a.favouritePosition - b.favouritePosition);
+        account.value = null;
+        emitter.emit('favorite:refresh');
+      } catch (e) {
+        if (e instanceof ValidationError) {
+          console.log(e);
+        }
+      }
+    }
+    async function removeFromFavoriteList(account) {
+      await CryptoService.unfavouriteAccount(account);
+      const scannedAccounts = await CryptoService.getAccounts();
+      favouritedAccounts.value = scannedAccounts
+        .filter((el) => el.isFavourite)
+        .sort((a, b) => a.favouritePosition - b.favouritePosition);
+      emitter.emit('favorite:refresh');
+    }
+
+    emitter.on('favorite:refresh', () => {
+      if (mainStore.currentOffCanvas !== 'favourite-list') return; // don't refresh if not on this screen
+      scanWallet();
+    });
 
     return {
       // variables
@@ -117,6 +239,14 @@ export default {
 
       // functions
       closeCanvas,
+      formatAmount,
+      XST_USD_RATE,
+      form,
+
+      favouritedAccounts,
+      unfavouritedAccounts,
+      addToFavouriteList,
+      removeFromFavoriteList,
     };
   },
 };
@@ -132,17 +262,17 @@ export default {
 .paragraph {
   margin-bottom: 32px;
 }
-.close {
+:deep .close {
   cursor: pointer;
 }
-.close path {
+:deep .close path {
   cursor: pointer;
   transition: 0.3s;
 }
-.close:hover path {
+:deep .close:hover path {
   stroke: var(--marine200);
 }
-.multiselect-single-label {
+/* .multiselect-single-label {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -150,7 +280,7 @@ export default {
   position: absolute;
   top: -5px;
   color: var(--grey900);
-}
+} */
 .multiselect-single-label .account-utxo {
   margin-top: 5px;
   font-size: 14px;
@@ -161,67 +291,117 @@ export default {
   font-size: 14px;
   line-height: 14px;
   letter-spacing: 0.12px;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
+  overflow: hidden;
+  margin-right: 10px;
 }
-
-.multiselect-label {
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 12px;
-  line-height: 24px;
-  letter-spacing: 0.12px;
-}
-
-.multiselect-label span {
-  color: var(--marine400);
-  font-weight: bold;
-}
-.multiselect-label a {
+:deep .label-right a {
   cursor: pointer;
-  color: var(--marine200);
   transition: 0.3s;
 }
-.multiselect-label a:hover {
+:deep .label-right a:hover {
   color: var(--marine400);
 }
 :deep .multiselect-input > .multiselect-placeholder {
   color: var(--grey900);
 }
+:deep .st-form-item {
+  margin-bottom: 0;
+}
+:deep .tooltip:before {
+  right: calc(50% + 40px) !important;
+}
 .accounts-list {
-  margin-top: 18px;
+  padding-top: 44px;
   overflow: auto;
-  max-height: calc(100vh - 231px);
+  max-height: calc(100vh - 265px);
   width: calc(100% + 5px);
   padding-right: 18px;
 }
 .accounts-list::-webkit-scrollbar {
   width: 4px;
 }
-.accounts-list::-webkit-scrollbar-thumb {
+.accounts-list:hover::-webkit-scrollbar-thumb {
   background: var(--grey100);
+}
+.accounts-list::-webkit-scrollbar-thumb {
+  background: transparent;
 }
 .account-grid {
   display: grid;
-  grid-template-columns: auto 10fr 15px;
-  grid-gap: 0 12px;
+  grid-template-columns: auto 10fr auto;
+  grid-gap: 0 18px;
+  align-items: flex-start;
 }
 .account-grid + .account-grid {
   border-top: 1px solid var(--grey100);
   margin-top: 16px;
-  padding-top: 16px;
+  padding-top: 32px;
 }
-.flex-paragraph {
+.account-name {
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+  max-width: 237px;
+}
+.amount-fiat {
+  color: var(--grey500);
+}
+.account-icons {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
 }
-.order {
+.account-icons svg {
   cursor: pointer;
 }
-.order path {
+.account-icons .handle {
+  cursor: move;
+}
+.account-icons > .tooltip:last-child {
+  margin-left: 26px !important;
+}
+.account-icons :deep svg path,
+.account-icons :deep svg circle {
   transition: 0.3s;
 }
-.order:hover path {
+.account-icons :deep svg:hover path {
   stroke: var(--marine500);
+}
+.account-icons :deep svg:hover circle {
+  fill: var(--marine500);
+}
+.flex-space-between .option {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
+  margin-right: 10px;
+}
+.flex-space-between .amount {
+  white-space: nowrap;
+}
+:deep .st-form-item .st-form-item__error {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: left;
+}
+:deep .multiselect__tags {
+  min-height: 50.5px;
+}
+:deep .multiselect__content-wrapper {
+  padding-top: 65px;
+}
+
+:deep .multiselect--active .multiselect__tags {
+  background: white;
+  top: -6px;
 }
 </style>

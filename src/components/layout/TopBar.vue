@@ -1,111 +1,579 @@
 <template>
-  <header
-    class="layout__header"
-    :class="{ 'layout__header--is-grey': headerStyle === 'grey' }"
-  >
-    <div class="header-left">
-      <template v-if="checkVisibilityForRoute(['Dashboard'])">
-        <StIcon
-          :class="{ inactive: !componentVisibility.chart }"
-          name="chart"
-          @click="toggleComponentVisibility('chart')"
-        ></StIcon>
-        <StIcon
-          :class="{ inactive: !componentVisibility.txDashboard }"
-          name="tx-list"
-          @click="toggleComponentVisibility('txDashboard')"
-        ></StIcon>
-      </template>
-      <template v-if="checkVisibilityForRoute(['ArchivedAccounts'])">
-        <svg
-          width="22"
-          height="16"
-          viewBox="0 0 22 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+  <div :class="computedClass">
+    <header class="layout__header" :class="`layout__header-${currentRoute}`">
+      <div class="header-left">
+        <template v-if="checkVisibilityForRoute(['Dashboard'])">
+          <div :class="{ nonclickable: !componentVisibility.txDashboard }">
+            <SvgIcon
+              name="icon-chart"
+              :class="{ inactive: !componentVisibility.chart }"
+              @click="toggleComponentVisibility('chart')"
+            />
+          </div>
+
+          <div :class="{ nonclickable: !componentVisibility.chart }">
+            <SvgIcon
+              name="icon-dashboard-transactions"
+              :class="{ inactive: !componentVisibility.txDashboard }"
+              @click="toggleComponentVisibility('txDashboard')"
+            />
+          </div>
+        </template>
+
+        <template v-if="checkVisibilityForRoute(['AccountDetails'])">
+          <div
+            v-if="account"
+            class="account-switcher"
+            @click="openAccountModal"
+          >
+            <h6>{{ account && account.label }}</h6>
+
+            <SvgIcon name="icon-arrow-down" />
+          </div>
+
+          <!-- <StMultiselect
+          v-model="account"
+          :class="{ 'multiselect-filled': account }"
+          :options="accounts"
+          track-by="address"
+          value-prop="address"
+          label="label"
+          :object="true"
+          :can-deselect="false"
+          placeholder="Select account"
+          @select="accountChanged"
         >
-          <path
-            d="M11 3C7.68629 3 4.68629 4.66667 2 8C4.68629 11.3333 7.68629 13 11 13C14.3137 13 17.3137 11.3333 20 8C19.3945 7.24866 18.7731 6.58199 18.1357 6"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
-          <path d="M6 8L12 8" stroke="#4E00F6" stroke-width="2" />
-          <path d="M19 1L5 15" stroke="#4E00F6" stroke-width="2" />
-        </svg>
-        <svg
-          @click="toggleDrawer('favourite-list')"
-          width="24"
-          height="25"
-          viewBox="0 0 24 25"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+          <template #singleLabel>
+            <h6>
+              {{ account && account.label }}
+            </h6>
+          </template>
+
+          <template #option="{ option }">
+            <div class="flex-space-between">
+              <span>
+                {{ option.label }}
+              </span>
+              <span> {{ option.utxo }} XST </span>
+            </div>
+          </template>
+        </StMultiselect> -->
+
+          <div class="icons-flex">
+            <StTooltip
+              class="tooltip"
+              :tooltip="isHiddenAmounts ? 'Show Values' : 'Hide Values'"
+            >
+              <SvgIcon
+                name="icon-eye-opened"
+                v-if="isHiddenAmounts"
+                @click="toggleHiddenAmounts"
+              />
+
+              <SvgIcon
+                name="icon-eye-closed"
+                v-else
+                @click="toggleHiddenAmounts"
+              />
+            </StTooltip>
+
+            <StTooltip class="tooltip" tooltip="Account Keys">
+              <SvgIcon name="icon-account-keys" @click="isVisible = true" />
+            </StTooltip>
+          </div>
+        </template>
+
+        <template
+          v-if="
+            checkVisibilityForRoute(['Transactions']) ||
+            checkVisibilityForRoute(['TransactionsQuery'])
+          "
         >
-          <path
-            d="M14.6218 6.61132L12.8885 3.14551L9.83282 9.33709L3 10.33L7.94427 15.1494L6.77709 21.9546L12.8885 18.7417L19 21.9546"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
-          <path
-            d="M22.4131 7.14551L18.4131 7.14551"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
-          <line
-            x1="22.4131"
-            y1="11.1455"
-            x2="14.4131"
-            y2="11.1455"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
-          <line
-            x1="22.4131"
-            y1="15.1455"
-            x2="14.4131"
-            y2="15.1455"
-            stroke="#4E00F6"
-            stroke-width="2"
-          />
-        </svg>
-      </template>
-    </div>
-    <div class="header-right">
-      <StIcon name="sync-status"></StIcon>
-      <!-- <StIcon name="support"></StIcon> -->
-      <!-- <StIcon
-        name="notifications"
-        @click="toggleDrawer('recent-notifications')"
-      ></StIcon> -->
-      <StIcon @click="openQuickDeposit" name="qr"></StIcon>
-      <StIcon @click="goto('/settings')" name="settings"></StIcon>
-    </div>
-  </header>
+          <div class="icons-flex" role="presentation">
+            <StTooltip
+              class="tooltip"
+              :tooltip="isHiddenAmounts ? 'Show Values' : 'Hide Values'"
+            >
+              <SvgIcon
+                name="icon-eye-opened"
+                v-if="isHiddenAmounts"
+                @click="toggleHiddenAmounts"
+              />
+
+              <SvgIcon
+                name="icon-eye-closed"
+                v-else
+                @click="toggleHiddenAmounts"
+              />
+            </StTooltip>
+          </div>
+        </template>
+
+        <template v-if="checkVisibilityForRoute(['ArchivedAccounts'])">
+          <StTooltip
+            class="tooltip"
+            :tooltip="isHiddenAmounts ? 'Show Values' : 'Hide Values'"
+          >
+            <SvgIcon
+              name="icon-eye-opened"
+              v-if="isHiddenAmounts"
+              @click="toggleHiddenAmounts"
+            />
+
+            <SvgIcon
+              name="icon-eye-closed"
+              v-else
+              @click="toggleHiddenAmounts"
+            />
+          </StTooltip>
+
+          <StTooltip class="tooltip" tooltip="Favorite List">
+            <SvgIcon
+              name="icon-favorite-list"
+              @click="toggleDrawer('favourite-list')"
+              class="favourite-list"
+            />
+          </StTooltip>
+        </template>
+      </div>
+
+      <div class="header-right">
+        <p class="rpc-status">{{ rpcStatus }}</p>
+
+        <StTooltip class="tooltip" tooltip="Connected to Mainnet">
+          <SvgIcon name="icon-rpc-mainnet" class="rpc-icon" />
+        </StTooltip>
+
+        <StTooltip class="tooltip" tooltip="Quick Receive">
+          <SvgIcon name="icon-qr-code" @click="openQuickDeposit" />
+        </StTooltip>
+
+        <StTooltip class="tooltip tooltip-custom" tooltip="Settings">
+          <SvgIcon name="icon-settings" @click="goto('/settings')" />
+        </StTooltip>
+      </div>
+
+      <StModal
+        light
+        :visible="isVisible"
+        @close="closeModal"
+        class="account-modal"
+      >
+        <template #header>{{
+          checkPassword
+            ? 'Password Required'
+            : account?.isImported
+            ? 'Account Keys'
+            : 'Account Key'
+        }}</template>
+        <template #body>
+          <div v-if="!checkPassword" class="account-tabs">
+            <a
+              :class="{ active: activeStep === 'public-key' }"
+              @click="changeStep('public-key')"
+              >Public Key</a
+            >
+            <a
+              v-if="account && account.isImported"
+              :class="{ active: activeStep === 'private-key' }"
+              @click="changeStep('private-key')"
+              >Private Key</a
+            >
+          </div>
+          <div v-if="activeStep === 'public-key'">
+            <template v-if="!publicQrCode">
+              <div class="desc">
+                <p>
+                  The Public Key provides access to transactions records and
+                  balances, but does not allow sending of funds.
+                </p>
+              </div>
+              <p class="bold" v-if="!account?.isImported">xpub</p>
+              <p class="bold" v-else>Public Key</p>
+              <p class="key">{{ publicKey }}</p>
+              <div class="copy-key">
+                <p>
+                  Copy <span v-if="!account?.isImported">xpub</span>
+                  <span v-else>public key</span> to clipboard or show QR code
+                </p>
+                <div>
+                  <StTooltip
+                    :tooltip="
+                      copyPending ? 'Copied to Clipboard!' : 'Copy to Clipboard'
+                    "
+                  >
+                    <StClipboard :content="publicKey" @click="handleCopy">
+                      <SvgIcon name="icon-clipboard" />
+                    </StClipboard>
+                  </StTooltip>
+
+                  <StTooltip tooltip="Show QR Code">
+                    <SvgIcon
+                      name="icon-generate-qr-code"
+                      @click="generatePublicQr"
+                    />
+                  </StTooltip>
+                </div>
+              </div>
+              <p
+                v-if="!account?.isImported && !account.wif"
+                @click="openBlockExplorer"
+                class="view-more bold"
+              >
+                View on StealthMonitor
+              </p>
+            </template>
+            <template v-else>
+              <img class="qr-code" :src="publicQrCode" />
+              <p @click="publicQrCode = ''" class="view-more bold">
+                Hide QR code
+              </p>
+            </template>
+          </div>
+          <div v-if="activeStep === 'private-key'">
+            <template v-if="checkPassword">
+              <p class="password-desc">
+                Enter your password to authorize this action
+              </p>
+              <form class="form" @submit.prevent>
+                <StFormItem
+                  class="custom-form-item"
+                  :filled="password"
+                  label="Password"
+                  :error-message="form.password.$errors"
+                >
+                  <StInput
+                    v-model="password"
+                    placeholder="Please enter your password"
+                    :type="showPassword ? 'text' : 'password'"
+                  >
+                    <StTooltip
+                      class="tooltip"
+                      :tooltip="
+                        !showPassword ? 'Show Password' : 'Hide Password'
+                      "
+                    >
+                      <SvgIcon
+                        name="icon-eye-opened"
+                        v-if="!showPassword"
+                        @click="showPassword = true"
+                      />
+
+                      <SvgIcon
+                        name="icon-eye-closed"
+                        v-else
+                        @click="showPassword = false"
+                      />
+                    </StTooltip>
+                  </StInput>
+                </StFormItem>
+                <StButton
+                  v-show="Boolean(false)"
+                  color="white"
+                  @click="validatePassword"
+                  >Continue</StButton
+                >
+              </form>
+            </template>
+            <template v-else>
+              <template v-if="!privateQrCode">
+                <div class="desc">
+                  <p>
+                    The Private Key provides control over current and future
+                    balances of XST on this device.
+                  </p>
+                </div>
+                <p class="bold">Private Key</p>
+                <p class="key">{{ privateKey }}</p>
+                <div class="copy-key copy-key__private">
+                  <p>Copy privkey to clipboard or show QR code</p>
+                  <div>
+                    <StTooltip
+                      :tooltip="
+                        copyPending
+                          ? 'Copied to Clipboard!'
+                          : 'Copy to Clipboard'
+                      "
+                    >
+                      <StClipboard :content="privateKey" @click="handleCopy">
+                        <SvgIcon name="icon-clipboard" />
+                      </StClipboard>
+                    </StTooltip>
+                    <StTooltip tooltip="Show QR code">
+                      <SvgIcon
+                        name="icon-generate-qr-code"
+                        @click="generatePrivateQr"
+                      />
+                    </StTooltip>
+                  </div>
+                </div>
+              </template>
+              <template v-else>
+                <img class="qr-code" :src="privateQrCode" />
+                <p @click="privateQrCode = ''" class="view-more bold">
+                  Hide QR code
+                </p>
+              </template>
+            </template>
+          </div>
+        </template>
+      </StModal>
+
+      <StModal
+        light
+        :visible="accountVisible"
+        @close="accountVisible = false"
+        class="account-modal"
+      >
+        <template #header>Select Account</template>
+        <template #body>
+          <div class="account-overflow">
+            <div
+              class="account-card"
+              v-for="acc in accounts"
+              :key="acc.label"
+              @click="selectAccount(acc.label)"
+            >
+              <div class="account-card__header">
+                <h6>{{ acc.label }}</h6>
+                <div
+                  class="radio"
+                  :class="{ 'radio-active': showArrow === acc.label }"
+                />
+              </div>
+              <div class="account-card__content">
+                <div class="account-card__content--amount">
+                  <h6>{{ amountFormat(acc).amountLeft }} XST</h6>
+                  <p>~ ${{ amountFormat(acc).amountRight }} USD</p>
+                </div>
+                <transition name="fade">
+                  <div
+                    v-if="showArrow === acc.label"
+                    class="account-card__content--icon"
+                    @click="accountChanged(acc)"
+                  >
+                    <StTooltip class="tooltip" tooltip="Apply">
+                      <SvgIcon
+                        name="icon-arrow-right"
+                        class="icon-arrow-right"
+                      />
+                    </StTooltip>
+                  </div>
+                </transition>
+              </div>
+            </div>
+          </div>
+        </template>
+      </StModal>
+    </header>
+  </div>
 </template>
 
 <script>
-import pkgjson from '../../../package.json';
 import { useMainStore } from '@/store';
-import { computed } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import router from '@/router';
+import CryptoService from '@/services/crypto';
+import useHelpers from '@/composables/useHelpers';
+import { multiply } from 'mathjs';
+import emitter from '@/services/emitter';
+import VanillaQR from 'vanillaqr';
+import { useValidation } from 'vue3-form-validation';
+import db from '../../db';
+import SvgIcon from '../partials/SvgIcon.vue';
 
 export default {
+  components: {
+    SvgIcon,
+  },
   setup() {
     const mainStore = useMainStore();
-    let version = pkgjson.version;
+    const { formatAmount } = useHelpers();
     const route = useRoute();
+    const account = ref(null);
+    const accounts = ref([]);
+    const isVisible = ref(false);
+    const accountVisible = ref(false);
+    const rpcStatus = ref('');
+    const activeStep = ref('public-key');
+    const publicKey = ref('');
+    const privateKey = ref('');
+    const publicQrCode = ref('');
+    const privateQrCode = ref('');
+    const checkPassword = ref(false);
+    const showPassword = ref(false);
+    const password = ref('');
+    const showArrow = ref('');
+
+    const {
+      form,
+      // errors,
+      // add,
+      // submitting,
+      validateFields,
+      resetFields,
+    } = useValidation({
+      password: {
+        $value: password,
+        $rules: [
+          async (password) => {
+            if (!password) {
+              return 'Password is required.';
+            }
+            let isValid = await CryptoService.validatePassword(password);
+            if (!isValid) {
+              return 'Incorrect password.';
+            }
+          },
+        ],
+      },
+    });
 
     const currentRoute = computed(() => {
       return route.name;
     });
 
+    const computedClass = computed(() => {
+      let headerColor = '';
+      if (route.path.split('/').includes('account')) {
+        headerColor = 'grey';
+      } else {
+        headerColor = 'default';
+      }
+      return {
+        'layout__header--is-grey': headerStyle.value != headerColor,
+        'layout__header--settings': route.path.split('/').includes('settings'),
+      };
+    });
+
+    const headerStyle = computed(() => mainStore.headerStyle);
+
     const componentVisibility = computed(() => {
       return mainStore.componentVisibility;
     });
 
+    const isHiddenAmounts = computed(() => {
+      return mainStore.isAmountsHidden;
+    });
+
+    onMounted(async () => {
+      if (!componentVisibility.value.chart) {
+        toggleComponentVisibility('chart');
+      }
+      if (!componentVisibility.value.txDashboard) {
+        toggleComponentVisibility('txDashboard');
+      }
+      if (
+        window.history.state.current &&
+        window.history.state.back === '/lock'
+      ) {
+        try {
+          await mainStore.rpc('getinfo', []);
+          rpcStatus.value = `Connected to ${
+            process.env.VUE_APP_NETWORK[0].toUpperCase() +
+            process.env.VUE_APP_NETWORK.substring(1)
+          }`;
+          setTimeout(() => (rpcStatus.value = ''), 5000);
+        } catch (error) {
+          rpcStatus.value = `Not connected to ${
+            process.env.VUE_APP_NETWORK[0].toUpperCase() +
+            process.env.VUE_APP_NETWORK.substring(1)
+          }`;
+          setTimeout(() => (rpcStatus.value = ''), 5000);
+        }
+      }
+    });
+
+    watch(
+      () => isVisible.value,
+      async () => {
+        if (isVisible.value) {
+          await scanWallet();
+          getPublicKey();
+        }
+      }
+    );
+
+    async function validatePassword() {
+      if (await validateFields()) {
+        // privateQrCode.value = '123'
+        getPrivateKey();
+        activeStep.value = 'private-key';
+        checkPassword.value = false;
+        password.value = '';
+      }
+    }
+
+    function getPublicKey() {
+      if (!account.value) return;
+      if (account?.value?.isImported && account.value.wif) {
+        publicKey.value = account.value.publicKey;
+      } else {
+        const path = CryptoService.breakAccountPath(account.value.path);
+        const { xpub } = CryptoService.getKeysForAccount(
+          path.account,
+          path.change,
+          path.address
+        );
+        publicKey.value = xpub;
+      }
+    }
+
+    async function getPrivateKey() {
+      if (account?.value?.isImported) {
+        const wallet = await db.getItem('wallet');
+        try {
+          const secretKey = await CryptoService.AESDecrypt(
+            account.value.wif,
+            wallet.password
+          );
+          privateKey.value = secretKey;
+        } catch (e) {
+          console.error(e);
+          privateKey.value = '';
+        }
+      } else {
+        const path = CryptoService.breakAccountPath(account.value.path);
+        const { secretKey } = CryptoService.getKeysForAccount(
+          path.account,
+          path.change,
+          path.address
+        );
+        privateKey.value = secretKey;
+      }
+    }
+
+    async function changeStep(step) {
+      activeStep.value = step;
+      publicQrCode.value = '';
+      privateQrCode.value = '';
+      if (step === 'private-key') {
+        checkPassword.value = true;
+      }
+      privateKey.value = '';
+      resetFields();
+      await scanWallet();
+      getPublicKey();
+    }
+
+    function closeModal() {
+      isVisible.value = false;
+      activeStep.value = 'public-key';
+      publicQrCode.value = '';
+      checkPassword.value = false;
+      privateQrCode.value = '';
+      publicKey.value = '';
+      privateKey.value = '';
+    }
+
     function toggleDrawer(canvas) {
       mainStore.SET_CURRENT_CANVAS(canvas);
       mainStore.TOGGLE_DRAWER(true);
+    }
+
+    function toggleHiddenAmounts() {
+      mainStore.SET_AMOUNTS_HIDDEN(!isHiddenAmounts.value);
     }
 
     function checkVisibilityForRoute(routes = []) {
@@ -118,6 +586,10 @@ export default {
         component,
         !componentVisibility.value[component]
       );
+      if (component === 'txDashboard') {
+        mainStore.REFRESH_CHART(true);
+        setTimeout(() => mainStore.REFRESH_CHART(false), 1);
+      }
     }
 
     function openQuickDeposit() {
@@ -128,8 +600,104 @@ export default {
       router.push(path);
     }
 
+    let copyPending = ref(false);
+    function handleCopy() {
+      copyPending.value = true;
+      setTimeout(() => {
+        copyPending.value = false;
+      }, 2000);
+    }
+    async function scanWallet() {
+      // eslint-disable-next-line no-async-promise-executor
+      return new Promise(async (resolve) => {
+        const hdWallet = await CryptoService.scanWallet();
+        accounts.value = hdWallet.accounts;
+        // select first option
+        account.value = mainStore.accountDetails;
+        resolve();
+      });
+    }
+
+    function generatePublicQr() {
+      let qr = new VanillaQR({
+        url: publicKey.value,
+        noBorder: false,
+        colorDark: '#140435',
+        colorLight: '#FAF9FC',
+      });
+      publicQrCode.value = qr.toImage('png').src;
+    }
+
+    function generatePrivateQr() {
+      let qr = new VanillaQR({
+        url: privateKey.value,
+        noBorder: false,
+        colorDark: '#140435',
+        colorLight: '#FAF9FC',
+      });
+      privateQrCode.value = qr.toImage('png').src;
+    }
+
+    function openBlockExplorer() {
+      const chain =
+        process.env.VUE_APP_NETWORK === 'mainnet'
+          ? '?chain=main'
+          : '?chain=test';
+      window
+        .open(
+          'https://stealthmonitor.org/xPub/' + publicKey.value + chain,
+          '_blank'
+        )
+        .focus();
+    }
+
+    function amountFormat(account) {
+      return {
+        asset: 'XST',
+        amountLeft: `${formatAmount(account.utxo, false, 6, 6)}`,
+        amountRight: `${formatAmount(
+          multiply(account.utxo, CryptoService.constraints.XST_USD),
+          false,
+          4,
+          4
+        )}`,
+        percentage: formatAmount(
+          CryptoService.constraints.changePercent24Hr,
+          false,
+          2
+        ),
+      };
+    }
+
+    const changedAccount = ref('');
+
+    async function accountChanged(account) {
+      mainStore.SET_ACCOUNT_DETAILS(account);
+      await scanWallet();
+      setTimeout(() => {
+        emitter.emit('header:account-changed', account);
+      }, 1);
+      accountVisible.value = false;
+    }
+
+    emitter.on('header:new-account', async (acc) => {
+      await scanWallet();
+      emitter.emit('header:account-changed', acc);
+    });
+
+    function openAccountModal() {
+      showArrow.value = account.value.label;
+      accountVisible.value = true;
+    }
+
+    function selectAccount(account) {
+      showArrow.value = account;
+    }
+
+    // manually trigger retrieving keys
+    changeStep('public-key');
+
     return {
-      version,
       toggleDrawer,
       currentRoute,
       componentVisibility,
@@ -137,7 +705,43 @@ export default {
       toggleComponentVisibility,
       goto,
       openQuickDeposit,
-      headerStyle: computed(() => mainStore.headerStyle),
+      headerStyle,
+      isVisible,
+      accountVisible,
+      changeStep,
+      activeStep,
+      publicKey,
+      privateKey,
+      copyPending,
+      handleCopy,
+      publicQrCode,
+      privateQrCode,
+      checkPassword,
+      rpcStatus,
+      showPassword,
+      password,
+      closeModal,
+      generatePublicQr,
+      openBlockExplorer,
+      validatePassword,
+
+      scanWallet,
+      account,
+      accounts,
+      changedAccount,
+      toggleHiddenAmounts,
+      isHiddenAmounts,
+      accountChanged,
+      generatePrivateQr,
+
+      form,
+      validateFields,
+      resetFields,
+      computedClass,
+      amountFormat,
+      showArrow,
+      selectAccount,
+      openAccountModal,
     };
   },
 };
@@ -148,18 +752,59 @@ export default {
   border-bottom: 1px solid var(--grey100);
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+.layout__header-Dashboard {
+  padding: 44px 0 26px !important;
+}
+.layout__header-Transactions {
+  padding: 48px 0 26px !important;
+}
+.layout__header-ArchivedAccounts {
+  padding: 45px 0 26px !important;
+}
+.layout__header--settings {
+  width: calc(100% - 392px);
+  margin-left: auto;
+}
+.layout__header--settings .layout__header {
+  padding: 45px 0 24px !important;
+}
+.layout__header--is-grey {
+  background: var(--background100);
+}
+.layout__header--is-grey .layout__header {
+  margin: 0 24px;
+  padding: 41px 0 26px;
 }
 .header-left,
 .header-right {
+  width: 100%;
   display: flex;
   align-items: center;
 }
-h .layout__header--is-grey {
-  background: var(--background100);
+:deep .multiselect {
+  max-width: 170px;
+}
+.header-right {
+  justify-content: flex-end;
+  min-height: 24px;
 }
 
-.layout__header svg {
-  margin: 0 10px;
+.header-left div + div,
+.header-right .tooltip + .tooltip {
+  margin-left: 24px;
+}
+.header-right .tooltip-custom:before {
+  right: calc(50% + 10px);
+}
+
+/* .favourite-list {
+  margin-left: 24px;
+} */
+
+.header-left .tooltip + .tooltip {
+  margin-left: 24px;
 }
 
 .layout__header svg:hover {
@@ -168,7 +813,275 @@ h .layout__header--is-grey {
 :deep path {
   transition: 0.3s;
 }
+.nonclickable {
+  position: relative;
+}
+.nonclickable::before {
+  content: '';
+  cursor: not-allowed;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+}
 :deep .inactive path {
   stroke: var(--marine100);
+}
+:deep .multiselect__tags::after {
+  display: none;
+}
+:deep .multiselect-filled .multiselect__tags::after {
+  display: none;
+}
+:deep .multiselect__tags {
+  border-bottom: none;
+}
+.icons-flex {
+  display: flex;
+  align-items: center;
+}
+.icons-flex svg + svg,
+.icons-flex .tooltip + .tooltip {
+  margin-left: 24px;
+}
+:deep .st-modal-container {
+  width: 480px;
+  height: 520px;
+  box-sizing: border-box;
+}
+:deep .st-modal__body {
+  margin: 12px 0 0 0 !important;
+}
+.account-modal__hide-header :deep .st-modal__header {
+  display: none;
+}
+.account-modal__hide-header :deep .st-modal__body {
+  margin-top: 0;
+  text-align: center;
+}
+.account-modal__hide-header h5 {
+  margin-bottom: 36px;
+}
+.account-tabs {
+  margin-top: 36px;
+  margin-bottom: 36px;
+  display: flex;
+  align-items: center;
+}
+.account-tabs a {
+  position: relative;
+  cursor: pointer;
+  min-width: 160px;
+  font-size: 12px;
+  line-height: 24px;
+  letter-spacing: 0.32px;
+  color: var(--grey900);
+  padding-bottom: 12px;
+  border-bottom: 3px solid var(--grey200);
+  font-family: var(--secondary-font);
+  transition: 0.3s;
+}
+.account-tabs a + a {
+  margin-left: 24px;
+}
+.account-tabs a:hover {
+  text-shadow: 0.5px 0 var(--grey900);
+}
+.account-tabs a:hover:after {
+  width: 100%;
+}
+.account-tabs a:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 3px;
+  width: 0;
+  background-color: var(--marine500);
+  transition: 0.3s;
+}
+.account-tabs a.active {
+  text-shadow: 0.5px 0 var(--grey900);
+}
+.account-tabs a.active:after {
+  background-color: var(--marine500);
+  width: 100%;
+}
+.desc {
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: var(--background100);
+  border-radius: 4px;
+}
+.key {
+  word-break: break-all;
+  margin-top: 8px;
+  color: var(--marine500);
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--grey100);
+}
+.copy-key {
+  margin-top: 17px;
+  margin-bottom: 49px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.copy-key__private {
+  margin-bottom: 81px;
+}
+.copy-key div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 64px;
+}
+.view-more {
+  text-align: center;
+  cursor: pointer;
+  color: var(--marine500);
+}
+.qr-code {
+  display: block;
+  width: 100%;
+  max-width: 220px;
+  margin: 63px auto 46px;
+  padding-left: 22px;
+}
+.custom-form-item {
+  margin: 120px 0 0;
+}
+:deep .st-input input {
+  background-position: 92% 49% !important;
+}
+.rpc-status {
+  margin-right: 12px;
+}
+.rpc-icon {
+  pointer-events: none;
+}
+.account-switcher {
+  width: 170px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.account-switcher h6 {
+  margin-right: 24px;
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+}
+.account-switcher svg {
+  min-width: 8px;
+}
+.account-overflow {
+  margin-top: 36px;
+  overflow: auto;
+  height: 392px;
+  padding-right: 16px;
+}
+.account-overflow::-webkit-scrollbar {
+  width: 4px;
+}
+.account-overflow:hover::-webkit-scrollbar-thumb {
+  background: var(--grey100);
+}
+.account-overflow::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+.account-card {
+  cursor: pointer;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  padding: 15px 20px 19px;
+  background-color: var(--background0);
+  border: 1px solid var(--purple50);
+  box-shadow: 0px 8px 24px -8px rgba(34, 3, 101, 0.1);
+  border-radius: 2px;
+}
+.account-card .account-card__header {
+  margin-bottom: 20px;
+  display: grid;
+  grid-gap: 0 24px;
+  grid-template-columns: 11fr 20px;
+  align-items: center;
+}
+.account-card .account-card__header h6 {
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+}
+.account-card .account-card__content {
+  display: grid;
+  grid-gap: 0 24px;
+  grid-template-columns: 11fr 18px;
+}
+.account-card .account-card__content .account-card__content--amount h6 {
+  margin-bottom: 4px;
+  font-family: var(--secondary-font);
+}
+.account-card .account-card__content .account-card__content--icon {
+  display: flex;
+  align-items: flex-end;
+}
+.account-card :deep .icon-arrow-right path {
+  stroke: #4e00f6;
+}
+.radio {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  background: linear-gradient(
+      153.02deg,
+      rgba(250, 249, 252, 0.25) 0%,
+      rgba(229, 228, 232, 0.25) 83.23%
+    ),
+    var(--grey50);
+  border: 1px solid rgba(229, 228, 232, 0.15);
+  border-radius: 4px;
+}
+.radio-active::after {
+  background-color: var(--grey50) !important;
+}
+.radio-active::before {
+  opacity: 1 !important;
+}
+.radio::after {
+  content: '';
+  display: block;
+  background-color: var(--grey200);
+  width: 6px;
+  height: 6px;
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  border-radius: 2px;
+  z-index: 2;
+  transition: 0.3s;
+}
+.radio::before {
+  content: '';
+  display: block;
+  width: 16px;
+  height: 16px;
+  background: linear-gradient(
+      153.02deg,
+      rgba(78, 0, 246, 0.15) 0%,
+      rgba(63, 1, 198, 0.15) 83.23%
+    ),
+    #4e00f6;
+  border: 1px solid rgba(63, 1, 198, 0.5);
+  border-radius: 2px;
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  z-index: 1;
+  opacity: 0;
+  transition: 0.3s;
 }
 </style>

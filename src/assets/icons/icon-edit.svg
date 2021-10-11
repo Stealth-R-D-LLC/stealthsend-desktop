@@ -1,0 +1,29 @@
+<svg
+  width="20"
+  height="21"
+  viewBox="0 0 20 21"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M0 7H6"
+    stroke="#4E00F6"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M0 3H9"
+    stroke="#4E00F6"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M18 5L7 17L3 19L2 18L4 14L15 2L18 5Z"
+    stroke="#4E00F6"
+    stroke-width="2"
+  />
+  <path d="M5 13L8 16" stroke="#4E00F6" stroke-width="2" />
+  <path d="M13 5L15 7" stroke="#4E00F6" stroke-width="2" />
+</svg>

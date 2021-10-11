@@ -9,6 +9,7 @@
     <template #header>Quick Receive XST</template>
     <template #body>
       <StFormItem
+        position="center"
         class="receiving-address"
         label="Receiving Address"
         color="dark"
@@ -22,30 +23,20 @@
           placeholder="Loading..."
           disabled
         >
-          <svg
+          <SvgIcon
+            name="icon-loader-address"
             v-if="!depositAddress"
             class="address-loader"
-            width="18"
-            height="18"
-            viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle
-              cx="9"
-              cy="9"
-              r="7"
-              stroke="#E5E4E8"
-              stroke-width="2"
-              stroke-linejoin="round"
-              stroke-dasharray="2 4"
-            />
-          </svg>
+          />
         </StInput>
+        <template #description>
+          Receiving Account:
+          {{ account && account.label ? account.label : '' }}
+        </template>
       </StFormItem>
       <StTooltip
         class="tooltip"
-        :tooltip-text="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
+        :tooltip="copyPending ? 'Copied to Clipboard!' : 'Copy to Clipboard'"
       >
         <StClipboard :content="depositAddress" @click="handleCopy"
           >Copy to Clipboard</StClipboard
@@ -61,9 +52,13 @@ import { useMainStore } from '@/store';
 import { computed, ref } from 'vue';
 import VanillaQR from 'vanillaqr';
 import CryptoService from '@/services/crypto';
+import SvgIcon from '../partials/SvgIcon.vue';
 
 export default {
   name: 'StReceiveModal',
+  components: {
+    SvgIcon,
+  },
   setup() {
     const mainStore = useMainStore();
 
@@ -124,11 +119,11 @@ export default {
     }
 
     function generateQR() {
-      var qr = new VanillaQR({
+      let qr = new VanillaQR({
         url: depositAddress.value,
         noBorder: false,
-        colorDark: '#140435',
-        colorLight: '#FAF9FC',
+        colorDark: '#FAF9FC',
+        colorLight: '#140435',
       });
       qrSrc.value = qr.toImage('png').src;
     }
@@ -172,28 +167,23 @@ export default {
   text-align: center;
 }
 .tooltip {
-  padding: 24px 0;
+  width: fit-content;
+  margin: 0 auto 40px;
   display: block;
-  width: 100%;
   text-align: center;
 }
 .qr-img {
   margin: 16px auto;
   display: block;
-  max-width: 145px;
+  max-width: 205px;
 }
 
 .address-loader {
   animation: rotating 2s linear infinite;
 }
-.receiving-address :deep label {
-  right: 0;
-  text-align: center;
-}
-:deep .st-form-item__message--is-notice {
-  width: 100%;
-  text-align: center;
-  margin-top: 8px;
+
+:deep .st-modal__body {
+  margin: 36px 0 0 0;
 }
 
 .st-clipboard {
@@ -242,5 +232,12 @@ export default {
 .quick-receive-modal .st-modal-container {
   width: 480px;
   height: 520px;
+  box-sizing: border-box;
+}
+.quick-receive-modal .st-modal-container--dark .st-modal__header {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.32px;
 }
 </style>

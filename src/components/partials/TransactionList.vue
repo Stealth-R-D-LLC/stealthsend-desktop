@@ -1,239 +1,194 @@
 <template>
   <div class="st-transaction-list">
     <div class="overflow">
-      <Filters @change="orderTransactions"></Filters>
+      <Filters @change="orderTransactions" @sort="orderTransactions"></Filters>
       <template v-for="date in txDates" :key="date">
-        <p class="tx-date">
-          <span
-            v-if="
-              ['TODAY', 'YESTERDAY'].includes(
-                todayOrYesterday(date).toUpperCase()
-              )
-            "
-            class="relative"
-          >
-            {{ todayOrYesterday(date) }},
-          </span>
-          {{ date }}
-        </p>
+        <p class="tx-date bold">{{ date }}</p>
+
         <StTable
           :data="txs[date]"
           :has-header="hasTableHeader"
           :columns="[
+            {
+              key: 'status',
+              title: 'Status',
+              customCellClass:
+                $route.name === 'Dashboard' ? 'status' : 'status-text',
+            },
             { key: 'blocktime', title: 'Time', customCellClass: 'blocktime' },
             { key: 'account', title: 'Account' },
+            { key: 'recipient', title: 'Recipient' },
             { key: 'label', title: 'Label' },
-            { key: 'amountFiat', title: 'Amount (USD)' },
-            { key: 'amount', title: 'Amount' },
+            { key: 'amountFiat', title: 'USD Value' },
+            { key: 'amount', title: 'XST' },
             { key: 'actions', title: '', customCellClass: 'items-center' },
           ]"
         >
-          <template #amount="{ item }">
-            {{ item.amount > 0 ? '+' : '-' }}
-            {{ formatAmount(Math.abs(item.amount)) }} XST
+          <template #status="{ item }">
+            <div class="flex-center-vertical">
+              <template v-if="item.amount > 0">
+                <SvgIcon name="icon-transactions-received" />
+                <template v-if="$route.name !== 'Dashboard'">Received</template>
+              </template>
+
+              <template v-else-if="item.amount <= 0">
+                <SvgIcon name="icon-transactions-sent" />
+                <template v-if="$route.name !== 'Dashboard'">Sent</template>
+              </template>
+            </div>
           </template>
-          <template #label="{ item }">
-            {{
-              findLabelForTx(item.txid) ? findLabelForTx(item.txid) : 'No label'
-            }}
+          <template #account="{ item }">
+            <div :class="{ ellipsis: isExpanded === item.index }">
+              {{ item.account }}
+            </div>
           </template>
-          <template #amountFiat="{ item }">
-            {{ item.amount > 0 ? '+' : '-' }}
-            {{ formatAmount(Math.abs(item.amount * XST_USD_RATE), true) }} USD
+          <template #recipient="{ item }">
+            <div
+              class="move"
+              :class="{ 'move-left': isExpanded === item.index }"
+            >
+              <span
+                v-if="
+                  item &&
+                  item.output &&
+                  item.output[0] &&
+                  item.output[0].addresses &&
+                  item.output[0].addresses[0]
+                "
+                >{{ item.output[0].addresses[0] }}</span
+              >
+              <span
+                v-else-if="
+                  item &&
+                  item.outputs &&
+                  item.outputs[0] &&
+                  item.outputs[0].address
+                "
+                >{{ item.outputs[0].address }}</span
+              >
+            </div>
           </template>
           <template #blocktime="{ item }">
-            <div class="flex-center-vertical">
-              <svg
-                v-if="item.amount > 0"
-                width="24"
-                height="24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle cx="12" cy="12" r="12" fill="#D6F8F0" />
-                <path d="M7 14v3h10v-3" stroke="#07AC82" stroke-width="2" />
-                <path
-                  d="M10 11l2 2 2-2"
-                  stroke="#07AC82"
-                  stroke-width="2"
-                  stroke-linecap="square"
-                />
-                <path d="M12 6v7" stroke="#07AC82" stroke-width="2" />
-              </svg>
-              <svg
-                v-else-if="item.amount < 0"
-                width="24"
-                height="24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle cx="12" cy="12" r="12" fill="#E5E4E8" />
-                <path d="M7 13v3h10v-3" stroke="#8B8A8D" stroke-width="2" />
-                <path
-                  d="M14 8l-2-2-2 2"
-                  stroke="#8B8A8D"
-                  stroke-width="2"
-                  stroke-linecap="square"
-                />
-                <path d="M12 6v7" stroke="#8B8A8D" stroke-width="2" />
-              </svg>
-              <span>
-                {{ formatBlocktime(item.blocktime) }}
-              </span>
+            {{ formatBlocktime(item.blocktime) }}
+          </template>
+          <template #amount="{ item }">
+            <div
+              class="move amount-fixed"
+              :class="{ 'move-left': isExpanded === item.index }"
+            >
+              {{ item.amount > 0 ? '+' : '-' }}
+              {{
+                isHiddenAmounts
+                  ? '••• XST'
+                  : `${formatAmount(Math.abs(item.amount), false, 6, 6)} XST`
+              }}
+            </div>
+          </template>
+          <template #label="{ item }">
+            <div
+              class="move"
+              :class="{ 'move-left': isExpanded === item.index }"
+            >
+              <template v-if="findLabelForTx(item.txid)">
+                <StPopper
+                  :content="findLabelForTx(item.txid)"
+                  placement="top"
+                  hover
+                >
+                  {{ findLabelForTx(item.txid) }}
+                </StPopper>
+              </template>
+              <template v-else>
+                {{ 'No label' }}
+              </template>
+            </div>
+          </template>
+          <template #amountFiat="{ item }">
+            <div
+              class="move amount-fixed"
+              :class="{ 'move-left': isExpanded === item.index }"
+            >
+              {{ item.amount > 0 ? '+' : '-' }}
+              <template v-if="item.amount * XST_USD_RATE < 1">
+                {{
+                  isHiddenAmounts
+                    ? '$••• USD'
+                    : `$${formatAmount(
+                        Math.abs(item.amount * XST_USD_RATE),
+                        false,
+                        4,
+                        4
+                      )} USD`
+                }}
+              </template>
+              <template v-else>
+                {{
+                  isHiddenAmounts
+                    ? '$••• USD'
+                    : `$${formatAmount(
+                        Math.abs(item.amount * XST_USD_RATE),
+                        false,
+                        4,
+                        4
+                      )} USD`
+                }}
+              </template>
             </div>
           </template>
           <template #actions="{ item }">
             <div class="icon-container">
-              <svg
-                class="icon"
-                width="8"
-                height="12"
-                viewBox="0 0 8 12"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+              <StTooltip
+                v-if="isTxFeeless(item.txinfo)"
+                tooltip="Feeless transaction"
               >
-                <path d="M5 5L6 0L0 7H3L2 12L8 5H5Z" fill="#4E00F6" />
-              </svg>
-              <svg
+                <SvgIcon name="icon-feeles" />
+              </StTooltip>
+
+              <SvgIcon
+                name="icon-hamburger-menu-light"
                 v-if="isExpanded !== item.index"
                 class="icon"
                 @click="expandIcons(item.index)"
-                width="12"
-                height="10"
-                viewBox="0 0 12 10"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M0 1H8"
-                  stroke="#A2A1A4"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M0 5H12"
-                  stroke="#A2A1A4"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M0 9H12"
-                  stroke="#A2A1A4"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              <svg
-                @click="expandIcons(item.index)"
+              />
+
+              <SvgIcon
+                name="icon-close-primary"
                 v-else
                 class="icon"
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M3 3L15 15"
-                  stroke="#6B2AF7"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M3 15L15 3"
-                  stroke="#6B2AF7"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-              </svg>
+                @click="expandIcons(item.index)"
+              />
             </div>
             <div
               class="expanded"
               :class="{ expanded__active: isExpanded === item.index }"
             >
-              <svg
-                class="icon"
-                width="8"
-                height="12"
-                viewBox="0 0 8 12"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M5 5L6 0L0 7H3L2 12L8 5H5Z" fill="#4E00F6" />
-              </svg>
-              <svg
-                @click="openTransaction(item)"
-                class="icon"
-                width="19"
-                height="20"
-                viewBox="0 0 19 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M13 14L18 19"
-                  stroke="#6B2AF7"
-                  stroke-width="2"
-                  stroke-linejoin="round"
+              <div class="expanded__inner">
+                <StTooltip
+                  v-if="isTxFeeless(item.txinfo)"
+                  tooltip="Feeless transaction"
+                >
+                  <SvgIcon name="icon-feeles" />
+                </StTooltip>
+
+                <SvgIcon
+                  name="icon-transaction-details"
+                  class="icon-expanded"
+                  @click="openTransaction(item)"
                 />
-                <path
-                  d="M0 5H6"
-                  stroke="#6B2AF7"
-                  stroke-width="2"
-                  stroke-linejoin="round"
+
+                <SvgIcon
+                  name="icon-edit"
+                  class="icon-expanded"
+                  @click="openTransaction(item, true)"
                 />
-                <path
-                  d="M0 9H9"
-                  stroke="#6B2AF7"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M0 13H9"
-                  stroke="#6B2AF7"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M5 16.4185C5.92643 16.7935 6.9391 17 8 17C12.4183 17 16 13.4183 16 9C16 4.58172 12.4183 1 8 1C6.9391 1 5.92643 1.20651 5 1.58152"
-                  stroke="#6B2AF7"
-                  stroke-width="2"
-                />
-              </svg>
-              <svg
-                class="icon"
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M0 6.5H6"
-                  stroke="#6B2AF7"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M0 2.5H9"
-                  stroke="#6B2AF7"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M18 4.5L7 16.5L3 18.5L2 17.5L4 13.5L15 1.5L18 4.5Z"
-                  stroke="#6B2AF7"
-                  stroke-width="2"
-                />
-                <path d="M5 12.5L8 15.5" stroke="#6B2AF7" stroke-width="2" />
-                <path d="M13 4.5L15 6.5" stroke="#6B2AF7" stroke-width="2" />
-              </svg>
+              </div>
             </div>
           </template>
         </StTable>
       </template>
+      <h6 class="no-results" v-if="txDates.length === 0">
+        No transaction data
+      </h6>
     </div>
   </div>
 </template>
@@ -249,11 +204,14 @@ import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
 import { ref, computed, watch, onMounted } from 'vue';
 import CryptoService from '@/services/crypto';
 import { useMainStore } from '@/store';
+import SvgIcon from '../partials/SvgIcon.vue';
+/* import emitter from '@/services/emitter'; */
 
 export default {
   name: 'StTransactionList',
   components: {
     Filters,
+    SvgIcon,
   },
   props: {
     transactions: {
@@ -286,7 +244,24 @@ export default {
       }
     }
 
-    function orderTransactions(filter) {
+    function isTxFeeless(txinfo = undefined) {
+      let found = false;
+      if (!txinfo) return found;
+      else if (txinfo.vout) {
+        found = txinfo.vout.find((el) => el.scriptPubKey.type === 'feework');
+      } else if (txinfo.destinations) {
+        found = txinfo.destinations.find(
+          (el) => el.amount === 0 && el.type === 'feework'
+        );
+      }
+
+      return !!found;
+    }
+
+    function orderTransactions(
+      filter = { label: 'All', value: Infinity },
+      filterDirection = { label: 'All', value: '' }
+    ) {
       // sort transactions by blocktime
       const transactionsTmp = props.transactions
         .map((el, index) => {
@@ -300,13 +275,31 @@ export default {
         })
         .sort((a, b) => (a.blocktime < b.blocktime ? 1 : -1));
       // filter transactions based on selected filter
-      let filtered = filterTransactions(filter, transactionsTmp);
+      let filteredDirection = filterByDirection(
+        filterDirection,
+        transactionsTmp
+      );
+      let filtered = filterByPeriod(filter, filteredDirection);
       // group transactions by date
       txs.value = groupBy(filtered, 'blocktimeDate');
     }
 
-    function filterTransactions(filter, transactions) {
-      if (!filter || filter === Infinity) return transactions;
+    function filterByDirection(direction, transactions) {
+      if (!direction || direction === { label: 'All', value: '' })
+        return transactions;
+      return transactions.filter((el) => {
+        if (direction.value === '') {
+          return el;
+        } else if (direction.value === 'received') {
+          return el.amount > 0;
+        } else if (direction.value === 'sent') {
+          return el.amount < 0;
+        }
+      });
+    }
+
+    function filterByPeriod(filter, transactions) {
+      if (!filter || filter === 7) return transactions;
       return transactions.filter(
         (el) =>
           differenceInCalendarDays(new Date(), fromUnixTime(el.blocktime)) <
@@ -330,7 +323,8 @@ export default {
       return Object.keys(txs.value);
     });
 
-    function openTransaction(trx) {
+    function openTransaction(trx, isEditMode = false) {
+      trx['isEditMode'] = isEditMode;
       mainStore.SET_OFF_CANVAS_DATA(trx);
       mainStore.SET_CURRENT_CANVAS('transaction-details');
       mainStore.TOGGLE_DRAWER(true);
@@ -342,7 +336,7 @@ export default {
     }
 
     onMounted(async () => {
-      orderTransactions({ label: 'All', value: Infinity });
+      orderTransactions();
       await CryptoService.getTxWithLabels();
     });
 
@@ -353,6 +347,11 @@ export default {
       }
     );
 
+    /* emitter.on('transactions:refresh', () => {
+      orderTransactions();
+      CryptoService.getTxWithLabels();
+    }); */
+
     return {
       isExpanded,
       expandIcons,
@@ -360,13 +359,16 @@ export default {
       formatBlocktime,
       groupBy,
       formatAmount,
-      filterTransactions,
+      filterByDirection,
+      filterByPeriod,
       todayOrYesterday,
       XST_USD_RATE,
       txDates,
       orderTransactions,
       txs,
       findLabelForTx,
+      isTxFeeless,
+      isHiddenAmounts: computed(() => mainStore.isAmountsHidden),
     };
   },
 };
@@ -374,19 +376,22 @@ export default {
 
 <style scoped>
 .st-transaction-list {
-  padding: 16px 10px 16px 28px;
+  padding: 16px 10px 0px 28px;
   background-color: #ffffff;
 }
 .overflow {
   padding: 15px 14px 0 0;
   overflow: auto;
-  height: calc(100vh - 241px);
+  height: calc(100vh - 256px);
 }
 .overflow::-webkit-scrollbar {
   width: 4px;
 }
-.overflow::-webkit-scrollbar-thumb {
+.overflow:hover::-webkit-scrollbar-thumb {
   background: var(--grey100);
+}
+.overflow::-webkit-scrollbar-thumb {
+  background: transparent;
 }
 .st-transaction-list .tx-date {
   font-family: var(--secondary-font);
@@ -395,7 +400,7 @@ export default {
   line-height: 24px;
   letter-spacing: 0.12px;
   color: var(--text);
-  margin: 22px 0;
+  margin: 32px 0 14px;
 }
 
 .st-transaction-list .tx-date .relative {
@@ -405,9 +410,25 @@ export default {
 .blocktime {
   width: 160px;
 }
+:deep .status {
+  width: 24px;
+}
+:deep .status-text {
+  width: 106px;
+}
+
+:deep .status-text svg {
+  margin-right: 16px;
+}
 
 .blocktime span {
   margin-left: 16px;
+}
+
+.amount-fixed {
+  width: 168px;
+  display: inline-block;
+  text-align: right;
 }
 
 :deep .table .table__row:hover {
@@ -417,13 +438,25 @@ export default {
 :deep .items-center {
   position: relative;
   text-align: center;
-  width: 100px;
+  width: 28px;
 }
 
 .icon-container {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
+  min-width: 63px;
+  max-width: 63px;
+}
+
+.icon-container svg {
+  min-width: 18px;
+}
+
+:deep .tooltip {
+  display: flex;
+  align-items: center;
+  margin-right: 28px;
 }
 
 .icon {
@@ -431,21 +464,110 @@ export default {
   margin-right: 24px;
 }
 .icon:last-child {
+  margin-right: 3px;
+}
+.icon-active {
+  margin-right: 0 !important;
+}
+.icon-expanded {
+  cursor: pointer;
+  margin-right: 24px;
+}
+.icon-expanded:last-child {
   margin-right: 0;
 }
 .expanded {
   overflow: hidden;
   width: 0;
   position: absolute;
-  display: flex;
-  align-items: center;
   top: calc(50% - 15px);
-  right: 50px;
+  right: 35px;
   background-color: #ffffff;
-  padding: 5px;
   transition: 0.3s;
 }
 .expanded__active {
+  overflow: initial;
   width: 105px;
+}
+.expanded__inner {
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.filter + .filter {
+  margin-left: 8px;
+}
+.filter {
+  cursor: pointer;
+  padding: 6px 12px;
+  background: linear-gradient(
+      153.02deg,
+      rgba(250, 249, 252, 0.15) 0%,
+      rgba(229, 228, 232, 0.15) 83.23%
+    ),
+    var(--grey50);
+  border: 1px solid rgba(229, 228, 232, 0.15);
+  border-radius: 6px;
+  font-size: 10px;
+  line-height: 16px;
+  letter-spacing: 0.16px;
+  color: var(--grey900);
+  font-family: var(--seconday-font);
+  transition: 0.3s;
+}
+.filter:hover {
+  background: linear-gradient(
+      153.43deg,
+      rgba(184, 183, 187, 0.15) 0%,
+      rgba(229, 228, 232, 0.15) 83.33%
+    ),
+    var(--grey100);
+  border: 1px solid rgba(207, 205, 209, 0.25);
+  color: var(--marine500);
+}
+.no-results {
+  text-align: center;
+}
+.ellipsis {
+  width: calc(100% - 58px);
+}
+.move {
+  transition: 0.3s;
+}
+.dashboard-container .ellipsis {
+  width: calc(100% - 85px);
+}
+.dashboard-container .move-left {
+  transform: translateX(-95px);
+}
+.move-left {
+  white-space: nowrap;
+  transform: translateX(-58px);
+}
+:deep .table tr td:first-child {
+  padding: 18px 10px 18px 0;
+}
+:deep .table tr td:last-child {
+  padding: 18px 0 18px 10px;
+}
+.dashboard-container .table tr td:nth-child(5) .move-left {
+  transform: translateX(-50px);
+}
+.dashboard-container .table tr td:nth-child(6) .move,
+.dashboard-container .table tr td:nth-child(7) .move {
+  white-space: nowrap;
+}
+:deep .blocktime {
+  white-space: nowrap;
+}
+
+/* Align 'USD Value' column, or third column from the end [:nth-last-child(-n + 3)], to the right */
+:deep .table thead th:nth-last-child(-n + 3) {
+  text-align: right;
+}
+
+:deep .table tbody td:nth-last-child(-n + 3) {
+  text-align: right;
 }
 </style>

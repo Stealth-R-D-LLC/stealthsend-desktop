@@ -7,10 +7,6 @@ p {
   font-family: var(--secondary-font);
 }
 
-.semi-bold {
-  font-weight: 600;
-}
-
 h1 {
   color: var(--grey1000);
   font-size: 60px;
@@ -59,10 +55,23 @@ p {
   line-height: 24px;
 }
 p.medium {
-  font-size: 14px;
+  font-size: 12px;
   letter-spacing: 0.12px;
   line-height: 24px;
 }
 .bold {
   font-weight: 700;
+}
+.semi-bold {
+  font-weight: 600;
+}
+
+.link {
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--marine500);
+  transition: 0.3s;
+}
+.link:hover {
+  color: var(--marine200);
 }

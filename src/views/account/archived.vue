@@ -2,9 +2,9 @@
   <div class="accounts-container">
     <div class="accounts-container__overflow">
       <div class="accounts-container__content">
-        <transition-group v-if="accounts.length !== 0" name="list" tag="div">
-          <accounts :accounts="accounts"></accounts>
-        </transition-group>
+        <!-- <transition-group v-if="accounts.length !== 0" name="list" tag="div"> -->
+        <accounts></accounts>
+        <!-- </transition-group> -->
       </div>
     </div>
   </div>
@@ -12,9 +12,10 @@
 
 <script>
 // import StCard from '@/components/elements/Card'
-import { ref } from 'vue';
-import CryptoService from '@/services/crypto';
+// import { ref } from 'vue';
+// import CryptoService from '@/services/crypto';
 import accounts from '@/components/partials/accounts.vue';
+// import emitter from '@/services/emitter';
 
 export default {
   name: 'StArchivedAccounts',
@@ -22,19 +23,45 @@ export default {
     accounts,
   },
   setup() {
-    const accounts = ref([]);
+    // const accounts = ref([]);
 
-    async function scanWallet() {
-      const hdWallet = await CryptoService.scanWallet();
-      accounts.value = hdWallet.accounts;
-    }
-    scanWallet();
-    function unarchieve(account) {
-      CryptoService.unarchiveAccount(account);
-    }
+    // async function scanWallet() {
+    //   const hdWallet = await CryptoService.scanWallet();
+
+    //   // find first account with 0 balance
+    //   let firstZeroAccount = null;
+    //   for (let acc of hdWallet.accounts) {
+    //     if (acc.utxo === 0) {
+    //       firstZeroAccount = acc;
+    //       break;
+    //     }
+    //   }
+
+    //   let tmpAccounts = [];
+    //   if (firstZeroAccount) {
+    //     tmpAccounts = [firstZeroAccount];
+    //     for (let acc of hdWallet.accounts) {
+    //       if (acc.address === firstZeroAccount.address) continue;
+    //       tmpAccounts.push(acc);
+    //     }
+    //   } else {
+    //     tmpAccounts = tmpAccounts.concat(hdWallet.accounts);
+    //   }
+
+    //   accounts.value = [...tmpAccounts];
+    // }
+    // scanWallet();
+    // function unarchieve(account) {
+    //   CryptoService.activateAccount(account);
+    // }
+
+    // emitter.on('accounts:refresh', () => {
+    //   // accounts.value = [];
+    //   scanWallet();
+    // });
     return {
-      accounts,
-      unarchieve,
+      // accounts,
+      // unarchieve,
     };
   },
 };
@@ -42,26 +69,39 @@ export default {
 
 <style scoped>
 .accounts-container {
-  height: calc(100vh - 85px);
+  height: calc(100vh - 92px);
 }
 .accounts-container__overflow {
   height: 100%;
   overflow: auto;
+  overflow-x: hidden;
 }
 .accounts-container__overflow::-webkit-scrollbar {
   width: 4px;
 }
-.accounts-container__overflow::-webkit-scrollbar-thumb {
+.accounts-container__overflow:hover::-webkit-scrollbar-thumb {
   background: var(--grey100);
 }
-.accounts-container__content {
-  margin-top: 144px;
-  padding: 24px 28px;
-  height: calc(100% - 192px);
-  background-color: var(--background0);
+.accounts-container__overflow::-webkit-scrollbar-thumb {
+  background: transparent;
 }
-.accounts-container__content > div {
-  margin-top: -144px;
-  padding-bottom: 30px;
+.accounts-container__content {
+  background: var(--background50);
+  padding: 0 28px 0;
+  height: 100%;
+}
+
+.list-item {
+  display: inline-block;
+  margin-right: 10px;
+}
+.list-enter-active,
+.list-leave-active {
+  transition: all 1s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
 }
 </style>

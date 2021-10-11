@@ -1,57 +1,105 @@
 <template>
-  <div class="account-details-container">
+  <div class="account-details-container" v-if="account">
     <div class="account-details-container__top">
       <div class="left">
-        <StLabel label="XST Balance" bold>{{ account.utxo }}</StLabel>
-        <StLabel label="USD Value">${{ usdAmount }}</StLabel>
-        <StLabel label="BTC Value">{{ btcAmount }}</StLabel>
-        <StLabel label="24h %"><StTag> +280.88% </StTag> </StLabel>
-        <StButton @click="openModal('send')">Send</StButton>
-        <StButton @click="openModal('receive')">Receive</StButton>
+        <div>
+          <StLabel label="XST Balance" bold>{{
+            isHiddenAmounts ? '•••' : formatAmount(account.utxo, false, 6, 6)
+          }}</StLabel>
+          <StLabel label="USD Value"
+            >${{
+              isHiddenAmounts ? '•••' : formatAmount(usdAmount, false, 4, 4)
+            }}</StLabel
+          >
+          <StLabel label="BTC Value">{{
+            isHiddenAmounts ? '•••' : formatAmount(btcAmount, false, 8, 8)
+          }}</StLabel>
+          <StLabel label="24h %"
+            ><StTag
+              :color="Number(changePercent24Hr) > 0 ? 'success' : 'danger'"
+            >
+              {{
+                Number(changePercent24Hr) > 0
+                  ? '+' + changePercent24Hr
+                  : changePercent24Hr
+              }}%
+            </StTag>
+          </StLabel>
+        </div>
+        <div class="actions">
+          <StButton type="type-c" size="normal" @click="openModal('send')"
+            >Send</StButton
+          >
+          <StButton type="type-c" size="normal" @click="openModal('receive')"
+            >Receive</StButton
+          >
+        </div>
       </div>
     </div>
     <div class="account-details-container__body">
-      <TransactionList
-        has-table-header
-        :transactions="transactions"
-      ></TransactionList>
+      <div class="account-details-container__body--overflow">
+        <div class="icons">
+          <div :class="{ nonclickable: !componentVisibility.txDashboard }">
+            <SvgIcon
+              name="icon-chart"
+              :class="{ inactive: !componentVisibility.chart }"
+              @click="toggleComponentVisibility('chart')"
+            />
+          </div>
+
+          <div :class="{ nonclickable: !componentVisibility.chart }">
+            <SvgIcon
+              name="icon-dashboard-transactions"
+              :class="{ inactive: !componentVisibility.txDashboard }"
+              @click="toggleComponentVisibility('txDashboard')"
+            />
+          </div>
+        </div>
+        <template v-if="!refreshChart">
+          <Chart
+            v-if="componentVisibility.chart"
+            :class="{
+              'full-height__details': !componentVisibility.txDashboard,
+            }"
+          ></Chart>
+        </template>
+        <TransactionList
+          v-if="componentVisibility.txDashboard"
+          class="details-table"
+          has-table-header
+          :transactions="transactions"
+        ></TransactionList>
+      </div>
     </div>
-    <Card
-      class="list-item"
-      :archiveable="false"
-      :account="{
-        label: account.label,
-        utxo: account.utxo,
-        isArchived: account.isArchived,
-      }"
-    ></Card>
-    <StTooltip
-      :tooltip-text="copyPending ? 'Copied to clipboard!' : 'Click to copy'"
-    >
-    </StTooltip>
   </div>
 </template>
 
 <script>
 import { useMainStore } from '@/store';
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import StLabel from '@/components/elements/StLabel';
-import Card from '@/components/elements/Card';
+import Chart from '@/views/dashboard/components/chart';
 import TransactionList from '@/components/partials/TransactionList';
 import CryptoService from '@/services/crypto';
 import router from '@/router';
 import { onBeforeRouteLeave } from 'vue-router';
+import emitter from '@/services/emitter';
+import useHelpers from '@/composables/useHelpers';
+import SvgIcon from '../../components/partials/SvgIcon.vue';
+import { useRoute } from 'vue-router';
 
 export default {
   name: 'StAccountDetails',
   components: {
-    Card,
+    Chart,
     TransactionList,
     StLabel,
+    SvgIcon,
   },
   setup() {
     const mainStore = useMainStore();
-    mainStore.SET_HEADER_STYLE('grey');
+    const { formatAmount } = useHelpers();
+    const route = useRoute();
 
     onBeforeRouteLeave(() => {
       mainStore.SET_ACCOUNT_DETAILS(null);
@@ -63,6 +111,10 @@ export default {
 
     const account = computed(() => {
       return mainStore.accountDetails;
+    });
+
+    const refreshChart = computed(() => {
+      return mainStore.resetChart;
     });
 
     const addressInfo = ref({});
@@ -77,25 +129,62 @@ export default {
       }, 2000);
     }
 
-    function openModal(name) {
-      mainStore.SET_MODAL_VISIBILITY(name, true);
+    onMounted(async () => {
+      mainStore.START_GLOBAL_LOADING();
+      if (!componentVisibility.value.chart) {
+        toggleComponentVisibility('chart');
+      }
+      if (!componentVisibility.value.txDashboard) {
+        toggleComponentVisibility('txDashboard');
+      }
+      if (account.value && Object.keys(account.value).length > 0) {
+        await getData();
+        mainStore.STOP_GLOBAL_LOADING();
+      }
+    });
+
+    async function refreshAccount() {
+      let res = await CryptoService.scanWallet(account.value);
+      mainStore.SET_ACCOUNT_DETAILS(res.accounts[0]);
     }
+
+    function openModal(modal) {
+      mainStore.SET_MODAL_VISIBILITY(modal, true);
+    }
+
+    const componentVisibility = computed(() => {
+      return mainStore.componentVisibility;
+    });
 
     const usdAmount = computed(() => {
       return (
-        Number(addressInfo.value.balance) * CryptoService.constraints.XST_USD ||
-        0
+        Number(account.value.utxo) * CryptoService.constraints.XST_USD || 0
       );
     });
     const btcAmount = computed(() => {
       return (
-        Number(addressInfo.value.balance) * CryptoService.constraints.XST_BTC ||
-        0
+        Number(account.value.utxo) * CryptoService.constraints.XST_BTC || 0
       );
     });
+    const changePercent24Hr = computed(() => {
+      return formatAmount(CryptoService.constraints.changePercent24Hr);
+    });
 
-    if (account.value) {
-      mainStore
+    function toggleComponentVisibility(component) {
+      mainStore.SET_COMPONENT_VISIBILITY(
+        component,
+        !componentVisibility.value[component]
+      );
+      if (component === 'txDashboard') {
+        mainStore.REFRESH_CHART(true);
+        setTimeout(() => mainStore.REFRESH_CHART(false), 1);
+      }
+    }
+
+    async function getData() {
+      addressInfo.value = {};
+      transactions.value = [];
+      await mainStore
         .rpc('getaddressinfo', [account.value.address])
         .then((res) => {
           addressInfo.value = res;
@@ -103,37 +192,126 @@ export default {
         .catch((err) => {
           return err;
         });
-      mainStore
-        .rpc('getaddressinputs', [account.value.address])
-        .then((res) => {
-          let mappedAmounts = res.map((el) => {
-            return {
-              ...el,
-              account: account.value.label,
-            };
+      let allTransactions = [];
+      if (account.value.isImported && account.value.wif) {
+        await mainStore
+          .rpc('getaddressinputs', [account.value.address])
+          .then(async (inputs) => {
+            const allInputsTxIdArray = inputs.map((input) => [input.txid]);
+            let inputsTransactions = await mainStore.rpcMulti(
+              'gettransaction',
+              allInputsTxIdArray
+            );
+            for (let txIndex in inputsTransactions) {
+              let indexOfDestination = inputsTransactions[
+                txIndex
+              ].vout.findIndex(
+                (dest) =>
+                  dest.scriptPubKey.addresses &&
+                  dest.scriptPubKey.addresses[0] !== account.value.address
+              );
+
+              allTransactions.push({
+                ...inputs[txIndex],
+                account: account.value.label,
+                amount: -inputs[txIndex].amount,
+                txinfo: {
+                  ...inputsTransactions[txIndex],
+                },
+                output:
+                  indexOfDestination === -1
+                    ? []
+                    : [
+                        inputsTransactions[txIndex].vout[indexOfDestination]
+                          .scriptPubKey,
+                      ],
+              });
+            }
           });
-          transactions.value = transactions.value.concat(mappedAmounts);
-        })
-        .catch((err) => {
-          return err;
-        });
-      mainStore
-        .rpc('getaddressoutputs', [account.value.address])
-        .then((res) => {
-          let mappedAmounts = res.map((el) => {
-            return {
-              ...el,
-              account: account.value.label,
-              // output amounts should be shown as negatives in the transaction table
-              amount: el.amount * -1,
-            };
+        await mainStore
+          .rpc('getaddressoutputs', [account.value.address])
+          .then(async (outputs) => {
+            const allOutputsTxIdArray = outputs.map((output) => [output.txid]);
+            let outputTransactions = await mainStore.rpcMulti(
+              'gettransaction',
+              allOutputsTxIdArray
+            );
+            for (let txIndex in outputTransactions) {
+              allTransactions.push({
+                ...outputs[txIndex],
+                account: account.value.label,
+                txinfo: {
+                  ...outputTransactions[txIndex],
+                },
+                output: [
+                  outputTransactions[txIndex].vout[outputs[txIndex].vout]
+                    .scriptPubKey,
+                ],
+              });
+            }
           });
-          transactions.value = transactions.value.concat(mappedAmounts);
-        })
-        .catch((err) => {
-          return err;
-        });
+
+        allTransactions = CryptoService.processImportedTxs(allTransactions);
+      } else {
+        await mainStore
+          .rpc('gethdaccount', [account.value.xpub])
+          .then((hdAccount) => {
+            for (let tx of hdAccount) {
+              let outputAddresses = tx.outputs.map((output) => output.address);
+              let indexOfDestination;
+              if (tx.account_balance_change < 0) {
+                indexOfDestination = tx.txinfo.destinations.findIndex(
+                  (dest) => outputAddresses.indexOf(dest.addresses[0]) === -1
+                );
+              } else {
+                indexOfDestination = tx.txinfo.destinations.findIndex(
+                  (dest) => dest.amount === tx.account_balance_change
+                );
+              }
+              if (indexOfDestination === -1) {
+                indexOfDestination = 0;
+              }
+              allTransactions.push({
+                ...tx,
+                output: [tx.txinfo.destinations[indexOfDestination]],
+                amount: tx.account_balance_change,
+                blocktime: tx.txinfo.blocktime,
+                account: account.value.label,
+              });
+            }
+          });
+      }
+      transactions.value = allTransactions;
     }
+
+    emitter.on('header:account-changed', async () => {
+      if (route.name !== 'AccountDetails') return; // don't refresh if not on this screen
+      // mainStore.SET_ACCOUNT_DETAILS(account);
+      // account.value = acc;
+      mainStore.START_GLOBAL_LOADING();
+
+      await getData();
+      emitter.emit('accounts-refresh-done');
+      // setTimeout(async () => {
+      // }, 1);
+      mainStore.STOP_GLOBAL_LOADING();
+    });
+    emitter.on('transactions:refresh', async () => {
+      if (route.name !== 'AccountDetails') return; // don't refresh if not on this screen
+      mainStore.START_GLOBAL_LOADING();
+
+      // setTimeout(async () => {
+      //   const hdWallet = await CryptoService.scanWallet();
+      //   let refreshAccount = hdWallet.accounts.find(
+      //     (obj) => obj.label === account.value?.label
+      //   );
+      await getData();
+      await refreshAccount();
+      mainStore.STOP_GLOBAL_LOADING();
+
+      //   mainStore.SET_ACCOUNT_DETAILS(refreshAccount);
+      // }, 5000);
+    });
     return {
       account,
       addressInfo,
@@ -144,6 +322,13 @@ export default {
       usdAmount,
       btcAmount,
       openModal,
+      formatAmount,
+      changePercent24Hr,
+      isHiddenAmounts: computed(() => mainStore.isAmountsHidden),
+      componentVisibility,
+      toggleComponentVisibility,
+      refreshChart,
+      refreshAccount,
     };
   },
 };
@@ -156,15 +341,166 @@ export default {
 }
 
 .account-details-container__top {
-  padding: 24px 24px 24px 24px;
+  padding: 22px 28px 18px;
 }
 .account-details-container__body {
-  padding: 24px 24px 24px 24px;
+  padding: 24px 10px 0 24px;
   background: #ffffff;
 }
+.account-details-container__body--overflow {
+  overflow: auto;
+  height: calc(100vh - 227px);
+  width: calc(100% - 14px);
+  padding-right: 14px;
+  overflow-x: hidden;
+}
+.account-details-container__body--overflow::-webkit-scrollbar {
+  width: 4px;
+}
+.account-details-container__body--overflow:hover::-webkit-scrollbar-thumb {
+  background: var(--grey100);
+}
+.account-details-container__body--overflow::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+.account-details-container__body :deep .apexcharts-tooltip,
+.account-details-container__body
+  :deep
+  .apexcharts-tooltip.apexcharts-theme-light {
+  left: initial !important;
+  right: -15px;
+  top: 5px !important;
+}
+
 .account-details-container__top .left {
-  display: grid;
-  grid-gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(15ch, 1fr));
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.account-details-container__top .left > div {
+  display: flex;
+}
+.account-details-container__top .left > div .st-label {
+  margin-right: 24px;
+}
+.account-details-container__top .left > div .st-label--is-bold {
+  margin-right: 56px;
+}
+.actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+.actions button {
+  margin: 0;
+}
+.actions button:last-child {
+  margin-left: 24px;
+}
+.receive-btn {
+  margin-left: 24px;
+}
+.icons {
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  position: relative;
+  top: 22px;
+  z-index: 1;
+}
+.icons svg {
+  cursor: pointer;
+  margin-right: 24px;
+}
+.nonclickable {
+  position: relative;
+}
+.nonclickable::before {
+  content: '';
+  cursor: not-allowed;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+}
+:deep .inactive path {
+  stroke: var(--marine100);
+}
+.st-transaction-list {
+  padding: 0;
+}
+.st-transaction-list :deep .overflow {
+  padding: 0 0 20px 0;
+  overflow: initial;
+  height: auto;
+}
+:deep .st-dashboard-chart {
+  margin-top: 24px;
+}
+.st-label:nth-child(1) {
+  min-width: 186px;
+}
+.st-label:nth-child(2) {
+  min-width: 149px;
+}
+.st-label:nth-child(3) {
+  min-width: 140px;
+}
+
+.details-table :deep td:nth-child(2) {
+  width: 85px;
+}
+.details-table :deep td:nth-child(3) {
+  width: 140px;
+}
+.details-table :deep td:nth-child(3) div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
+}
+@media screen and (max-width: 1270px) {
+  .details-table :deep td:nth-child(4),
+  :deep th:nth-child(4) {
+    display: none;
+  }
+}
+.details-table :deep td:nth-child(4) {
+  width: 300px;
+}
+.details-table :deep td:nth-child(5) {
+  width: 230px;
+}
+.details-table :deep td:nth-child(5) div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
+}
+.details-table :deep td:nth-child(6) {
+  width: 121px;
+}
+.details-table :deep td:nth-child(7) {
+  width: 121px;
+}
+.details-table :deep td:nth-child(4) .move-left {
+  transform: translateX(-40px) !important;
+}
+.details-table :deep td:nth-child(5) .move-left {
+  transform: translateX(-70px) !important;
+}
+:deep .move-left {
+  transform: translateX(-95px) !important;
+}
+:deep .button-normal {
+  padding: 5px 10px;
+  width: 120px;
 }
 </style>
