@@ -462,9 +462,7 @@ export default {
 
     async function scanWallet() {
       console.log('scan wallet 18');
-
-      const hdWallet = await CryptoService.scanWallet();
-      accounts.value = hdWallet.accounts.filter(
+      accounts.value = mainStore.wallet.accounts.filter(
         (el) => !el.isArchived && el.utxo > minimumXSTForSend.value
       );
       if (pickedAccount.value) {
@@ -481,7 +479,7 @@ export default {
       }
       // select first option so it doesn't remain empty
       if (!account.value) {
-        account.value = hdWallet.accounts[0];
+        account.value = mainStore.wallet.accounts[0];
       }
 
       getUnspentOutputs(account.value);
