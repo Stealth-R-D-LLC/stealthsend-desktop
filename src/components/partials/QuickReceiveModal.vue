@@ -47,19 +47,13 @@
   </StModal>
 </template>
 
-<script>
+<script setup>
 import { useMainStore } from '@/store';
 import { computed, ref } from 'vue';
 import VanillaQR from 'vanillaqr';
 import CryptoService from '@/services/crypto';
 import SvgIcon from '../partials/SvgIcon.vue';
 
-export default {
-  name: 'StQuickReceiveModal',
-  components: {
-    SvgIcon,
-  },
-  setup() {
     const mainStore = useMainStore();
 
     const isVisible = computed(() => {
@@ -135,21 +129,6 @@ export default {
       });
       qrSrc.value = qr.toImage('png').src;
     }
-
-    return {
-      isVisible,
-      closeModal,
-      accounts,
-      account,
-      depositAddress,
-      changeAccount,
-      qrSrc,
-      handleCopy,
-      copyPending,
-      onOpen,
-    };
-  },
-};
 </script>
 
 <style scoped>

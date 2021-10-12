@@ -276,8 +276,7 @@
   </StModal>
 </template>
 
-<script>
-/* eslint-disable no-unreachable */
+<script setup>
 import { useMainStore } from '@/store';
 import { computed, ref, watch, watchEffect } from 'vue';
 import CryptoService from '@/services/crypto';
@@ -288,25 +287,17 @@ import useFeeEstimator from '@/composables/useFeeEstimator';
 import useHelpers from '@/composables/useHelpers';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import { useRoute } from 'vue-router';
-import { format, add, subtract } from 'mathjs';
+import { format, add as addIt, subtract } from 'mathjs';
 import emitter from '@/services/emitter';
 import { QrStream } from 'vue3-qr-reader';
 import SvgIcon from '../partials/SvgIcon.vue';
 import CircleProgress from '../partials/CircleProgress.vue';
 
 const sumOf = (x = 0, y = 0) => {
-  let sum = add(x, y);
+  let sum = addIt(x, y);
   sum = format(sum, { precision: 14 });
   return Number(sum);
 };
-export default {
-  name: 'StSendModal',
-  components: {
-    QrStream,
-    SvgIcon,
-    CircleProgress,
-  },
-  setup() {
     const mainStore = useMainStore();
     const { formatAmount, fil } = useHelpers();
 
@@ -341,10 +332,6 @@ export default {
     watchEffect(() => {
       if (currentStep.value === 1) {
         if (mainStore.sendAddress) {
-          // let redoAccount = accounts.value.find(
-          //   (obj) => obj.label === mainStore.redoAccount
-          // );
-          // account.value = redoAccount;
           depositAddress.value = mainStore.sendAddress;
         }
       }
@@ -376,10 +363,8 @@ export default {
 
     const {
       form,
-      errors,
       remove,
       add,
-      // submitting,
       validateFields,
       resetFields,
     } = useValidation({
@@ -583,8 +568,6 @@ export default {
         console.info('TRANSACTION BUILDER: fee: ', aproxFee.value);
         console.info('TRANSACTION BUILDER: target amount: ', target);
 
-        // return;
-
         let transactionResponse = '';
         if (account.value.wif && account.value.isImported) {
           // build transaction for imported account
@@ -634,13 +617,6 @@ export default {
       }
     }
 
-    let copyPending = ref(false);
-    function handleCopy() {
-      copyPending.value = true;
-      setTimeout(() => {
-        copyPending.value = false;
-      }, 2000);
-    }
     async function validateSecondStep() {
       try {
         await validateFields();
@@ -761,54 +737,6 @@ export default {
         account.value = acc;
       }, 10);
     }
-
-    return {
-      preventRemove,
-      loadMax,
-      validateFirstStep,
-      validateSecondStep,
-
-      isVisible,
-      closeModal,
-      inputAmountState,
-
-      accounts,
-      account,
-      amount,
-      depositAddress,
-      label,
-      aproxFee,
-      amountUSD,
-      cameraAllowed,
-      isCameraLoading,
-      isFeeless,
-      // changeAccount,
-
-      currentStep,
-      changeStep,
-
-      handleCopy,
-      copyPending,
-      prepareSend,
-      cancelSend,
-      formatValue,
-      startScanner,
-      isScaning,
-
-      send,
-      getUnspentOutputs,
-      formatAmount,
-      counter,
-      minimumXSTForSend,
-      QRData,
-      onDecode,
-      changeAmount,
-
-      form,
-      errors,
-    };
-  },
-};
 </script>
 
 <style scoped>

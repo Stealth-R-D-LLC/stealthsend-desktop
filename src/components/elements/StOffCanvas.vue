@@ -19,7 +19,7 @@
     </div>
   </div>
 </template>
-<script>
+<script setup>
 import { computed, watch, ref } from 'vue';
 import { useMainStore } from '@/store';
 import TransactionDetails from '@/components/partials/TransactionDetails';
@@ -27,14 +27,6 @@ import FavouriteList from '@/components/partials/FavouriteList';
 import RecentNotifications from '@/components/partials/RecentNotifications';
 import AddressBook from '@/components/partials/AddressBook';
 
-export default {
-  components: {
-    TransactionDetails,
-    FavouriteList,
-    RecentNotifications,
-    AddressBook,
-  },
-  setup() {
     const mainStore = useMainStore();
 
     const isOpen = computed(() => {
@@ -61,14 +53,6 @@ export default {
         mainStore.SET_CURRENT_CANVAS('');
       }, 100);
     }
-
-    return {
-      isOpen,
-      closeCanvas,
-      currentOffCanvas,
-    };
-  },
-};
 </script>
 
 <style scoped>

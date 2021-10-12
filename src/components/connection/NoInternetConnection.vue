@@ -18,24 +18,12 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue';
 import pkgjson from '@/../package.json';
 import SvgIcon from '../partials/SvgIcon.vue';
+const version = ref(pkgjson.version);
 
-export default {
-  name: 'StNoConnection',
-  components: {
-    SvgIcon,
-  },
-  setup() {
-    const version = ref(pkgjson.version);
-
-    return {
-      version,
-    };
-  },
-};
 </script>
 
 <style scoped>

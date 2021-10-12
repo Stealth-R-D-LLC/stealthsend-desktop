@@ -31,7 +31,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import MenuBar from '@/components/layout/MenuBar.vue';
 import TopBar from '@/components/layout/TopBar.vue';
 import CryptoService from '@/services/crypto';
@@ -44,20 +44,6 @@ import OffCanvas from '@/components/elements/StOffCanvas.vue';
 import { useMainStore } from '@/store';
 import { ref, computed, onMounted } from 'vue';
 
-export default {
-  name: 'StDefault',
-  components: {
-    MenuBar,
-    TopBar,
-    Side,
-
-    ReceiveModal,
-    QuickReceiveModal,
-    SendModal,
-    AddAccount,
-    OffCanvas,
-  },
-  setup() {
     const mainStore = useMainStore();
     CryptoService.init();
     // if there's nothing in the db, show welcome screen
@@ -66,13 +52,6 @@ export default {
     // import option will import the WIF (previously exported from somewhere within the app)
     // create new wallet will ask for a new password and generate a new seed/pk/address/etc
     // if there is an account/wallet in the db, ask for password (lock screen page), render dashboard
-    /* setTimeout(() => {
-      if (menuExpanded.value) {
-        window.ipc.send('resize:menu');
-      } else {
-        window.ipc.send('resize:other');
-      }
-    }, 10); */
     const layout = ref(false);
 
     const menuExpanded = computed(() => {
@@ -94,12 +73,6 @@ export default {
         );
       }
     }
-    return {
-      menuExpanded,
-      layout,
-    };
-  },
-};
 </script>
 
 <style scoped>

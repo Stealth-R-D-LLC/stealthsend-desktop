@@ -171,7 +171,7 @@
   </StModal>
 </template>
 
-<script>
+<script setup>
 import { useMainStore } from '@/store';
 import { computed, ref, watch } from 'vue';
 import CryptoService from '@/services/crypto';
@@ -182,22 +182,12 @@ import router from '@/router';
 import SvgIcon from '../partials/SvgIcon.vue';
 import { useRoute } from 'vue-router';
 
-export default {
-  name: 'StAccountModal',
-  components: {
-    QrStream,
-    SvgIcon,
-    CircleProgress,
-  },
-  setup() {
-    // VARIABLES
     const mainStore = useMainStore();
     const currentStep = ref(1);
     const activeStep = ref('add-account');
     const accountName = ref('');
     const understand = ref(false);
     const privateKey = ref('');
-    const copyPending = ref(false);
     const isScanning = ref(false);
     const QRData = ref(null);
     const cameraAllowed = ref(false);
@@ -207,9 +197,6 @@ export default {
 
     const {
       form,
-      errors,
-      // add,
-      // submitting,
       validateFields,
       resetFields,
     } = useValidation({
@@ -407,39 +394,6 @@ export default {
       }
       closeModal();
     }
-
-    return {
-      // VARIABLES
-      currentStep,
-      activeStep,
-      accountName,
-      understand,
-      privateKey,
-      copyPending,
-      isScanning,
-      cameraAllowed,
-      isCameraLoading,
-
-      // COMPUTED
-      isVisible,
-      steps,
-
-      // METHODS
-      closeModal,
-      changeStep,
-      nextStep,
-      generateAccount,
-      accountImport,
-      startScanner,
-      onDecode,
-      openAccountDetails,
-
-      form,
-      errors,
-      isLastAccountEmpty,
-    };
-  },
-};
 </script>
 
 <style scoped>

@@ -19,7 +19,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref, onMounted } from 'vue';
 import pkgjson from '@/../package.json';
 import { useMainStore } from '@/store';
@@ -27,12 +27,6 @@ import router from '@/router';
 import { useRoute } from 'vue-router';
 import SvgIcon from '../partials/SvgIcon.vue';
 
-export default {
-  name: 'StNoStealthConnection',
-  components: {
-    SvgIcon,
-  },
-  setup() {
     const mainStore = useMainStore();
     const route = useRoute();
     const version = ref(pkgjson.version);
@@ -56,12 +50,6 @@ export default {
         route.name === 'RpcError' ? checkRPC() : killTimer();
       }, 10000);
     }
-
-    return {
-      version,
-    };
-  },
-};
 </script>
 
 <style scoped>
