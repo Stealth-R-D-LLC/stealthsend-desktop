@@ -233,7 +233,7 @@ export default {
     const mainStore = useMainStore();
     const isExpanded = ref('');
 
-    const { formatBlocktime, groupBy, formatAmount } = useHelpers();
+    const { formatBlocktime, fil, groupBy, formatAmount } = useHelpers();
     const txs = ref([]);
 
     function expandIcons(txid) {
@@ -287,7 +287,7 @@ export default {
     function filterByDirection(direction, transactions) {
       if (!direction || direction === { label: 'All', value: '' })
         return transactions;
-      return transactions.filter((el) => {
+      return fil((el) => {
         if (direction.value === '') {
           return el;
         } else if (direction.value === 'received') {
@@ -295,7 +295,7 @@ export default {
         } else if (direction.value === 'sent') {
           return el.amount < 0;
         }
-      });
+      }, transactions);
     }
 
     function filterByPeriod(filter, transactions) {
