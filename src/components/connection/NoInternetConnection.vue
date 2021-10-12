@@ -23,7 +23,6 @@ import { ref } from 'vue';
 import pkgjson from '@/../package.json';
 import SvgIcon from '../partials/SvgIcon.vue';
 const version = ref(pkgjson.version);
-
 </script>
 
 <style scoped>

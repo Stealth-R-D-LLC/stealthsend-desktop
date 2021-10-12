@@ -34,17 +34,17 @@ import CryptoService from '../../services/crypto';
 import { useMainStore } from '@/store';
 import { computed } from 'vue';
 
-    const mainStore = useMainStore();
-    CryptoService.init();
-    // if there's nothing in the db, show welcome screen
-    // welcome screen will have recover option, create new wallet option and import option
-    // recover option will recover the whole wallet via seed
-    // import option will import the WIF (previously exported from somewhere within the app)
-    // create new wallet will ask for a new password and generate a new seed/pk/address/etc
-    // if there is an account/wallet in the db, ask for password (lock screen page), render dashboard
-    const menuExpanded = computed(() => {
-      return mainStore.isMenuExpanded;
-    });
+const mainStore = useMainStore();
+CryptoService.init();
+// if there's nothing in the db, show welcome screen
+// welcome screen will have recover option, create new wallet option and import option
+// recover option will recover the whole wallet via seed
+// import option will import the WIF (previously exported from somewhere within the app)
+// create new wallet will ask for a new password and generate a new seed/pk/address/etc
+// if there is an account/wallet in the db, ask for password (lock screen page), render dashboard
+const menuExpanded = computed(() => {
+  return mainStore.isMenuExpanded;
+});
 </script>
 
 <style scoped>

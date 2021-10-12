@@ -106,149 +106,139 @@ import CryptoService from '@/services/crypto';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import SvgIcon from '../partials/SvgIcon.vue';
 
-    const mainStore = useMainStore();
-    const { formatBlocktime, formatAmount } = useHelpers();
+const mainStore = useMainStore();
+const { formatBlocktime, formatAmount } = useHelpers();
 
-    const tx = ref(null);
-    const editMode = ref(false);
-    const label = ref('');
+const tx = ref(null);
+const editMode = ref(false);
+const label = ref('');
 
-    const { form, validateFields } = useValidation({
-      label: {
-        $value: label,
-        $rules: [
-          {
-            rule: () => {
-              return label.value.length > 50 && 'Label too long';
-            },
-          },
-        ],
+const { form, validateFields } = useValidation({
+  label: {
+    $value: label,
+    $rules: [
+      {
+        rule: () => {
+          return label.value.length > 50 && 'Label too long';
+        },
       },
-    });
+    ],
+  },
+});
 
-    watch(
-      () => mainStore.offCanvasData,
-      async () => {
-        if (mainStore.offCanvasData && mainStore.offCanvasData.txid) {
-          await getTx(mainStore.offCanvasData.txid);
-          if (mainStore.offCanvasData.isEditMode) {
-            openEditMode();
-          }
-        }
-      },
-      { deep: true }
-    );
-
-    const txWithLabels = computed(() => {
-      return mainStore.txWithLabels;
-    });
-
-    function close() {
-      mainStore.TOGGLE_DRAWER(false);
-      setTimeout(() => {
-        mainStore.SET_ADDRESS_ACTIVE_TAB('address-book');
-        mainStore.SET_OFF_CANVAS_DATA(null);
-        mainStore.SET_CURRENT_CANVAS('');
-      }, 100);
-      editMode.value = false;
-    }
-
-    function openEditMode() {
-      editMode.value = true;
-      label.value = txWithLabels.value[tx.value.txid];
-      setTimeout(() => {
-        document
-          .querySelector('.transaction-details .edit-label-input input')
-          .focus();
-      }, 1);
-    }
-
-    async function saveLabel() {
-      try {
-        await validateFields();
-        CryptoService.storeTxAndLabel(tx.value.txid, label.value);
-        editMode.value = false;
-        CryptoService.getTxWithLabels();
-        label.value = txWithLabels.value[tx.value.txid];
-      } catch (e) {
-        if (e instanceof ValidationError) {
-          console.log(e);
-        }
+watch(
+  () => mainStore.offCanvasData,
+  async () => {
+    if (mainStore.offCanvasData && mainStore.offCanvasData.txid) {
+      await getTx(mainStore.offCanvasData.txid);
+      if (mainStore.offCanvasData.isEditMode) {
+        openEditMode();
       }
     }
+  },
+  { deep: true }
+);
 
-    function openBlockExplorer(txid) {
-      const chain =
-        process.env.VUE_APP_NETWORK === 'mainnet'
-          ? '?chain=main'
-          : '?chain=test';
-      setTimeout(() => {
-        window
-          .open(
-            'https://stealthmonitor.org/transactions/' + txid + chain,
-            '_blank'
-          )
-          .focus();
-      }, 1);
-    }
+const txWithLabels = computed(() => {
+  return mainStore.txWithLabels;
+});
 
-    function openAddressExplorer(address) {
-      const chain =
-        process.env.VUE_APP_NETWORK === 'mainnet'
-          ? '?chain=main'
-          : '?chain=test';
-      setTimeout(() => {
-        window
-          .open(
-            'https://stealthmonitor.org/address/' + address + chain,
-            '_blank'
-          )
-          .focus();
-      }, 1);
-    }
+function close() {
+  mainStore.TOGGLE_DRAWER(false);
+  setTimeout(() => {
+    mainStore.SET_ADDRESS_ACTIVE_TAB('address-book');
+    mainStore.SET_OFF_CANVAS_DATA(null);
+    mainStore.SET_CURRENT_CANVAS('');
+  }, 100);
+  editMode.value = false;
+}
 
-    async function getTx(txid) {
-      const res = await mainStore.rpc('gettransaction', [txid]);
-      let position = 0;
-      let outputAddresses =
-        mainStore.offCanvasData.outputs?.map((output) => output.address) || [];
-      if (mainStore.account_balance_change < 0) {
-        position =
-          mainStore.offCanvasData.txinfo.destinations?.findIndex(
-            (dest) => outputAddresses.indexOf(dest.addresses[0]) === -1
-          ) || 0;
-      } else {
-        position = 0;
-        // position =
-        //   mainStore.offCanvasData.txinfo.destinations?.findIndex(
-        //     (dest) =>
-        //       dest.amount === mainStore.offCanvasData.account_balance_change
-        //   ) || 0;
-      }
-      if (position === -1) {
-        position = 0;
-      }
-      if (typeof mainStore.offCanvasData.vout === 'number') {
-        position = mainStore.offCanvasData.vout;
-      }
-      tx.value = {
-        ...mainStore.offCanvasData,
-        ...res,
-        position,
-      };
-    }
+function openEditMode() {
+  editMode.value = true;
+  label.value = txWithLabels.value[tx.value.txid];
+  setTimeout(() => {
+    document
+      .querySelector('.transaction-details .edit-label-input input')
+      .focus();
+  }, 1);
+}
 
-    function redoTransaction() {
-      const isFeeless = !!tx.value.vout.filter((output) => {
-        return output.scriptPubKey.type === 'feework';
-      }).length;
-      mainStore.SET_SEND_ADDRESS(tx.value.vout[0].scriptPubKey.addresses[0]);
-      mainStore.SET_REDO_ACCOUNT(tx.value.account);
-      mainStore.SET_REDO_AMOUNT(tx.value.vout[0].value);
-      mainStore.SET_MODAL_VISIBILITY('send', true);
-      mainStore.SET_FEELESS(isFeeless);
-      close();
+async function saveLabel() {
+  try {
+    await validateFields();
+    CryptoService.storeTxAndLabel(tx.value.txid, label.value);
+    editMode.value = false;
+    CryptoService.getTxWithLabels();
+    label.value = txWithLabels.value[tx.value.txid];
+  } catch (e) {
+    if (e instanceof ValidationError) {
+      console.log(e);
     }
+  }
+}
+
+function openBlockExplorer(txid) {
+  const chain =
+    process.env.VUE_APP_NETWORK === 'mainnet' ? '?chain=main' : '?chain=test';
+  setTimeout(() => {
+    window
+      .open('https://stealthmonitor.org/transactions/' + txid + chain, '_blank')
+      .focus();
+  }, 1);
+}
+
+function openAddressExplorer(address) {
+  const chain =
+    process.env.VUE_APP_NETWORK === 'mainnet' ? '?chain=main' : '?chain=test';
+  setTimeout(() => {
+    window
+      .open('https://stealthmonitor.org/address/' + address + chain, '_blank')
+      .focus();
+  }, 1);
+}
+
+async function getTx(txid) {
+  const res = await mainStore.rpc('gettransaction', [txid]);
+  let position = 0;
+  let outputAddresses =
+    mainStore.offCanvasData.outputs?.map((output) => output.address) || [];
+  if (mainStore.account_balance_change < 0) {
+    position =
+      mainStore.offCanvasData.txinfo.destinations?.findIndex(
+        (dest) => outputAddresses.indexOf(dest.addresses[0]) === -1
+      ) || 0;
+  } else {
+    position = 0;
+    // position =
+    //   mainStore.offCanvasData.txinfo.destinations?.findIndex(
+    //     (dest) =>
+    //       dest.amount === mainStore.offCanvasData.account_balance_change
+    //   ) || 0;
+  }
+  if (position === -1) {
+    position = 0;
+  }
+  if (typeof mainStore.offCanvasData.vout === 'number') {
+    position = mainStore.offCanvasData.vout;
+  }
+  tx.value = {
+    ...mainStore.offCanvasData,
+    ...res,
+    position,
+  };
+}
+
+function redoTransaction() {
+  const isFeeless = !!tx.value.vout.filter((output) => {
+    return output.scriptPubKey.type === 'feework';
+  }).length;
+  mainStore.SET_SEND_ADDRESS(tx.value.vout[0].scriptPubKey.addresses[0]);
+  mainStore.SET_REDO_ACCOUNT(tx.value.account);
+  mainStore.SET_REDO_AMOUNT(tx.value.vout[0].value);
+  mainStore.SET_MODAL_VISIBILITY('send', true);
+  mainStore.SET_FEELESS(isFeeless);
+  close();
+}
 </script>
 
 <style scoped>

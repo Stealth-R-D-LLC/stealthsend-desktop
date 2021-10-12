@@ -307,434 +307,430 @@ import { useValidation } from 'vue3-form-validation';
 import { QrStream } from 'vue3-qr-reader';
 import SvgIcon from '../partials/SvgIcon.vue';
 
-    const mainStore = useMainStore();
-    const { groupBy } = useHelpers();
-    const alphabet = ref([
+const mainStore = useMainStore();
+const { groupBy } = useHelpers();
+const alphabet = ref([
+  {
+    id: 'A',
+    letter: 'A',
+  },
+  {
+    id: 'B',
+    letter: 'B',
+  },
+  {
+    id: 'C',
+    letter: 'C',
+  },
+  {
+    id: 'D',
+    letter: 'D',
+  },
+  {
+    id: 'E',
+    letter: 'E',
+  },
+  {
+    id: 'F',
+    letter: 'F',
+  },
+  {
+    id: 'G',
+    letter: 'G',
+  },
+  {
+    id: 'H',
+    letter: 'H',
+  },
+  {
+    id: 'I',
+    letter: 'I',
+  },
+  {
+    id: 'J',
+    letter: 'J',
+  },
+  {
+    id: 'K',
+    letter: 'K',
+  },
+  {
+    id: 'L',
+    letter: 'L',
+  },
+  {
+    id: 'M',
+    letter: 'M',
+  },
+  {
+    id: 'N',
+    letter: 'N',
+  },
+  {
+    id: 'O',
+    letter: 'O',
+  },
+  {
+    id: 'P',
+    letter: 'P',
+  },
+  {
+    id: 'Q',
+    letter: 'Q',
+  },
+  {
+    id: 'R',
+    letter: 'R',
+  },
+  {
+    id: 'S',
+    letter: 'S',
+  },
+  {
+    id: 'T',
+    letter: 'T',
+  },
+  {
+    id: 'U',
+    letter: 'U',
+  },
+  {
+    id: 'V',
+    letter: 'V',
+  },
+  {
+    id: 'W',
+    letter: 'W',
+  },
+  {
+    id: 'X',
+    letter: 'X',
+  },
+  {
+    id: 'Y',
+    letter: 'Y',
+  },
+  {
+    id: 'Z',
+    letter: 'Z',
+  },
+  {
+    id: '#',
+    letter: '#',
+  },
+]);
+const isScanning = ref(false);
+const QRData = ref(null);
+let addressList = ref([]);
+const isActive = ref('A');
+let addContactForm = ref({
+  name: '',
+  description: '',
+  address: '',
+  favorite: false,
+});
+let editContactForm = ref({
+  id: '',
+  name: '',
+  description: '',
+  address: '',
+  favorite: false,
+});
+const cameraAllowed = ref(false);
+const isCameraLoading = ref(false);
+
+const {
+  form: addForm,
+  validateFields: validateAddFields,
+  resetFields: resetAddFields,
+} = useValidation({
+  newName: {
+    $value: addContactForm.value.name,
+    $rules: [
       {
-        id: 'A',
-        letter: 'A',
+        rule: () => {
+          return !addContactForm.value.name && 'Name required';
+        },
       },
       {
-        id: 'B',
-        letter: 'B',
+        rule: () => {
+          return addContactForm.value.name.length > 50 && 'Name too long';
+        },
+      },
+    ],
+  },
+  newDescription: {
+    $value: addContactForm.value.description,
+    $rules: [
+      {
+        rule: () => {
+          return (
+            addContactForm.value.description.length > 50 &&
+            'Description too long'
+          );
+        },
+      },
+    ],
+  },
+  newAddress: {
+    $value: addContactForm.value.address,
+    $rules: [
+      {
+        rule: () => {
+          return addContactForm.value.address.length || 'Address is required';
+        },
       },
       {
-        id: 'C',
-        letter: 'C',
+        rule: () => {
+          return (
+            CryptoService.isAddressValid(addContactForm.value.address) ||
+            'Please enter a valid XST address'
+          );
+        },
+      },
+    ],
+  },
+});
+
+const {
+  form: editForm,
+  validateFields: validateEditFields,
+  resetFields: resetEditFields,
+} = useValidation({
+  editName: {
+    $value: editContactForm.value.name,
+    $rules: [
+      {
+        rule: () => {
+          return !editContactForm.value.name && 'Name required';
+        },
       },
       {
-        id: 'D',
-        letter: 'D',
+        rule: () => {
+          return editContactForm.value.name.length > 50 && 'Name too long';
+        },
+      },
+    ],
+  },
+  editDescription: {
+    $value: editContactForm.value.description,
+    $rules: [
+      {
+        rule: () => {
+          return (
+            editContactForm.value.description.length > 50 &&
+            'Description too long'
+          );
+        },
+      },
+    ],
+  },
+  editAddress: {
+    $value: editContactForm.value.address,
+    $rules: [
+      {
+        rule: () => {
+          return !editContactForm.value.address && 'Address is required';
+        },
       },
       {
-        id: 'E',
-        letter: 'E',
+        rule: () => {
+          return (
+            CryptoService.isAddressValid(editContactForm.value.address) ||
+            'Please enter a valid XST address'
+          );
+        },
       },
-      {
-        id: 'F',
-        letter: 'F',
-      },
-      {
-        id: 'G',
-        letter: 'G',
-      },
-      {
-        id: 'H',
-        letter: 'H',
-      },
-      {
-        id: 'I',
-        letter: 'I',
-      },
-      {
-        id: 'J',
-        letter: 'J',
-      },
-      {
-        id: 'K',
-        letter: 'K',
-      },
-      {
-        id: 'L',
-        letter: 'L',
-      },
-      {
-        id: 'M',
-        letter: 'M',
-      },
-      {
-        id: 'N',
-        letter: 'N',
-      },
-      {
-        id: 'O',
-        letter: 'O',
-      },
-      {
-        id: 'P',
-        letter: 'P',
-      },
-      {
-        id: 'Q',
-        letter: 'Q',
-      },
-      {
-        id: 'R',
-        letter: 'R',
-      },
-      {
-        id: 'S',
-        letter: 'S',
-      },
-      {
-        id: 'T',
-        letter: 'T',
-      },
-      {
-        id: 'U',
-        letter: 'U',
-      },
-      {
-        id: 'V',
-        letter: 'V',
-      },
-      {
-        id: 'W',
-        letter: 'W',
-      },
-      {
-        id: 'X',
-        letter: 'X',
-      },
-      {
-        id: 'Y',
-        letter: 'Y',
-      },
-      {
-        id: 'Z',
-        letter: 'Z',
-      },
-      {
-        id: '#',
-        letter: '#',
-      },
-    ]);
-    const isScanning = ref(false);
-    const QRData = ref(null);
-    let addressList = ref([]);
-    const isActive = ref('A');
-    let addContactForm = ref({
-      name: '',
-      description: '',
-      address: '',
-      favorite: false,
+    ],
+  },
+});
+
+watch(
+  () => editContactForm.value.favorite,
+  () => {
+    confirmEdit();
+  }
+);
+
+onMounted(async () => {
+  await filterAlphabetically();
+});
+
+const activeTab = computed(() => {
+  return mainStore.addressActiveTab;
+});
+
+const favoriteList = computed(() => {
+  return addressList.value.filter((obj) => obj.favorite);
+});
+
+const orderByName = computed(() => {
+  return groupBy(
+    addressList.value.filter((obj) => !obj.favorite),
+    (obj) => {
+      return obj.name.charAt(0).toUpperCase();
+    }
+  );
+});
+async function filterAlphabetically() {
+  const addresses = await CryptoService.getAddressBook();
+  addressList.value = addresses.sort((a, b) =>
+    a.name.toUpperCase() > b.name.toUpperCase()
+      ? 1
+      : b.name.toUpperCase() > a.name.toUpperCase()
+      ? -1
+      : 0
+  );
+}
+
+function closeCanvas() {
+  mainStore.TOGGLE_DRAWER(false);
+  setTimeout(() => {
+    mainStore.SET_ADDRESS_ACTIVE_TAB('address-book');
+    resetForm();
+    mainStore.SET_CURRENT_CANVAS('transaction-details');
+  }, 300);
+}
+
+function changeTab(tab) {
+  mainStore.SET_ADDRESS_ACTIVE_TAB(tab);
+  if (
+    activeTab.value !== 'edit-contact' &&
+    activeTab.value !== 'contact-details'
+  ) {
+    resetForm();
+    resetAddFields();
+    resetEditFields();
+  }
+}
+
+async function addContact() {
+  await validateAddFields();
+
+  addressList.value = await CryptoService.addToAddressBook(
+    addContactForm.value
+  );
+  await filterAlphabetically();
+  changeTab('address-book');
+}
+
+async function deleteContact() {
+  addressList.value = await CryptoService.deleteFromAddressBook(
+    editContactForm.value
+  );
+  await filterAlphabetically();
+  changeTab('address-book');
+}
+
+function viewTransactions() {
+  resetForm();
+  mainStore.TOGGLE_DRAWER(false);
+
+  router.push(`/transactions/${editContactForm.value.address}`);
+
+  changeTab('address-book');
+}
+
+async function prePopulateForm(item) {
+  changeTab('contact-details');
+
+  const addressBook = await CryptoService.getAddressBook();
+
+  const currentContact = addressBook.find((contact) => contact.id === item.id);
+
+  addContactForm.value = {
+    name: currentContact.name,
+    description: currentContact.description,
+    address: currentContact.address,
+    favorite: currentContact.favorite,
+  };
+  editContactForm.value = currentContact;
+}
+
+function scrollToElement(id) {
+  const element = document.getElementById(id);
+  if (element) {
+    isActive.value = id;
+    element.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+      inline: 'nearest',
     });
-    let editContactForm = ref({
-      id: '',
-      name: '',
-      description: '',
-      address: '',
-      favorite: false,
-    });
-    const cameraAllowed = ref(false);
-    const isCameraLoading = ref(false);
+  } else {
+    isActive.value = '';
+  }
+}
 
-    const {
-      form: addForm,
-      validateFields: validateAddFields,
-      resetFields: resetAddFields,
-    } = useValidation({
-      newName: {
-        $value: addContactForm.value.name,
-        $rules: [
-          {
-            rule: () => {
-              return !addContactForm.value.name && 'Name required';
-            },
-          },
-          {
-            rule: () => {
-              return addContactForm.value.name.length > 50 && 'Name too long';
-            },
-          },
-        ],
-      },
-      newDescription: {
-        $value: addContactForm.value.description,
-        $rules: [
-          {
-            rule: () => {
-              return (
-                addContactForm.value.description.length > 50 &&
-                'Description too long'
-              );
-            },
-          },
-        ],
-      },
-      newAddress: {
-        $value: addContactForm.value.address,
-        $rules: [
-          {
-            rule: () => {
-              return (
-                addContactForm.value.address.length || 'Address is required'
-              );
-            },
-          },
-          {
-            rule: () => {
-              return (
-                CryptoService.isAddressValid(addContactForm.value.address) ||
-                'Please enter a valid XST address'
-              );
-            },
-          },
-        ],
-      },
-    });
+function resetForm() {
+  addContactForm.value = {
+    name: '',
+    description: '',
+    address: '',
+    favorite: false,
+  };
+}
 
-    const {
-      form: editForm,
-      validateFields: validateEditFields,
-      resetFields: resetEditFields,
-    } = useValidation({
-      editName: {
-        $value: editContactForm.value.name,
-        $rules: [
-          {
-            rule: () => {
-              return !editContactForm.value.name && 'Name required';
-            },
-          },
-          {
-            rule: () => {
-              return editContactForm.value.name.length > 50 && 'Name too long';
-            },
-          },
-        ],
-      },
-      editDescription: {
-        $value: editContactForm.value.description,
-        $rules: [
-          {
-            rule: () => {
-              return (
-                editContactForm.value.description.length > 50 &&
-                'Description too long'
-              );
-            },
-          },
-        ],
-      },
-      editAddress: {
-        $value: editContactForm.value.address,
-        $rules: [
-          {
-            rule: () => {
-              return !editContactForm.value.address && 'Address is required';
-            },
-          },
-          {
-            rule: () => {
-              return (
-                CryptoService.isAddressValid(editContactForm.value.address) ||
-                'Please enter a valid XST address'
-              );
-            },
-          },
-        ],
-      },
-    });
+function openModal(modal) {
+  mainStore.SET_MODAL_VISIBILITY(modal, true);
+  mainStore.SET_SEND_ADDRESS(addContactForm.value.address);
+  closeCanvas();
+}
 
-    watch(
-      () => editContactForm.value.favorite,
-      () => {
-        confirmEdit();
-      }
-    );
+function editContact() {
+  changeTab('edit-contact');
+}
 
-    onMounted(async () => {
-      await filterAlphabetically();
-    });
+async function confirmEdit() {
+  await validateEditFields();
 
-    const activeTab = computed(() => {
-      return mainStore.addressActiveTab;
-    });
+  addressList.value = await CryptoService.updateAddressBook(
+    editContactForm.value
+  );
+  changeTab('contact-details');
+}
 
-    const favoriteList = computed(() => {
-      return addressList.value.filter((obj) => obj.favorite);
-    });
+function formatDescriptionString(description, numOfCharacters = 35) {
+  if (description.length > numOfCharacters) {
+    return `${description.slice(0, numOfCharacters - 1)}...`;
+  } else {
+    return description;
+  }
+}
 
-    const orderByName = computed(() => {
-      return groupBy(
-        addressList.value.filter((obj) => !obj.favorite),
-        (obj) => {
-          return obj.name.charAt(0).toUpperCase();
-        }
-      );
-    });
-    async function filterAlphabetically() {
-      const addresses = await CryptoService.getAddressBook();
-      addressList.value = addresses.sort((a, b) =>
-        a.name.toUpperCase() > b.name.toUpperCase()
-          ? 1
-          : b.name.toUpperCase() > a.name.toUpperCase()
-          ? -1
-          : 0
-      );
+function startScanner() {
+  navigator.mediaDevices.enumerateDevices().then((devices) => {
+    let camera = devices.filter((obj) => obj.kind === 'videoinput');
+    if (camera[0].kind === 'videoinput' && camera[0].label) {
+      cameraAllowed.value = true;
+      isCameraLoading.value = true;
+      setTimeout(() => (isCameraLoading.value = false), 2000);
+    } else {
+      cameraAllowed.value = false;
     }
+  });
+  QRData.value = null;
+  isScanning.value = true;
+  if (activeTab.value === 'add-contact') {
+    addContactForm.value.address = '';
+  }
+  if (activeTab.value === 'edit-contact') {
+    editContactForm.value.address = '';
+  }
+}
 
-    function closeCanvas() {
-      mainStore.TOGGLE_DRAWER(false);
-      setTimeout(() => {
-        mainStore.SET_ADDRESS_ACTIVE_TAB('address-book');
-        resetForm();
-        mainStore.SET_CURRENT_CANVAS('transaction-details');
-      }, 300);
+function onDecode(data) {
+  QRData.value = data;
+  if (QRData.value) {
+    isScanning.value = false;
+    let address = QRData.value.replace(/[^a-z0-9]/gi, '');
+    if (activeTab.value === 'add-contact') {
+      addContactForm.value.address = address;
     }
-
-    function changeTab(tab) {
-      mainStore.SET_ADDRESS_ACTIVE_TAB(tab);
-      if (
-        activeTab.value !== 'edit-contact' &&
-        activeTab.value !== 'contact-details'
-      ) {
-        resetForm();
-        resetAddFields();
-        resetEditFields();
-      }
+    if (activeTab.value === 'edit-contact') {
+      editContactForm.value.address = address;
     }
-
-    async function addContact() {
-      await validateAddFields();
-
-      addressList.value = await CryptoService.addToAddressBook(
-        addContactForm.value
-      );
-      await filterAlphabetically();
-      changeTab('address-book');
-    }
-
-    async function deleteContact() {
-      addressList.value = await CryptoService.deleteFromAddressBook(
-        editContactForm.value
-      );
-      await filterAlphabetically();
-      changeTab('address-book');
-    }
-
-    function viewTransactions() {
-      resetForm();
-      mainStore.TOGGLE_DRAWER(false);
-
-      router.push(`/transactions/${editContactForm.value.address}`);
-
-      changeTab('address-book');
-    }
-
-    async function prePopulateForm(item) {
-      changeTab('contact-details');
-
-      const addressBook = await CryptoService.getAddressBook();
-
-      const currentContact = addressBook.find(
-        (contact) => contact.id === item.id
-      );
-
-      addContactForm.value = {
-        name: currentContact.name,
-        description: currentContact.description,
-        address: currentContact.address,
-        favorite: currentContact.favorite,
-      };
-      editContactForm.value = currentContact;
-    }
-
-    function scrollToElement(id) {
-      const element = document.getElementById(id);
-      if (element) {
-        isActive.value = id;
-        element.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-          inline: 'nearest',
-        });
-      } else {
-        isActive.value = '';
-      }
-    }
-
-    function resetForm() {
-      addContactForm.value = {
-        name: '',
-        description: '',
-        address: '',
-        favorite: false,
-      };
-    }
-
-    function openModal(modal) {
-      mainStore.SET_MODAL_VISIBILITY(modal, true);
-      mainStore.SET_SEND_ADDRESS(addContactForm.value.address);
-      closeCanvas();
-    }
-
-    function editContact() {
-      changeTab('edit-contact');
-    }
-
-    async function confirmEdit() {
-      await validateEditFields();
-
-      addressList.value = await CryptoService.updateAddressBook(
-        editContactForm.value
-      );
-      changeTab('contact-details');
-    }
-
-    function formatDescriptionString(description, numOfCharacters = 35) {
-      if (description.length > numOfCharacters) {
-        return `${description.slice(0, numOfCharacters - 1)}...`;
-      } else {
-        return description;
-      }
-    }
-
-    function startScanner() {
-      navigator.mediaDevices.enumerateDevices().then((devices) => {
-        let camera = devices.filter((obj) => obj.kind === 'videoinput');
-        if (camera[0].kind === 'videoinput' && camera[0].label) {
-          cameraAllowed.value = true;
-          isCameraLoading.value = true;
-          setTimeout(() => (isCameraLoading.value = false), 2000);
-        } else {
-          cameraAllowed.value = false;
-        }
-      });
-      QRData.value = null;
-      isScanning.value = true;
-      if (activeTab.value === 'add-contact') {
-        addContactForm.value.address = '';
-      }
-      if (activeTab.value === 'edit-contact') {
-        editContactForm.value.address = '';
-      }
-    }
-
-    function onDecode(data) {
-      QRData.value = data;
-      if (QRData.value) {
-        isScanning.value = false;
-        let address = QRData.value.replace(/[^a-z0-9]/gi, '');
-        if (activeTab.value === 'add-contact') {
-          addContactForm.value.address = address;
-        }
-        if (activeTab.value === 'edit-contact') {
-          editContactForm.value.address = address;
-        }
-      }
-    }
+  }
+}
 </script>
 
 <style scoped>

@@ -54,81 +54,77 @@ import VanillaQR from 'vanillaqr';
 import CryptoService from '@/services/crypto';
 import SvgIcon from '../partials/SvgIcon.vue';
 
-    const mainStore = useMainStore();
+const mainStore = useMainStore();
 
-    const isVisible = computed(() => {
-      return mainStore.modals.quickReceive;
-    });
+const isVisible = computed(() => {
+  return mainStore.modals.quickReceive;
+});
 
-    const wallet = computed(() => {
-      return mainStore.wallet;
-    });
+const wallet = computed(() => {
+  return mainStore.wallet;
+});
 
-    function closeModal() {
-      mainStore.SET_MODAL_VISIBILITY('quickReceive', false);
-      // reset all variables
-      account.value = null;
-      accounts.value = [];
-      depositAddress.value = '';
-      qrSrc.value = '';
-    }
+function closeModal() {
+  mainStore.SET_MODAL_VISIBILITY('quickReceive', false);
+  // reset all variables
+  account.value = null;
+  accounts.value = [];
+  depositAddress.value = '';
+  qrSrc.value = '';
+}
 
-    const accounts = ref([]);
-    const account = ref(null);
+const accounts = ref([]);
+const account = ref(null);
 
-    async function scanWallet() {
-      console.log('scan wallet 13');
+async function scanWallet() {
+  console.log('scan wallet 13');
 
-      await CryptoService.scanWallet();
-      accounts.value = wallet.value.accounts;
-      // select first account so that we can immediately start finding the first available address
-      account.value = accounts.value[0];
-    }
+  await CryptoService.scanWallet();
+  accounts.value = wallet.value.accounts;
+  // select first account so that we can immediately start finding the first available address
+  account.value = accounts.value[0];
+}
 
-    async function onOpen() {
-      // when the modal is opened, scan for the address and show it
-      console.log('scan wallet 14');
+async function onOpen() {
+  // when the modal is opened, scan for the address and show it
+  console.log('scan wallet 14');
 
-      await scanWallet();
-      changeAccount();
-    }
+  await scanWallet();
+  changeAccount();
+}
 
-    const depositAddress = ref('');
-    const qrSrc = ref('');
-    async function changeAccount(acc = accounts.value[0]) {
-      const { account, change } = CryptoService.breakAccountPath(acc.path);
-      const discoveredAddresses = await CryptoService.accountDiscovery(account);
-      let nextFreeAddress = CryptoService.nextToUse(
-        discoveredAddresses.freeAddresses
-      );
-      const next = CryptoService.breakAccountPath(nextFreeAddress);
+const depositAddress = ref('');
+const qrSrc = ref('');
+async function changeAccount(acc = accounts.value[0]) {
+  const { account, change } = CryptoService.breakAccountPath(acc.path);
+  const discoveredAddresses = await CryptoService.accountDiscovery(account);
+  let nextFreeAddress = CryptoService.nextToUse(
+    discoveredAddresses.freeAddresses
+  );
+  const next = CryptoService.breakAccountPath(nextFreeAddress);
 
-      const child = CryptoService.getChildFromRoot(
-        account,
-        change,
-        next.address
-      );
-      depositAddress.value = child.address;
-      generateQR();
-    }
+  const child = CryptoService.getChildFromRoot(account, change, next.address);
+  depositAddress.value = child.address;
+  generateQR();
+}
 
-    let copyPending = ref(false);
-    function handleCopy() {
-      copyPending.value = true;
-      setTimeout(() => {
-        copyPending.value = false;
-      }, 2000);
-    }
+let copyPending = ref(false);
+function handleCopy() {
+  copyPending.value = true;
+  setTimeout(() => {
+    copyPending.value = false;
+  }, 2000);
+}
 
-    function generateQR() {
-      let qr = new VanillaQR({
-        url: depositAddress.value,
-        noBorder: false,
-        colorDark: '#FAF9FC',
-        colorLight: '#140435',
-      });
-      qrSrc.value = qr.toImage('png').src;
-    }
+function generateQR() {
+  let qr = new VanillaQR({
+    url: depositAddress.value,
+    noBorder: false,
+    colorDark: '#FAF9FC',
+    colorLight: '#140435',
+  });
+  qrSrc.value = qr.toImage('png').src;
+}
 </script>
 
 <style scoped>
