@@ -340,7 +340,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { useMainStore } from '@/store';
 import { ref, computed, watch, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
@@ -353,11 +353,6 @@ import { useValidation } from 'vue3-form-validation';
 import db from '../../db';
 import SvgIcon from '../partials/SvgIcon.vue';
 
-export default {
-  components: {
-    SvgIcon,
-  },
-  setup() {
     const mainStore = useMainStore();
     const { formatAmount } = useHelpers();
     const route = useRoute();
@@ -646,8 +641,6 @@ export default {
       };
     }
 
-    const changedAccount = ref('');
-
     async function accountChanged(account) {
       mainStore.START_GLOBAL_LOADING();
       mainStore.SET_ACCOUNT_DETAILS(account);
@@ -669,53 +662,6 @@ export default {
 
     // manually trigger retrieving keys
     changeStep('public-key', true);
-
-    return {
-      toggleDrawer,
-      currentRoute,
-      componentVisibility,
-      checkVisibilityForRoute,
-      toggleComponentVisibility,
-      goto,
-      openQuickDeposit,
-      headerStyle,
-      isVisible,
-      accountVisible,
-      changeStep,
-      activeStep,
-      publicKey,
-      privateKey,
-      copyPending,
-      handleCopy,
-      publicQrCode,
-      privateQrCode,
-      checkPassword,
-      rpcStatus,
-      showPassword,
-      password,
-      closeModal,
-      generatePublicQr,
-      openBlockExplorer,
-      validatePassword,
-      accounts,
-      account,
-      changedAccount,
-      toggleHiddenAmounts,
-      isHiddenAmounts,
-      accountChanged,
-      generatePrivateQr,
-
-      form,
-      validateFields,
-      resetFields,
-      computedClass,
-      amountFormat,
-      showArrow,
-      selectAccount,
-      openAccountModal,
-    };
-  },
-};
 </script>
 
 <style scoped>
