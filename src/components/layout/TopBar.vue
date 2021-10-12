@@ -353,315 +353,303 @@ import { useValidation } from 'vue3-form-validation';
 import db from '../../db';
 import SvgIcon from '../partials/SvgIcon.vue';
 
-    const mainStore = useMainStore();
-    const { formatAmount } = useHelpers();
-    const route = useRoute();
-    const isVisible = ref(false);
-    const accountVisible = ref(false);
-    const rpcStatus = ref('');
-    const activeStep = ref('public-key');
-    const publicKey = ref('');
-    const privateKey = ref('');
-    const publicQrCode = ref('');
-    const privateQrCode = ref('');
-    const checkPassword = ref(false);
-    const showPassword = ref(false);
-    const password = ref('');
-    const showArrow = ref('');
+const mainStore = useMainStore();
+const { formatAmount } = useHelpers();
+const route = useRoute();
+const isVisible = ref(false);
+const accountVisible = ref(false);
+const rpcStatus = ref('');
+const activeStep = ref('public-key');
+const publicKey = ref('');
+const privateKey = ref('');
+const publicQrCode = ref('');
+const privateQrCode = ref('');
+const checkPassword = ref(false);
+const showPassword = ref(false);
+const password = ref('');
+const showArrow = ref('');
 
-    const {
-      form,
-      // errors,
-      // add,
-      // submitting,
-      validateFields,
-      resetFields,
-    } = useValidation({
-      password: {
-        $value: password,
-        $rules: [
-          async (password) => {
-            if (!password) {
-              return 'Password is required.';
-            }
-            let isValid = await CryptoService.validatePassword(password);
-            if (!isValid) {
-              return 'Incorrect password.';
-            }
-          },
-        ],
+const {
+  form,
+  // errors,
+  // add,
+  // submitting,
+  validateFields,
+  resetFields,
+} = useValidation({
+  password: {
+    $value: password,
+    $rules: [
+      async (password) => {
+        if (!password) {
+          return 'Password is required.';
+        }
+        let isValid = await CryptoService.validatePassword(password);
+        if (!isValid) {
+          return 'Incorrect password.';
+        }
       },
-    });
+    ],
+  },
+});
 
-    const currentRoute = computed(() => {
-      return route.name;
-    });
+const currentRoute = computed(() => {
+  return route.name;
+});
 
-    const account = computed(() => {
-      return mainStore.accountDetails;
-    });
+const account = computed(() => {
+  return mainStore.accountDetails;
+});
 
-    const accounts = computed(() => {
-      return mainStore.wallet.accounts;
-    });
+const accounts = computed(() => {
+  return mainStore.wallet.accounts;
+});
 
-    const computedClass = computed(() => {
-      let headerColor = '';
-      if (route.path.split('/').includes('account')) {
-        headerColor = 'grey';
-      } else {
-        headerColor = 'default';
-      }
-      return {
-        'layout__header--is-grey': headerStyle.value != headerColor,
-        'layout__header--settings': route.path.split('/').includes('settings'),
-      };
-    });
+const computedClass = computed(() => {
+  let headerColor = '';
+  if (route.path.split('/').includes('account')) {
+    headerColor = 'grey';
+  } else {
+    headerColor = 'default';
+  }
+  return {
+    'layout__header--is-grey': headerStyle.value != headerColor,
+    'layout__header--settings': route.path.split('/').includes('settings'),
+  };
+});
 
-    const headerStyle = computed(() => mainStore.headerStyle);
+const headerStyle = computed(() => mainStore.headerStyle);
 
-    const componentVisibility = computed(() => {
-      return mainStore.componentVisibility;
-    });
+const componentVisibility = computed(() => {
+  return mainStore.componentVisibility;
+});
 
-    const isHiddenAmounts = computed(() => {
-      return mainStore.isAmountsHidden;
-    });
+const isHiddenAmounts = computed(() => {
+  return mainStore.isAmountsHidden;
+});
 
-    onMounted(async () => {
-      if (!componentVisibility.value.chart) {
-        toggleComponentVisibility('chart');
-      }
-      if (!componentVisibility.value.txDashboard) {
-        toggleComponentVisibility('txDashboard');
-      }
-      if (
-        window.history.state.current &&
-        window.history.state.back === '/lock'
-      ) {
-        try {
-          await mainStore.rpc('getinfo', []);
-          rpcStatus.value = `Connected to ${
-            process.env.VUE_APP_NETWORK[0].toUpperCase() +
-            process.env.VUE_APP_NETWORK.substring(1)
-          }`;
-          setTimeout(() => (rpcStatus.value = ''), 5000);
-        } catch (error) {
-          rpcStatus.value = `Not connected to ${
-            process.env.VUE_APP_NETWORK[0].toUpperCase() +
-            process.env.VUE_APP_NETWORK.substring(1)
-          }`;
-          setTimeout(() => (rpcStatus.value = ''), 5000);
-        }
-      }
-    });
-
-    watch(
-      () => isVisible.value,
-      async () => {
-        if (isVisible.value) {
-          console.log('scan wallet 1');
-          await CryptoService.scanWallet();
-          getPublicKey();
-        }
-      }
-    );
-
-    async function validatePassword() {
-      if (await validateFields()) {
-        // privateQrCode.value = '123'
-        getPrivateKey();
-        activeStep.value = 'private-key';
-        checkPassword.value = false;
-        password.value = '';
-      }
+onMounted(async () => {
+  if (!componentVisibility.value.chart) {
+    toggleComponentVisibility('chart');
+  }
+  if (!componentVisibility.value.txDashboard) {
+    toggleComponentVisibility('txDashboard');
+  }
+  if (window.history.state.current && window.history.state.back === '/lock') {
+    try {
+      await mainStore.rpc('getinfo', []);
+      rpcStatus.value = `Connected to ${
+        process.env.VUE_APP_NETWORK[0].toUpperCase() +
+        process.env.VUE_APP_NETWORK.substring(1)
+      }`;
+      setTimeout(() => (rpcStatus.value = ''), 5000);
+    } catch (error) {
+      rpcStatus.value = `Not connected to ${
+        process.env.VUE_APP_NETWORK[0].toUpperCase() +
+        process.env.VUE_APP_NETWORK.substring(1)
+      }`;
+      setTimeout(() => (rpcStatus.value = ''), 5000);
     }
+  }
+});
 
-    function getPublicKey() {
-      if (!mainStore.accountDetails) return;
-      if (
-        mainStore.accountDetails?.isImported &&
-        mainStore.accountDetails.wif
-      ) {
-        publicKey.value = mainStore.accountDetails.publicKey;
-      } else {
-        const path = CryptoService.breakAccountPath(
-          mainStore.accountDetails.path
-        );
-        const { xpub } = CryptoService.getKeysForAccount(
-          path.account,
-          path.change,
-          path.address
-        );
-        publicKey.value = xpub;
-      }
-    }
-
-    async function getPrivateKey() {
-      if (mainStore.accountDetails?.isImported) {
-        const wallet = await db.getItem('wallet');
-        try {
-          const secretKey = await CryptoService.AESDecrypt(
-            mainStore.accountDetails.wif,
-            wallet.password
-          );
-          privateKey.value = secretKey;
-        } catch (e) {
-          console.error(e);
-          privateKey.value = '';
-        }
-      } else {
-        const path = CryptoService.breakAccountPath(
-          mainStore.accountDetails.path
-        );
-        const { secretKey } = CryptoService.getKeysForAccount(
-          path.account,
-          path.change,
-          path.address
-        );
-        privateKey.value = secretKey;
-      }
-    }
-
-    async function changeStep(step, isManual) {
-      activeStep.value = step;
-      publicQrCode.value = '';
-      privateQrCode.value = '';
-      if (step === 'private-key') {
-        checkPassword.value = true;
-      }
-      privateKey.value = '';
-      resetFields();
-      if (!isManual) {
-        console.log('scan wallet 2');
-        await CryptoService.scanWallet();
-      }
+watch(
+  () => isVisible.value,
+  async () => {
+    if (isVisible.value) {
+      console.log('scan wallet 1');
+      await CryptoService.scanWallet();
       getPublicKey();
     }
+  }
+);
 
-    function closeModal() {
-      isVisible.value = false;
-      activeStep.value = 'public-key';
-      publicQrCode.value = '';
-      checkPassword.value = false;
-      privateQrCode.value = '';
-      publicKey.value = '';
+async function validatePassword() {
+  if (await validateFields()) {
+    // privateQrCode.value = '123'
+    getPrivateKey();
+    activeStep.value = 'private-key';
+    checkPassword.value = false;
+    password.value = '';
+  }
+}
+
+function getPublicKey() {
+  if (!mainStore.accountDetails) return;
+  if (mainStore.accountDetails?.isImported && mainStore.accountDetails.wif) {
+    publicKey.value = mainStore.accountDetails.publicKey;
+  } else {
+    const path = CryptoService.breakAccountPath(mainStore.accountDetails.path);
+    const { xpub } = CryptoService.getKeysForAccount(
+      path.account,
+      path.change,
+      path.address
+    );
+    publicKey.value = xpub;
+  }
+}
+
+async function getPrivateKey() {
+  if (mainStore.accountDetails?.isImported) {
+    const wallet = await db.getItem('wallet');
+    try {
+      const secretKey = await CryptoService.AESDecrypt(
+        mainStore.accountDetails.wif,
+        wallet.password
+      );
+      privateKey.value = secretKey;
+    } catch (e) {
+      console.error(e);
       privateKey.value = '';
     }
+  } else {
+    const path = CryptoService.breakAccountPath(mainStore.accountDetails.path);
+    const { secretKey } = CryptoService.getKeysForAccount(
+      path.account,
+      path.change,
+      path.address
+    );
+    privateKey.value = secretKey;
+  }
+}
 
-    function toggleDrawer(canvas) {
-      mainStore.SET_CURRENT_CANVAS(canvas);
-      mainStore.TOGGLE_DRAWER(true);
-    }
+async function changeStep(step, isManual) {
+  activeStep.value = step;
+  publicQrCode.value = '';
+  privateQrCode.value = '';
+  if (step === 'private-key') {
+    checkPassword.value = true;
+  }
+  privateKey.value = '';
+  resetFields();
+  if (!isManual) {
+    console.log('scan wallet 2');
+    await CryptoService.scanWallet();
+  }
+  getPublicKey();
+}
 
-    function toggleHiddenAmounts() {
-      mainStore.SET_AMOUNTS_HIDDEN(!isHiddenAmounts.value);
-    }
+function closeModal() {
+  isVisible.value = false;
+  activeStep.value = 'public-key';
+  publicQrCode.value = '';
+  checkPassword.value = false;
+  privateQrCode.value = '';
+  publicKey.value = '';
+  privateKey.value = '';
+}
 
-    function checkVisibilityForRoute(routes = []) {
-      if (!currentRoute.value) return false;
-      return routes.includes(currentRoute.value);
-    }
+function toggleDrawer(canvas) {
+  mainStore.SET_CURRENT_CANVAS(canvas);
+  mainStore.TOGGLE_DRAWER(true);
+}
 
-    function toggleComponentVisibility(component) {
-      mainStore.SET_COMPONENT_VISIBILITY(
-        component,
-        !componentVisibility.value[component]
-      );
-      if (component === 'txDashboard') {
-        mainStore.REFRESH_CHART(true);
-        setTimeout(() => mainStore.REFRESH_CHART(false), 1);
-      }
-    }
+function toggleHiddenAmounts() {
+  mainStore.SET_AMOUNTS_HIDDEN(!isHiddenAmounts.value);
+}
 
-    function openQuickDeposit() {
-      mainStore.SET_MODAL_VISIBILITY('quickReceive', true);
-    }
+function checkVisibilityForRoute(routes = []) {
+  if (!currentRoute.value) return false;
+  return routes.includes(currentRoute.value);
+}
 
-    function goto(path) {
-      router.push(path);
-    }
+function toggleComponentVisibility(component) {
+  mainStore.SET_COMPONENT_VISIBILITY(
+    component,
+    !componentVisibility.value[component]
+  );
+  if (component === 'txDashboard') {
+    mainStore.REFRESH_CHART(true);
+    setTimeout(() => mainStore.REFRESH_CHART(false), 1);
+  }
+}
 
-    let copyPending = ref(false);
-    function handleCopy() {
-      copyPending.value = true;
-      setTimeout(() => {
-        copyPending.value = false;
-      }, 2000);
-    }
+function openQuickDeposit() {
+  mainStore.SET_MODAL_VISIBILITY('quickReceive', true);
+}
 
-    function generatePublicQr() {
-      let qr = new VanillaQR({
-        url: publicKey.value,
-        noBorder: false,
-        colorDark: '#140435',
-        colorLight: '#FAF9FC',
-      });
-      publicQrCode.value = qr.toImage('png').src;
-    }
+function goto(path) {
+  router.push(path);
+}
 
-    function generatePrivateQr() {
-      let qr = new VanillaQR({
-        url: privateKey.value,
-        noBorder: false,
-        colorDark: '#140435',
-        colorLight: '#FAF9FC',
-      });
-      privateQrCode.value = qr.toImage('png').src;
-    }
+let copyPending = ref(false);
+function handleCopy() {
+  copyPending.value = true;
+  setTimeout(() => {
+    copyPending.value = false;
+  }, 2000);
+}
 
-    function openBlockExplorer() {
-      const chain =
-        process.env.VUE_APP_NETWORK === 'mainnet'
-          ? '?chain=main'
-          : '?chain=test';
-      window
-        .open(
-          'https://stealthmonitor.org/xPub/' + publicKey.value + chain,
-          '_blank'
-        )
-        .focus();
-    }
+function generatePublicQr() {
+  let qr = new VanillaQR({
+    url: publicKey.value,
+    noBorder: false,
+    colorDark: '#140435',
+    colorLight: '#FAF9FC',
+  });
+  publicQrCode.value = qr.toImage('png').src;
+}
 
-    function amountFormat(account) {
-      return {
-        asset: 'XST',
-        amountLeft: `${formatAmount(account.utxo, false, 6, 6)}`,
-        amountRight: `${formatAmount(
-          multiply(account.utxo, CryptoService.constraints.XST_USD),
-          false,
-          4,
-          4
-        )}`,
-        percentage: formatAmount(
-          CryptoService.constraints.changePercent24Hr,
-          false,
-          2
-        ),
-      };
-    }
+function generatePrivateQr() {
+  let qr = new VanillaQR({
+    url: privateKey.value,
+    noBorder: false,
+    colorDark: '#140435',
+    colorLight: '#FAF9FC',
+  });
+  privateQrCode.value = qr.toImage('png').src;
+}
 
-    async function accountChanged(account) {
-      mainStore.START_GLOBAL_LOADING();
-      mainStore.SET_ACCOUNT_DETAILS(account);
-      console.log('scan wallet 4');
+function openBlockExplorer() {
+  const chain =
+    process.env.VUE_APP_NETWORK === 'mainnet' ? '?chain=main' : '?chain=test';
+  window
+    .open(
+      'https://stealthmonitor.org/xPub/' + publicKey.value + chain,
+      '_blank'
+    )
+    .focus();
+}
 
-      await CryptoService.scanWallet();
-      accountVisible.value = false;
-      mainStore.STOP_GLOBAL_LOADING();
-    }
+function amountFormat(account) {
+  return {
+    asset: 'XST',
+    amountLeft: `${formatAmount(account.utxo, false, 6, 6)}`,
+    amountRight: `${formatAmount(
+      multiply(account.utxo, CryptoService.constraints.XST_USD),
+      false,
+      4,
+      4
+    )}`,
+    percentage: formatAmount(
+      CryptoService.constraints.changePercent24Hr,
+      false,
+      2
+    ),
+  };
+}
 
-    function openAccountModal() {
-      showArrow.value = mainStore.accountDetails.label;
-      accountVisible.value = true;
-    }
+async function accountChanged(account) {
+  mainStore.START_GLOBAL_LOADING();
+  mainStore.SET_ACCOUNT_DETAILS(account);
+  console.log('scan wallet 4');
 
-    function selectAccount(account) {
-      showArrow.value = account;
-    }
+  await CryptoService.scanWallet();
+  accountVisible.value = false;
+  mainStore.STOP_GLOBAL_LOADING();
+}
 
-    // manually trigger retrieving keys
-    changeStep('public-key', true);
+function openAccountModal() {
+  showArrow.value = mainStore.accountDetails.label;
+  accountVisible.value = true;
+}
+
+function selectAccount(account) {
+  showArrow.value = account;
+}
+
+// manually trigger retrieving keys
+changeStep('public-key', true);
 </script>
 
 <style scoped>

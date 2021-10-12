@@ -397,10 +397,10 @@
 <script>
 export default {
   name: 'StAccounts',
-}
+};
 </script>
 <script setup>
-import { computed, ref, onMounted} from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { useMainStore } from '@/store';
 import useHelpers from '@/composables/useHelpers';
 import router from '@/router';
@@ -411,295 +411,290 @@ import Sortable from 'sortablejs';
 import SvgIcon from '../partials/SvgIcon.vue';
 import { useRoute } from 'vue-router';
 
-    const mainStore = useMainStore();
-    const accountOptions = ref('');
-    const accountName = ref('');
-    const { formatAmount } = useHelpers();
-    let editAccountNameModal = ref(false);
-    let activateAccountModal = ref(false);
-    let archiveAccountModal = ref(false);
-    let accounts = ref([]);
-    let isDraggedActive = ref(false);
-    let isDraggedInactive = ref(false);
-    const route = useRoute();
+const mainStore = useMainStore();
+const accountOptions = ref('');
+const accountName = ref('');
+const { formatAmount } = useHelpers();
+let editAccountNameModal = ref(false);
+let activateAccountModal = ref(false);
+let archiveAccountModal = ref(false);
+let accounts = ref([]);
+let isDraggedActive = ref(false);
+let isDraggedInactive = ref(false);
+const route = useRoute();
 
-    const {
-      form,
-      validateFields,
-      resetFields,
-    } = useValidation({
-      accountName: {
-        $value: accountName,
-        $rules: [
-          (accountName) => {
-            if (!accountName) {
-              return 'Account name is required';
-            }
-            if (accountName.length > 50) {
-              return 'Name too long';
-            }
-            if (accounts.value.some((el) => el.label === accountName)) {
-              return 'Account name already exists';
-            }
-          },
-        ],
+const { form, validateFields, resetFields } = useValidation({
+  accountName: {
+    $value: accountName,
+    $rules: [
+      (accountName) => {
+        if (!accountName) {
+          return 'Account name is required';
+        }
+        if (accountName.length > 50) {
+          return 'Name too long';
+        }
+        if (accounts.value.some((el) => el.label === accountName)) {
+          return 'Account name already exists';
+        }
       },
-    });
+    ],
+  },
+});
 
-    const activeAccounts = computed(() => {
-      return accounts.value.filter((obj) => obj.isArchived === false);
-    });
+const activeAccounts = computed(() => {
+  return accounts.value.filter((obj) => obj.isArchived === false);
+});
 
-    const archivedAccounts = computed(() => {
-      return accounts.value.filter((obj) => obj.isArchived === true);
-    });
+const archivedAccounts = computed(() => {
+  return accounts.value.filter((obj) => obj.isArchived === true);
+});
 
-    const XST_USD_RATE = computed(() => {
-      return CryptoService.constraints.XST_USD || 1;
-    });
+const XST_USD_RATE = computed(() => {
+  return CryptoService.constraints.XST_USD || 1;
+});
 
-    const isHiddenAmounts = computed(() => mainStore.isAmountsHidden);
+const isHiddenAmounts = computed(() => mainStore.isAmountsHidden);
 
+const archivedAcc = ref(null);
+const activeAcc = ref(null);
+const activeAccOldIndex = ref(null);
+const archivedAccOldIndex = ref(null);
+let isDragged = ref(false);
 
-    const archivedAcc = ref(null);
-    const activeAcc = ref(null);
-    const activeAccOldIndex = ref(null);
-    const archivedAccOldIndex = ref(null);
-    let isDragged = ref(false);
+onMounted(async () => {
+  mainStore.START_GLOBAL_LOADING();
+  console.log('scan wallet 6');
+  await scanWallet();
+  var elActive = document.getElementById('activeAccounts');
+  var elArchived = document.getElementById('archivedAccounts');
+  var elArchivedDropzone = document.getElementById('archivedDropzone');
+  var elActiveDropzone = document.getElementById('activeDropzone');
+  new Sortable(elActive, {
+    group: {
+      name: 'accounts',
+    },
+    draggagle: '.card',
+    handle: '.handle',
+    animation: 150,
+    sort: false,
+    onEnd: function (evt) {
+      isDragged.value = true;
+      activeAccOldIndex.value = evt.oldIndex;
+      archivedAcc.value = activeAccounts.value[evt.oldIndex];
+      if (evt.to === elArchivedDropzone) {
+        toggleAccountOptions(
+          `${activeAccounts.value[evt.oldIndex].label}_${evt.oldIndex}`
+        );
+        openArchiveAccountModal();
+      }
+      isDraggedActive.value = false;
+    },
+  });
+  new Sortable(elArchived, {
+    group: {
+      name: 'accounts',
+    },
+    draggagle: '.card',
+    handle: '.handle',
+    animation: 150,
+    sort: false,
+    onEnd: function (evt) {
+      archivedAccOldIndex.value = evt.oldIndex;
+      activeAcc.value = archivedAccounts.value[evt.oldIndex];
+      isDragged.value = true;
+      if (evt.to === elActiveDropzone) {
+        toggleAccountOptions(
+          `${archivedAccounts.value[evt.oldIndex].label}_${evt.oldIndex}`
+        );
+        openActivateAccountModal();
+      }
+      isDraggedInactive.value = false;
+    },
+  });
+  new Sortable(elArchivedDropzone, {
+    group: {
+      name: 'accounts',
+    },
+  });
+  new Sortable(elActiveDropzone, {
+    group: {
+      name: 'accounts',
+    },
+  });
+  mainStore.STOP_GLOBAL_LOADING();
+});
 
-    onMounted(async () => {
-      mainStore.START_GLOBAL_LOADING();
-      console.log('scan wallet 6');
-      await scanWallet();
-      var elActive = document.getElementById('activeAccounts');
-      var elArchived = document.getElementById('archivedAccounts');
-      var elArchivedDropzone = document.getElementById('archivedDropzone');
-      var elActiveDropzone = document.getElementById('activeDropzone');
-      new Sortable(elActive, {
-        group: {
-          name: 'accounts',
-        },
-        draggagle: '.card',
-        handle: '.handle',
-        animation: 150,
-        sort: false,
-        onEnd: function (evt) {
-          isDragged.value = true;
-          activeAccOldIndex.value = evt.oldIndex;
-          archivedAcc.value = activeAccounts.value[evt.oldIndex];
-          if (evt.to === elArchivedDropzone) {
-            toggleAccountOptions(
-              `${activeAccounts.value[evt.oldIndex].label}_${evt.oldIndex}`
-            );
-            openArchiveAccountModal();
-          }
-          isDraggedActive.value = false;
-        },
-      });
-      new Sortable(elArchived, {
-        group: {
-          name: 'accounts',
-        },
-        draggagle: '.card',
-        handle: '.handle',
-        animation: 150,
-        sort: false,
-        onEnd: function (evt) {
-          archivedAccOldIndex.value = evt.oldIndex;
-          activeAcc.value = archivedAccounts.value[evt.oldIndex];
-          isDragged.value = true;
-          if (evt.to === elActiveDropzone) {
-            toggleAccountOptions(
-              `${archivedAccounts.value[evt.oldIndex].label}_${evt.oldIndex}`
-            );
-            openActivateAccountModal();
-          }
-          isDraggedInactive.value = false;
-        },
-      });
-      new Sortable(elArchivedDropzone, {
-        group: {
-          name: 'accounts',
-        },
-      });
-      new Sortable(elActiveDropzone, {
-        group: {
-          name: 'accounts',
-        },
-      });
-      mainStore.STOP_GLOBAL_LOADING();
-    });
-
-    function cancelArchiveActive() {
-      accountOptions.value = '';
-      if (archiveAccountModal.value) {
-        archiveAccountModal.value = false;
-        if (isDragged.value) {
-          activeAccounts.value.splice(activeAccOldIndex.value, 1);
+function cancelArchiveActive() {
+  accountOptions.value = '';
+  if (archiveAccountModal.value) {
+    archiveAccountModal.value = false;
+    if (isDragged.value) {
+      activeAccounts.value.splice(activeAccOldIndex.value, 1);
+      setTimeout(() => {
+        activeAccounts.value.splice(
+          activeAccOldIndex.value,
+          0,
+          archivedAcc.value
+        );
+        setTimeout(() => {
+          isDraggedActive.value = true;
           setTimeout(() => {
-            activeAccounts.value.splice(
-              activeAccOldIndex.value,
-              0,
-              archivedAcc.value
-            );
-            setTimeout(() => {
-              isDraggedActive.value = true;
-              setTimeout(() => {
-                isDraggedActive.value = false;
-              }, 1);
-            }, 1);
-          }, 50);
-        }
-      }
-      if (activateAccountModal.value) {
-        activateAccountModal.value = false;
-        if (isDragged.value) {
-          archivedAccounts.value.splice(archivedAccOldIndex.value, 1);
+            isDraggedActive.value = false;
+          }, 1);
+        }, 1);
+      }, 50);
+    }
+  }
+  if (activateAccountModal.value) {
+    activateAccountModal.value = false;
+    if (isDragged.value) {
+      archivedAccounts.value.splice(archivedAccOldIndex.value, 1);
+      setTimeout(() => {
+        archivedAccounts.value.splice(
+          archivedAccOldIndex.value,
+          0,
+          activeAcc.value
+        );
+        setTimeout(() => {
+          isDraggedInactive.value = true;
           setTimeout(() => {
-            archivedAccounts.value.splice(
-              archivedAccOldIndex.value,
-              0,
-              activeAcc.value
-            );
-            setTimeout(() => {
-              isDraggedInactive.value = true;
-              setTimeout(() => {
-                isDraggedInactive.value = false;
-              }, 1);
-            }, 1);
-          }, 50);
-        }
-      }
+            isDraggedInactive.value = false;
+          }, 1);
+        }, 1);
+      }, 50);
     }
+  }
+}
 
-    function openActivateAccountModal() {
-      activateAccountModal.value = true;
+function openActivateAccountModal() {
+  activateAccountModal.value = true;
+}
+
+function openArchiveAccountModal() {
+  archiveAccountModal.value = true;
+}
+
+function toggleAccountOptions(name) {
+  accountOptions.value = name;
+}
+
+function openReceiveModal(account) {
+  mainStore.SET_MODAL_VISIBILITY('receive', true);
+  mainStore.SET_ACCOUNT_DETAILS(account);
+}
+
+async function favouriteAccount(account) {
+  if (account.utxo > 0) {
+    await CryptoService.favouriteAccount(account);
+    accountOptions.value = '';
+    emitter.emit('favorite:refresh');
+  } else {
+    accountOptions.value = '';
+  }
+}
+
+async function unfavouriteAccount(account) {
+  await CryptoService.unfavouriteAccount(account);
+  accountOptions.value = '';
+  emitter.emit('favorite:refresh');
+}
+
+async function archiveAccount(account) {
+  accountOptions.value = '';
+  if (isDragged.value) {
+    archivedAccounts.value.push(archivedAcc.value);
+  }
+  archiveAccountModal.value = false;
+  await CryptoService.archiveAccount(account);
+  emitter.emit('favorite:refresh');
+}
+
+async function activateAccount(account) {
+  accountOptions.value = '';
+  if (isDragged.value) {
+    activeAccounts.value.push(activeAcc.value);
+  }
+  activateAccountModal.value = false;
+  await CryptoService.activateAccount(account);
+  emitter.emit('favorite:refresh');
+}
+
+async function changeAccountName(account) {
+  try {
+    await validateFields();
+    await CryptoService.changeAccountName(account, accountName.value);
+    editAccountNameModal.value = false;
+    accountOptions.value = '';
+  } catch (e) {
+    if (e instanceof ValidationError) {
+      console.log(e);
     }
+  } finally {
+    scanWallet();
+  }
+}
 
-    function openArchiveAccountModal() {
-      archiveAccountModal.value = true;
+function openEditAccountNameModal(account) {
+  resetFields();
+  accountName.value = account.label;
+  editAccountNameModal.value = true;
+}
+
+const openAccountDetails = (account) => {
+  mainStore.SET_ACCOUNT_DETAILS(account);
+
+  router.push('/account/details');
+};
+
+async function scanWallet() {
+  let hdWallet = [];
+  hdWallet = await CryptoService.getAccounts();
+  // if (isFavoriteRefresh.value) {
+  //   hdWallet = await CryptoService.getAccounts();
+  // } else {
+  //   console.log('scan wallet 7');
+
+  //   // await CryptoService.scanWallet();
+  //   hdWallet = mainStore.wallet.accounts;
+  // }
+  // accounts.value = hdWallet.accounts;
+  let activeAccounts = hdWallet.filter((obj) => obj.isArchived === false);
+
+  // find first account with 0 balance
+  let firstZeroAccount = null;
+  for (let acc of activeAccounts) {
+    if (acc.utxo === 0) {
+      firstZeroAccount = acc;
+      break;
     }
+  }
 
-    function toggleAccountOptions(name) {
-      accountOptions.value = name;
+  let tmpAccounts = [];
+  if (firstZeroAccount) {
+    tmpAccounts = [firstZeroAccount];
+    for (let acc of hdWallet) {
+      if (acc.address === firstZeroAccount.address) continue;
+      tmpAccounts.push(acc);
     }
+  } else {
+    tmpAccounts = tmpAccounts.concat(hdWallet);
+  }
 
-    function openReceiveModal(account) {
-      mainStore.SET_MODAL_VISIBILITY('receive', true);
-      mainStore.SET_ACCOUNT_DETAILS(account);
-    }
+  accounts.value = [...tmpAccounts];
+}
 
-    async function favouriteAccount(account) {
-      if (account.utxo > 0) {
-        await CryptoService.favouriteAccount(account);
-        accountOptions.value = '';
-        emitter.emit('favorite:refresh');
-      } else {
-        accountOptions.value = '';
-      }
-    }
+function closeEditModal() {
+  accountOptions.value = '';
+  editAccountNameModal.value = false;
+  resetFields();
+}
 
-    async function unfavouriteAccount(account) {
-      await CryptoService.unfavouriteAccount(account);
-      accountOptions.value = '';
-      emitter.emit('favorite:refresh');
-    }
-
-    async function archiveAccount(account) {
-      accountOptions.value = '';
-      if (isDragged.value) {
-        archivedAccounts.value.push(archivedAcc.value);
-      }
-      archiveAccountModal.value = false;
-      await CryptoService.archiveAccount(account);
-      emitter.emit('favorite:refresh');
-    }
-
-    async function activateAccount(account) {
-      accountOptions.value = '';
-      if (isDragged.value) {
-        activeAccounts.value.push(activeAcc.value);
-      }
-      activateAccountModal.value = false;
-      await CryptoService.activateAccount(account);
-      emitter.emit('favorite:refresh');
-    }
-
-    async function changeAccountName(account) {
-      try {
-        await validateFields();
-        await CryptoService.changeAccountName(account, accountName.value);
-        editAccountNameModal.value = false;
-        accountOptions.value = '';
-      } catch (e) {
-        if (e instanceof ValidationError) {
-          console.log(e);
-        }
-      } finally {
-        scanWallet();
-      }
-    }
-
-    function openEditAccountNameModal(account) {
-      resetFields();
-      accountName.value = account.label;
-      editAccountNameModal.value = true;
-    }
-
-    const openAccountDetails = (account) => {
-      mainStore.SET_ACCOUNT_DETAILS(account);
-
-      router.push('/account/details');
-    };
-
-    async function scanWallet() {
-      let hdWallet = [];
-      hdWallet = await CryptoService.getAccounts();
-      // if (isFavoriteRefresh.value) {
-      //   hdWallet = await CryptoService.getAccounts();
-      // } else {
-      //   console.log('scan wallet 7');
-
-      //   // await CryptoService.scanWallet();
-      //   hdWallet = mainStore.wallet.accounts;
-      // }
-      // accounts.value = hdWallet.accounts;
-      let activeAccounts = hdWallet.filter((obj) => obj.isArchived === false);
-
-      // find first account with 0 balance
-      let firstZeroAccount = null;
-      for (let acc of activeAccounts) {
-        if (acc.utxo === 0) {
-          firstZeroAccount = acc;
-          break;
-        }
-      }
-
-      let tmpAccounts = [];
-      if (firstZeroAccount) {
-        tmpAccounts = [firstZeroAccount];
-        for (let acc of hdWallet) {
-          if (acc.address === firstZeroAccount.address) continue;
-          tmpAccounts.push(acc);
-        }
-      } else {
-        tmpAccounts = tmpAccounts.concat(hdWallet);
-      }
-
-      accounts.value = [...tmpAccounts];
-    }
-
-    function closeEditModal() {
-      accountOptions.value = '';
-      editAccountNameModal.value = false;
-      resetFields();
-    }
-
-    emitter.on('favorite:refresh', async () => {
-      if (route.name !== 'ArchivedAccounts') return; // don't refresh if not on this screen
-      console.log('scan wallet 8');
-      await scanWallet();
-    });
+emitter.on('favorite:refresh', async () => {
+  if (route.name !== 'ArchivedAccounts') return; // don't refresh if not on this screen
+  console.log('scan wallet 8');
+  await scanWallet();
+});
 </script>
 
 <style scoped>
