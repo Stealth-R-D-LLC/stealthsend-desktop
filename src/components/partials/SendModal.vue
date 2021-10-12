@@ -308,7 +308,7 @@ export default {
   },
   setup() {
     const mainStore = useMainStore();
-    const { formatAmount } = useHelpers();
+    const { formatAmount, fil } = useHelpers();
 
     const isVisible = computed(() => {
       return mainStore.modals.send;
@@ -462,8 +462,8 @@ export default {
 
     async function scanWallet() {
       console.log('scan wallet 18');
-      accounts.value = mainStore.wallet.accounts.filter(
-        (el) => !el.isArchived && el.utxo > minimumXSTForSend.value
+      accounts.value = fil(
+        (el) => !el.isArchived && el.utxo > minimumXSTForSend.value, mainStore.wallet.accounts
       );
       if (pickedAccount.value) {
         // already picked from account details
@@ -509,7 +509,7 @@ export default {
           .reduce((a, b) => a.concat(b), []);
       } else {
         res = await mainStore.rpc('getaddressoutputs', [acc.address, 1, 99999]);
-        unspentOutputs = res.filter((el) => el.isspent === 'false');
+        unspentOutputs = fil((el) => el.isspent === 'false', res);
       }
     }
 

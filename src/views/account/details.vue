@@ -68,7 +68,7 @@
           class="details-table"
           has-table-header
           :transactions="
-            wallet.txs.filter((el) => el.account === account.label)
+            fil((el) => el.account === account.label, wallet.txs)
           "
         ></TransactionList>
       </div>
@@ -101,7 +101,15 @@ const route = useRoute();
 onBeforeRouteLeave(() => {
   mainStore.SET_ACCOUNT_DETAILS(null);
 });
-
+const fil = (fn, a) => {
+  const f = []; //final
+  for (let i = 0; i < a.length; i++) {
+    if (fn(a[i])) {
+      f.push(a[i]);
+    }
+  }
+  return f;
+};
 const account = computed(() => {
   return mainStore.accountDetails;
 });

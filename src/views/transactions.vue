@@ -51,6 +51,8 @@ import isSameDay from 'date-fns/isSameDay';
 import { useMainStore } from '@/store';
 import { useRoute } from 'vue-router';
 import SvgIcon from '../components/partials/SvgIcon.vue';
+import useHelpers from '@/composables/useHelpers';
+const { fil } = useHelpers();
 
 const query = ref('');
 const date = ref([]);
@@ -100,7 +102,7 @@ const computedTransactions = computed(() => {
   if (filtered.length === 0) return [];
   let q = query?.value?.toLowerCase();
   if (q && q.length > 2) {
-    filtered = filtered.filter((el) => {
+    filtered = fil((el) => {
       return (
         el?.account?.toLowerCase().indexOf(q) > -1 ||
         String(el.amount).indexOf(q) > -1 ||
@@ -111,25 +113,25 @@ const computedTransactions = computed(() => {
           el.addresses.some((addr) => addr?.toLowerCase().indexOf(q) > -1)
         )
       );
-    });
+    }, filtered);
   }
 
   if (date.value[0] && date.value[1]) {
     if (date.value[0] === date.value[1]) {
       // both dates in range are the same
-      filtered = filtered.filter((el) => {
+      filtered = fil((el) => {
         let target = new Date(el.blocktime * 1000);
         return isSameDay(target, new Date(date.value[0]));
-      });
+      }, filtered);
     } else {
       // isWithinInterval doesnt work if the range is on the same date
-      filtered = filtered.filter((el) => {
+      filtered = fil((el) => {
         let target = new Date(el.blocktime * 1000);
         return isWithinInterval(new Date(target), {
           start: new Date(date.value[0]),
           end: new Date(date.value[1]),
         });
-      });
+      }, filtered);
     }
   }
   return filtered;

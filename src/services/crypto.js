@@ -7,6 +7,8 @@ import { Buffer } from 'buffer';
 import cryptoJs from 'crypto-js';
 import { add, format } from 'mathjs';
 import db from '../db';
+import useHelpers from '@/composables/useHelpers';
+const { fil } = useHelpers();
 
 let networkConfig = {
   messagePrefix: 'unused',
@@ -278,7 +280,7 @@ const CryptoService = {
       (item) => item.address === account.address
     );
 
-    let countFavourites = accounts.filter((el) => el.favouritePosition);
+    let countFavourites = fil((el) => el.favouritePosition, accounts);
 
     accounts[wantedIndex].isFavourite = true;
     accounts[wantedIndex].favouritePosition = countFavourites.length + 1;
