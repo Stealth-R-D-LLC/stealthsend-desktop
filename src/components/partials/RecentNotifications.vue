@@ -22,16 +22,10 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { useMainStore } from '@/store';
 import SvgIcon from '../partials/SvgIcon.vue';
 
-export default {
-  name: 'RecentNotifications',
-  components: {
-    SvgIcon,
-  },
-  setup() {
     const mainStore = useMainStore();
     function closeCanvas() {
       mainStore.TOGGLE_DRAWER(false);
@@ -40,11 +34,6 @@ export default {
         mainStore.SET_CURRENT_CANVAS('transaction-details');
       }, 300);
     }
-    return {
-      closeCanvas,
-    };
-  },
-};
 </script>
 
 <style scoped>

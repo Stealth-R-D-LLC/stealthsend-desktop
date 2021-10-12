@@ -297,7 +297,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import useHelpers from '@/composables/useHelpers';
 import { useMainStore } from '@/store';
@@ -307,13 +307,6 @@ import { useValidation } from 'vue3-form-validation';
 import { QrStream } from 'vue3-qr-reader';
 import SvgIcon from '../partials/SvgIcon.vue';
 
-export default {
-  name: 'AddressBook',
-  components: {
-    QrStream,
-    SvgIcon,
-  },
-  setup() {
     const mainStore = useMainStore();
     const { groupBy } = useHelpers();
     const alphabet = ref([
@@ -742,43 +735,6 @@ export default {
         }
       }
     }
-
-    return {
-      // Variables
-      alphabet,
-      activeTab,
-      addContactForm,
-      editContactForm,
-      isActive,
-      addressList,
-      addForm,
-      editForm,
-      isScanning,
-      cameraAllowed,
-      isCameraLoading,
-
-      // Computed
-      orderByName,
-      favoriteList,
-
-      // Methods
-      closeCanvas,
-      changeTab,
-      addContact,
-      deleteContact,
-      prePopulateForm,
-      editContact,
-      formatDescriptionString,
-      confirmEdit,
-      scrollToElement,
-      viewTransactions,
-      openModal,
-      startScanner,
-      onDecode,
-      /* toggleFavorite */
-    };
-  },
-};
 </script>
 
 <style scoped>

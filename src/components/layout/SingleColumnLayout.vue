@@ -22,7 +22,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import ReceiveModal from '@/components/partials/ReceiveModal.vue';
 import QuickReceiveModal from '@/components/partials/QuickReceiveModal.vue';
 import SendModal from '@/components/partials/SendModal.vue';
@@ -34,18 +34,6 @@ import CryptoService from '../../services/crypto';
 import { useMainStore } from '@/store';
 import { computed } from 'vue';
 
-export default {
-  name: 'TsDefault',
-  components: {
-    ReceiveModal,
-    QuickReceiveModal,
-    SendModal,
-    AddAccount,
-    OffCanvas,
-    MenuBar,
-    TopBar,
-  },
-  setup() {
     const mainStore = useMainStore();
     CryptoService.init();
     // if there's nothing in the db, show welcome screen
@@ -57,11 +45,6 @@ export default {
     const menuExpanded = computed(() => {
       return mainStore.isMenuExpanded;
     });
-    return {
-      menuExpanded,
-    };
-  },
-};
 </script>
 
 <style scoped>

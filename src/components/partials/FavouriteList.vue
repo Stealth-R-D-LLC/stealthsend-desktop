@@ -84,7 +84,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref, computed, watch } from 'vue';
 import CryptoService from '@/services/crypto';
 import useHelpers from '@/composables/useHelpers';
@@ -94,12 +94,6 @@ import Sortable from 'sortablejs';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import SvgIcon from '../partials/SvgIcon.vue';
 
-export default {
-  name: 'FavouriteList',
-  components: {
-    SvgIcon,
-  },
-  setup() {
     const mainStore = useMainStore();
     const account = ref(null);
     const accounts = ref([]);
@@ -226,25 +220,6 @@ export default {
         .sort((a, b) => a.favouritePosition - b.favouritePosition);
       emitter.emit('favorite:refresh');
     }
-
-    return {
-      // variables
-      account,
-      accounts,
-
-      // functions
-      closeCanvas,
-      formatAmount,
-      XST_USD_RATE,
-      form,
-
-      favouritedAccounts,
-      unfavouritedAccounts,
-      addToFavouriteList,
-      removeFromFavoriteList,
-    };
-  },
-};
 </script>
 
 <style scoped>

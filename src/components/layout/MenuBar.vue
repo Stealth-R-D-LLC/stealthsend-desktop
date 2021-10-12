@@ -122,19 +122,13 @@
   </aside>
 </template>
 
-<script>
-import { ref, computed, defineComponent } from 'vue';
+<script setup>
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMainStore } from '@/store';
 import { onClickOutside } from '@vueuse/core';
 import SvgIcon from '../partials/SvgIcon.vue';
 
-export default defineComponent({
-  name: 'StMenuBar',
-  components: {
-    SvgIcon,
-  },
-  setup() {
     const mainStore = useMainStore();
     const router = useRouter();
     const isCollapsed = ref(false);
@@ -174,18 +168,6 @@ export default defineComponent({
         isCollapsed.value = false;
       }
     });
-
-    return {
-      asideMenu,
-      isCollapsed,
-      menuExpanded,
-      toggleMenu,
-      openModal,
-      toggleDrawer,
-      lock,
-    };
-  },
-});
 </script>
 
 <style scoped>

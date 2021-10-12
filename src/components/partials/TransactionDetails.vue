@@ -98,7 +98,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { useMainStore } from '@/store';
 import { ref, watch, computed } from 'vue';
 import useHelpers from '@/composables/useHelpers';
@@ -106,12 +106,6 @@ import CryptoService from '@/services/crypto';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import SvgIcon from '../partials/SvgIcon.vue';
 
-export default {
-  name: 'StTransactionDetails',
-  components: {
-    SvgIcon,
-  },
-  setup() {
     const mainStore = useMainStore();
     const { formatBlocktime, formatAmount } = useHelpers();
 
@@ -255,26 +249,6 @@ export default {
       mainStore.SET_FEELESS(isFeeless);
       close();
     }
-
-    return {
-      close,
-      tx,
-
-      formatBlocktime,
-      formatAmount,
-      form,
-
-      openBlockExplorer,
-      openAddressExplorer,
-      openEditMode,
-      editMode,
-      txWithLabels,
-      label,
-      saveLabel,
-      redoTransaction,
-    };
-  },
-};
 </script>
 
 <style scoped>

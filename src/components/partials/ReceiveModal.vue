@@ -185,7 +185,7 @@
   </StModal>
 </template>
 
-<script>
+<script setup>
 import { useMainStore } from '@/store';
 import { computed, ref } from 'vue';
 import VanillaQR from 'vanillaqr';
@@ -196,12 +196,6 @@ import { useValidation, ValidationError } from 'vue3-form-validation';
 import DOMPurify from 'dompurify';
 import SvgIcon from '../partials/SvgIcon.vue';
 
-export default {
-  name: 'StReceiveModal',
-  components: {
-    SvgIcon,
-  },
-  setup() {
     const mainStore = useMainStore();
     const { formatAmount } = useHelpers();
 
@@ -252,8 +246,6 @@ export default {
 
     const {
       form,
-      errors,
-      // submitting,
       validateFields,
       resetFields,
     } = useValidation({
@@ -421,41 +413,6 @@ export default {
         account.value = acc;
       }, 10);
     }
-
-    return {
-      preventRemove,
-      isVisible,
-      closeModal,
-      inputAmountState,
-
-      accounts,
-      account,
-      amount,
-      amountFiat,
-      depositAddress,
-      changeAccount,
-      qrSrc,
-      email,
-
-      currentStep,
-      changeStep,
-      goBack,
-
-      handleCopy,
-      copyPending,
-
-      onOpen,
-      sendEmail,
-
-      changeCurrency,
-      fiatKeyup,
-
-      form,
-      errors,
-      formatAmount,
-    };
-  },
-};
 </script>
 
 <style scoped>
