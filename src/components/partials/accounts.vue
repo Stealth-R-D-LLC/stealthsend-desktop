@@ -631,6 +631,7 @@ async function changeAccountName(account) {
       console.log(e);
     }
   } finally {
+    console.log('scan wallet 33');
     scanWallet();
   }
 }
@@ -650,15 +651,6 @@ const openAccountDetails = (account) => {
 async function scanWallet() {
   let hdWallet = [];
   hdWallet = await CryptoService.getAccounts();
-  // if (isFavoriteRefresh.value) {
-  //   hdWallet = await CryptoService.getAccounts();
-  // } else {
-  //   console.log('scan wallet 7');
-
-  //   // await CryptoService.scanWallet();
-  //   hdWallet = mainStore.wallet.accounts;
-  // }
-  // accounts.value = hdWallet.accounts;
   let activeAccounts = hdWallet.filter((obj) => obj.isArchived === false);
 
   // find first account with 0 balance
@@ -690,6 +682,11 @@ function closeEditModal() {
   resetFields();
 }
 
+emitter.on('transactions:refresh', async () => {
+  if (route.name !== 'ArchivedAccounts') return; // don't refresh if not on this screen
+  console.log('scan wallet 34');
+  await scanWallet();
+});
 emitter.on('favorite:refresh', async () => {
   if (route.name !== 'ArchivedAccounts') return; // don't refresh if not on this screen
   console.log('scan wallet 8');
