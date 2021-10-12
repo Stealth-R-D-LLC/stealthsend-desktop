@@ -196,183 +196,173 @@ import { useValidation, ValidationError } from 'vue3-form-validation';
 import DOMPurify from 'dompurify';
 import SvgIcon from '../partials/SvgIcon.vue';
 
-    const mainStore = useMainStore();
-    const { formatAmount } = useHelpers();
+const mainStore = useMainStore();
+const { formatAmount } = useHelpers();
 
-    const isVisible = computed(() => {
-      return mainStore.modals.receive;
-    });
-    const XST_USD = computed(() => {
-      return CryptoService.constraints.XST_USD;
-    });
-    const inputAmountState = ref('XST');
+const isVisible = computed(() => {
+  return mainStore.modals.receive;
+});
+const XST_USD = computed(() => {
+  return CryptoService.constraints.XST_USD;
+});
+const inputAmountState = ref('XST');
 
-    const currentStep = ref(1);
+const currentStep = ref(1);
 
-    const pickedAccount = computed(() => {
-      return mainStore.accountDetails;
-    });
+const pickedAccount = computed(() => {
+  return mainStore.accountDetails;
+});
 
-    const route = useRoute();
+const route = useRoute();
 
-    const currentRoute = computed(() => {
-      return route.name;
-    });
+const currentRoute = computed(() => {
+  return route.name;
+});
 
-    function closeModal() {
-      mainStore.SET_MODAL_VISIBILITY('receive', false);
-      // reset all variables
-      inputAmountState.value = 'XST';
-      account.value = null;
-      accounts.value = [];
-      amount.value = null;
-      amountFiat.value = null;
-      currentStep.value = 1;
-      depositAddress.value = '';
-      qrSrc.value = '';
-      email.value = '';
-      resetFields();
-      if (currentRoute.value !== 'AccountDetails') {
-        // because we don't want to mess up the account details screen if the modal is opened there
-        mainStore.SET_ACCOUNT_DETAILS(null);
-      }
-    }
+function closeModal() {
+  mainStore.SET_MODAL_VISIBILITY('receive', false);
+  // reset all variables
+  inputAmountState.value = 'XST';
+  account.value = null;
+  accounts.value = [];
+  amount.value = null;
+  amountFiat.value = null;
+  currentStep.value = 1;
+  depositAddress.value = '';
+  qrSrc.value = '';
+  email.value = '';
+  resetFields();
+  if (currentRoute.value !== 'AccountDetails') {
+    // because we don't want to mess up the account details screen if the modal is opened there
+    mainStore.SET_ACCOUNT_DETAILS(null);
+  }
+}
 
-    const accounts = ref([]);
-    const email = ref('');
-    const account = ref(null);
-    const amount = ref(null);
-    const amountFiat = ref(null);
+const accounts = ref([]);
+const email = ref('');
+const account = ref(null);
+const amount = ref(null);
+const amountFiat = ref(null);
 
-    const {
-      form,
-      validateFields,
-      resetFields,
-    } = useValidation({
-      account: {
-        $value: account,
-        $rules: [
-          (account) => {
-            if (!account) {
-              return 'Account is required';
-            }
-            if (account.length > 50) {
-              return 'Name too long';
-            }
-          },
-        ],
+const { form, validateFields, resetFields } = useValidation({
+  account: {
+    $value: account,
+    $rules: [
+      (account) => {
+        if (!account) {
+          return 'Account is required';
+        }
+        if (account.length > 50) {
+          return 'Name too long';
+        }
       },
-      email: {
-        $value: email,
-        $rules: [
-          (email) => {
-            const isEmailValid = /\S+@\S+\.\S+/.test(email);
-            if (!email) {
-              return 'Required';
-            } else if (!isEmailValid) {
-              return 'Enter a valid email address';
-            }
-          },
-        ],
+    ],
+  },
+  email: {
+    $value: email,
+    $rules: [
+      (email) => {
+        const isEmailValid = /\S+@\S+\.\S+/.test(email);
+        if (!email) {
+          return 'Required';
+        } else if (!isEmailValid) {
+          return 'Enter a valid email address';
+        }
       },
-    });
+    ],
+  },
+});
 
-    async function scanWallet() {
-      console.log('scan wallet 15');
+async function scanWallet() {
+  console.log('scan wallet 15');
 
-      await CryptoService.scanWallet();
-      accounts.value = mainStore.wallet.accounts.filter((el) => !el.isArchived);
-      if (pickedAccount.value) {
-        // already picked from account details
-        account.value = { ...pickedAccount.value };
-      } else {
-        // select first account so that we can immediately start finding the first available address
-        account.value = accounts.value[0];
-      }
-    }
+  await CryptoService.scanWallet();
+  accounts.value = mainStore.wallet.accounts.filter((el) => !el.isArchived);
+  if (pickedAccount.value) {
+    // already picked from account details
+    account.value = { ...pickedAccount.value };
+  } else {
+    // select first account so that we can immediately start finding the first available address
+    account.value = accounts.value[0];
+  }
+}
 
-    async function onOpen() {
-      // when the modal is opened, scan for the address and show it
-      console.log('scan wallet 16');
+async function onOpen() {
+  // when the modal is opened, scan for the address and show it
+  console.log('scan wallet 16');
 
-      await scanWallet();
-      if (pickedAccount.value) {
-        pickedAccount.value;
-        changeAccount(pickedAccount.value);
-        return;
-      }
-      changeAccount();
-    }
+  await scanWallet();
+  if (pickedAccount.value) {
+    pickedAccount.value;
+    changeAccount(pickedAccount.value);
+    return;
+  }
+  changeAccount();
+}
 
-    const depositAddress = ref('');
-    const qrSrc = ref('');
-    async function changeAccount(acc = accounts.value[0]) {
-      depositAddress.value = '';
-      if (acc.isImported && acc.wif) {
-        depositAddress.value = acc.address;
-      } else {
-        const { account, change } = CryptoService.breakAccountPath(acc.path);
-        const discoveredAddresses = await CryptoService.accountDiscovery(
-          account
-        );
-        let nextFreeAddress = CryptoService.nextToUse(
-          discoveredAddresses.freeAddresses
-        );
-        const next = CryptoService.breakAccountPath(nextFreeAddress);
+const depositAddress = ref('');
+const qrSrc = ref('');
+async function changeAccount(acc = accounts.value[0]) {
+  depositAddress.value = '';
+  if (acc.isImported && acc.wif) {
+    depositAddress.value = acc.address;
+  } else {
+    const { account, change } = CryptoService.breakAccountPath(acc.path);
+    const discoveredAddresses = await CryptoService.accountDiscovery(account);
+    let nextFreeAddress = CryptoService.nextToUse(
+      discoveredAddresses.freeAddresses
+    );
+    const next = CryptoService.breakAccountPath(nextFreeAddress);
 
-        const child = CryptoService.getChildFromRoot(
-          account,
-          change,
-          next.address
-        );
-        depositAddress.value = child.address;
-      }
-      generateQR();
-    }
+    const child = CryptoService.getChildFromRoot(account, change, next.address);
+    depositAddress.value = child.address;
+  }
+  generateQR();
+}
 
-    let copyPending = ref(false);
-    function handleCopy() {
-      copyPending.value = true;
-      setTimeout(() => {
-        copyPending.value = false;
-      }, 2000);
-    }
+let copyPending = ref(false);
+function handleCopy() {
+  copyPending.value = true;
+  setTimeout(() => {
+    copyPending.value = false;
+  }, 2000);
+}
 
-    function generateQR() {
-      var qr = new VanillaQR({
-        url:
-          amount.value > 0
-            ? `${depositAddress.value}?amount=${amount.value}`
-            : depositAddress.value,
-        noBorder: false,
-        // borderSize: 20,
-        colorDark: '#FAF9FC',
-        colorLight: '#140435',
-        // size: 140,
-      });
-      qrSrc.value = qr.toImage('png').src;
-    }
+function generateQR() {
+  var qr = new VanillaQR({
+    url:
+      amount.value > 0
+        ? `${depositAddress.value}?amount=${amount.value}`
+        : depositAddress.value,
+    noBorder: false,
+    // borderSize: 20,
+    colorDark: '#FAF9FC',
+    colorLight: '#140435',
+    // size: 140,
+  });
+  qrSrc.value = qr.toImage('png').src;
+}
 
-    function changeStep(step) {
-      currentStep.value = step;
-      if (step === 2) {
-        generateQR();
-      }
-    }
-    function goBack(step) {
-      currentStep.value = step;
-    }
+function changeStep(step) {
+  currentStep.value = step;
+  if (step === 2) {
+    generateQR();
+  }
+}
+function goBack(step) {
+  currentStep.value = step;
+}
 
-    function fiatKeyup() {
-      amount.value = amountFiat.value * XST_USD.value;
-    }
+function fiatKeyup() {
+  amount.value = amountFiat.value * XST_USD.value;
+}
 
-    function changeCurrency(currency) {
-      if (currency === 'USD') {
-        amountFiat.value = amount.value * XST_USD.value;
-      }
-      inputAmountState.value = currency;
-      /* if (currency === 'XST') {
+function changeCurrency(currency) {
+  if (currency === 'USD') {
+    amountFiat.value = amount.value * XST_USD.value;
+  }
+  inputAmountState.value = currency;
+  /* if (currency === 'XST') {
         amount.value = amountFiat.value / XST_USD.value;
         inputAmountState.value = 'XST';
       } else if (currency === 'USD') {
@@ -386,33 +376,33 @@ import SvgIcon from '../partials/SvgIcon.vue';
           amount.value = 0.05;
         }
       } */
-    }
+}
 
-    async function sendEmail() {
-      try {
-        await validateFields();
-        if (amount.value > 0) {
-          window.location.href = DOMPurify.sanitize(
-            `mailto:${email.value}?body=Please send ${amount.value} XST to my following address: ${depositAddress.value}.&subject=My XST address`
-          );
-        } else {
-          window.location.href = DOMPurify.sanitize(
-            `mailto:${email.value}?body=${depositAddress.value}&subject=My XST address`
-          );
-        }
-        closeModal();
-      } catch (e) {
-        if (e instanceof ValidationError) {
-          console.log(e);
-        }
-      }
+async function sendEmail() {
+  try {
+    await validateFields();
+    if (amount.value > 0) {
+      window.location.href = DOMPurify.sanitize(
+        `mailto:${email.value}?body=Please send ${amount.value} XST to my following address: ${depositAddress.value}.&subject=My XST address`
+      );
+    } else {
+      window.location.href = DOMPurify.sanitize(
+        `mailto:${email.value}?body=${depositAddress.value}&subject=My XST address`
+      );
     }
+    closeModal();
+  } catch (e) {
+    if (e instanceof ValidationError) {
+      console.log(e);
+    }
+  }
+}
 
-    function preventRemove(acc) {
-      setTimeout(() => {
-        account.value = acc;
-      }, 10);
-    }
+function preventRemove(acc) {
+  setTimeout(() => {
+    account.value = acc;
+  }, 10);
+}
 </script>
 
 <style scoped>

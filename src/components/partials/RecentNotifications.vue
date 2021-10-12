@@ -26,14 +26,14 @@
 import { useMainStore } from '@/store';
 import SvgIcon from '../partials/SvgIcon.vue';
 
-    const mainStore = useMainStore();
-    function closeCanvas() {
-      mainStore.TOGGLE_DRAWER(false);
-      setTimeout(() => {
-        mainStore.SET_OFF_CANVAS_DATA(null);
-        mainStore.SET_CURRENT_CANVAS('transaction-details');
-      }, 300);
-    }
+const mainStore = useMainStore();
+function closeCanvas() {
+  mainStore.TOGGLE_DRAWER(false);
+  setTimeout(() => {
+    mainStore.SET_OFF_CANVAS_DATA(null);
+    mainStore.SET_CURRENT_CANVAS('transaction-details');
+  }, 300);
+}
 </script>
 
 <style scoped>
