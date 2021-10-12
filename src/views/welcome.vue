@@ -1192,6 +1192,11 @@
 </template>
 
 <script>
+export default {
+  name: 'StWelcome',
+};
+</script>
+<script setup>
 import { ref, onMounted, watchEffect, computed } from 'vue';
 import * as bip39 from 'bip39';
 import * as bip32 from 'bip32';
@@ -1200,126 +1205,99 @@ import router from '../router';
 import CryptoService from '../services/crypto';
 import { add, format } from 'mathjs';
 import { useValidation, ValidationError } from 'vue3-form-validation';
-/* import PaymentCode from '@/components/elements/PaymentCode.vue'; */
 import StProgress from '@/components/elements/StProgress.vue';
 import _shuffle from 'lodash/shuffle';
 import _cloneDeep from 'lodash/cloneDeep';
-/* import Lottie from 'vue-lottie/src/lottie.vue'; */
-/* import * as animationData from '@/assets/animation/logo.json'; */
 import pkgjson from '@/../package.json';
 import zxcvbn from 'zxcvbn';
 import SvgIcon from '../components/partials/SvgIcon.vue';
 
-export default {
-  name: 'StWelcome',
-  components: {
-    /* PaymentCode, */
-    StProgress,
-    /* Lottie, */
-    SvgIcon,
+const mainStore = useMainStore();
+const recovered = ref({});
+const password = ref('');
+const confirmPassword = ref('');
+const account = ref('');
+const recoveryPhraseLength = ref('12');
+const restoreRecoveryPhraseLength = ref('12');
+const recoveryPhraseConfirmation = ref(false);
+const progressDuration = ref(5);
+const createdMnemonic = ref([]);
+const reorderedMnemonic = ref([]);
+const mnemonicError = ref('');
+const isValidMnemonic = ref(false);
+
+const showPassword = ref(false);
+const showConfirmPassword = ref(false);
+
+const isWelcome = ref(false);
+const isAccount = ref(false);
+const isRecovery = ref(false);
+const currentStep = ref(0);
+const recoveryStep = ref(0);
+const paginationLength = ref(18);
+const termsOfService = ref(false);
+const wordlist = ref([]);
+const recoveryWord = ref('');
+const selectedRecoveryWords = ref([]);
+const isLoading = ref(false);
+const isVideoLoaded = ref(false);
+const isAccountFinished = ref(false);
+const isAnimationFinished = ref(false);
+const version = ref(pkgjson.version);
+
+const { form, validateFields, resetFields } = useValidation({
+  password: {
+    $value: password,
+    $rules: [
+      {
+        rule: () => {
+          let details = zxcvbn(password.value);
+          if (details.feedback.warning.length) {
+            if (details.feedback.warning.includes('Repeats like')) {
+              return 'Repeats like "aaa" or "abcabc" are easy to guess';
+            }
+            return details.feedback.warning;
+          }
+          if (details.feedback.suggestions.length) {
+            if (
+              'Add another word or two. Uncommon words are better.' ===
+              details.feedback.suggestions[0]
+            ) {
+              // replace with
+              return 'Use a longer keyboard pattern with more turns.';
+            }
+            return details.feedback.suggestions[0];
+          } else {
+            if (details.score < 3) {
+              return 'Use a longer keyboard pattern with more turns.';
+            } else {
+              return true;
+            }
+          }
+        },
+      },
+      {
+        key: 'pw',
+        rule: () =>
+          password.value === confirmPassword.value || 'Passwords do not match',
+      },
+    ],
   },
-  setup() {
-    const mainStore = useMainStore();
-
-    const recoverWallet = ref(false);
-    const mnemonic = ref('');
-    const recovered = ref({});
-    const password = ref('');
-    const confirmPassword = ref('');
-    const paymentCode = ref('');
-    /* const confirmPaymentCode = ref(''); */
-    const account = ref('');
-    const recoveryPhraseLength = ref('12');
-    const restoreRecoveryPhraseLength = ref('12');
-    const recoveryPhraseConfirmation = ref(false);
-    const progressDuration = ref(5);
-    const createdMnemonic = ref([]);
-    const reorderedMnemonic = ref([]);
-    const mnemonicError = ref('');
-    const isValidMnemonic = ref(false);
-
-    const showPassword = ref(false);
-    const showConfirmPassword = ref(false);
-
-    const isWelcome = ref(false);
-    const isAccount = ref(false);
-    const isRecovery = ref(false);
-    const currentStep = ref(0);
-    const recoveryStep = ref(0);
-    const paginationLength = ref(18);
-    const termsOfService = ref(false);
-    const wordlist = ref([]);
-    const recoveryWord = ref('');
-    const selectedRecoveryWords = ref([]);
-    /* const animation = ref(null); // for saving the reference to the animation */
-    const isLoading = ref(false);
-    const isVideoLoaded = ref(false);
-    const isAccountFinished = ref(false);
-    /* const lottieOptions = ref({
-      animationData: animationData.default,
-      render: 'svg',
-      loop: false,
-      autoplay: true,
-    }); */
-    const isAnimationFinished = ref(false);
-    const version = ref(pkgjson.version);
-
-    const { form, errors, submitting, validateFields, resetFields } =
-      useValidation({
-        password: {
-          $value: password,
-          $rules: [
-            {
-              rule: () => {
-                let details = zxcvbn(password.value);
-                if (details.feedback.warning.length) {
-                  if (details.feedback.warning.includes('Repeats like')) {
-                    return 'Repeats like "aaa" or "abcabc" are easy to guess';
-                  }
-                  return details.feedback.warning;
-                }
-                if (details.feedback.suggestions.length) {
-                  if (
-                    'Add another word or two. Uncommon words are better.' ===
-                    details.feedback.suggestions[0]
-                  ) {
-                    // replace with
-                    return 'Use a longer keyboard pattern with more turns.';
-                  }
-                  return details.feedback.suggestions[0];
-                } else {
-                  if (details.score < 3) {
-                    return 'Use a longer keyboard pattern with more turns.';
-                  } else {
-                    return true;
-                  }
-                }
-              },
-            },
-            {
-              key: 'pw',
-              rule: () =>
-                password.value === confirmPassword.value ||
-                'Passwords do not match',
-            },
-          ],
-        },
-        confirmPassword: {
-          $value: confirmPassword,
-          $rules: [
-            {
-              rule: () =>
-                confirmPassword.value.length || 'Confirm password is required',
-            },
-            {
-              key: 'pw',
-              rule: () =>
-                password.value === confirmPassword.value ||
-                'Passwords do not match',
-            },
-          ],
-        },
-        /* paymentCode: {
+  confirmPassword: {
+    $value: confirmPassword,
+    $rules: [
+      {
+        rule: () =>
+          confirmPassword.value.length || 'Confirm password is required',
+      },
+      {
+        key: 'pw',
+        rule: () =>
+          password.value === confirmPassword.value || 'Passwords do not match',
+      },
+    ],
+  },
+  /* paymentCode: {
           $value: paymentCode,
           $rules: [
             {
@@ -1339,7 +1317,7 @@ export default {
           }
           ],
         }, */
-        /* confirmPaymentCode: {
+  /* confirmPaymentCode: {
         $value: confirmPaymentCode,
         $rules: [
           {
@@ -1357,70 +1335,70 @@ export default {
           }
         ]
       } */
-        account: {
-          $value: account,
-          $rules: [
-            {
-              rule: () => {
-                if (currentStep.value === 6) {
-                  return !account.value && 'Account name is required';
-                }
-              },
-            },
-            {
-              rule: () => {
-                if (currentStep.value === 6) {
-                  return account.value.length > 50 && 'Name too long';
-                }
-              },
-            },
-          ],
+  account: {
+    $value: account,
+    $rules: [
+      {
+        rule: () => {
+          if (currentStep.value === 6) {
+            return !account.value && 'Account name is required';
+          }
         },
-      });
-    const {
-      form: recoveryForm,
-      validateFields: validateRecoveryFields,
-      resetFields: resetRecoveryFields,
-    } = useValidation({
-      account: {
-        $value: account,
-        $rules: [
-          {
-            rule: () => {
-              if (!account.value) {
-                return 'Account name is required';
-              }
-            },
-          },
-          {
-            rule: () => {
-              return account.value.length > 50 && 'Name too long';
-            },
-          },
-        ],
       },
-    });
+      {
+        rule: () => {
+          if (currentStep.value === 6) {
+            return account.value.length > 50 && 'Name too long';
+          }
+        },
+      },
+    ],
+  },
+});
+const {
+  form: recoveryForm,
+  validateFields: validateRecoveryFields,
+  resetFields: resetRecoveryFields,
+} = useValidation({
+  account: {
+    $value: account,
+    $rules: [
+      {
+        rule: () => {
+          if (!account.value) {
+            return 'Account name is required';
+          }
+        },
+      },
+      {
+        rule: () => {
+          return account.value.length > 50 && 'Name too long';
+        },
+      },
+    ],
+  },
+});
 
-    watchEffect(async () => {
-      if (
-        (isAccount.value && currentStep.value === 0) ||
-        (isRecovery.value && recoveryStep.value === 0)
-      ) {
-        let video = document.getElementById('bgAnimation');
-        video.loop = true;
-        video.load();
-      }
-      if (currentStep.value === 5) {
-        setTimeout(
-          () =>
-            document
-              .getElementById('password')
-              .getElementsByClassName('st-input__inner')[0]
-              .focus(),
-          1
-        );
-      }
-      /* if (currentStep.value === 7) {
+watchEffect(async () => {
+  if (
+    (isAccount.value && currentStep.value === 0) ||
+    (isRecovery.value && recoveryStep.value === 0)
+  ) {
+    let video = document.getElementById('bgAnimation');
+    video.loop = true;
+    video.load();
+  }
+  if (currentStep.value === 5) {
+    setTimeout(
+      () =>
+        document
+          .getElementById('password')
+          .getElementsByClassName('st-input__inner')[0]
+          .focus(),
+      1
+    );
+  }
+  /* if (currentStep.value === 7) {
         setTimeout(
           () =>
             document
@@ -1430,274 +1408,272 @@ export default {
           1
         );
       } */
-      if (currentStep.value === 6) {
-        setTimeout(() => {
-          document
-            .getElementById('account-name')
-            .getElementsByClassName('st-input__inner')[0]
-            .focus();
-        });
-      }
-      if (currentStep.value === 9) {
-        setTimeout(() => {
-          handleSubmit();
-        }, progressDuration.value * 1000);
-      }
-      if (currentStep.value === 10) {
-        // generate new mnemonic
-        let generateMnemonic = await CryptoService.generateMnemonicAndSeed(
-          Number(recoveryPhraseLength.value)
-        );
-        createdMnemonic.value = generateMnemonic.mnemonic.split(' ');
-        reorderedMnemonic.value = _shuffle(_cloneDeep(createdMnemonic.value));
-      }
-      if (recoveryStep.value === 2) {
-        // Fill array with wordlist
-        wordlist.value = await bip39.wordlists.EN;
-        setTimeout(
-          () =>
-            document
-              .getElementById('recovery-word')
-              .getElementsByClassName('st-input__inner')[0]
-              .focus(),
-          1
-        );
-      }
-      if (recoveryStep.value === 3) {
-        setTimeout(() => recoveryStepNext(), 4200);
-      }
-      if (recoveryStep.value === 4) {
-        // Clear selected words if mnemonic is not valid
-        if (!isValidMnemonic.value) {
-          selectedRecoveryWords.value = [];
-        }
-      }
+  if (currentStep.value === 6) {
+    setTimeout(() => {
+      document
+        .getElementById('account-name')
+        .getElementsByClassName('st-input__inner')[0]
+        .focus();
     });
-
-    const selectedWords = ref([]);
-
-    // Search word in wordlist
-    const searchWordlist = computed(() => {
-      if (recoveryWord.value.length < 2) return;
-      return wordlist.value
-        .filter((word) => word.startsWith(recoveryWord.value))
-        .slice(0, 3);
-    });
-
-    onMounted(() => {
-      let video = document.getElementById('bgAnimation');
-      video.addEventListener('loadeddata', () => {
-        isVideoLoaded.value = true;
-        setTimeout(() => {
-          isAnimationFinished.value = true;
-        }, 3180);
-      });
-      setTimeout(() => {
-        isWelcome.value = true;
-      }, 3500);
-      setTimeout(() => {
-        window.ipc.send('resize:create');
-      }, 10);
-    });
-
-    const isError = ref(false);
-
-    function selectRecoveryPhraseWord(word) {
-      // Clear input
-      recoveryWord.value = '';
-      if (wordlist.value.includes(word)) {
-        // Push mnemonic in array
-        selectedRecoveryWords.value.push(word);
-      } else {
-        // Error if selected word is not in wordlist
-        isError.value = true;
-        setTimeout(() => (isError.value = false), 3000);
-      }
-      // Check mnemonic length and go to next step
-      if (
-        selectedRecoveryWords.value.length ===
-        Number(restoreRecoveryPhraseLength.value)
-      ) {
-        // check if mnemonic is valid
-        isValidMnemonic.value = CryptoService.isMnemonicValid(
-          selectedRecoveryWords.value.join(' ')
-        );
-        recoveryStepNext();
-      }
-    }
-
-    // Remove word from selected words
-    function removeSelectedWord(word) {
-      selectedRecoveryWords.value.splice(
-        selectedRecoveryWords.value.indexOf(word),
-        1
-      );
-    }
-
-    // Undo all words on recovery phrase
-    async function clearRecoveryWords() {
-      wordlist.value = await bip39.wordlists.EN;
-      recoveryWord.value = '';
+  }
+  if (currentStep.value === 9) {
+    setTimeout(() => {
+      handleSubmit();
+    }, progressDuration.value * 1000);
+  }
+  if (currentStep.value === 10) {
+    // generate new mnemonic
+    let generateMnemonic = await CryptoService.generateMnemonicAndSeed(
+      Number(recoveryPhraseLength.value)
+    );
+    createdMnemonic.value = generateMnemonic.mnemonic.split(' ');
+    reorderedMnemonic.value = _shuffle(_cloneDeep(createdMnemonic.value));
+  }
+  if (recoveryStep.value === 2) {
+    // Fill array with wordlist
+    wordlist.value = await bip39.wordlists.EN;
+    setTimeout(
+      () =>
+        document
+          .getElementById('recovery-word')
+          .getElementsByClassName('st-input__inner')[0]
+          .focus(),
+      1
+    );
+  }
+  if (recoveryStep.value === 3) {
+    setTimeout(() => recoveryStepNext(), 4200);
+  }
+  if (recoveryStep.value === 4) {
+    // Clear selected words if mnemonic is not valid
+    if (!isValidMnemonic.value) {
       selectedRecoveryWords.value = [];
     }
+  }
+});
 
-    async function selectWordsInOrder(item) {
-      let removedWord = reorderedMnemonic.value.splice(
-        reorderedMnemonic.value.indexOf(item),
-        1
-      );
-      selectedWords.value.push(removedWord[0]);
-      let isEqual = true;
-      if (selectedWords.value.length === createdMnemonic.value.length) {
-        for (let i = 0; i <= createdMnemonic.value.length; i++) {
-          if (selectedWords.value[i] !== createdMnemonic.value[i]) {
-            isEqual = false;
-            break;
-          }
-        }
-        if (!mnemonicError.value) {
-          nextStep();
-        }
-        setTimeout(() => {
-          if (isEqual) {
-            nextStep();
-          } else {
-            prevStep();
-            mnemonicError.value =
-              'Words are not selected in the order received';
-            clearAndRedoWords();
-          }
-        }, 4200);
+const selectedWords = ref([]);
+
+// Search word in wordlist
+const searchWordlist = computed(() => {
+  if (recoveryWord.value.length < 2) return;
+  return wordlist.value
+    .filter((word) => word.startsWith(recoveryWord.value))
+    .slice(0, 3);
+});
+
+onMounted(() => {
+  let video = document.getElementById('bgAnimation');
+  video.addEventListener('loadeddata', () => {
+    isVideoLoaded.value = true;
+    setTimeout(() => {
+      isAnimationFinished.value = true;
+    }, 3180);
+  });
+  setTimeout(() => {
+    isWelcome.value = true;
+  }, 3500);
+  setTimeout(() => {
+    window.ipc.send('resize:create');
+  }, 10);
+});
+
+const isError = ref(false);
+
+function selectRecoveryPhraseWord(word) {
+  // Clear input
+  recoveryWord.value = '';
+  if (wordlist.value.includes(word)) {
+    // Push mnemonic in array
+    selectedRecoveryWords.value.push(word);
+  } else {
+    // Error if selected word is not in wordlist
+    isError.value = true;
+    setTimeout(() => (isError.value = false), 3000);
+  }
+  // Check mnemonic length and go to next step
+  if (
+    selectedRecoveryWords.value.length ===
+    Number(restoreRecoveryPhraseLength.value)
+  ) {
+    // check if mnemonic is valid
+    isValidMnemonic.value = CryptoService.isMnemonicValid(
+      selectedRecoveryWords.value.join(' ')
+    );
+    recoveryStepNext();
+  }
+}
+
+// Remove word from selected words
+function removeSelectedWord(word) {
+  selectedRecoveryWords.value.splice(
+    selectedRecoveryWords.value.indexOf(word),
+    1
+  );
+}
+
+// Undo all words on recovery phrase
+async function clearRecoveryWords() {
+  wordlist.value = await bip39.wordlists.EN;
+  recoveryWord.value = '';
+  selectedRecoveryWords.value = [];
+}
+
+async function selectWordsInOrder(item) {
+  let removedWord = reorderedMnemonic.value.splice(
+    reorderedMnemonic.value.indexOf(item),
+    1
+  );
+  selectedWords.value.push(removedWord[0]);
+  let isEqual = true;
+  if (selectedWords.value.length === createdMnemonic.value.length) {
+    for (let i = 0; i <= createdMnemonic.value.length; i++) {
+      if (selectedWords.value[i] !== createdMnemonic.value[i]) {
+        isEqual = false;
+        break;
       }
     }
-
-    function clearAndRedoWords() {
-      reorderedMnemonic.value = _shuffle(_cloneDeep(createdMnemonic.value));
-      selectedWords.value = [];
-      setTimeout(() => (mnemonicError.value = ''), 4000);
+    if (!mnemonicError.value) {
+      nextStep();
     }
-    function prevStep() {
-      if (currentStep.value !== 0) {
-        currentStep.value -= 1;
+    setTimeout(() => {
+      if (isEqual) {
+        nextStep();
+      } else {
+        prevStep();
+        mnemonicError.value = 'Words are not selected in the order received';
+        clearAndRedoWords();
       }
-    }
-    function chooseStep(step) {
-      currentStep.value = step;
-    }
-    function nextStep() {
-      if (currentStep.value < paginationLength.value - 1) {
-        currentStep.value += 1;
-      }
-    }
-    async function recoveryStepNext() {
-      await validateRecoveryFields();
-      recoveryStep.value += 1;
-    }
+    }, 4200);
+  }
+}
 
-    async function recover() {
-      // recover an existing wallet via mnemonic
-      // password is asked because we have to lock the seed in the database
-      // user is createing a new password in this step
-      try {
-        await validateFields();
-        const wait = (timeToDelay) =>
-          new Promise((resolve) => setTimeout(resolve, timeToDelay));
-        isRecovery.value = false;
-        isAccount.value = false;
-        isAccountFinished.value = true;
-        let video = document.getElementById('bgAnimation');
-        video.loop = false;
-        video.load();
-        video.play();
-        await wait(350);
-        isLoading.value = true;
-        let mnemonic = selectedRecoveryWords.value.join(' ');
-        // let bytes = bip39.mnemonicToSeedSync(mnemonic);
-        let bytes = await bip39.mnemonicToSeed(mnemonic);
-        const master = await bip32.fromSeed(bytes, CryptoService.network); // root
-        recovered.value = {
-          seed: bytes.toString('hex'),
-          master: master,
-        };
+function clearAndRedoWords() {
+  reorderedMnemonic.value = _shuffle(_cloneDeep(createdMnemonic.value));
+  selectedWords.value = [];
+  setTimeout(() => (mnemonicError.value = ''), 4000);
+}
+function prevStep() {
+  if (currentStep.value !== 0) {
+    currentStep.value -= 1;
+  }
+}
+function chooseStep(step) {
+  currentStep.value = step;
+}
+function nextStep() {
+  if (currentStep.value < paginationLength.value - 1) {
+    currentStep.value += 1;
+  }
+}
+async function recoveryStepNext() {
+  await validateRecoveryFields();
+  recoveryStep.value += 1;
+}
 
-        CryptoService.seed = bytes.toString('hex');
-        CryptoService.master = master;
-        await CryptoService.storeWalletInDb(password.value);
-        await CryptoService.storeMnemonicInWallet(selectedRecoveryWords.value);
-        const lastAccountPath = await CryptoService.findLastUsedAccountPath();
-        for (let i = 0; i <= lastAccountPath + 1; i++) {
-          await restoreAccounts();
-        }
-        CryptoService.isFirstArrival = false;
-        await wait(1000);
-        isLoading.value = false;
-        CryptoService.unlock(password.value);
-        window.ipc.send('resize:other');
-        // goToDashboard();
-        resetFields();
-      } catch (e) {
-        if (e instanceof ValidationError) {
-          console.log(e.message);
-        }
-      }
-    }
+async function recover() {
+  // recover an existing wallet via mnemonic
+  // password is asked because we have to lock the seed in the database
+  // user is createing a new password in this step
+  try {
+    await validateFields();
+    const wait = (timeToDelay) =>
+      new Promise((resolve) => setTimeout(resolve, timeToDelay));
+    isRecovery.value = false;
+    isAccount.value = false;
+    isAccountFinished.value = true;
+    let video = document.getElementById('bgAnimation');
+    video.loop = false;
+    video.load();
+    video.play();
+    await wait(350);
+    isLoading.value = true;
+    let mnemonic = selectedRecoveryWords.value.join(' ');
+    // let bytes = bip39.mnemonicToSeedSync(mnemonic);
+    let bytes = await bip39.mnemonicToSeed(mnemonic);
+    const master = await bip32.fromSeed(bytes, CryptoService.network); // root
+    recovered.value = {
+      seed: bytes.toString('hex'),
+      master: master,
+    };
 
-    async function restoreAccounts() {
-      let next = await CryptoService.getNextAccountPath();
-      const { address, path, xpub, wif } = CryptoService.getChildFromRoot(
-        next,
-        0,
-        0
-      );
-
-      const hdAccount = await mainStore.rpc('gethdaccount', [xpub]);
-
-      let accUtxo = 0;
-
-      for (let tx of hdAccount) {
-        accUtxo = add(accUtxo, tx.account_balance_change);
-        accUtxo = format(accUtxo, { precision: 14 });
-      }
-
-      let acc = {
-        xpub: xpub,
-        address: address,
-        label:
-          `${account.value} ${next > 0 ? next + 1 : ''}` ||
-          `Account ${next > 0 ? next + 1 : ''}`,
-        utxo: accUtxo,
-        isArchived: false,
-        isFavourite: false,
-        isImported: false,
-        asset: 'XST',
-        wif: wif,
-        path: path,
-      };
-
-      await CryptoService.storeAccountInDb(acc);
-    }
-    const createWallet = ref(false);
-    async function createNewWallet() {
-      // new wallet is created
-      // therefore, new password can be made
-      await CryptoService.storeWalletInDb(password.value);
-      await CryptoService.storeMnemonicInWallet(selectedWords.value);
+    CryptoService.seed = bytes.toString('hex');
+    CryptoService.master = master;
+    await CryptoService.storeWalletInDb(password.value);
+    await CryptoService.storeMnemonicInWallet(selectedRecoveryWords.value);
+    const lastAccountPath = await CryptoService.findLastUsedAccountPath();
+    for (let i = 0; i <= lastAccountPath + 1; i++) {
       await restoreAccounts();
-      isAccount.value = false;
-      isAccountFinished.value = true;
-      let video = document.getElementById('bgAnimation');
-      video.loop = false;
-      video.load();
-      video.play();
-      setTimeout(() => {
-        isLoading.value = true;
-        setTimeout(() => {
-          isLoading.value = false;
-          window.ipc.send('resize:other');
-          goToDashboard();
-        }, 4000);
-      }, 350);
-      /* mainStore.START_GLOBAL_LOADING();
+    }
+    CryptoService.isFirstArrival = false;
+    await wait(1000);
+    isLoading.value = false;
+    CryptoService.unlock(password.value);
+    window.ipc.send('resize:other');
+    // goToDashboard();
+    resetFields();
+  } catch (e) {
+    if (e instanceof ValidationError) {
+      console.log(e.message);
+    }
+  }
+}
+
+async function restoreAccounts() {
+  let next = await CryptoService.getNextAccountPath();
+  const { address, path, xpub, wif } = CryptoService.getChildFromRoot(
+    next,
+    0,
+    0
+  );
+
+  const hdAccount = await mainStore.rpc('gethdaccount', [xpub]);
+
+  let accUtxo = 0;
+
+  for (let tx of hdAccount) {
+    accUtxo = add(accUtxo, tx.account_balance_change);
+    accUtxo = format(accUtxo, { precision: 14 });
+  }
+
+  let acc = {
+    xpub: xpub,
+    address: address,
+    label:
+      `${account.value} ${next > 0 ? next + 1 : ''}` ||
+      `Account ${next > 0 ? next + 1 : ''}`,
+    utxo: accUtxo,
+    isArchived: false,
+    isFavourite: false,
+    isImported: false,
+    asset: 'XST',
+    wif: wif,
+    path: path,
+  };
+
+  await CryptoService.storeAccountInDb(acc);
+}
+async function createNewWallet() {
+  // new wallet is created
+  // therefore, new password can be made
+  await CryptoService.storeWalletInDb(password.value);
+  await CryptoService.storeMnemonicInWallet(selectedWords.value);
+  await restoreAccounts();
+  isAccount.value = false;
+  isAccountFinished.value = true;
+  let video = document.getElementById('bgAnimation');
+  video.loop = false;
+  video.load();
+  video.play();
+  setTimeout(() => {
+    isLoading.value = true;
+    setTimeout(() => {
+      isLoading.value = false;
+      window.ipc.send('resize:other');
+      goToDashboard();
+    }, 4000);
+  }, 350);
+  /* mainStore.START_GLOBAL_LOADING();
 
       await CryptoService.storeWalletInDb(password.value);
       await CryptoService.storeMnemonicInWallet(selectedWords.value);
@@ -1706,104 +1682,36 @@ export default {
       goToDashboard();
 
       mainStore.STOP_GLOBAL_LOADING(); */
-    }
+}
 
-    async function handleSubmit() {
-      try {
-        await validateFields();
-        nextStep();
-      } catch (e) {
-        if (e instanceof ValidationError) {
-          console.log(e.message);
-        }
-      }
+async function handleSubmit() {
+  try {
+    await validateFields();
+    nextStep();
+  } catch (e) {
+    if (e instanceof ValidationError) {
+      console.log(e.message);
     }
+  }
+}
 
-    function goBack() {
-      recoveryStep.value = 0;
-      resetRecoveryFields();
-    }
+function goBack() {
+  recoveryStep.value = 0;
+  resetRecoveryFields();
+}
 
-    function selectTabWord(words) {
-      let selectedWord = words && words[0];
-      if (words && words.length) selectRecoveryPhraseWord(selectedWord);
-    }
+function selectTabWord(words) {
+  let selectedWord = words && words[0];
+  if (words && words.length) selectRecoveryPhraseWord(selectedWord);
+}
 
-    /* function handleAnimation(anim) {
+/* function handleAnimation(anim) {
       animation.value = anim;
     } */
 
-    function goToDashboard() {
-      router.push('/dashboard');
-    }
-    return {
-      isWelcome,
-      isAccount,
-      isAccountFinished,
-      isRecovery,
-      currentStep,
-      recoveryStep,
-      paginationLength,
-      termsOfService,
-      goToDashboard,
-      form,
-      errors,
-      submitting,
-      resetFields,
-      handleSubmit,
-      showPassword,
-      showConfirmPassword,
-      progressDuration,
-      mnemonicError,
-      wordlist,
-      searchWordlist,
-      recoveryWord,
-      selectedRecoveryWords,
-      isError,
-      isValidMnemonic,
-      /* lottieOptions,
-       */
-      reorderedMnemonic,
-      selectedWords,
-
-      recoverWallet,
-      mnemonic,
-      recover,
-      recovered,
-      paymentCode,
-      /* confirmPaymentCode, */
-      account,
-      recoveryPhraseLength,
-      recoveryPhraseConfirmation,
-      restoreRecoveryPhraseLength,
-      /* handleAnimation, */
-      isAnimationFinished,
-      isVideoLoaded,
-
-      clearAndRedoWords,
-      clearRecoveryWords,
-      selectWordsInOrder,
-      selectRecoveryPhraseWord,
-      removeSelectedWord,
-      prevStep,
-      chooseStep,
-      nextStep,
-      recoveryStepNext,
-      password,
-      confirmPassword,
-      createWallet,
-      createdMnemonic,
-      createNewWallet,
-      recoveryForm,
-      goBack,
-      selectTabWord,
-
-      version,
-
-      isLoading,
-    };
-  },
-};
+function goToDashboard() {
+  router.push('/dashboard');
+}
 </script>
 
 <style scoped>

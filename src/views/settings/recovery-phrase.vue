@@ -200,170 +200,136 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref, computed, watchEffect } from 'vue';
 import * as bip39 from 'bip39';
 import CryptoService from '@/services/crypto';
 import { useValidation } from 'vue3-form-validation';
-export default {
-  setup() {
-    // VARIABLES
-    const currentStep = ref(1);
-    const understand = ref(false);
-    const isVisible = ref(false);
-    const password = ref('');
-    const isValid = ref(false);
-    const wordlist = ref(bip39.wordlists.EN);
-    let walletMnemonic = ref([]);
-    const selectedMnemonic = ref([]);
-    const mnemonic = ref('');
-    const isError = ref(false);
-    const isValidMnemonic = ref(false);
-    const checkMnemonic = ref(false);
-    const savedPhrase = ref(false);
+// VARIABLES
+const currentStep = ref(1);
+const understand = ref(false);
+const isVisible = ref(false);
+const password = ref('');
+const isValid = ref(false);
+const wordlist = ref(bip39.wordlists.EN);
+let walletMnemonic = ref([]);
+const selectedMnemonic = ref([]);
+const mnemonic = ref('');
+const isError = ref(false);
+const isValidMnemonic = ref(false);
+const checkMnemonic = ref(false);
+const savedPhrase = ref(false);
 
-    const { form, validateFields, resetFields } = useValidation({
-      password: {
-        $value: password,
-        $rules: [
-          async (password) => {
-            if (!password) {
-              return 'Password is required.';
-            }
-            isValid.value = await CryptoService.validatePassword(password);
-            if (!isValid.value) {
-              return 'Incorrect password.';
-            }
-          },
-        ],
+const { form, validateFields, resetFields } = useValidation({
+  password: {
+    $value: password,
+    $rules: [
+      async (password) => {
+        if (!password) {
+          return 'Password is required.';
+        }
+        isValid.value = await CryptoService.validatePassword(password);
+        if (!isValid.value) {
+          return 'Incorrect password.';
+        }
       },
-    });
-
-    // WATCH
-    watchEffect(async () => {
-      if (currentStep.value === 3) {
-        setTimeout(
-          () =>
-            document
-              .getElementById('mnemonic')
-              .getElementsByClassName('st-input__inner')[0]
-              .focus(),
-          1
-        );
-      }
-      if (currentStep.value === 2) {
-        const wallet = await CryptoService.getWalletFromDb();
-        walletMnemonic.value = await CryptoService.AESDecrypt(
-          wallet.mnemonic,
-          wallet.password
-        );
-      }
-    });
-
-    // COMPUTED
-    const searchedWords = computed(() => {
-      if (mnemonic.value.length < 2) return;
-      return wordlist.value
-        .filter((word) => word.startsWith(mnemonic.value))
-        .slice(0, 3);
-    });
-
-    // FUNCTIONS
-    async function nextStep() {
-      // Trigger validation for password
-      await validateFields();
-      if (isValid.value) {
-        isVisible.value = false;
-        currentStep.value += 1;
-      }
-    }
-    function goBack() {
-      currentStep.value = 1;
-      understand.value = false;
-      password.value = '';
-      selectedMnemonic.value = [];
-    }
-    function selectWord(word) {
-      if (wordlist.value.includes(word)) {
-        // Push mnemonic in array
-        selectedMnemonic.value.push(word);
-      } else {
-        // Error if selected word is not in wordlist
-        isError.value = true;
-        setTimeout(() => (isError.value = false), 3000);
-      }
-      // Check mnemonic length and go to next step
-      if (selectedMnemonic.value.length === walletMnemonic.value.length) {
-        // check if mnemonic is valid
-        isValidMnemonic.value = CryptoService.isMnemonicValid(
-          selectedMnemonic.value.join(' ')
-        );
-
-        checkMnemonic.value = true;
-        setTimeout(() => {
-          nextStep();
-          setTimeout(() => (checkMnemonic.value = false), 100);
-        }, 4200);
-      }
-      mnemonic.value = '';
-    }
-    // Remove word from selected words
-    function removeSelectedWord(word) {
-      selectedMnemonic.value.splice(selectedMnemonic.value.indexOf(word), 1);
-    }
-    function closeModal() {
-      isVisible.value = false;
-      password.value = '';
-      resetFields();
-    }
-    function openModal() {
-      isVisible.value = true;
-      setTimeout(
-        () =>
-          document
-            .getElementById('password')
-            .getElementsByClassName('st-input__inner')[0]
-            .focus(),
-        1
-      );
-      resetFields();
-    }
-    function selectTabWord(words) {
-      let selectedWord = words && words[0];
-      if (words && words.length) selectWord(selectedWord);
-    }
-
-    return {
-      // VARIABLES
-      currentStep,
-      understand,
-      isVisible,
-      password,
-      form,
-      validateFields,
-      walletMnemonic,
-      selectedMnemonic,
-      wordlist,
-      mnemonic,
-      isError,
-      checkMnemonic,
-      isValidMnemonic,
-      savedPhrase,
-
-      // COMPUTED
-      searchedWords,
-
-      // FUNCTIONS
-      nextStep,
-      selectWord,
-      goBack,
-      removeSelectedWord,
-      closeModal,
-      openModal,
-      selectTabWord,
-    };
+    ],
   },
-};
+});
+
+// WATCH
+watchEffect(async () => {
+  if (currentStep.value === 3) {
+    setTimeout(
+      () =>
+        document
+          .getElementById('mnemonic')
+          .getElementsByClassName('st-input__inner')[0]
+          .focus(),
+      1
+    );
+  }
+  if (currentStep.value === 2) {
+    const wallet = await CryptoService.getWalletFromDb();
+    walletMnemonic.value = await CryptoService.AESDecrypt(
+      wallet.mnemonic,
+      wallet.password
+    );
+  }
+});
+
+// COMPUTED
+const searchedWords = computed(() => {
+  if (mnemonic.value.length < 2) return;
+  return wordlist.value
+    .filter((word) => word.startsWith(mnemonic.value))
+    .slice(0, 3);
+});
+
+// FUNCTIONS
+async function nextStep() {
+  // Trigger validation for password
+  await validateFields();
+  if (isValid.value) {
+    isVisible.value = false;
+    currentStep.value += 1;
+  }
+}
+function goBack() {
+  currentStep.value = 1;
+  understand.value = false;
+  password.value = '';
+  selectedMnemonic.value = [];
+}
+function selectWord(word) {
+  if (wordlist.value.includes(word)) {
+    // Push mnemonic in array
+    selectedMnemonic.value.push(word);
+  } else {
+    // Error if selected word is not in wordlist
+    isError.value = true;
+    setTimeout(() => (isError.value = false), 3000);
+  }
+  // Check mnemonic length and go to next step
+  if (selectedMnemonic.value.length === walletMnemonic.value.length) {
+    // check if mnemonic is valid
+    isValidMnemonic.value = CryptoService.isMnemonicValid(
+      selectedMnemonic.value.join(' ')
+    );
+
+    checkMnemonic.value = true;
+    setTimeout(() => {
+      nextStep();
+      setTimeout(() => (checkMnemonic.value = false), 100);
+    }, 4200);
+  }
+  mnemonic.value = '';
+}
+// Remove word from selected words
+function removeSelectedWord(word) {
+  selectedMnemonic.value.splice(selectedMnemonic.value.indexOf(word), 1);
+}
+function closeModal() {
+  isVisible.value = false;
+  password.value = '';
+  resetFields();
+}
+function openModal() {
+  isVisible.value = true;
+  setTimeout(
+    () =>
+      document
+        .getElementById('password')
+        .getElementsByClassName('st-input__inner')[0]
+        .focus(),
+    1
+  );
+  resetFields();
+}
+function selectTabWord(words) {
+  let selectedWord = words && words[0];
+  if (words && words.length) selectWord(selectedWord);
+}
 </script>
 
 <style scoped>

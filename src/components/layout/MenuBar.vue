@@ -122,69 +122,51 @@
   </aside>
 </template>
 
-<script>
-import { ref, computed, defineComponent } from 'vue';
+<script setup>
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMainStore } from '@/store';
 import { onClickOutside } from '@vueuse/core';
 import SvgIcon from '../partials/SvgIcon.vue';
 
-export default defineComponent({
-  name: 'StMenuBar',
-  components: {
-    SvgIcon,
-  },
-  setup() {
-    const mainStore = useMainStore();
-    const router = useRouter();
-    const isCollapsed = ref(false);
-    const asideMenu = ref(null);
+const mainStore = useMainStore();
+const router = useRouter();
+const isCollapsed = ref(false);
+const asideMenu = ref(null);
 
-    router.afterEach(() => {
-      if (isCollapsed.value) {
-        isCollapsed.value = false;
-      }
-    });
+router.afterEach(() => {
+  if (isCollapsed.value) {
+    isCollapsed.value = false;
+  }
+});
 
-    const menuExpanded = computed(() => {
-      return mainStore.isMenuExpanded;
-    });
+const menuExpanded = computed(() => {
+  return mainStore.isMenuExpanded;
+});
 
-    function toggleMenu() {
-      isCollapsed.value = !isCollapsed.value;
-    }
+function toggleMenu() {
+  isCollapsed.value = !isCollapsed.value;
+}
 
-    function openModal(modal) {
-      isCollapsed.value = false;
-      mainStore.SET_MODAL_VISIBILITY(modal, true);
-    }
-    function toggleDrawer(canvas) {
-      isCollapsed.value = false;
-      mainStore.SET_OFF_CANVAS_DATA({ addressBook: 'dummy' });
-      mainStore.SET_CURRENT_CANVAS(canvas);
-      mainStore.TOGGLE_DRAWER(true);
-    }
-    function lock() {
-      mainStore.SET_IS_LOCK(true);
-      router.push('/lock');
-    }
+function openModal(modal) {
+  isCollapsed.value = false;
+  mainStore.SET_MODAL_VISIBILITY(modal, true);
+}
+function toggleDrawer(canvas) {
+  isCollapsed.value = false;
+  mainStore.SET_OFF_CANVAS_DATA({ addressBook: 'dummy' });
+  mainStore.SET_CURRENT_CANVAS(canvas);
+  mainStore.TOGGLE_DRAWER(true);
+}
+function lock() {
+  mainStore.SET_IS_LOCK(true);
+  router.push('/lock');
+}
 
-    onClickOutside(asideMenu, () => {
-      if (isCollapsed.value) {
-        isCollapsed.value = false;
-      }
-    });
-
-    return {
-      asideMenu,
-      isCollapsed,
-      menuExpanded,
-      toggleMenu,
-      openModal,
-      toggleDrawer,
-      lock,
-    };
-  },
+onClickOutside(asideMenu, () => {
+  if (isCollapsed.value) {
+    isCollapsed.value = false;
+  }
 });
 </script>
 

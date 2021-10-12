@@ -42,57 +42,39 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue';
 import db from '@/db';
 import router from '@/router';
 import SvgIcon from '../../components/partials/SvgIcon.vue';
 
-export default {
-  components: {
-    SvgIcon,
-  },
-  setup() {
-    const isCleared = ref(false);
-    const timeout = ref(null);
-    const counterTimeout = ref(null);
-    const counter = ref(5);
+const isCleared = ref(false);
+const timeout = ref(null);
+const counterTimeout = ref(null);
+const counter = ref(5);
 
-    function countdown() {
-      counter.value -= 1;
-      counterTimeout.value = setTimeout(() => countdown(), 1050);
-    }
-    function clearAppData() {
-      isCleared.value = true;
-      countdown();
-      timeout.value = setTimeout(async () => {
-        await db.dropInstance();
-        localStorage.clear();
-        isCleared.value = false;
-        clearTimeout(counterTimeout.value);
-        counter.value = 5;
-        router.push('/welcome');
-      }, 5000);
-    }
-    function cancelClearAppData() {
-      clearTimeout(timeout.value);
-      clearTimeout(counterTimeout.value);
-      counter.value = 5;
-      isCleared.value = false;
-    }
-
-    return {
-      // VARIABLES
-      counter,
-      isCleared,
-
-      // FUNCTIONS
-      countdown,
-      clearAppData,
-      cancelClearAppData,
-    };
-  },
-};
+function countdown() {
+  counter.value -= 1;
+  counterTimeout.value = setTimeout(() => countdown(), 1050);
+}
+function clearAppData() {
+  isCleared.value = true;
+  countdown();
+  timeout.value = setTimeout(async () => {
+    await db.dropInstance();
+    localStorage.clear();
+    isCleared.value = false;
+    clearTimeout(counterTimeout.value);
+    counter.value = 5;
+    router.push('/welcome');
+  }, 5000);
+}
+function cancelClearAppData() {
+  clearTimeout(timeout.value);
+  clearTimeout(counterTimeout.value);
+  counter.value = 5;
+  isCleared.value = false;
+}
 </script>
 
 <style scoped>

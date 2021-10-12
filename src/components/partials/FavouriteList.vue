@@ -84,7 +84,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref, computed, watch } from 'vue';
 import CryptoService from '@/services/crypto';
 import useHelpers from '@/composables/useHelpers';
@@ -94,162 +94,132 @@ import Sortable from 'sortablejs';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import SvgIcon from '../partials/SvgIcon.vue';
 
-export default {
-  name: 'FavouriteList',
-  components: {
-    SvgIcon,
-  },
-  setup() {
-    const mainStore = useMainStore();
-    const account = ref(null);
-    const accounts = ref([]);
-    const { formatAmount } = useHelpers();
-    const XST_USD_RATE = computed(() => {
-      return CryptoService.constraints.XST_USD || 1;
-    });
-    const favouritedAccounts = ref([]);
+const mainStore = useMainStore();
+const account = ref(null);
+const accounts = ref([]);
+const { formatAmount } = useHelpers();
+const XST_USD_RATE = computed(() => {
+  return CryptoService.constraints.XST_USD || 1;
+});
+const favouritedAccounts = ref([]);
 
-    const { form, validateFields } = useValidation({
-      account: {
-        $value: account,
-        $rules: [
-          {
-            rule: () => {
-              return (
-                favouritedAccounts.value.length >= 10 &&
-                'You can only have 10 favorite accounts'
-              );
+const { form, validateFields } = useValidation({
+  account: {
+    $value: account,
+    $rules: [
+      {
+        rule: () => {
+          return (
+            favouritedAccounts.value.length >= 10 &&
+            'You can only have 10 favorite accounts'
+          );
+        },
+      },
+    ],
+  },
+});
+
+async function scanWallet() {
+  let hdWallet = await CryptoService.getAccounts();
+  accounts.value = hdWallet;
+  // with this we will be able to have accounts with balance > 0 as favorites
+  await Promise.allSettled(
+    accounts.value.map((account) => {
+      if (account.utxo <= 0 && account.isFavourite) {
+        return CryptoService.unfavouriteAccount(account);
+      } else {
+        return true;
+      }
+    })
+  );
+  hdWallet = await CryptoService.getAccounts();
+  accounts.value = hdWallet;
+  favouritedAccounts.value = accounts.value
+    .filter((el) => el.isFavourite)
+    .sort((a, b) => a.favouritePosition - b.favouritePosition);
+}
+scanWallet();
+
+var sortable = null;
+
+function closeCanvas() {
+  mainStore.TOGGLE_DRAWER(false);
+  account.value = null;
+  setTimeout(() => {
+    mainStore.SET_OFF_CANVAS_DATA(null);
+    mainStore.SET_CURRENT_CANVAS('transaction-details');
+  }, 300);
+}
+
+watch(
+  () => mainStore.currentOffCanvas,
+  async () => {
+    if (mainStore.currentOffCanvas === 'favourite-list') {
+      scanWallet();
+      if (!sortable) {
+        var el = document.getElementById('favouriteList');
+        sortable = Sortable.create(el, {
+          animation: 150,
+          handle: '.handle',
+          draggagle: '.account-grid',
+          store: {
+            set: async function (sortable) {
+              let newOrder = sortable.toArray().map((el) => JSON.parse(el));
+              for (let index in newOrder) {
+                const i = parseInt(index);
+                newOrder[i]['favouritePosition'] = i + 1;
+              }
+              for (let acc of newOrder) {
+                await CryptoService.changeAccountFavouritePosition(
+                  acc,
+                  acc.favouritePosition
+                );
+              }
+              scanWallet();
             },
           },
-        ],
-      },
-    });
-
-    async function scanWallet() {
-      let hdWallet = await CryptoService.getAccounts();
-      accounts.value = hdWallet;
-      // with this we will be able to have accounts with balance > 0 as favorites
-      await Promise.allSettled(
-        accounts.value.map((account) => {
-          if (account.utxo <= 0 && account.isFavourite) {
-            return CryptoService.unfavouriteAccount(account);
-          } else {
-            return true;
-          }
-        })
-      );
-      hdWallet = await CryptoService.getAccounts();
-      accounts.value = hdWallet;
-      favouritedAccounts.value = accounts.value
-        .filter((el) => el.isFavourite)
-        .sort((a, b) => a.favouritePosition - b.favouritePosition);
-    }
-    scanWallet();
-
-    var sortable = null;
-
-    function closeCanvas() {
-      mainStore.TOGGLE_DRAWER(false);
-      account.value = null;
-      setTimeout(() => {
-        mainStore.SET_OFF_CANVAS_DATA(null);
-        mainStore.SET_CURRENT_CANVAS('transaction-details');
-      }, 300);
-    }
-
-    watch(
-      () => mainStore.currentOffCanvas,
-      async () => {
-        if (mainStore.currentOffCanvas === 'favourite-list') {
-          scanWallet();
-          if (!sortable) {
-            var el = document.getElementById('favouriteList');
-            sortable = Sortable.create(el, {
-              animation: 150,
-              handle: '.handle',
-              draggagle: '.account-grid',
-              store: {
-                set: async function (sortable) {
-                  let newOrder = sortable.toArray().map((el) => JSON.parse(el));
-                  for (let index in newOrder) {
-                    const i = parseInt(index);
-                    newOrder[i]['favouritePosition'] = i + 1;
-                  }
-                  for (let acc of newOrder) {
-                    await CryptoService.changeAccountFavouritePosition(
-                      acc,
-                      acc.favouritePosition
-                    );
-                  }
-                  scanWallet();
-                },
-              },
-            });
-          }
-        }
-      },
-      { deep: true }
-    );
-
-    const unfavouritedAccounts = computed(() => {
-      return accounts.value.filter(
-        (el) => !el.isFavourite && !el.isArchived && el.utxo > 0
-      );
-    });
-
-    async function addToFavouriteList() {
-      try {
-        await validateFields();
-        if (!account.value || account.value.utxo === 0) {
-          return;
-        }
-        await CryptoService.favouriteAccount(account.value);
-        const scannedAccounts = await CryptoService.getAccounts();
-        /* const scannedAccounts = await CryptoService.scanWallet(); */
-        /* accounts.value = scannedAccounts.accounts; */
-        favouritedAccounts.value = scannedAccounts
-          .filter((el) => el.isFavourite)
-          .sort((a, b) => a.favouritePosition - b.favouritePosition);
-        account.value = null;
-        emitter.emit('favorite:refresh');
-      } catch (e) {
-        if (e instanceof ValidationError) {
-          console.log(e);
-        }
+        });
       }
     }
-    async function removeFromFavoriteList(account) {
-      await CryptoService.unfavouriteAccount(account);
-      const scannedAccounts = await CryptoService.getAccounts();
-      favouritedAccounts.value = scannedAccounts
-        .filter((el) => el.isFavourite)
-        .sort((a, b) => a.favouritePosition - b.favouritePosition);
-      emitter.emit('favorite:refresh');
-    }
-
-    emitter.on('favorite:refresh', () => {
-      if (mainStore.currentOffCanvas !== 'favourite-list') return; // don't refresh if not on this screen
-      scanWallet();
-    });
-
-    return {
-      // variables
-      account,
-      accounts,
-
-      // functions
-      closeCanvas,
-      formatAmount,
-      XST_USD_RATE,
-      form,
-
-      favouritedAccounts,
-      unfavouritedAccounts,
-      addToFavouriteList,
-      removeFromFavoriteList,
-    };
   },
-};
+  { deep: true }
+);
+
+const unfavouritedAccounts = computed(() => {
+  return accounts.value.filter(
+    (el) => !el.isFavourite && !el.isArchived && el.utxo > 0
+  );
+});
+
+async function addToFavouriteList() {
+  try {
+    await validateFields();
+    if (!account.value || account.value.utxo === 0) {
+      return;
+    }
+    await CryptoService.favouriteAccount(account.value);
+    const scannedAccounts = await CryptoService.getAccounts();
+    /* const scannedAccounts = await CryptoService.scanWallet(); */
+    /* accounts.value = scannedAccounts.accounts; */
+    favouritedAccounts.value = scannedAccounts
+      .filter((el) => el.isFavourite)
+      .sort((a, b) => a.favouritePosition - b.favouritePosition);
+    account.value = null;
+    emitter.emit('favorite:refresh');
+  } catch (e) {
+    if (e instanceof ValidationError) {
+      console.log(e);
+    }
+  }
+}
+async function removeFromFavoriteList(account) {
+  await CryptoService.unfavouriteAccount(account);
+  const scannedAccounts = await CryptoService.getAccounts();
+  favouritedAccounts.value = scannedAccounts
+    .filter((el) => el.isFavourite)
+    .sort((a, b) => a.favouritePosition - b.favouritePosition);
+  emitter.emit('favorite:refresh');
+}
 </script>
 
 <style scoped>

@@ -7,6 +7,8 @@ import { Buffer } from 'buffer';
 import cryptoJs from 'crypto-js';
 import { add, format } from 'mathjs';
 import db from '../db';
+import useHelpers from '@/composables/useHelpers';
+const { fil } = useHelpers();
 
 let networkConfig = {
   messagePrefix: 'unused',
@@ -278,7 +280,7 @@ const CryptoService = {
       (item) => item.address === account.address
     );
 
-    let countFavourites = accounts.filter((el) => el.favouritePosition);
+    let countFavourites = fil((el) => el.favouritePosition, accounts);
 
     accounts[wantedIndex].isFavourite = true;
     accounts[wantedIndex].favouritePosition = countFavourites.length + 1;
@@ -553,6 +555,8 @@ const CryptoService = {
     return JSON.parse(bytes);
   },
   async scanWallet(targetAccount = null) {
+    console.log('scan wallet 19 glavni');
+
     // extend function with targetAccount argument in case you want to refresh the state of a particular account (XST-801)
     const mainStore = useMainStore();
     // initially scan all accounts in the wallet for utxos
@@ -569,9 +573,12 @@ const CryptoService = {
         let accUtxo = 0;
         let allTransactions = [];
         if (account.isImported && account.wif) {
+          console.log('scanning imported acc...');
           let importedAccountBalance = 0;
           try {
-            await mainStore.rpc('getaddressbalance', [account.address]);
+            importedAccountBalance = await mainStore.rpc('getaddressbalance', [
+              account.address,
+            ]);
           } catch (error) {
             console.log(
               'Cannot find address, probably no transactions, continuing anyways'
@@ -646,6 +653,7 @@ const CryptoService = {
 
           const processed = this.processImportedTxs(allTransactions);
           allTransactions = processed;
+          console.log('processed', processed);
         } else {
           await mainStore
             .rpc('gethdaccount', [account.xpub])
@@ -686,6 +694,7 @@ const CryptoService = {
             utxo: Number(accUtxo),
           });
         }
+        console.log('ajmooo');
         txs.push(...allTransactions);
         // When a user looks at their wallet, the software aggregates the sum of value of all their
         // UTXOs and presents it to them as their "balance".
@@ -697,9 +706,54 @@ const CryptoService = {
         }
       }
       if (!targetAccount) await db.setItem('accounts', newAccounts);
+
+      // certain props can be removed to reduce the object size
+      function removeProps(obj) {
+        const keysForDelete = [
+          'blockhash',
+          'height',
+          'prev_txid',
+          'prev_vout',
+          'vtx',
+          'vin',
+          'locktime',
+          'time',
+          'version',
+          'scriptSig',
+          'sequence',
+          'asm',
+          'reqSigs',
+        ];
+        if (Array.isArray(obj)) {
+          obj.forEach(function (item) {
+            removeProps(item, keysForDelete);
+          });
+        } else if (typeof obj === 'object' && obj != null) {
+          Object.getOwnPropertyNames(obj).forEach(function (key) {
+            if (keysForDelete.indexOf(key) !== -1) delete obj[key];
+            else removeProps(obj[key], keysForDelete);
+          });
+        }
+        return obj;
+      }
+
+      let reducedTxs = [];
+      for (const tx of txs) {
+        let result = JSON.parse(JSON.stringify(removeProps(tx), null, 4));
+        reducedTxs.push(result);
+      }
+
+      if (!targetAccount) {
+        // do not store in store in case we are searching only for one account
+        mainStore.SET_WALLET({
+          utxo: balance, // sum of all utxo (except archived accounts)
+          txs: reducedTxs, // all transactions,
+          accounts: newAccounts,
+        });
+      }
       resolve({
         utxo: balance, // sum of all utxo (except archived accounts)
-        txs: txs, // all transactions,
+        txs: reducedTxs, // all transactions,
         accounts: newAccounts,
       });
     });
