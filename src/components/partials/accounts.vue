@@ -395,7 +395,12 @@
 </template>
 
 <script>
-import { computed, ref, onMounted } from 'vue';
+export default {
+  name: 'StAccounts',
+}
+</script>
+<script setup>
+import { computed, ref, onMounted} from 'vue';
 import { useMainStore } from '@/store';
 import useHelpers from '@/composables/useHelpers';
 import router from '@/router';
@@ -406,20 +411,6 @@ import Sortable from 'sortablejs';
 import SvgIcon from '../partials/SvgIcon.vue';
 import { useRoute } from 'vue-router';
 
-export default {
-  name: 'StAccounts',
-  components: {
-    SvgIcon,
-  },
-  // props: {
-  //   accounts: {
-  //     type: Array,
-  //     required: true,
-  //     default: () => [],
-  //   },
-  // },
-  emits: ['click'],
-  setup() {
     const mainStore = useMainStore();
     const accountOptions = ref('');
     const accountName = ref('');
@@ -434,7 +425,6 @@ export default {
 
     const {
       form,
-      errors, // submitting,
       validateFields,
       resetFields,
     } = useValidation({
@@ -467,6 +457,9 @@ export default {
     const XST_USD_RATE = computed(() => {
       return CryptoService.constraints.XST_USD || 1;
     });
+
+    const isHiddenAmounts = computed(() => mainStore.isAmountsHidden);
+
 
     const archivedAcc = ref(null);
     const activeAcc = ref(null);
@@ -707,46 +700,6 @@ export default {
       console.log('scan wallet 8');
       await scanWallet();
     });
-
-    return {
-      closeEditModal,
-      // variables,
-      accounts,
-      activeAccounts,
-      archivedAccounts,
-      accountOptions,
-      accountName,
-      editAccountNameModal,
-      archiveAccountModal,
-      activateAccountModal,
-      isDraggedActive,
-      isDraggedInactive,
-
-      // methods
-      toggleAccountOptions,
-      openAccountDetails,
-      archiveAccount,
-      activateAccount,
-      changeAccountName,
-      openEditAccountNameModal,
-      openReceiveModal,
-      favouriteAccount,
-      unfavouriteAccount,
-      openArchiveAccountModal,
-      openActivateAccountModal,
-      cancelArchiveActive,
-
-      formatAmount,
-      XST_USD_RATE,
-      isHiddenAmounts: computed(() => mainStore.isAmountsHidden),
-
-      form,
-      errors,
-      validateFields,
-      resetFields,
-    };
-  },
-};
 </script>
 
 <style scoped>
