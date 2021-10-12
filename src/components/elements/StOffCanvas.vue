@@ -19,7 +19,7 @@
     </div>
   </div>
 </template>
-<script>
+<script setup>
 import { computed, watch, ref } from 'vue';
 import { useMainStore } from '@/store';
 import TransactionDetails from '@/components/partials/TransactionDetails';
@@ -27,48 +27,32 @@ import FavouriteList from '@/components/partials/FavouriteList';
 import RecentNotifications from '@/components/partials/RecentNotifications';
 import AddressBook from '@/components/partials/AddressBook';
 
-export default {
-  components: {
-    TransactionDetails,
-    FavouriteList,
-    RecentNotifications,
-    AddressBook,
-  },
-  setup() {
-    const mainStore = useMainStore();
+const mainStore = useMainStore();
 
-    const isOpen = computed(() => {
-      return mainStore.isDrawerOpened;
-    });
+const isOpen = computed(() => {
+  return mainStore.isDrawerOpened;
+});
 
-    watch(
-      () => mainStore.isDrawerOpened,
-      () => {
-        getCurrentOffCanvas();
-      }
-    );
+watch(
+  () => mainStore.isDrawerOpened,
+  () => {
+    getCurrentOffCanvas();
+  }
+);
 
-    const currentOffCanvas = ref('transaction-details');
-    function getCurrentOffCanvas() {
-      currentOffCanvas.value = mainStore.currentOffCanvas;
-    }
+const currentOffCanvas = ref('transaction-details');
+function getCurrentOffCanvas() {
+  currentOffCanvas.value = mainStore.currentOffCanvas;
+}
 
-    function closeCanvas() {
-      mainStore.TOGGLE_DRAWER(false);
-      setTimeout(() => {
-        mainStore.SET_ADDRESS_ACTIVE_TAB('address-book');
-        mainStore.SET_OFF_CANVAS_DATA(null);
-        mainStore.SET_CURRENT_CANVAS('');
-      }, 100);
-    }
-
-    return {
-      isOpen,
-      closeCanvas,
-      currentOffCanvas,
-    };
-  },
-};
+function closeCanvas() {
+  mainStore.TOGGLE_DRAWER(false);
+  setTimeout(() => {
+    mainStore.SET_ADDRESS_ACTIVE_TAB('address-book');
+    mainStore.SET_OFF_CANVAS_DATA(null);
+    mainStore.SET_CURRENT_CANVAS('');
+  }, 100);
+}
 </script>
 
 <style scoped>

@@ -9,15 +9,6 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'CircleProgress',
-  setup() {
-    return {};
-  },
-};
-</script>
-
 <style scoped>
 .circle-progress__wrapper {
   position: absolute;

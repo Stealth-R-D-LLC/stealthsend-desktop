@@ -50,9 +50,21 @@ export default function useHelpers() {
     }, {});
   };
 
+  // better and quicker filter
+  const fil = (fn, a) => {
+    const f = [];
+    for (let i = 0; i < a.length; i++) {
+      if (fn(a[i])) {
+        f.push(a[i]);
+      }
+    }
+    return f;
+  };
+
   return {
     formatBlocktime,
     formatAmount,
     groupBy,
+    fil,
   };
 }

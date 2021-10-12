@@ -233,7 +233,7 @@ export default {
     const mainStore = useMainStore();
     const isExpanded = ref('');
 
-    const { formatBlocktime, groupBy, formatAmount } = useHelpers();
+    const { formatBlocktime, fil, groupBy, formatAmount } = useHelpers();
     const txs = ref([]);
 
     function expandIcons(txid) {
@@ -259,7 +259,7 @@ export default {
     }
 
     function orderTransactions(
-      filter = { label: 'All', value: Infinity },
+      filter = { label: '3d', value: 3 },
       filterDirection = { label: 'All', value: '' }
     ) {
       // sort transactions by blocktime
@@ -287,7 +287,7 @@ export default {
     function filterByDirection(direction, transactions) {
       if (!direction || direction === { label: 'All', value: '' })
         return transactions;
-      return transactions.filter((el) => {
+      return fil((el) => {
         if (direction.value === '') {
           return el;
         } else if (direction.value === 'received') {
@@ -295,11 +295,11 @@ export default {
         } else if (direction.value === 'sent') {
           return el.amount < 0;
         }
-      });
+      }, transactions);
     }
 
     function filterByPeriod(filter, transactions) {
-      if (!filter || filter === 7) return transactions;
+      if (!filter?.value || filter.value.length === 0) return transactions;
       return transactions.filter(
         (el) =>
           differenceInCalendarDays(new Date(), fromUnixTime(el.blocktime)) <
@@ -346,11 +346,6 @@ export default {
         orderTransactions();
       }
     );
-
-    /* emitter.on('transactions:refresh', () => {
-      orderTransactions();
-      CryptoService.getTxWithLabels();
-    }); */
 
     return {
       isExpanded,
