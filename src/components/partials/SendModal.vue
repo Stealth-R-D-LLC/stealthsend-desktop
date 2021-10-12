@@ -463,7 +463,8 @@ export default {
     async function scanWallet() {
       console.log('scan wallet 18');
       accounts.value = fil(
-        (el) => !el.isArchived && el.utxo > minimumXSTForSend.value, mainStore.wallet.accounts
+        (el) => !el.isArchived && el.utxo > minimumXSTForSend.value,
+        mainStore.wallet.accounts
       );
       if (pickedAccount.value) {
         // already picked from account details
