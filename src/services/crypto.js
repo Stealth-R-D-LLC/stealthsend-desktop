@@ -196,9 +196,7 @@ const CryptoService = {
     return await db.getItem('wallet');
   },
   async getAccounts() {
-    // TODO deprecated. use scanWallet() instead
     let accounts = (await db.getItem('accounts')) || [];
-    // console.log('Accounts: ', accounts);
     return accounts;
   },
   async storeTxAndLabel(txid, label) {
@@ -555,8 +553,6 @@ const CryptoService = {
     return JSON.parse(bytes);
   },
   async scanWallet(targetAccount = null) {
-    console.log('scan wallet 19 glavni');
-
     // extend function with targetAccount argument in case you want to refresh the state of a particular account (XST-801)
     const mainStore = useMainStore();
     // initially scan all accounts in the wallet for utxos
@@ -573,7 +569,6 @@ const CryptoService = {
         let accUtxo = 0;
         let allTransactions = [];
         if (account.isImported && account.wif) {
-          console.log('scanning imported acc...');
           let importedAccountBalance = 0;
           try {
             importedAccountBalance = await mainStore.rpc('getaddressbalance', [
@@ -653,7 +648,6 @@ const CryptoService = {
 
           const processed = this.processImportedTxs(allTransactions);
           allTransactions = processed;
-          console.log('processed', processed);
         } else {
           await mainStore
             .rpc('gethdaccount', [account.xpub])
@@ -694,7 +688,6 @@ const CryptoService = {
             utxo: Number(accUtxo),
           });
         }
-        console.log('ajmooo');
         txs.push(...allTransactions);
         // When a user looks at their wallet, the software aggregates the sum of value of all their
         // UTXOs and presents it to them as their "balance".
