@@ -464,7 +464,6 @@ let isDragged = ref(false);
 
 onMounted(async () => {
   mainStore.START_GLOBAL_LOADING();
-  console.log('scan wallet 6');
   await scanWallet();
   var elActive = document.getElementById('activeAccounts');
   var elArchived = document.getElementById('archivedAccounts');
@@ -631,7 +630,6 @@ async function changeAccountName(account) {
       console.log(e);
     }
   } finally {
-    console.log('scan wallet 33');
     scanWallet();
   }
 }
@@ -684,12 +682,10 @@ function closeEditModal() {
 
 emitter.on('transactions:refresh', async () => {
   if (route.name !== 'ArchivedAccounts') return; // don't refresh if not on this screen
-  console.log('scan wallet 34');
   await scanWallet();
 });
 emitter.on('favorite:refresh', async () => {
   if (route.name !== 'ArchivedAccounts') return; // don't refresh if not on this screen
-  console.log('scan wallet 8');
   await scanWallet();
 });
 </script>
