@@ -53,6 +53,7 @@ async function scanWallet() {
   utxo.value = mainStore.wallet.utxo;
   transactions.value = mainStore.wallet.txs;
   accounts.value = mainStore.wallet.accounts;
+  console.log('-', transactions.value);
 }
 
 onMounted(async () => {
