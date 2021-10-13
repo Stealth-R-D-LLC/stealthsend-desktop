@@ -89,7 +89,11 @@
               class="move"
               :class="{ 'move-left': isExpanded === item.index }"
             >
-              {{findLabelForTx(item.txid) ? findLabelForTx(item.txid) : 'No label'}}
+              {{
+                findLabelForTx(item.txid)
+                  ? findLabelForTx(item.txid)
+                  : 'No label'
+              }}
             </div>
           </template>
           <template #amountFiat="{ item }">
@@ -271,7 +275,7 @@ export default {
       let filtered = filterByPeriod(filter, filteredDirection);
       // group transactions by date
       txs.value = groupBy(filtered, 'blocktimeDate');
-      console.log(JSON.stringify(txs.value))
+      console.log(JSON.stringify(txs.value));
     }
 
     function filterByDirection(direction, transactions) {
