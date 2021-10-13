@@ -89,18 +89,7 @@
               class="move"
               :class="{ 'move-left': isExpanded === item.index }"
             >
-              <template v-if="findLabelForTx(item.txid)">
-                <StPopper
-                  :content="findLabelForTx(item.txid)"
-                  placement="top"
-                  hover
-                >
-                  {{ findLabelForTx(item.txid) }}
-                </StPopper>
-              </template>
-              <template v-else>
-                {{ 'No label' }}
-              </template>
+              {{findLabelForTx(item.txid) ? findLabelForTx(item.txid) : 'No label'}}
             </div>
           </template>
           <template #amountFiat="{ item }">
@@ -282,6 +271,7 @@ export default {
       let filtered = filterByPeriod(filter, filteredDirection);
       // group transactions by date
       txs.value = groupBy(filtered, 'blocktimeDate');
+      console.log(JSON.stringify(txs.value))
     }
 
     function filterByDirection(direction, transactions) {
