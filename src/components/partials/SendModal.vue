@@ -406,7 +406,6 @@ watch(
     if (!isVisible.value) {
       closeModal();
     } else {
-      console.log('scan wallet 17');
       scanWallet();
       mainStore.checkRpcStatus();
     }
@@ -440,7 +439,6 @@ function closeModal() {
 const accounts = ref([]);
 
 async function scanWallet() {
-  console.log('scan wallet 18');
   accounts.value = fil(
     (el) => !el.isArchived && el.utxo > minimumXSTForSend.value,
     mainStore.wallet.accounts
