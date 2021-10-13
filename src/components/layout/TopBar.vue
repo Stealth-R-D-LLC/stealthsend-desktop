@@ -457,7 +457,6 @@ watch(
   () => isVisible.value,
   async () => {
     if (isVisible.value) {
-      console.log('scan wallet 1');
       await CryptoService.scanWallet();
       getPublicKey();
     }
@@ -523,7 +522,6 @@ async function changeStep(step, isManual) {
   privateKey.value = '';
   resetFields();
   if (!isManual) {
-    console.log('scan wallet 2');
     await CryptoService.scanWallet();
   }
   getPublicKey();
@@ -632,8 +630,6 @@ function amountFormat(account) {
 async function accountChanged(account) {
   mainStore.START_GLOBAL_LOADING();
   mainStore.SET_ACCOUNT_DETAILS(account);
-  console.log('scan wallet 4');
-
   await CryptoService.scanWallet();
   accountVisible.value = false;
   mainStore.STOP_GLOBAL_LOADING();

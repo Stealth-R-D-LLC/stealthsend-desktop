@@ -77,8 +77,6 @@ const accounts = ref([]);
 const account = ref(null);
 
 async function scanWallet() {
-  console.log('scan wallet 13');
-
   await CryptoService.scanWallet();
   accounts.value = wallet.value.accounts;
   // select first account so that we can immediately start finding the first available address
@@ -87,8 +85,6 @@ async function scanWallet() {
 
 async function onOpen() {
   // when the modal is opened, scan for the address and show it
-  console.log('scan wallet 14');
-
   await scanWallet();
   changeAccount();
 }

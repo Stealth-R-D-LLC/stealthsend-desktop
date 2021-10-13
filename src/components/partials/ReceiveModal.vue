@@ -274,8 +274,6 @@ const { form, validateFields, resetFields } = useValidation({
 });
 
 async function scanWallet() {
-  console.log('scan wallet 15');
-
   await CryptoService.scanWallet();
   accounts.value = mainStore.wallet.accounts.filter((el) => !el.isArchived);
   if (pickedAccount.value) {
@@ -289,8 +287,6 @@ async function scanWallet() {
 
 async function onOpen() {
   // when the modal is opened, scan for the address and show it
-  console.log('scan wallet 16');
-
   await scanWallet();
   if (pickedAccount.value) {
     pickedAccount.value;

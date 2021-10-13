@@ -260,8 +260,6 @@ watch(
   () => isVisible.value,
   async () => {
     if (isVisible.value) {
-      console.log('scan wallet 10');
-
       await CryptoService.scanWallet();
       existingAccounts = mainStore.wallet.accounts;
       wallet = await CryptoService.getWalletFromDb();
@@ -300,8 +298,6 @@ async function accountImport() {
       await validateFields();
       nextStep();
       await CryptoService.importAccount(accountName.value, privateKey.value);
-
-      console.log('scan wallet 11');
       await CryptoService.scanWallet();
       let account = mainStore.wallet.accounts.find(
         (obj) => obj.label === accountName.value

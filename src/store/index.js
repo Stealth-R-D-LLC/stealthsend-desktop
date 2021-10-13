@@ -45,7 +45,6 @@ export const useMainStore = defineStore({
   getters: {},
   actions: {
     SET_WALLET(payload) {
-      console.log('SET_WALLET: ', payload);
       this.wallet = payload;
     },
     SET_LAYOUT_FLASH(payload) {
