@@ -275,7 +275,6 @@ export default {
       let filtered = filterByPeriod(filter, filteredDirection);
       // group transactions by date
       txs.value = groupBy(filtered, 'blocktimeDate');
-      console.log(JSON.stringify(txs.value));
     }
 
     function filterByDirection(direction, transactions) {
