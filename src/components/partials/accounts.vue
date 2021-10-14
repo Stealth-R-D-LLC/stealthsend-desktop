@@ -409,7 +409,7 @@ import emitter from '@/services/emitter';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import Sortable from 'sortablejs';
 import SvgIcon from '../partials/SvgIcon.vue';
-import { useRoute } from 'vue-router';
+import { useRoute, onBeforeRouteLeave } from 'vue-router';
 
 const mainStore = useMainStore();
 const accountOptions = ref('');
@@ -461,6 +461,15 @@ const activeAcc = ref(null);
 const activeAccOldIndex = ref(null);
 const archivedAccOldIndex = ref(null);
 let isDragged = ref(false);
+let hasBeenChanged = false;
+
+
+onBeforeRouteLeave(() => {
+  if (hasBeenChanged) {
+    // if anything has been moved to/from archive, we need to remove the wallet data in order to refresh it
+    mainStore.SET_WALLET(null);
+  }
+})
 
 onMounted(async () => {
   mainStore.START_GLOBAL_LOADING();
@@ -602,20 +611,22 @@ async function unfavouriteAccount(account) {
 async function archiveAccount(account) {
   accountOptions.value = '';
   if (isDragged.value) {
-    archivedAccounts.value.push(archivedAcc.value);
+    accounts.value.push(archivedAcc.value);
   }
   archiveAccountModal.value = false;
   await CryptoService.archiveAccount(account);
+  hasBeenChanged = true;
   emitter.emit('favorite:refresh');
 }
 
 async function activateAccount(account) {
   accountOptions.value = '';
   if (isDragged.value) {
-    activeAccounts.value.push(activeAcc.value);
+    accounts.value.push(activeAcc.value);
   }
   activateAccountModal.value = false;
   await CryptoService.activateAccount(account);
+  hasBeenChanged = true;
   emitter.emit('favorite:refresh');
 }
 
@@ -649,11 +660,12 @@ const openAccountDetails = (account) => {
 async function scanWallet() {
   let hdWallet = [];
   hdWallet = await CryptoService.getAccounts();
-  let activeAccounts = hdWallet.filter((obj) => obj.isArchived === false);
+  accounts.value = hdWallet;
+  // let activeAccounts = hdWallet.filter((obj) => obj.isArchived === false);
 
   // find first account with 0 balance
   let firstZeroAccount = null;
-  for (let acc of activeAccounts) {
+  for (let acc of activeAccounts.value) {
     if (acc.utxo === 0) {
       firstZeroAccount = acc;
       break;
