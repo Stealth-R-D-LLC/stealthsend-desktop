@@ -552,7 +552,7 @@ const CryptoService = {
     let bytes = cryptoJs.AES.decrypt(decData, key).toString(cryptoJs.enc.Utf8);
     return JSON.parse(bytes);
   },
-  async scanWallet(targetAccount = null) {
+  async scanWallet(targetAccount = null, skipArchived = true) {
     // extend function with targetAccount argument in case you want to refresh the state of a particular account (XST-801)
     const mainStore = useMainStore();
     // initially scan all accounts in the wallet for utxos
@@ -596,21 +596,23 @@ const CryptoService = {
                     dest.scriptPubKey.addresses &&
                     dest.scriptPubKey.addresses[0] !== account.address
                 );
-                allTransactions.push({
-                  ...inputs[txIndex],
-                  account: account.label,
-                  amount: -inputs[txIndex].amount,
-                  txinfo: {
-                    ...inputsTransactions[txIndex],
-                  },
-                  output:
-                    indexOfDestination === -1
-                      ? []
-                      : [
-                          inputsTransactions[txIndex].vout[indexOfDestination]
-                            .scriptPubKey,
-                        ],
-                });
+                if (!account.isArchived) {
+                  allTransactions.push({
+                    ...inputs[txIndex],
+                    account: account.label,
+                    amount: -inputs[txIndex].amount,
+                    txinfo: {
+                      ...inputsTransactions[txIndex],
+                    },
+                    output:
+                      indexOfDestination === -1
+                        ? []
+                        : [
+                            inputsTransactions[txIndex].vout[indexOfDestination]
+                              .scriptPubKey,
+                          ],
+                  });
+                }
               }
             });
           await mainStore
@@ -624,17 +626,19 @@ const CryptoService = {
                 allOutputsTxIdArray
               );
               for (let txIndex in outputTransactions) {
-                allTransactions.push({
-                  ...outputs[txIndex],
-                  account: account.label,
-                  txinfo: {
-                    ...outputTransactions[txIndex],
-                  },
-                  output: [
-                    outputTransactions[txIndex].vout[outputs[txIndex].vout]
-                      .scriptPubKey,
-                  ],
-                });
+                if (!account.isArchived) {
+                  allTransactions.push({
+                    ...outputs[txIndex],
+                    account: account.label,
+                    txinfo: {
+                      ...outputTransactions[txIndex],
+                    },
+                    output: [
+                      outputTransactions[txIndex].vout[outputs[txIndex].vout]
+                        .scriptPubKey,
+                    ],
+                  });
+                }
               }
             });
 
@@ -672,14 +676,15 @@ const CryptoService = {
                 if (indexOfDestination === -1) {
                   indexOfDestination = 0;
                 }
-
-                allTransactions.push({
-                  ...tx,
-                  output: [tx.txinfo.destinations[indexOfDestination]],
-                  amount: tx.account_balance_change,
-                  blocktime: tx.txinfo.blocktime,
-                  account: account.label,
-                });
+                if (!account.isArchived) {
+                  allTransactions.push({
+                    ...tx,
+                    output: [tx.txinfo.destinations[indexOfDestination]],
+                    amount: tx.account_balance_change,
+                    blocktime: tx.txinfo.blocktime,
+                    account: account.label,
+                  });
+                }
               }
             });
 
@@ -741,7 +746,9 @@ const CryptoService = {
         mainStore.SET_WALLET({
           utxo: balance, // sum of all utxo (except archived accounts)
           txs: reducedTxs, // all transactions,
-          accounts: newAccounts,
+          accounts: skipArchived
+            ? newAccounts.filter((el) => !el.isArchived)
+            : newAccounts,
         });
       }
       resolve({
