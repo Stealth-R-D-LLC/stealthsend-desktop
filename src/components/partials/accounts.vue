@@ -463,13 +463,12 @@ const archivedAccOldIndex = ref(null);
 let isDragged = ref(false);
 let hasBeenChanged = false;
 
-
 onBeforeRouteLeave(() => {
   if (hasBeenChanged) {
     // if anything has been moved to/from archive, we need to remove the wallet data in order to refresh it
     mainStore.SET_WALLET(null);
   }
-})
+});
 
 onMounted(async () => {
   mainStore.START_GLOBAL_LOADING();
