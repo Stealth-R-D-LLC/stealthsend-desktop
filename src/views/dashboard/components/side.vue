@@ -1,6 +1,6 @@
 <template>
   <div class="side">
-    <StCards :amount="utxo" @change="switcherChange"></StCards>
+    <StCards :amount="amount" @change="switcherChange"></StCards>
     <div class="side__accounts">
       <Card
         v-for="account in sortedAccounts"
@@ -15,123 +15,53 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import StCards from '@/components/elements/StCards.vue';
 import Card from '@/components/elements/Card';
 import CryptoService from '@/services/crypto';
-import { ref, computed, watch } from 'vue';
+import { ref, computed } from 'vue';
 import { useMainStore } from '@/store';
 import router from '@/router';
-import emitter from '@/services/emitter';
-import { useRoute } from 'vue-router';
 
-export default {
-  components: {
-    StCards,
-    Card,
-  },
-  setup() {
-    const mainStore = useMainStore();
+const mainStore = useMainStore();
 
-    const accounts = ref([]);
+const constraints = computed(() => {
+  if (!CryptoService.constraints) return null;
+  return CryptoService.constraints;
+});
 
-    const utxo = ref(0);
-    const txs = ref([]);
-    const route = useRoute();
+const wallet = computed(() => {
+  return mainStore.wallet;
+});
 
-    watch(
-      () => mainStore.modals.receive,
-      (newVal) => {
-        // if receive any modal is now closed
-        if (!newVal) {
-          scanWallet();
-        }
-      }
-    );
+const amount = computed(() => {
+  return mainStore.wallet?.utxo;
+});
 
-    watch(
-      () => mainStore.modals.send,
-      (newVal) => {
-        // if send any modal is now closed
-        if (!newVal) {
-          scanWallet();
-        }
-      }
-    );
-
-    watch(
-      () => mainStore.modals.account,
-      (newVal) => {
-        // if account any modal is now closed
-        if (!newVal) {
-          scanWallet();
-        }
-      }
-    );
-
-    async function scanWallet() {
-      const hdWallet = await CryptoService.scanWallet();
-      utxo.value = Number(hdWallet.utxo);
-      txs.value = hdWallet.txs;
-      accounts.value = hdWallet.accounts
-        .filter((el) => !el.isArchived)
-        .sort((a, b) => {
-          return a.isFavourite === b.isFavourite ? 0 : a.isFavourite ? -1 : 1;
-        });
-    }
-    scanWallet();
-
-    const constraints = computed(() => {
-      if (!CryptoService.constraints) return null;
-      return CryptoService.constraints;
+const sortedAccounts = computed(() => {
+  if (!wallet.value) return [];
+  // sort logic: by favorite position (imported or regular), then regular unfavorited accounts, then imported accounts
+  let tmpAccounts = wallet.value.accounts;
+  const favourite = tmpAccounts
+    .filter((el) => el.isFavourite)
+    .sort((a, b) => a.favouritePosition - b.favouritePosition);
+  const rest = tmpAccounts
+    .filter((el) => !el.isFavourite)
+    .sort((a, b) => {
+      return a.isImported === b.isImported ? 0 : a.isImported ? 1 : -1;
     });
+  return favourite.concat(rest);
+});
 
-    const sortedAccounts = computed(() => {
-      // sort logic: by favorite position (imported or regular), then regular unfavorited accounts, then imported accounts
-      let tmpAccounts = accounts.value;
-      const favourite = tmpAccounts
-        .filter((el) => el.isFavourite)
-        .sort((a, b) => a.favouritePosition - b.favouritePosition);
-      const rest = tmpAccounts
-        .filter((el) => !el.isFavourite)
-        .sort((a, b) => {
-          return a.isImported === b.isImported ? 0 : a.isImported ? 1 : -1;
-        });
-      return favourite.concat(rest);
-    });
+const step = ref(0);
+function switcherChange(value) {
+  step.value = value;
+}
 
-    const step = ref(0);
-    function switcherChange(value) {
-      step.value = value;
-    }
-
-    function openAccount(account) {
-      mainStore.SET_ACCOUNT_DETAILS(account);
-      router.push('/account/details');
-    }
-
-    emitter.on('accounts:refresh', () => {
-      if (route.name !== 'Dashboard') return; // don't refresh if not on this screen
-
-      scanWallet();
-    });
-    emitter.on('transactions:refresh', () => {
-      if (route.name !== 'Dashboard') return; // don't refresh if not on this screen
-
-      scanWallet();
-    });
-
-    return {
-      openAccount,
-      accounts,
-      switcherChange,
-      step,
-      utxo,
-      constraints,
-      sortedAccounts,
-    };
-  },
-};
+function openAccount(account) {
+  mainStore.SET_ACCOUNT_DETAILS(account);
+  router.push('/account/details');
+}
 </script>
 
 <style scoped>

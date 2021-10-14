@@ -4,6 +4,7 @@
     :steps="activeStep === 'add-account' ? 0 : steps"
     :current-step="currentStep"
     :visible="isVisible"
+    :has-click-outside="true"
     @close="closeModal"
     class="account-modal"
     :class="{ 'account-modal__hide-header': currentStep > 2 }"
@@ -161,7 +162,7 @@
           <div class="progress no-background">
             <SvgIcon name="icon-loader-success" />
           </div>
-          <StButton type="type-a" @click="openAccountDetails(account)"
+          <StButton type="type-a" @click="openAccountDetails"
             >View Account</StButton
           >
         </template>
@@ -170,324 +171,218 @@
   </StModal>
 </template>
 
-<script>
+<script setup>
 import { useMainStore } from '@/store';
 import { computed, ref, watch } from 'vue';
 import CryptoService from '@/services/crypto';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import CircleProgress from '../partials/CircleProgress.vue';
-import emitter from '@/services/emitter';
 import { QrStream } from 'vue3-qr-reader';
 import router from '@/router';
 import SvgIcon from '../partials/SvgIcon.vue';
 import { useRoute } from 'vue-router';
 
-export default {
-  name: 'StAccountModal',
-  components: {
-    QrStream,
-    SvgIcon,
-    CircleProgress,
+const mainStore = useMainStore();
+const currentStep = ref(1);
+const activeStep = ref('add-account');
+const accountName = ref('');
+const understand = ref(false);
+const privateKey = ref('');
+const isScanning = ref(false);
+const QRData = ref(null);
+const cameraAllowed = ref(false);
+const isCameraLoading = ref(false);
+
+const route = useRoute();
+
+const { form, validateFields, resetFields } = useValidation({
+  accountName: {
+    $value: accountName,
+    $rules: [
+      (accountName) => {
+        if (accountName.length <= 0) {
+          return 'Name is required';
+        }
+        if (existingAccounts.some((el) => el.label === accountName)) {
+          return 'Account name already exists.';
+        }
+        if (accountName.length > 50) {
+          return 'Name too long';
+        }
+      },
+    ],
   },
-  setup() {
-    // VARIABLES
-    const mainStore = useMainStore();
-    const currentStep = ref(1);
-    const activeStep = ref('add-account');
-    const accountName = ref('');
-    const understand = ref(false);
-    const privateKey = ref('');
-    const copyPending = ref(false);
-    const isScanning = ref(false);
-    const QRData = ref(null);
-    const cameraAllowed = ref(false);
-    const isCameraLoading = ref(false);
-
-    const route = useRoute();
-
-    const {
-      form,
-      errors,
-      // add,
-      // submitting,
-      validateFields,
-      resetFields,
-    } = useValidation({
-      accountName: {
-        $value: accountName,
-        $rules: [
-          (accountName) => {
-            if (accountName.length <= 0) {
-              return 'Name is required';
+  privateKey: {
+    $value: privateKey,
+    $rules: [
+      (privateKey) => {
+        if (
+          existingAccounts.some((el) => {
+            if (!el.isImported) {
+              return false;
             }
-            if (existingAccounts.some((el) => el.label === accountName)) {
-              return 'Account name already exists.';
-            }
-            if (accountName.length > 50) {
-              return 'Name too long';
-            }
-          },
-        ],
-      },
-      privateKey: {
-        $value: privateKey,
-        $rules: [
-          (privateKey) => {
-            if (
-              existingAccounts.some((el) => {
-                if (!el.isImported) {
-                  return false;
-                }
-                const decryptedWIF = CryptoService.AESDecrypt(
-                  el.wif,
-                  wallet.password
-                );
-                return decryptedWIF && decryptedWIF === privateKey;
-              })
-            ) {
-              return 'Account already imported.';
-            }
-            if (activeStep.value === 'import-account') {
-              if (!CryptoService.isWIFValid(privateKey)) {
-                return 'Invalid private key';
-              }
-            }
-          },
-        ],
-      },
-    });
-
-    // WATCH
-    // watchEffect(() => {
-    //   if (currentStep.value === 3) {
-    //     setTimeout(() => {
-    //       nextStep();
-    //     }, 2000);
-    //   }
-    //   // if (currentStep.value === 4) {
-    //   //   setTimeout(() => {
-    //   //     currentStep.value = 1;
-    //   //     activeStep.value = 'add-account';
-    //   //     closeModal();
-    //   //   }, 2000);
-    //   // }
-    // });
-
-    // COMPUTED
-    const isVisible = computed(() => {
-      return mainStore.modals.account;
-    });
-    const steps = computed(() => {
-      let steps = null;
-      if (activeStep.value === 'add-account') {
-        steps = 1;
-      } else if (activeStep.value === 'import-account') {
-        steps = 3;
-      }
-      return steps;
-    });
-
-    let existingAccounts = [];
-    let wallet = {};
-    let isLastAccountEmpty = ref(false);
-    watch(
-      () => isVisible.value,
-      async () => {
-        if (isVisible.value) {
-          let { accounts } = await CryptoService.scanWallet();
-          existingAccounts = accounts;
-          wallet = await CryptoService.getWalletFromDb();
-          isLastAccountEmpty.value = accounts.some((el) => el.utxo === 0);
-          // let next = await CryptoService.getNextAccountPath();
-          // // get current last existing account
-          // const { xpub: lastAccountPk } = CryptoService.getChildFromRoot(
-          //   next - 1 >= 0 ? next - 1 : 0,
-          //   0,
-          //   0
-          // );
-          // let lastHdAccount = await mainStore.rpc('gethdaccount', [
-          //   lastAccountPk,
-          // ]);
-          // if (lastHdAccount.length === 0) {
-          //   isLastAccountEmpty.value = true;
-          // }
+            const decryptedWIF = CryptoService.AESDecrypt(
+              el.wif,
+              wallet.password
+            );
+            return decryptedWIF && decryptedWIF === privateKey;
+          })
+        ) {
+          return 'Account already imported.';
         }
-      }
-    );
-
-    // METHODS
-    function closeModal() {
-      mainStore.SET_MODAL_VISIBILITY('account', false);
-      activeStep.value === 'add-account';
-      currentStep.value = 1;
-      accountName.value = '';
-      understand.value = false;
-      privateKey.value = '';
-      resetFields();
-    }
-    function changeStep(name) {
-      currentStep.value = 1;
-      accountName.value = '';
-      understand.value = false;
-      privateKey.value = '';
-      activeStep.value = name;
-    }
-    function nextStep() {
-      if (understand.value) {
-        currentStep.value += 1;
-      }
-    }
-    async function accountImport() {
-      if (currentStep.value === 2) {
-        try {
-          await validateFields();
-          nextStep();
-          await CryptoService.importAccount(
-            accountName.value,
-            privateKey.value
-          );
-
-          const hdWallet = await CryptoService.scanWallet();
-          let account = hdWallet.accounts.find(
-            (obj) => obj.label === accountName.value
-          );
-
-          emitter.emit('header:new-account', account); // lazy hack for XST-841 - refreshing account details screen
-
-          if (route.name === 'ArchivedAccounts') {
-            // refresh accoutns only in case you're on the archived accounts screen
-            emitter.emit('accounts:refresh');
-          }
-
-          emitter.on('accounts-refresh-done', () => {
-            nextStep();
-            emitter.off('accounts-refresh-done');
-          });
-
-          // setTimeout(() => {
-          //   // async emitter would be a better option in this case
-          //   nextStep();
-          // }, 5 * 1000);
-        } catch (e) {
-          if (e instanceof ValidationError) {
-            console.log(e);
+        if (activeStep.value === 'import-account') {
+          if (!CryptoService.isWIFValid(privateKey)) {
+            return 'Invalid private key';
           }
         }
-      }
+      },
+    ],
+  },
+});
+
+const isVisible = computed(() => {
+  return mainStore.modals.account;
+});
+const steps = computed(() => {
+  let steps = null;
+  if (activeStep.value === 'add-account') {
+    steps = 1;
+  } else if (activeStep.value === 'import-account') {
+    steps = 3;
+  }
+  return steps;
+});
+
+let existingAccounts = [];
+let wallet = {};
+let isLastAccountEmpty = ref(false);
+watch(
+  () => isVisible.value,
+  async () => {
+    if (isVisible.value) {
+      await CryptoService.scanWallet();
+      existingAccounts = mainStore.wallet.accounts;
+      wallet = await CryptoService.getWalletFromDb();
+      isLastAccountEmpty.value = mainStore.wallet.accounts.some(
+        (el) => el.utxo === 0
+      );
     }
+  }
+);
 
-    async function generateAccount() {
-      let account = {};
-
+// METHODS
+function closeModal() {
+  mainStore.SET_MODAL_VISIBILITY('account', false);
+  activeStep.value === 'add-account';
+  currentStep.value = 1;
+  accountName.value = '';
+  understand.value = false;
+  privateKey.value = '';
+  resetFields();
+}
+function changeStep(name) {
+  currentStep.value = 1;
+  accountName.value = '';
+  understand.value = false;
+  privateKey.value = '';
+  activeStep.value = name;
+}
+function nextStep() {
+  if (understand.value) {
+    currentStep.value += 1;
+  }
+}
+async function accountImport() {
+  if (currentStep.value === 2) {
+    try {
       await validateFields();
-
-      let next = await CryptoService.getNextAccountPath();
-
-      // get current last existing account
-      const { xpub: lastAccountPk } = CryptoService.getChildFromRoot(
-        next - 1 >= 0 ? next - 1 : 0,
-        0,
-        0
+      nextStep();
+      await CryptoService.importAccount(accountName.value, privateKey.value);
+      await CryptoService.scanWallet();
+      let account = mainStore.wallet.accounts.find(
+        (obj) => obj.label === accountName.value
       );
-
-      await mainStore.rpc('gethdaccount', [lastAccountPk]);
-
-      const { address, path, xpub, wif } = CryptoService.getChildFromRoot(
-        next,
-        0,
-        0
-      );
-      account = {
-        xpub: xpub,
-        address: address,
-        label: accountName.value,
-        utxo: 0,
-        isArchived: false,
-        isFavourite: false,
-        isImported: false,
-        asset: 'XST',
-        wif: wif,
-        path: path,
-      };
-      accountName.value = '';
-
-      await CryptoService.storeAccountInDb(account);
-      emitter.emit('accounts:refresh');
-      // mainStore.STOP_GLOBAL_LOADING();
-      closeModal();
-    }
-
-    function startScanner() {
-      navigator.mediaDevices.enumerateDevices().then((devices) => {
-        let camera = devices.filter((obj) => obj.kind === 'videoinput');
-        if (camera[0].kind === 'videoinput' && camera[0].label) {
-          cameraAllowed.value = true;
-          isCameraLoading.value = true;
-          setTimeout(() => (isCameraLoading.value = false), 2000);
-        } else {
-          cameraAllowed.value = false;
-        }
-      });
-      QRData.value = null;
-      isScanning.value = true;
-      form.privateKey.$value = '';
-    }
-
-    function onDecode(data) {
-      QRData.value = data;
-      if (QRData.value) {
-        isScanning.value = false;
-        let privateKey = QRData.value.replace(/[^a-z0-9]/gi, '');
-        form.privateKey.$value = privateKey;
+      mainStore.SET_ACCOUNT_DETAILS(account);
+      nextStep();
+    } catch (e) {
+      if (e instanceof ValidationError) {
+        console.log(e);
       }
     }
+  }
+}
 
-    async function openAccountDetails() {
-      // const hdWallet = await CryptoService.scanWallet();
-      // let account = hdWallet.accounts.find(
-      //   (obj) => obj.label === accountName.value
-      // );
+async function generateAccount() {
+  let account = {};
 
-      // emitter.emit('header:new-account', account); // lazy hack for XST-841 - refreshing account details screen
-      // // emitter.emit('header:account-changed', account);
-      if (route.name !== 'AccountDetails') {
-        router.push('/account/details');
-      }
-      closeModal();
+  await validateFields();
+
+  let next = await CryptoService.getNextAccountPath();
+
+  // get current last existing account
+  const { xpub: lastAccountPk } = CryptoService.getChildFromRoot(
+    next - 1 >= 0 ? next - 1 : 0,
+    0,
+    0
+  );
+
+  await mainStore.rpc('gethdaccount', [lastAccountPk]);
+
+  const { address, path, xpub, wif } = CryptoService.getChildFromRoot(
+    next,
+    0,
+    0
+  );
+  account = {
+    xpub: xpub,
+    address: address,
+    label: accountName.value,
+    utxo: 0,
+    isArchived: false,
+    isFavourite: false,
+    isImported: false,
+    asset: 'XST',
+    wif: wif,
+    path: path,
+  };
+
+  await CryptoService.storeAccountInDb(account);
+  await CryptoService.scanWallet();
+  closeModal();
+  accountName.value = '';
+}
+
+function startScanner() {
+  navigator.mediaDevices.enumerateDevices().then((devices) => {
+    let camera = devices.filter((obj) => obj.kind === 'videoinput');
+    if (camera[0].kind === 'videoinput' && camera[0].label) {
+      cameraAllowed.value = true;
+      isCameraLoading.value = true;
+      setTimeout(() => (isCameraLoading.value = false), 2000);
+    } else {
+      cameraAllowed.value = false;
     }
+  });
+  QRData.value = null;
+  isScanning.value = true;
+  form.privateKey.$value = '';
+}
 
-    return {
-      // VARIABLES
-      currentStep,
-      activeStep,
-      accountName,
-      understand,
-      privateKey,
-      copyPending,
-      isScanning,
-      cameraAllowed,
-      isCameraLoading,
+function onDecode(data) {
+  QRData.value = data;
+  if (QRData.value) {
+    isScanning.value = false;
+    let privateKey = QRData.value.replace(/[^a-z0-9]/gi, '');
+    form.privateKey.$value = privateKey;
+  }
+}
 
-      // COMPUTED
-      isVisible,
-      steps,
-
-      // METHODS
-      closeModal,
-      changeStep,
-      nextStep,
-      generateAccount,
-      accountImport,
-      startScanner,
-      onDecode,
-      openAccountDetails,
-
-      form,
-      errors,
-      isLastAccountEmpty,
-    };
-  },
-};
+async function openAccountDetails() {
+  if (route.name !== 'AccountDetails') {
+    router.push('/account/details');
+  }
+  closeModal();
+}
 </script>
 
 <style scoped>

@@ -47,101 +47,80 @@
   </StModal>
 </template>
 
-<script>
+<script setup>
 import { useMainStore } from '@/store';
 import { computed, ref } from 'vue';
 import VanillaQR from 'vanillaqr';
 import CryptoService from '@/services/crypto';
 import SvgIcon from '../partials/SvgIcon.vue';
 
-export default {
-  name: 'StReceiveModal',
-  components: {
-    SvgIcon,
-  },
-  setup() {
-    const mainStore = useMainStore();
+const mainStore = useMainStore();
 
-    const isVisible = computed(() => {
-      return mainStore.modals.quickReceive;
-    });
+const isVisible = computed(() => {
+  return mainStore.modals.quickReceive;
+});
 
-    function closeModal() {
-      mainStore.SET_MODAL_VISIBILITY('quickReceive', false);
-      // reset all variables
-      account.value = null;
-      accounts.value = [];
-      depositAddress.value = '';
-      qrSrc.value = '';
-    }
+const wallet = computed(() => {
+  return mainStore.wallet;
+});
 
-    const accounts = ref([]);
-    const account = ref(null);
+function closeModal() {
+  mainStore.SET_MODAL_VISIBILITY('quickReceive', false);
+  // reset all variables
+  account.value = null;
+  accounts.value = [];
+  depositAddress.value = '';
+  qrSrc.value = '';
+}
 
-    async function scanWallet() {
-      const hdWallet = await CryptoService.scanWallet();
-      accounts.value = hdWallet.accounts;
-      // select first account so that we can immediately start finding the first available address
-      account.value = accounts.value[0];
-    }
+const accounts = ref([]);
+const account = ref(null);
 
-    async function onOpen() {
-      // when the modal is opened, scan for the address and show it
-      await scanWallet();
-      changeAccount();
-    }
+async function scanWallet() {
+  await CryptoService.scanWallet();
+  accounts.value = wallet.value.accounts;
+  // select first account so that we can immediately start finding the first available address
+  account.value = accounts.value[0];
+}
 
-    const depositAddress = ref('');
-    const qrSrc = ref('');
-    async function changeAccount(acc = accounts.value[0]) {
-      const { account, change } = CryptoService.breakAccountPath(acc.path);
-      const discoveredAddresses = await CryptoService.accountDiscovery(account);
-      let nextFreeAddress = CryptoService.nextToUse(
-        discoveredAddresses.freeAddresses
-      );
-      const next = CryptoService.breakAccountPath(nextFreeAddress);
+async function onOpen() {
+  // when the modal is opened, scan for the address and show it
+  await scanWallet();
+  changeAccount();
+}
 
-      const child = CryptoService.getChildFromRoot(
-        account,
-        change,
-        next.address
-      );
-      depositAddress.value = child.address;
-      generateQR();
-    }
+const depositAddress = ref('');
+const qrSrc = ref('');
+async function changeAccount(acc = accounts.value[0]) {
+  const { account, change } = CryptoService.breakAccountPath(acc.path);
+  const discoveredAddresses = await CryptoService.accountDiscovery(account);
+  let nextFreeAddress = CryptoService.nextToUse(
+    discoveredAddresses.freeAddresses
+  );
+  const next = CryptoService.breakAccountPath(nextFreeAddress);
 
-    let copyPending = ref(false);
-    function handleCopy() {
-      copyPending.value = true;
-      setTimeout(() => {
-        copyPending.value = false;
-      }, 2000);
-    }
+  const child = CryptoService.getChildFromRoot(account, change, next.address);
+  depositAddress.value = child.address;
+  generateQR();
+}
 
-    function generateQR() {
-      let qr = new VanillaQR({
-        url: depositAddress.value,
-        noBorder: false,
-        colorDark: '#FAF9FC',
-        colorLight: '#140435',
-      });
-      qrSrc.value = qr.toImage('png').src;
-    }
+let copyPending = ref(false);
+function handleCopy() {
+  copyPending.value = true;
+  setTimeout(() => {
+    copyPending.value = false;
+  }, 2000);
+}
 
-    return {
-      isVisible,
-      closeModal,
-      accounts,
-      account,
-      depositAddress,
-      changeAccount,
-      qrSrc,
-      handleCopy,
-      copyPending,
-      onOpen,
-    };
-  },
-};
+function generateQR() {
+  let qr = new VanillaQR({
+    url: depositAddress.value,
+    noBorder: false,
+    colorDark: '#FAF9FC',
+    colorLight: '#140435',
+  });
+  qrSrc.value = qr.toImage('png').src;
+}
 </script>
 
 <style scoped>

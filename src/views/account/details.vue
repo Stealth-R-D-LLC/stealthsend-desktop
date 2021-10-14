@@ -67,7 +67,7 @@
           v-if="componentVisibility.txDashboard"
           class="details-table"
           has-table-header
-          :transactions="transactions"
+          :transactions="fil((el) => el.account === account.label, wallet.txs)"
         ></TransactionList>
       </div>
     </div>
@@ -75,263 +75,97 @@
 </template>
 
 <script>
+export default {
+  name: 'StAccountDetails',
+};
+</script>
+<script setup>
 import { useMainStore } from '@/store';
-import { computed, ref, onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 import StLabel from '@/components/elements/StLabel';
 import Chart from '@/views/dashboard/components/chart';
 import TransactionList from '@/components/partials/TransactionList';
 import CryptoService from '@/services/crypto';
-import router from '@/router';
 import { onBeforeRouteLeave } from 'vue-router';
 import emitter from '@/services/emitter';
 import useHelpers from '@/composables/useHelpers';
 import SvgIcon from '../../components/partials/SvgIcon.vue';
 import { useRoute } from 'vue-router';
 
-export default {
-  name: 'StAccountDetails',
-  components: {
-    Chart,
-    TransactionList,
-    StLabel,
-    SvgIcon,
-  },
-  setup() {
-    const mainStore = useMainStore();
-    const { formatAmount } = useHelpers();
-    const route = useRoute();
+const mainStore = useMainStore();
+const { formatAmount } = useHelpers();
+const route = useRoute();
 
-    onBeforeRouteLeave(() => {
-      mainStore.SET_ACCOUNT_DETAILS(null);
-    });
-
-    function openTransaction(trx) {
-      router.push(`/transaction/${trx.txid}`);
+onBeforeRouteLeave(() => {
+  mainStore.SET_ACCOUNT_DETAILS(null);
+});
+const fil = (fn, a) => {
+  const f = []; //final
+  for (let i = 0; i < a.length; i++) {
+    if (fn(a[i])) {
+      f.push(a[i]);
     }
-
-    const account = computed(() => {
-      return mainStore.accountDetails;
-    });
-
-    const refreshChart = computed(() => {
-      return mainStore.resetChart;
-    });
-
-    const addressInfo = ref({});
-    const transactions = ref([]);
-    // const qrSrc = ref('');
-
-    let copyPending = ref(false);
-    function handleCopy() {
-      copyPending.value = true;
-      setTimeout(() => {
-        copyPending.value = false;
-      }, 2000);
-    }
-
-    onMounted(async () => {
-      mainStore.START_GLOBAL_LOADING();
-      if (!componentVisibility.value.chart) {
-        toggleComponentVisibility('chart');
-      }
-      if (!componentVisibility.value.txDashboard) {
-        toggleComponentVisibility('txDashboard');
-      }
-      if (account.value && Object.keys(account.value).length > 0) {
-        await getData();
-        mainStore.STOP_GLOBAL_LOADING();
-      }
-    });
-
-    async function refreshAccount() {
-      let res = await CryptoService.scanWallet(account.value);
-      mainStore.SET_ACCOUNT_DETAILS(res.accounts[0]);
-    }
-
-    function openModal(modal) {
-      mainStore.SET_MODAL_VISIBILITY(modal, true);
-    }
-
-    const componentVisibility = computed(() => {
-      return mainStore.componentVisibility;
-    });
-
-    const usdAmount = computed(() => {
-      return (
-        Number(account.value.utxo) * CryptoService.constraints.XST_USD || 0
-      );
-    });
-    const btcAmount = computed(() => {
-      return (
-        Number(account.value.utxo) * CryptoService.constraints.XST_BTC || 0
-      );
-    });
-    const changePercent24Hr = computed(() => {
-      return formatAmount(CryptoService.constraints.changePercent24Hr);
-    });
-
-    function toggleComponentVisibility(component) {
-      mainStore.SET_COMPONENT_VISIBILITY(
-        component,
-        !componentVisibility.value[component]
-      );
-      if (component === 'txDashboard') {
-        mainStore.REFRESH_CHART(true);
-        setTimeout(() => mainStore.REFRESH_CHART(false), 1);
-      }
-    }
-
-    async function getData() {
-      addressInfo.value = {};
-      transactions.value = [];
-      await mainStore
-        .rpc('getaddressinfo', [account.value.address])
-        .then((res) => {
-          addressInfo.value = res;
-        })
-        .catch((err) => {
-          return err;
-        });
-      let allTransactions = [];
-      if (account.value.isImported && account.value.wif) {
-        await mainStore
-          .rpc('getaddressinputs', [account.value.address])
-          .then(async (inputs) => {
-            const allInputsTxIdArray = inputs.map((input) => [input.txid]);
-            let inputsTransactions = await mainStore.rpcMulti(
-              'gettransaction',
-              allInputsTxIdArray
-            );
-            for (let txIndex in inputsTransactions) {
-              let indexOfDestination = inputsTransactions[
-                txIndex
-              ].vout.findIndex(
-                (dest) =>
-                  dest.scriptPubKey.addresses &&
-                  dest.scriptPubKey.addresses[0] !== account.value.address
-              );
-
-              allTransactions.push({
-                ...inputs[txIndex],
-                account: account.value.label,
-                amount: -inputs[txIndex].amount,
-                txinfo: {
-                  ...inputsTransactions[txIndex],
-                },
-                output:
-                  indexOfDestination === -1
-                    ? []
-                    : [
-                        inputsTransactions[txIndex].vout[indexOfDestination]
-                          .scriptPubKey,
-                      ],
-              });
-            }
-          });
-        await mainStore
-          .rpc('getaddressoutputs', [account.value.address])
-          .then(async (outputs) => {
-            const allOutputsTxIdArray = outputs.map((output) => [output.txid]);
-            let outputTransactions = await mainStore.rpcMulti(
-              'gettransaction',
-              allOutputsTxIdArray
-            );
-            for (let txIndex in outputTransactions) {
-              allTransactions.push({
-                ...outputs[txIndex],
-                account: account.value.label,
-                txinfo: {
-                  ...outputTransactions[txIndex],
-                },
-                output: [
-                  outputTransactions[txIndex].vout[outputs[txIndex].vout]
-                    .scriptPubKey,
-                ],
-              });
-            }
-          });
-
-        allTransactions = CryptoService.processImportedTxs(allTransactions);
-      } else {
-        await mainStore
-          .rpc('gethdaccount', [account.value.xpub])
-          .then((hdAccount) => {
-            for (let tx of hdAccount) {
-              let outputAddresses = tx.outputs.map((output) => output.address);
-              let indexOfDestination;
-              if (tx.account_balance_change < 0) {
-                indexOfDestination = tx.txinfo.destinations.findIndex(
-                  (dest) => outputAddresses.indexOf(dest.addresses[0]) === -1
-                );
-              } else {
-                indexOfDestination = tx.txinfo.destinations.findIndex(
-                  (dest) => dest.amount === tx.account_balance_change
-                );
-              }
-              if (indexOfDestination === -1) {
-                indexOfDestination = 0;
-              }
-              allTransactions.push({
-                ...tx,
-                output: [tx.txinfo.destinations[indexOfDestination]],
-                amount: tx.account_balance_change,
-                blocktime: tx.txinfo.blocktime,
-                account: account.value.label,
-              });
-            }
-          });
-      }
-      transactions.value = allTransactions;
-    }
-
-    emitter.on('header:account-changed', async () => {
-      if (route.name !== 'AccountDetails') return; // don't refresh if not on this screen
-      // mainStore.SET_ACCOUNT_DETAILS(account);
-      // account.value = acc;
-      mainStore.START_GLOBAL_LOADING();
-
-      await getData();
-      emitter.emit('accounts-refresh-done');
-      // setTimeout(async () => {
-      // }, 1);
-      mainStore.STOP_GLOBAL_LOADING();
-    });
-    emitter.on('transactions:refresh', async () => {
-      if (route.name !== 'AccountDetails') return; // don't refresh if not on this screen
-      mainStore.START_GLOBAL_LOADING();
-
-      // setTimeout(async () => {
-      //   const hdWallet = await CryptoService.scanWallet();
-      //   let refreshAccount = hdWallet.accounts.find(
-      //     (obj) => obj.label === account.value?.label
-      //   );
-      await getData();
-      await refreshAccount();
-      mainStore.STOP_GLOBAL_LOADING();
-
-      //   mainStore.SET_ACCOUNT_DETAILS(refreshAccount);
-      // }, 5000);
-    });
-    return {
-      account,
-      addressInfo,
-      copyPending,
-      handleCopy,
-      openTransaction,
-      transactions,
-      usdAmount,
-      btcAmount,
-      openModal,
-      formatAmount,
-      changePercent24Hr,
-      isHiddenAmounts: computed(() => mainStore.isAmountsHidden),
-      componentVisibility,
-      toggleComponentVisibility,
-      refreshChart,
-      refreshAccount,
-    };
-  },
+  }
+  return f;
 };
+const account = computed(() => {
+  return mainStore.accountDetails;
+});
+
+const refreshChart = computed(() => {
+  return mainStore.resetChart;
+});
+
+const wallet = computed(() => {
+  return mainStore.wallet;
+});
+
+onMounted(async () => {
+  mainStore.START_GLOBAL_LOADING();
+  if (!componentVisibility.value.chart) {
+    toggleComponentVisibility('chart');
+  }
+  if (!componentVisibility.value.txDashboard) {
+    toggleComponentVisibility('txDashboard');
+  }
+  mainStore.STOP_GLOBAL_LOADING();
+});
+
+function openModal(modal) {
+  mainStore.SET_MODAL_VISIBILITY(modal, true);
+}
+
+const componentVisibility = computed(() => {
+  return mainStore.componentVisibility;
+});
+
+const usdAmount = computed(() => {
+  return Number(account.value.utxo) * CryptoService.constraints.XST_USD || 0;
+});
+const btcAmount = computed(() => {
+  return Number(account.value.utxo) * CryptoService.constraints.XST_BTC || 0;
+});
+const changePercent24Hr = computed(() => {
+  return formatAmount(CryptoService.constraints.changePercent24Hr);
+});
+
+function toggleComponentVisibility(component) {
+  mainStore.SET_COMPONENT_VISIBILITY(
+    component,
+    !componentVisibility.value[component]
+  );
+  if (component === 'txDashboard') {
+    mainStore.REFRESH_CHART(true);
+    setTimeout(() => mainStore.REFRESH_CHART(false), 1);
+  }
+}
+
+emitter.on('transactions:refresh', async () => {
+  if (route.name !== 'AccountDetails') return; // don't refresh if not on this screen
+  mainStore.SET_ACCOUNT_DETAILS(
+    mainStore.wallet.accounts.find((el) => el.address === account.value.address)
+  );
+});
 </script>
 
 <style scoped>

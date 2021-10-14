@@ -114,8 +114,12 @@
     </StModal>
   </div>
 </template>
-
 <script>
+export default {
+  name: 'StLock',
+};
+</script>
+<script setup>
 import { ref, onMounted, computed, watch } from 'vue';
 import router from '@/router';
 import CryptoService from '@/services/crypto';
@@ -125,25 +129,18 @@ import db from '@/db';
 /* import * as animationData from '@/assets/animation/logo.json'; */
 import { useMainStore } from '@/store';
 import SvgIcon from '../components/partials/SvgIcon.vue';
-
-export default {
-  name: 'StLock',
-  components: {
-    SvgIcon,
-  },
-  setup() {
-    const isAnimated = ref(false);
-    const password = ref('');
-    const showPassword = ref(false);
-    const forgotPassword = ref(false);
-    const isCleared = ref(false);
-    const timeout = ref(null);
-    const counterTimeout = ref(null);
-    const counter = ref(6);
-    const isVideoLoaded = ref(false);
-    const wrongAttempts = ref(0);
-    const cooldown = ref(0);
-    /* const animation = ref(null); // for saving the reference to the animation
+const isAnimated = ref(false);
+const password = ref('');
+const showPassword = ref(false);
+const forgotPassword = ref(false);
+const isCleared = ref(false);
+const timeout = ref(null);
+const counterTimeout = ref(null);
+const counter = ref(6);
+const isVideoLoaded = ref(false);
+const wrongAttempts = ref(0);
+const cooldown = ref(0);
+/* const animation = ref(null); // for saving the reference to the animation
     const lottieOptions = ref({
       animationData: animationData.default,
       render: 'svg',
@@ -151,177 +148,155 @@ export default {
       autoplay: true,
     }); */
 
-    const mainStore = useMainStore();
+const mainStore = useMainStore();
 
-    const {
-      form,
-      // errors,
-      // add,
-      // submitting,
-      formFields,
-      validateFields,
-      resetFields,
-    } = useValidation(
-      {
-        password: {
-          $value: password,
-          $rules: [
-            async (password) => {
-              if (wrongAttempts.value >= 5) {
-                return `Too many attempts. Try again in 30 seconds.`;
-              }
-              if (!password) {
-                return '';
-              }
-              let isValid = await CryptoService.validatePassword(password);
-              if (!isValid) {
-                return 'Incorrect Password.';
-              }
-            },
-          ],
+const {
+  form,
+  // errors,
+  // add,
+  // submitting,
+  formFields,
+  validateFields,
+  resetFields,
+} = useValidation(
+  {
+    password: {
+      $value: password,
+      $rules: [
+        async (password) => {
+          if (wrongAttempts.value >= 5) {
+            return `Too many attempts. Try again in 30 seconds.`;
+          }
+          if (!password) {
+            return '';
+          }
+          let isValid = await CryptoService.validatePassword(password);
+          if (!isValid) {
+            return 'Incorrect Password.';
+          }
         },
-      },
-      false
-    );
-
-    const isLock = computed(() => {
-      return mainStore.isLock;
-    });
-
-    watch(
-      () => wrongAttempts.value,
-      () => {
-        if (wrongAttempts.value === 5) {
-          cooldown.value = 30;
-          setInterval(() => {
-            if (cooldown.value > 0) {
-              cooldown.value -= 1;
-              if (cooldown.value === 0) {
-                wrongAttempts.value = 0;
-              }
-            }
-          }, 1000);
-        }
-      }
-    );
-
-    onMounted(() => {
-      mainStore.STOP_GLOBAL_LOADING(); // just in case
-      let video = document.getElementById('bgAnimation');
-      video.addEventListener('loadeddata', () => {
-        isVideoLoaded.value = true;
-        setTimeout(() => mainStore.SET_IS_LOCK(true), 3180);
-      });
-      wrongAttempts.value = 0;
-      mainStore.TOGGLE_DRAWER(false);
-      mainStore.SET_OFF_CANVAS_DATA(null);
-      if (isLock.value) {
-        isAnimated.value = true;
-        setTimeout(() => {
-          let password = document.getElementById('password');
-          if (password) {
-            password.getElementsByClassName('st-input__inner')[0].focus();
-          }
-        }, 1);
-      } else {
-        setTimeout(() => {
-          isAnimated.value = true;
-          setTimeout(() => {
-            let password = document.getElementById('password');
-            if (password) {
-              password.getElementsByClassName('st-input__inner')[0].focus();
-            }
-          }, 500);
-        }, 3500);
-      }
-      mainStore.checkRpcStatus();
-    });
-
-    async function validatePassword() {
-      if (wrongAttempts.value >= 5) {
-        try {
-          await validateFields();
-        } catch (e) {
-          console.log(e);
-        } finally {
-          for (const formField of formFields.value.values()) {
-            formField.touched = false;
-          }
-        }
-
-        return;
-      }
-      try {
-        await validateFields();
-        await CryptoService.unlock(password.value);
-        router.push('/dashboard');
-        resetFields();
-      } catch (e) {
-        wrongAttempts.value += 1;
-        setTimeout(() => {
-          password.value = '';
-          document
-            .getElementById('password')
-            .getElementsByClassName('st-input__inner')[0]
-            .focus();
-        }, 500);
-        console.log(e);
-      } finally {
-        for (const formField of formFields.value.values()) {
-          formField.touched = false;
-        }
-      }
-    }
-
-    function countdown() {
-      counter.value -= 1;
-      counterTimeout.value = setTimeout(() => countdown(), 950);
-    }
-
-    function clearData() {
-      isCleared.value = true;
-      countdown();
-      timeout.value = setTimeout(async () => {
-        await db.dropInstance();
-        localStorage.clear();
-        forgotPassword.value = false;
-        isCleared.value = false;
-        clearTimeout(counterTimeout.value);
-        counter.value = 6;
-        router.push('/welcome');
-      }, 5000);
-    }
-
-    function cancelClearData() {
-      clearTimeout(timeout.value);
-      clearTimeout(counterTimeout.value);
-      counter.value = 6;
-      isCleared.value = false;
-      forgotPassword.value = false;
-    }
-
-    /* function handleAnimation(anim) {
-      animation.value = anim;
-    } */
-
-    return {
-      counter,
-      isCleared,
-      clearData,
-      cancelClearData,
-      forgotPassword,
-      showPassword,
-      isAnimated,
-      password,
-      validatePassword,
-      form,
-      /* handleAnimation,
-      lottieOptions, */
-      isLock,
-      isVideoLoaded,
-    };
+      ],
+    },
   },
-};
+  false
+);
+
+const isLock = computed(() => {
+  return mainStore.isLock;
+});
+
+watch(
+  () => wrongAttempts.value,
+  () => {
+    if (wrongAttempts.value === 5) {
+      cooldown.value = 30;
+      setInterval(() => {
+        if (cooldown.value > 0) {
+          cooldown.value -= 1;
+          if (cooldown.value === 0) {
+            wrongAttempts.value = 0;
+          }
+        }
+      }, 1000);
+    }
+  }
+);
+
+onMounted(() => {
+  mainStore.STOP_GLOBAL_LOADING(); // just in case
+  mainStore.SET_WALLET(null);
+  let video = document.getElementById('bgAnimation');
+  video.addEventListener('loadeddata', () => {
+    isVideoLoaded.value = true;
+    setTimeout(() => mainStore.SET_IS_LOCK(true), 3180);
+  });
+  wrongAttempts.value = 0;
+  mainStore.TOGGLE_DRAWER(false);
+  mainStore.SET_OFF_CANVAS_DATA(null);
+  if (isLock.value) {
+    isAnimated.value = true;
+    setTimeout(() => {
+      let password = document.getElementById('password');
+      if (password) {
+        password.getElementsByClassName('st-input__inner')[0].focus();
+      }
+    }, 1);
+  } else {
+    setTimeout(() => {
+      isAnimated.value = true;
+      setTimeout(() => {
+        let password = document.getElementById('password');
+        if (password) {
+          password.getElementsByClassName('st-input__inner')[0].focus();
+        }
+      }, 500);
+    }, 3500);
+  }
+  mainStore.checkRpcStatus();
+});
+
+async function validatePassword() {
+  if (wrongAttempts.value >= 5) {
+    try {
+      await validateFields();
+    } catch (e) {
+      console.log(e);
+    } finally {
+      for (const formField of formFields.value.values()) {
+        formField.touched = false;
+      }
+    }
+
+    return;
+  }
+  try {
+    await validateFields();
+    await CryptoService.unlock(password.value);
+    router.push('/dashboard');
+    resetFields();
+  } catch (e) {
+    wrongAttempts.value += 1;
+    setTimeout(() => {
+      password.value = '';
+      document
+        .getElementById('password')
+        .getElementsByClassName('st-input__inner')[0]
+        .focus();
+    }, 500);
+    console.log(e);
+  } finally {
+    for (const formField of formFields.value.values()) {
+      formField.touched = false;
+    }
+  }
+}
+
+function countdown() {
+  counter.value -= 1;
+  counterTimeout.value = setTimeout(() => countdown(), 950);
+}
+
+function clearData() {
+  isCleared.value = true;
+  countdown();
+  timeout.value = setTimeout(async () => {
+    await db.dropInstance();
+    localStorage.clear();
+    forgotPassword.value = false;
+    isCleared.value = false;
+    clearTimeout(counterTimeout.value);
+    counter.value = 6;
+    router.push('/welcome');
+  }, 5000);
+}
+
+function cancelClearData() {
+  clearTimeout(timeout.value);
+  clearTimeout(counterTimeout.value);
+  counter.value = 6;
+  isCleared.value = false;
+  forgotPassword.value = false;
+}
 </script>
 
 <style scoped>
