@@ -31,7 +31,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import MenuBar from '@/components/layout/MenuBar.vue';
 import TopBar from '@/components/layout/TopBar.vue';
 import CryptoService from '@/services/crypto';
@@ -44,62 +44,33 @@ import OffCanvas from '@/components/elements/StOffCanvas.vue';
 import { useMainStore } from '@/store';
 import { ref, computed, onMounted } from 'vue';
 
-export default {
-  name: 'StDefault',
-  components: {
-    MenuBar,
-    TopBar,
-    Side,
+const mainStore = useMainStore();
+CryptoService.init();
+// if there's nothing in the db, show welcome screen
+// welcome screen will have recover option, create new wallet option and import option
+// recover option will recover the whole wallet via seed
+// import option will import the WIF (previously exported from somewhere within the app)
+// create new wallet will ask for a new password and generate a new seed/pk/address/etc
+// if there is an account/wallet in the db, ask for password (lock screen page), render dashboard
+const layout = ref(false);
 
-    ReceiveModal,
-    QuickReceiveModal,
-    SendModal,
-    AddAccount,
-    OffCanvas,
-  },
-  setup() {
-    const mainStore = useMainStore();
-    CryptoService.init();
-    // if there's nothing in the db, show welcome screen
-    // welcome screen will have recover option, create new wallet option and import option
-    // recover option will recover the whole wallet via seed
-    // import option will import the WIF (previously exported from somewhere within the app)
-    // create new wallet will ask for a new password and generate a new seed/pk/address/etc
-    // if there is an account/wallet in the db, ask for password (lock screen page), render dashboard
-    /* setTimeout(() => {
-      if (menuExpanded.value) {
-        window.ipc.send('resize:menu');
-      } else {
-        window.ipc.send('resize:other');
-      }
-    }, 10); */
-    const layout = ref(false);
+const menuExpanded = computed(() => {
+  return mainStore.isMenuExpanded;
+});
+onMounted(() => {
+  if (!mainStore.layoutFlash) {
+    layout.value = true;
+  }
+  mainStore.SET_LAYOUT_FLASH(true);
+  getExpandedMenu();
+});
 
-    const menuExpanded = computed(() => {
-      return mainStore.isMenuExpanded;
-    });
-    onMounted(() => {
-      if (!mainStore.layoutFlash) {
-        layout.value = true;
-      }
-      mainStore.SET_LAYOUT_FLASH(true);
-      getExpandedMenu();
-    });
-
-    function getExpandedMenu() {
-      let menu = JSON.parse(localStorage.getItem('menubar'));
-      if (menu) {
-        mainStore.SET_EXPANDED_MENU(
-          JSON.parse(localStorage.getItem('menubar'))
-        );
-      }
-    }
-    return {
-      menuExpanded,
-      layout,
-    };
-  },
-};
+function getExpandedMenu() {
+  let menu = JSON.parse(localStorage.getItem('menubar'));
+  if (menu) {
+    mainStore.SET_EXPANDED_MENU(JSON.parse(localStorage.getItem('menubar')));
+  }
+}
 </script>
 
 <style scoped>

@@ -18,6 +18,11 @@
 </template>
 
 <script>
+export default {
+  name: 'StDahboard',
+};
+</script>
+<script setup>
 import { ref, computed, onMounted } from 'vue';
 import TransactionList from '@/components/partials/TransactionList.vue';
 import Chart from '@/views/dashboard/components/chart';
@@ -26,61 +31,43 @@ import { useMainStore } from '@/store';
 import emitter from '@/services/emitter';
 import { useRoute } from 'vue-router';
 
-export default {
-  name: 'StDahboard',
-  components: {
-    Chart,
-    TransactionList,
-  },
-  setup() {
-    const mainStore = useMainStore();
-    mainStore.SET_HEADER_STYLE('default');
-    mainStore.getMarketInfo();
-    const route = useRoute();
+const mainStore = useMainStore();
+mainStore.SET_HEADER_STYLE('default');
+mainStore.getMarketInfo();
+const route = useRoute();
 
-    const accounts = ref([]);
-    const utxo = ref(0);
-    const transactions = ref([]);
+const accounts = ref([]);
+const utxo = ref(0);
+const transactions = ref([]);
 
-    const refreshChart = computed(() => {
-      return mainStore.resetChart;
-    });
+const refreshChart = computed(() => {
+  return mainStore.resetChart;
+});
 
-    const componentVisibility = computed(() => {
-      return mainStore.componentVisibility;
-    });
+const componentVisibility = computed(() => {
+  return mainStore.componentVisibility;
+});
 
-    async function scanWallet() {
-      const hdWallet = await CryptoService.scanWallet();
-      utxo.value = hdWallet.utxo;
-      transactions.value = hdWallet.txs;
-      accounts.value = hdWallet.accounts;
-    }
+async function scanWallet() {
+  await CryptoService.scanWallet();
+  utxo.value = mainStore.wallet.utxo;
+  transactions.value = mainStore.wallet.txs;
+  accounts.value = mainStore.wallet.accounts;
+  console.log('-', transactions.value);
+}
 
-    const archiveAccount = (account) => {
-      CryptoService.archiveAccount(account);
-    };
+onMounted(async () => {
+  mainStore.START_GLOBAL_LOADING();
+  await scanWallet();
+  mainStore.STOP_GLOBAL_LOADING();
+});
 
-    onMounted(async () => {
-      mainStore.START_GLOBAL_LOADING();
-      await scanWallet();
-      mainStore.STOP_GLOBAL_LOADING();
-    });
-
-    emitter.on('transactions:refresh', async () => {
-      if (route.name !== 'Dashboard') return; // don't refresh if not on this screen
-      await scanWallet();
-    });
-
-    return {
-      archiveAccount,
-      refreshChart,
-      componentVisibility,
-      transactions,
-      utxo,
-    };
-  },
-};
+emitter.on('transactions:refresh', async () => {
+  if (route.name !== 'Dashboard') return; // don't refresh if not on this screen
+  utxo.value = mainStore.wallet.utxo;
+  transactions.value = mainStore.wallet.txs;
+  accounts.value = mainStore.wallet.accounts;
+});
 </script>
 
 <style scoped>

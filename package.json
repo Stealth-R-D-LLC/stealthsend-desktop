@@ -56,7 +56,6 @@
     "vue-router": "^4.0.0-0",
     "vue2-datepicker": "^4.0.0-beta.2",
     "vue3-form-validation": "^4.1.1",
-    "vue3-popper": "^1.2.1",
     "vue3-qr-reader": "^1.0.0",
     "xorshift.js": "^1.0.5",
     "zxcvbn": "^4.4.2"

@@ -9,14 +9,6 @@
           recommended to enable Auto-lock. When enabled you will need your
           password to unlock your StealthSend app.
         </p>
-        <!-- <StSwitch
-          class="menu-expand"
-          type="simple"
-          @update:modelValue="toggleExpandedMenu"
-          v-model="menuExpanded"
-        >
-          Keep navigation expanded
-        </StSwitch> -->
         <StSwitch
           type="simple"
           @update:modelValue="toggleAutoLock"
@@ -44,101 +36,69 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { useMainStore } from '@/store';
 import { onMounted, ref } from 'vue';
 
-export default {
-  setup() {
-    const mainStore = useMainStore();
-    const options = ref([
-      // interval config values are in seconds
-      { label: '1 minute', value: 60 },
-      { label: '5 minutes', value: 300 },
-      { label: '10 minutes', value: 600 },
-      { label: '15 minutes', value: 900 },
-      { label: '30 minutes', value: 1800 },
-      // { label: '1 hour', value: 3600 },
-    ]);
-    const selectedInterval = ref(60);
-    const isEnabled = ref(false);
-    const menuExpanded = ref(false);
+const mainStore = useMainStore();
+const options = ref([
+  // interval config values are in seconds
+  { label: '1 minute', value: 60 },
+  { label: '5 minutes', value: 300 },
+  { label: '10 minutes', value: 600 },
+  { label: '15 minutes', value: 900 },
+  { label: '30 minutes', value: 1800 },
+  // { label: '1 hour', value: 3600 },
+]);
+const selectedInterval = ref(60);
+const isEnabled = ref(false);
+const menuExpanded = ref(false);
 
-    onMounted(async () => {
-      getIntervalFromStorage();
-      getExpandedMenu();
-    });
+onMounted(async () => {
+  getIntervalFromStorage();
+  getExpandedMenu();
+});
 
-    // interval config is set in local storage to avoid reading the db every second
+// interval config is set in local storage to avoid reading the db every second
 
-    function storeIntervalInStorage() {
-      localStorage.setItem(
-        'autolock',
-        JSON.stringify({
-          interval: selectedInterval.value,
-          isEnabled: isEnabled.value,
-        })
-      );
-    }
+function storeIntervalInStorage() {
+  localStorage.setItem(
+    'autolock',
+    JSON.stringify({
+      interval: selectedInterval.value,
+      isEnabled: isEnabled.value,
+    })
+  );
+}
 
-    async function getIntervalFromStorage() {
-      let config = JSON.parse(localStorage.getItem('autolock'));
-      if (config) {
-        selectedInterval.value = config.interval;
-        isEnabled.value = config.isEnabled;
-      }
-    }
+async function getIntervalFromStorage() {
+  let config = JSON.parse(localStorage.getItem('autolock'));
+  if (config) {
+    selectedInterval.value = config.interval;
+    isEnabled.value = config.isEnabled;
+  }
+}
 
-    function changeInterval(interval) {
-      selectedInterval.value = interval;
-      setTimeout(() => {
-        storeIntervalInStorage();
-      }, 1);
-    }
+function changeInterval(interval) {
+  selectedInterval.value = interval;
+  setTimeout(() => {
+    storeIntervalInStorage();
+  }, 1);
+}
 
-    function toggleAutoLock() {
-      setTimeout(() => {
-        storeIntervalInStorage();
-      }, 1);
-    }
+function toggleAutoLock() {
+  setTimeout(() => {
+    storeIntervalInStorage();
+  }, 1);
+}
 
-    function getExpandedMenu() {
-      let menu = JSON.parse(localStorage.getItem('menubar'));
-      if (menu) {
-        mainStore.SET_EXPANDED_MENU(
-          JSON.parse(localStorage.getItem('menubar'))
-        );
-        menuExpanded.value = mainStore.isMenuExpanded;
-      }
-    }
-
-    function toggleExpandedMenu() {
-      setTimeout(() => {
-        mainStore.SET_EXPANDED_MENU(menuExpanded.value);
-        localStorage.setItem(
-          'menubar',
-          JSON.stringify(mainStore.isMenuExpanded)
-        );
-        if (mainStore.isMenuExpanded) {
-          window.ipc.send('resize:menu');
-        } else {
-          window.ipc.send('resize:other');
-        }
-      }, 1);
-    }
-
-    return {
-      selectedInterval,
-      options,
-      isEnabled,
-      menuExpanded,
-
-      changeInterval,
-      toggleAutoLock,
-      toggleExpandedMenu,
-    };
-  },
-};
+function getExpandedMenu() {
+  let menu = JSON.parse(localStorage.getItem('menubar'));
+  if (menu) {
+    mainStore.SET_EXPANDED_MENU(JSON.parse(localStorage.getItem('menubar')));
+    menuExpanded.value = mainStore.isMenuExpanded;
+  }
+}
 </script>
 
 <style scoped>

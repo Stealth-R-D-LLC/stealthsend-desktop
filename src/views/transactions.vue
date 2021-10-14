@@ -34,8 +34,13 @@
     ></TransactionList>
   </div>
 </template>
-
 <script>
+export default {
+  name: 'Transactions',
+};
+</script>
+
+<script setup>
 import TransactionList from '@/components/partials/TransactionList.vue';
 import CryptoService from '@/services/crypto';
 import { ref, computed, onMounted, watchEffect } from 'vue';
@@ -45,132 +50,92 @@ import isWithinInterval from 'date-fns/isWithinInterval';
 import isSameDay from 'date-fns/isSameDay';
 import { useMainStore } from '@/store';
 import { useRoute } from 'vue-router';
-import emitter from '@/services/emitter';
 import SvgIcon from '../components/partials/SvgIcon.vue';
+import useHelpers from '@/composables/useHelpers';
+const { fil } = useHelpers();
 
-export default {
-  name: 'Transactions',
-  components: {
-    TransactionList,
-    DatePicker,
-    SvgIcon,
-  },
-  // beforeRouteLeave() {
-  //const mainStore = useMainStore();
-  //mainStore.SET_ACTIVE_TRANSACTION_ADDRESS('')
-  // called when the route that renders this component is about to
-  // be navigated away from.
-  // has access to `this` component instance.
-  // },
-  beforeRouteEnter(to, from, next) {
-    const mainStore = useMainStore();
+const query = ref('');
+const date = ref([]);
 
-    next((vm) => {
-      vm.query = mainStore.activeTransactionAddress;
-    });
-    // called before the route that renders this component is confirmed.
-    // does NOT have access to `this` component instance,
-    // because it has not been created yet when this guard is called!
-  },
-  setup() {
-    const transactions = ref([]);
-    const query = ref('');
-    const date = ref([]);
+const route = useRoute();
+const mainStore = useMainStore();
 
-    const route = useRoute();
-    const mainStore = useMainStore();
+const currentRoute = computed(() => {
+  return route.name;
+});
 
-    const currentRoute = computed(() => {
-      return route.name;
-    });
+const wallet = computed(() => {
+  if (!mainStore?.wallet) return null;
+  return mainStore.wallet;
+});
 
-    onMounted(async () => {
-      mainStore.START_GLOBAL_LOADING();
-      query.value = '';
+onMounted(async () => {
+  mainStore.START_GLOBAL_LOADING();
+  query.value = '';
 
-      if (route.params.address) {
-        query.value = route.params.address;
-      }
+  if (route.params.address) {
+    query.value = route.params.address;
+  }
 
-      await scanWallet();
-      mainStore.STOP_GLOBAL_LOADING();
-    });
+  await CryptoService.scanWallet();
+  mainStore.STOP_GLOBAL_LOADING();
+});
 
-    watchEffect(() => {
-      if (currentRoute.value === 'TransactionsQuery') {
-        setTimeout(() => {
-          query.value = route.params.address;
-        }, 1);
-      } else {
-        setTimeout(() => {
-          query.value = route.params.address;
-        }, 1);
-      }
-    });
+watchEffect(() => {
+  if (currentRoute.value === 'TransactionsQuery') {
+    setTimeout(() => {
+      query.value = route.params.address;
+    }, 1);
+  } else {
+    setTimeout(() => {
+      query.value = route.params.address;
+    }, 1);
+  }
+});
 
-    function findLabelForTx(tx) {
-      return mainStore.txWithLabels[tx] || 'No label';
-    }
+function findLabelForTx(tx) {
+  return mainStore.txWithLabels[tx] || 'No label';
+}
 
-    async function scanWallet() {
-      const hdWallet = await CryptoService.scanWallet();
-      transactions.value = hdWallet.txs;
-    }
+const computedTransactions = computed(() => {
+  let filtered = [...wallet.value.txs];
+  if (filtered.length === 0) return [];
+  let q = query?.value?.toLowerCase();
+  if (q && q.length > 2) {
+    filtered = fil((el) => {
+      return (
+        el?.account?.toLowerCase().indexOf(q) > -1 ||
+        String(el.amount).indexOf(q) > -1 ||
+        el?.txid?.toLowerCase().indexOf(q) > -1 ||
+        findLabelForTx(el.txid)?.toLowerCase().indexOf(q) > -1 ||
+        el.outputs?.some((el) => el?.address?.toLowerCase().indexOf(q) > -1) ||
+        el.txinfo?.destinations?.some((el) =>
+          el.addresses?.some((addr) => addr?.toLowerCase().indexOf(q) > -1)
+        )
+      );
+    }, filtered);
+  }
 
-    const computedTransactions = computed(() => {
-      let filtered = [...transactions.value];
-      if (filtered.length === 0) return [];
-      let q = query?.value?.toLowerCase();
-      if (q && q.length > 2) {
-        filtered = filtered.filter((el) => {
-          return (
-            el?.account?.toLowerCase().indexOf(q) > -1 ||
-            String(el.amount).indexOf(q) > -1 ||
-            el?.txid?.toLowerCase().indexOf(q) > -1 ||
-            findLabelForTx(el.txid)?.toLowerCase().indexOf(q) > -1 ||
-            el.outputs?.some(
-              (el) => el?.address?.toLowerCase().indexOf(q) > -1
-            ) ||
-            el.txinfo.destinations?.some((el) =>
-              el.addresses.some((addr) => addr?.toLowerCase().indexOf(q) > -1)
-            )
-          );
+  if (date.value[0] && date.value[1]) {
+    if (date.value[0] === date.value[1]) {
+      // both dates in range are the same
+      filtered = fil((el) => {
+        let target = new Date(el.blocktime * 1000);
+        return isSameDay(target, new Date(date.value[0]));
+      }, filtered);
+    } else {
+      // isWithinInterval doesnt work if the range is on the same date
+      filtered = fil((el) => {
+        let target = new Date(el.blocktime * 1000);
+        return isWithinInterval(new Date(target), {
+          start: new Date(date.value[0]),
+          end: new Date(date.value[1]),
         });
-      }
-
-      if (date.value[0] && date.value[1]) {
-        if (date.value[0] === date.value[1]) {
-          // both dates in range are the same
-          filtered = filtered.filter((el) => {
-            let target = new Date(el.blocktime * 1000);
-            return isSameDay(target, new Date(date.value[0]));
-          });
-        } else {
-          // isWithinInterval doesnt work if the range is on the same date
-          filtered = filtered.filter((el) => {
-            let target = new Date(el.blocktime * 1000);
-            return isWithinInterval(new Date(target), {
-              start: new Date(date.value[0]),
-              end: new Date(date.value[1]),
-            });
-          });
-        }
-      }
-      return filtered;
-    });
-
-    emitter.on('transactions:refresh', () => {
-      scanWallet();
-    });
-
-    return {
-      transactions,
-      query,
-      date,
-      computedTransactions,
-    };
-  },
-};
+      }, filtered);
+    }
+  }
+  return filtered;
+});
 </script>
 
 <style scoped>
