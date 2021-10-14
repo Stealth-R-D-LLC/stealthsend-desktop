@@ -627,18 +627,18 @@ const CryptoService = {
               );
               for (let txIndex in outputTransactions) {
                 if (!account.isArchived) {
-                allTransactions.push({
-                  ...outputs[txIndex],
-                  account: account.label,
-                  txinfo: {
-                    ...outputTransactions[txIndex],
-                  },
-                  output: [
-                    outputTransactions[txIndex].vout[outputs[txIndex].vout]
-                      .scriptPubKey,
-                  ],
-                });
-              }
+                  allTransactions.push({
+                    ...outputs[txIndex],
+                    account: account.label,
+                    txinfo: {
+                      ...outputTransactions[txIndex],
+                    },
+                    output: [
+                      outputTransactions[txIndex].vout[outputs[txIndex].vout]
+                        .scriptPubKey,
+                    ],
+                  });
+                }
               }
             });
 
@@ -677,15 +677,14 @@ const CryptoService = {
                   indexOfDestination = 0;
                 }
                 if (!account.isArchived) {
-
-                allTransactions.push({
-                  ...tx,
-                  output: [tx.txinfo.destinations[indexOfDestination]],
-                  amount: tx.account_balance_change,
-                  blocktime: tx.txinfo.blocktime,
-                  account: account.label,
-                });
-              }
+                  allTransactions.push({
+                    ...tx,
+                    output: [tx.txinfo.destinations[indexOfDestination]],
+                    amount: tx.account_balance_change,
+                    blocktime: tx.txinfo.blocktime,
+                    account: account.label,
+                  });
+                }
               }
             });
 
@@ -747,7 +746,9 @@ const CryptoService = {
         mainStore.SET_WALLET({
           utxo: balance, // sum of all utxo (except archived accounts)
           txs: reducedTxs, // all transactions,
-          accounts: skipArchived ? newAccounts.filter(el => !el.isArchived): newAccounts,
+          accounts: skipArchived
+            ? newAccounts.filter((el) => !el.isArchived)
+            : newAccounts,
         });
       }
       resolve({
