@@ -21,11 +21,14 @@
     <div class="sidebar-header__content">
       <h6>Total Balance</h6>
       <h4>
-       <CountUp v-if="!isHiddenAmounts" :value="steps[step].amountTop"></CountUp>
-      <template v-else>{{'•••'}}</template>
+        <CountUp
+          v-if="!isHiddenAmounts"
+          :value="steps[step].amountTop"
+        ></CountUp>
+        <template v-else>{{ '•••' }}</template>
         <!-- {{ isHiddenAmounts ? '•••' : steps[step].amountTop }}
          -->
-        </h4>
+      </h4>
       <h6 class="amount-fiat">
         <span class="amount-fiat__inner"
           >~ {{ isHiddenAmounts ? '$•••' : steps[step].amountBottom }} USD</span
