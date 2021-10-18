@@ -99,7 +99,6 @@ function findLabelForTx(tx) {
 
 const computedTransactions = computed(() => {
   let filtered = [...wallet.value.txs];
-  console.log('sta', filtered);
   if (filtered.length === 0) return [];
   let q = query?.value?.toLowerCase();
   if (q && q.length > 2) {
@@ -135,7 +134,6 @@ const computedTransactions = computed(() => {
       }, filtered);
     }
   }
-  console.log('na kraju', filtered);
   return filtered;
 });
 </script>

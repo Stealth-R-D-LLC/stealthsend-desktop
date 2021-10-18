@@ -467,7 +467,6 @@ async function scanWallet() {
 let unspentOutputs = [];
 
 async function getUnspentOutputs(acc) {
-  console.log('acc', acc);
   if (!acc || Object.keys(acc).length === 0) return;
   let res = [];
   if (acc.xpub) {
@@ -585,7 +584,6 @@ async function send() {
           setTimeout(async () => {
             changeStep(6);
             await CryptoService.scanWallet();
-            console.log('refreshing accounts');
             emitter.emit('transactions:refresh');
           }, 17000);
         } else {
