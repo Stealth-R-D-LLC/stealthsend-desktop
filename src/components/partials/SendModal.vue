@@ -340,7 +340,7 @@ watchEffect(() => {
       amount.value = mainStore.redoAmount;
       isFeeless.value = mainStore.isFeeless;
     } else {
-      amount.value = null;
+      // amount.value = null;
       setTimeout(() => (inputAmountState.value = 'USD'), 1);
       setTimeout(() => (inputAmountState.value = 'XST'), 1);
     }
