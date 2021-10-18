@@ -47,12 +47,28 @@
               class="move"
               :class="{ 'move-left': isExpanded === item.index }"
             >
-            <span v-if="item.amount <= 0">
-              {{item.txinfo.destinations[item.txinfo.destinations.length-1] && item.txinfo.destinations[item.txinfo.destinations.length-1].addresses ? item.txinfo.destinations[item.txinfo.destinations.length-1].addresses[0] : '-'}}
-            </span>
-            <span v-else>
-              {{item.txinfo.sources[item.txinfo.sources.length-1] && item.txinfo.sources[item.txinfo.sources.length-1].addresses ? item.txinfo.sources[item.txinfo.sources.length-1].addresses[0] : '-'}}
-            </span>
+              <span v-if="item.amount <= 0">
+                {{
+                  item.txinfo.destinations[
+                    item.txinfo.destinations.length - 1
+                  ] &&
+                  item.txinfo.destinations[item.txinfo.destinations.length - 1]
+                    .addresses
+                    ? item.txinfo.destinations[
+                        item.txinfo.destinations.length - 1
+                      ].addresses[0]
+                    : '-'
+                }}
+              </span>
+              <span v-else>
+                {{
+                  item.txinfo.sources[item.txinfo.sources.length - 1] &&
+                  item.txinfo.sources[item.txinfo.sources.length - 1].addresses
+                    ? item.txinfo.sources[item.txinfo.sources.length - 1]
+                        .addresses[0]
+                    : '-'
+                }}
+              </span>
             </div>
           </template>
           <template #blocktime="{ item }">
