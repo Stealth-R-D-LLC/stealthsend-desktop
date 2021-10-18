@@ -580,78 +580,38 @@ const CryptoService = {
             );
           }
 
-          await mainStore
-            .rpc('getaddressinputs', [account.address, 1, 10000])
-            .then(async (inputs) => {
-              const allInputsTxIdArray = inputs.map((input) => [input.txid]);
-              let inputsTransactions = await mainStore.rpcMulti(
-                'gettransaction',
-                allInputsTxIdArray
-              );
-              for (let txIndex in inputsTransactions) {
-                let indexOfDestination = inputsTransactions[
-                  txIndex
-                ].vout.findIndex(
-                  (dest) =>
-                    dest.scriptPubKey.addresses &&
-                    dest.scriptPubKey.addresses[0] !== account.address
-                );
-                if (!account.isArchived) {
-                  allTransactions.push({
-                    ...inputs[txIndex],
-                    account: account.label,
-                    amount: -inputs[txIndex].amount,
-                    txinfo: {
-                      ...inputsTransactions[txIndex],
-                    },
-                    output:
-                      indexOfDestination === -1
-                        ? []
-                        : [
-                            inputsTransactions[txIndex].vout[indexOfDestination]
-                              .scriptPubKey,
-                          ],
-                  });
-                }
-              }
-            });
-          await mainStore
-            .rpc('getaddressoutputs', [account.address, 1, 10000])
-            .then(async (outputs) => {
-              const allOutputsTxIdArray = outputs.map((output) => [
-                output.txid,
-              ]);
-              let outputTransactions = await mainStore.rpcMulti(
-                'gettransaction',
-                allOutputsTxIdArray
-              );
-              for (let txIndex in outputTransactions) {
-                if (!account.isArchived) {
-                  allTransactions.push({
-                    ...outputs[txIndex],
-                    account: account.label,
-                    txinfo: {
-                      ...outputTransactions[txIndex],
-                    },
-                    output: [
-                      outputTransactions[txIndex].vout[outputs[txIndex].vout]
-                        .scriptPubKey,
-                    ],
-                  });
-                }
-              }
-            });
+          console.log('-', importedAccountBalance);
 
-          accUtxo = add(accUtxo, importedAccountBalance);
-          accUtxo = format(accUtxo, { precision: 14 });
+          await mainStore
+            .rpc('getaddresstxspg', [account.address, 1, 99999])
+            .then((res) => {
+              console.log('res', res);
+              const txs = res.data;
+              for (const tx of txs) {
+                if (tx.amount === 0) continue;
+                allTransactions.push({
+                  account: account.label,
+                  amount:
+                    tx.address_outputs.length > 0
+                      ? tx.address_outputs[0].amount
+                      : 0,
+                  account_balance_change:
+                    tx.address_outputs.length > 0
+                      ? tx.address_outputs[0].amount
+                      : 0,
+                  blocktime: tx.txinfo.blocktime,
+                  txinfo: tx.txinfo,
+                  outputs: tx.address_outputs,
+                  inputs: tx.address_inputs,
+                  txid: tx.txid,
+                });
+              }
+            });
 
           newAccounts.push({
             ...account,
-            utxo: accUtxo,
+            utxo: importedAccountBalance,
           });
-
-          const processed = this.processImportedTxs(allTransactions);
-          allTransactions = processed;
         } else {
           await mainStore
             .rpc('gethdaccount', [account.xpub])

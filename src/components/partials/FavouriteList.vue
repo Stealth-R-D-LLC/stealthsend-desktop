@@ -206,6 +206,7 @@ async function addToFavouriteList() {
       .sort((a, b) => a.favouritePosition - b.favouritePosition);
     account.value = null;
     emitter.emit('favorite:refresh');
+    scanWallet();
   } catch (e) {
     if (e instanceof ValidationError) {
       console.log(e);
@@ -219,6 +220,7 @@ async function removeFromFavoriteList(account) {
     .filter((el) => el.isFavourite)
     .sort((a, b) => a.favouritePosition - b.favouritePosition);
   emitter.emit('favorite:refresh');
+  scanWallet();
 }
 </script>
 
