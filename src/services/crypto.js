@@ -582,29 +582,36 @@ const CryptoService = {
 
           console.log('-', importedAccountBalance);
 
-          await mainStore.rpc('getaddresstxspg', [account.address, 1, 99999]).then(res => {
-            console.log('res', res);
-            const txs = res.data;
-            for (const tx of txs) {
-              if (tx.amount === 0) continue;
-              allTransactions.push({
-                account: account.label,
-                amount: tx.address_outputs.length > 0 ? tx.address_outputs[0].amount : 0,
-                account_balance_change: tx.address_outputs.length > 0 ? tx.address_outputs[0].amount : 0,
-                blocktime: tx.txinfo.blocktime,
-                txinfo: tx.txinfo,
-                outputs: tx.address_outputs,
-                inputs: tx.address_inputs,
-                txid: tx.txid
-              })
-            }
-          })
+          await mainStore
+            .rpc('getaddresstxspg', [account.address, 1, 99999])
+            .then((res) => {
+              console.log('res', res);
+              const txs = res.data;
+              for (const tx of txs) {
+                if (tx.amount === 0) continue;
+                allTransactions.push({
+                  account: account.label,
+                  amount:
+                    tx.address_outputs.length > 0
+                      ? tx.address_outputs[0].amount
+                      : 0,
+                  account_balance_change:
+                    tx.address_outputs.length > 0
+                      ? tx.address_outputs[0].amount
+                      : 0,
+                  blocktime: tx.txinfo.blocktime,
+                  txinfo: tx.txinfo,
+                  outputs: tx.address_outputs,
+                  inputs: tx.address_inputs,
+                  txid: tx.txid,
+                });
+              }
+            });
 
           newAccounts.push({
             ...account,
             utxo: importedAccountBalance,
           });
-
         } else {
           await mainStore
             .rpc('gethdaccount', [account.xpub])
@@ -749,7 +756,7 @@ const CryptoService = {
       pubkey: keypair.publicKey,
       network: this.network,
     });
-    
+
     const address = payment.address;
     const mainStore = useMainStore();
 
