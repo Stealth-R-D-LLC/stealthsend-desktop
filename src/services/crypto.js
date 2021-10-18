@@ -569,9 +569,8 @@ const CryptoService = {
         let accUtxo = 0;
         let allTransactions = [];
         if (account.isImported && account.wif) {
-          let importedAccountBalance = 0;
           try {
-            importedAccountBalance = await mainStore.rpc('getaddressbalance', [
+            accUtxo = await mainStore.rpc('getaddressbalance', [
               account.address,
             ]);
           } catch (error) {
@@ -586,28 +585,30 @@ const CryptoService = {
               const txs = res.data;
               for (const tx of txs) {
                 if (tx.amount === 0) continue;
-                allTransactions.push({
-                  account: account.label,
-                  amount:
-                    tx.address_outputs.length > 0
-                      ? tx.address_outputs[0].amount
-                      : 0,
-                  account_balance_change:
-                    tx.address_outputs.length > 0
-                      ? tx.address_outputs[0].amount
-                      : 0,
-                  blocktime: tx.txinfo.blocktime,
-                  txinfo: tx.txinfo,
-                  outputs: tx.address_outputs,
-                  inputs: tx.address_inputs,
-                  txid: tx.txid,
-                });
+                if (!account.isArchived) {
+                  allTransactions.push({
+                    account: account.label,
+                    amount:
+                      tx.address_outputs.length > 0
+                        ? tx.address_outputs[0].amount
+                        : 0,
+                    account_balance_change:
+                      tx.address_outputs.length > 0
+                        ? tx.address_outputs[0].amount
+                        : 0,
+                    blocktime: tx.txinfo.blocktime,
+                    txinfo: tx.txinfo,
+                    outputs: tx.address_outputs,
+                    inputs: tx.address_inputs,
+                    txid: tx.txid,
+                  });
+                }
               }
             });
 
           newAccounts.push({
             ...account,
-            utxo: importedAccountBalance,
+            utxo: Number(accUtxo),
           });
         } else {
           await mainStore
@@ -701,7 +702,7 @@ const CryptoService = {
       if (!targetAccount) {
         // do not store in store in case we are searching only for one account
         mainStore.SET_WALLET({
-          utxo: balance, // sum of all utxo (except archived accounts)
+          utxo: Number(balance), // sum of all utxo (except archived accounts)
           txs: reducedTxs, // all transactions,
           accounts: skipArchived
             ? newAccounts.filter((el) => !el.isArchived)
@@ -709,7 +710,7 @@ const CryptoService = {
         });
       }
       resolve({
-        utxo: balance, // sum of all utxo (except archived accounts)
+        utxo: Number(balance), // sum of all utxo (except archived accounts)
         txs: reducedTxs, // all transactions,
         accounts: newAccounts,
       });
