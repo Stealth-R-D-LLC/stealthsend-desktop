@@ -12,7 +12,11 @@
       </div>
       <div class="amount-container" v-if="steps && steps[type]">
         <h6 class="currency">
-          <CountUp v-if="!isHiddenAmounts" :currency="'XST'" :value="steps[type].amountLeft"></CountUp>
+          <CountUp
+            v-if="!isHiddenAmounts"
+            :currency="'XST'"
+            :value="steps[type].amountLeft"
+          ></CountUp>
           <template v-else>'••• XST'</template>
         </h6>
         <p class="medium grey">
@@ -61,7 +65,7 @@ export default {
   name: 'StCard',
   components: {
     SvgIcon,
-    CountUp
+    CountUp,
   },
   props: {
     type: {

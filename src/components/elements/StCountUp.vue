@@ -1,6 +1,6 @@
 <template>
   <div class="st-count-up">
-    {{ animatedValue }} {{currency ? currency : ''}}
+    {{ animatedValue }} {{ currency ? currency : '' }}
   </div>
 </template>
 
