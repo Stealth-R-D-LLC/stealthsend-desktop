@@ -2,15 +2,18 @@
   <div class="side">
     <StCards :amount="amount" @change="switcherChange"></StCards>
     <div class="side__accounts">
-      <Card
-        v-for="account in sortedAccounts"
-        :key="account.address"
-        :account="account"
-        :type="step"
-        :rates="constraints"
-        @click="openAccount(account)"
-      >
-      </Card>
+      <StSkeletonLoader v-if="isLoading" type="cards" />
+      <template v-else>
+        <Card
+          v-for="account in sortedAccounts"
+          :key="account.address"
+          :account="account"
+          :type="step"
+          :rates="constraints"
+          @click="openAccount(account)"
+        >
+        </Card>
+      </template>
     </div>
   </div>
 </template>
@@ -19,6 +22,7 @@
 import StCards from '@/components/elements/StCards.vue';
 import Card from '@/components/elements/Card';
 import CryptoService from '@/services/crypto';
+import StSkeletonLoader from '@/components/loader/StSkeletonLoader.vue';
 import { ref, computed } from 'vue';
 import { useMainStore } from '@/store';
 import router from '@/router';
@@ -29,6 +33,10 @@ const constraints = computed(() => {
   if (!CryptoService.constraints) return null;
   return CryptoService.constraints;
 });
+
+const isLoading = computed(() => {
+      return mainStore.globalLoading;
+    });
 
 const wallet = computed(() => {
   return mainStore.wallet;
