@@ -48,7 +48,7 @@
               />
             </StTooltip>
 
-            <StTooltip class="tooltip" tooltip="Account Keys">
+            <StTooltip class="tooltip" tooltip="Account Key">
               <SvgIcon name="icon-account-keys" @click="isVisible = true" />
             </StTooltip>
           </div>
@@ -130,16 +130,11 @@
         @close="closeModal"
         class="account-modal"
       >
-        <template #header>{{
-          checkPassword
-            ? 'Password Required'
-            : account?.isImported
-            ? 'Account Keys'
-            : 'Account Key'
-        }}</template>
+        <template #header>Account Key</template>
         <template #body>
           <div v-if="!checkPassword" class="account-tabs">
             <a
+              v-if="account && !account.isImported"
               :class="{ active: activeStep === 'public-key' }"
               @click="changeStep('public-key')"
               >Public Key</a
