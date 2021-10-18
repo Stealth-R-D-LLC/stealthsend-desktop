@@ -1,6 +1,6 @@
 <template>
   <div class="st-count-up">
-    {{ animatedValue }}
+    {{ animatedValue }} {{currency ? currency : ''}}
   </div>
 </template>
 
@@ -10,6 +10,13 @@ import useHelpers from '@/composables/useHelpers';
 
 export default {
   props: {
+    currency: {
+      type: String,
+      required: false,
+      default: () => {
+        return 'XST';
+      },
+    },
     value: {
       type: Number,
       required: true,
@@ -21,7 +28,7 @@ export default {
   setup(props) {
     const { formatAmount } = useHelpers();
 
-    const animationDuration = 1000;
+    const animationDuration = 2200;
     const frameDuration = 1000 / 60;
     const animatedValue = ref(0);
     const totalFrames = 60;
