@@ -56,7 +56,7 @@ export default {
         if (frame === totalFrames) {
           clearInterval(counter);
         }
-        animatedValue.value = formatAmount(val, false, 6, 6);
+        animatedValue.value = formatAmount(props.value, false, 6, 6);
       }, frameDuration);
     }
     function easeOutQuad(t) {
