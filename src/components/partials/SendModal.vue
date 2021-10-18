@@ -457,7 +457,9 @@ async function scanWallet() {
   }
   // select first option so it doesn't remain empty
   if (!account.value) {
-    account.value = mainStore.wallet.accounts.filter(el => el.utxo > minimumXSTForSend.value)[0];
+    account.value = mainStore.wallet.accounts.filter(
+      (el) => el.utxo > minimumXSTForSend.value
+    )[0];
   }
 
   getUnspentOutputs(account.value);
