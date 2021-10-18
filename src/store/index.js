@@ -40,7 +40,7 @@ export const useMainStore = defineStore({
     isLock: false,
     isMenuExpanded: false,
     layoutFlash: false,
-    isFeeless: false,
+    isFeeless: true,
   }),
   getters: {},
   actions: {

@@ -47,29 +47,32 @@
               class="move"
               :class="{ 'move-left': isExpanded === item.index }"
             >
-              <span
-                v-if="
-                  item &&
-                  item.output &&
-                  item.output[0] &&
-                  item.output[0].addresses &&
-                  item.output[0].addresses[0]
-                "
-                >{{ item.output[0].addresses[0] }}</span
-              >
-              <span
-                v-else-if="
-                  item &&
-                  item.outputs &&
-                  item.outputs[0] &&
-                  item.outputs[0].address
-                "
-                >{{ item.outputs[0].address }}</span
-              >
+              <span v-if="item.amount <= 0">
+                {{
+                  item.txinfo.destinations[
+                    item.txinfo.destinations.length - 1
+                  ] &&
+                  item.txinfo.destinations[item.txinfo.destinations.length - 1]
+                    .addresses
+                    ? item.txinfo.destinations[
+                        item.txinfo.destinations.length - 1
+                      ].addresses[0]
+                    : '-'
+                }}
+              </span>
+              <span v-else>
+                {{
+                  item.txinfo.sources[item.txinfo.sources.length - 1] &&
+                  item.txinfo.sources[item.txinfo.sources.length - 1].addresses
+                    ? item.txinfo.sources[item.txinfo.sources.length - 1]
+                        .addresses[0]
+                    : '-'
+                }}
+              </span>
             </div>
           </template>
           <template #blocktime="{ item }">
-            {{ formatBlocktime(item.blocktime) }}
+            {{ formatBlocktime(item.txinfo.blocktime) }}
           </template>
           <template #amount="{ item }">
             <div
@@ -261,7 +264,7 @@ export default {
           const obj = Object.assign({}, el);
           obj['index'] = index;
           obj['blocktimeDate'] = format(
-            fromUnixTime(el['blocktime']),
+            fromUnixTime(el.txinfo['blocktime']),
             'd MMM, Y'
           );
           return obj;

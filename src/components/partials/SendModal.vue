@@ -319,7 +319,7 @@ const isScaning = ref(false);
 const QRData = ref(null);
 const cameraAllowed = ref(false);
 const isCameraLoading = ref(false);
-const isFeeless = ref(false);
+const isFeeless = ref(true);
 
 const pickedAccount = computed(() => {
   return mainStore.accountDetails;
@@ -340,7 +340,6 @@ watchEffect(() => {
       amount.value = mainStore.redoAmount;
       isFeeless.value = mainStore.isFeeless;
     } else {
-      amount.value = null;
       setTimeout(() => (inputAmountState.value = 'USD'), 1);
       setTimeout(() => (inputAmountState.value = 'XST'), 1);
     }
@@ -349,7 +348,6 @@ watchEffect(() => {
     sendTimeout.value = setTimeout(() => send(), 4900);
   }
   if (currentStep.value === 5) {
-    // setTimeout(() => send(), 4000)
     clearTimeout(counterTimeout.value);
     counter.value = 5;
   }
@@ -418,18 +416,19 @@ function closeModal() {
   mainStore.SET_REDO_ACCOUNT('');
   mainStore.SET_FEELESS(false);
   mainStore.SET_REDO_AMOUNT(null);
+
   // reset all variables
   inputAmountState.value = 'XST';
-  // account.value = null;
   accounts.value = [];
-  // amount.value = null;
   currentStep.value = 1;
   depositAddress.value = '';
   label.value = '';
+
   clearTimeout(counterTimeout.value);
   counter.value = 5;
   remove(['amount']);
   resetFields();
+
   if (currentRoute.value !== 'AccountDetails') {
     // because we don't want to mess up the account details screen if the modal is opened there
     mainStore.SET_ACCOUNT_DETAILS(null);
@@ -456,20 +455,20 @@ async function scanWallet() {
     );
   }
   // select first option so it doesn't remain empty
-  if (!account.value) {
-    account.value = mainStore.wallet.accounts[0];
+  if (!account.value || Object.keys(account.value).length === 0) {
+    account.value = mainStore.wallet.accounts.filter(
+      (el) => el.utxo > minimumXSTForSend.value
+    )[0];
   }
 
   getUnspentOutputs(account.value);
-  // // manually start finding address for preselected account
-  // changeAccount(account.value)
 }
 
-// scanWallet();
 let unspentOutputs = [];
 
 async function getUnspentOutputs(acc) {
-  if (!acc) return;
+  console.log('acc', acc);
+  if (!acc || Object.keys(acc).length === 0) return;
   let res = [];
   if (acc.xpub) {
     res = await mainStore.rpc('gethdaccount', [acc.xpub]);
@@ -663,7 +662,6 @@ function loadMax(item) {
   // if not, find real fee
   amount.value = 0;
   let fee = findFee();
-  // console.log('fee: ', fee);
   // subtract real fee from amount
   const maxAmount = format(subtract(item.utxo, fee), { precision: 14 });
   form.amount.$value = maxAmount;
