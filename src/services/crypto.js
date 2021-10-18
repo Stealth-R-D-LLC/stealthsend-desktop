@@ -580,12 +580,9 @@ const CryptoService = {
             );
           }
 
-          console.log('-', importedAccountBalance);
-
           await mainStore
             .rpc('getaddresstxspg', [account.address, 1, 99999])
             .then((res) => {
-              console.log('res', res);
               const txs = res.data;
               for (const tx of txs) {
                 if (tx.amount === 0) continue;
