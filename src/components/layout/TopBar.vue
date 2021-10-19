@@ -21,31 +21,16 @@
         </template>
 
         <template v-if="checkVisibilityForRoute(['AccountDetails'])">
-          <div
-            v-if="account"
-            class="account-switcher"
-            @click="openAccountModal"
-          >
+          <div v-if="account" class="account-switcher" @click="openAccountModal">
             <h6>{{ account && account.label }}</h6>
 
             <SvgIcon name="icon-arrow-down" />
           </div>
           <div class="icons-flex">
-            <StTooltip
-              class="tooltip"
-              :tooltip="isHiddenAmounts ? 'Show Values' : 'Hide Values'"
-            >
-              <SvgIcon
-                name="icon-eye-opened"
-                v-if="isHiddenAmounts"
-                @click="toggleHiddenAmounts"
-              />
+            <StTooltip class="tooltip" :tooltip="isHiddenAmounts ? 'Show Values' : 'Hide Values'">
+              <SvgIcon name="icon-eye-opened" v-if="isHiddenAmounts" @click="toggleHiddenAmounts" />
 
-              <SvgIcon
-                name="icon-eye-closed"
-                v-else
-                @click="toggleHiddenAmounts"
-              />
+              <SvgIcon name="icon-eye-closed" v-else @click="toggleHiddenAmounts" />
             </StTooltip>
 
             <StTooltip class="tooltip" tooltip="Account Key">
@@ -61,41 +46,19 @@
           "
         >
           <div class="icons-flex" role="presentation">
-            <StTooltip
-              class="tooltip"
-              :tooltip="isHiddenAmounts ? 'Show Values' : 'Hide Values'"
-            >
-              <SvgIcon
-                name="icon-eye-opened"
-                v-if="isHiddenAmounts"
-                @click="toggleHiddenAmounts"
-              />
+            <StTooltip class="tooltip" :tooltip="isHiddenAmounts ? 'Show Values' : 'Hide Values'">
+              <SvgIcon name="icon-eye-opened" v-if="isHiddenAmounts" @click="toggleHiddenAmounts" />
 
-              <SvgIcon
-                name="icon-eye-closed"
-                v-else
-                @click="toggleHiddenAmounts"
-              />
+              <SvgIcon name="icon-eye-closed" v-else @click="toggleHiddenAmounts" />
             </StTooltip>
           </div>
         </template>
 
         <template v-if="checkVisibilityForRoute(['ArchivedAccounts'])">
-          <StTooltip
-            class="tooltip"
-            :tooltip="isHiddenAmounts ? 'Show Values' : 'Hide Values'"
-          >
-            <SvgIcon
-              name="icon-eye-opened"
-              v-if="isHiddenAmounts"
-              @click="toggleHiddenAmounts"
-            />
+          <StTooltip class="tooltip" :tooltip="isHiddenAmounts ? 'Show Values' : 'Hide Values'">
+            <SvgIcon name="icon-eye-opened" v-if="isHiddenAmounts" @click="toggleHiddenAmounts" />
 
-            <SvgIcon
-              name="icon-eye-closed"
-              v-else
-              @click="toggleHiddenAmounts"
-            />
+            <SvgIcon name="icon-eye-closed" v-else @click="toggleHiddenAmounts" />
           </StTooltip>
 
           <StTooltip class="tooltip" tooltip="Favorite List">
@@ -124,27 +87,20 @@
         </StTooltip>
       </div>
 
-      <StModal
-        light
-        :visible="isVisible"
-        @close="closeModal"
-        class="account-modal"
-      >
+      <StModal light :visible="isVisible" @close="closeModal" class="account-modal">
         <template #header>Account Key</template>
         <template #body>
           <div v-if="!checkPassword" class="account-tabs">
             <a
-              v-if="account && !account.isImported"
+              v-if="account && !account.isImported && activeStep.length > 0"
               :class="{ active: activeStep === 'public-key' }"
               @click="changeStep('public-key')"
-              >Public Key</a
-            >
+            >Public Key</a>
             <a
-              v-if="account && account.isImported"
+              v-if="account && account.isImported && activeStep.length > 0"
               :class="{ active: activeStep === 'private-key' }"
               @click="changeStep('private-key')"
-              >Private Key</a
-            >
+            >Private Key</a>
           </div>
           <div v-if="activeStep === 'public-key'">
             <template v-if="!publicQrCode">
@@ -159,7 +115,8 @@
               <p class="key">{{ publicKey }}</p>
               <div class="copy-key">
                 <p>
-                  Copy <span v-if="!account?.isImported">xpub</span>
+                  Copy
+                  <span v-if="!account?.isImported">xpub</span>
                   <span v-else>public key</span> to clipboard or show QR code
                 </p>
                 <div>
@@ -174,10 +131,7 @@
                   </StTooltip>
 
                   <StTooltip tooltip="Show QR Code">
-                    <SvgIcon
-                      name="icon-generate-qr-code"
-                      @click="generatePublicQr"
-                    />
+                    <SvgIcon name="icon-generate-qr-code" @click="generatePublicQr" />
                   </StTooltip>
                 </div>
               </div>
@@ -185,22 +139,16 @@
                 v-if="!account?.isImported && !account.wif"
                 @click="openBlockExplorer"
                 class="view-more bold"
-              >
-                View on StealthMonitor
-              </p>
+              >View on StealthMonitor</p>
             </template>
             <template v-else>
               <img class="qr-code" :src="publicQrCode" />
-              <p @click="publicQrCode = ''" class="view-more bold">
-                Hide QR code
-              </p>
+              <p @click="publicQrCode = ''" class="view-more bold">Hide QR code</p>
             </template>
           </div>
           <div v-if="activeStep === 'private-key'">
             <template v-if="checkPassword">
-              <p class="password-desc">
-                Enter your password to authorize this action
-              </p>
+              <p class="password-desc">Enter your password to authorize this action</p>
               <form class="form" @submit.prevent>
                 <StFormItem
                   class="custom-form-item"
@@ -225,20 +173,11 @@
                         @click="showPassword = true"
                       />
 
-                      <SvgIcon
-                        name="icon-eye-closed"
-                        v-else
-                        @click="showPassword = false"
-                      />
+                      <SvgIcon name="icon-eye-closed" v-else @click="showPassword = false" />
                     </StTooltip>
                   </StInput>
                 </StFormItem>
-                <StButton
-                  v-show="Boolean(false)"
-                  color="white"
-                  @click="validatePassword"
-                  >Continue</StButton
-                >
+                <StButton v-show="Boolean(false)" color="white" @click="validatePassword">Continue</StButton>
               </form>
             </template>
             <template v-else>
@@ -266,19 +205,14 @@
                       </StClipboard>
                     </StTooltip>
                     <StTooltip tooltip="Show QR code">
-                      <SvgIcon
-                        name="icon-generate-qr-code"
-                        @click="generatePrivateQr"
-                      />
+                      <SvgIcon name="icon-generate-qr-code" @click="generatePrivateQr" />
                     </StTooltip>
                   </div>
                 </div>
               </template>
               <template v-else>
                 <img class="qr-code" :src="privateQrCode" />
-                <p @click="privateQrCode = ''" class="view-more bold">
-                  Hide QR code
-                </p>
+                <p @click="privateQrCode = ''" class="view-more bold">Hide QR code</p>
               </template>
             </template>
           </div>
@@ -302,10 +236,7 @@
             >
               <div class="account-card__header">
                 <h6>{{ acc.label }}</h6>
-                <div
-                  class="radio"
-                  :class="{ 'radio-active': showArrow === acc.label }"
-                />
+                <div class="radio" :class="{ 'radio-active': showArrow === acc.label }" />
               </div>
               <div class="account-card__content">
                 <div class="account-card__content--amount">
@@ -319,10 +250,7 @@
                     @click="accountChanged(acc)"
                   >
                     <StTooltip class="tooltip" tooltip="Apply">
-                      <SvgIcon
-                        name="icon-arrow-right"
-                        class="icon-arrow-right"
-                      />
+                      <SvgIcon name="icon-arrow-right" class="icon-arrow-right" />
                     </StTooltip>
                   </div>
                 </transition>
@@ -354,7 +282,7 @@ const route = useRoute();
 const isVisible = ref(false);
 const accountVisible = ref(false);
 const rpcStatus = ref('');
-const activeStep = ref('public-key');
+const activeStep = ref('');
 const publicKey = ref('');
 const privateKey = ref('');
 const publicQrCode = ref('');
@@ -433,16 +361,14 @@ onMounted(async () => {
   if (window.history.state.current && window.history.state.back === '/lock') {
     try {
       await mainStore.rpc('getinfo', []);
-      rpcStatus.value = `Connected to ${
-        process.env.VUE_APP_NETWORK[0].toUpperCase() +
+      rpcStatus.value = `Connected to ${process.env.VUE_APP_NETWORK[0].toUpperCase() +
         process.env.VUE_APP_NETWORK.substring(1)
-      }`;
+        }`;
       setTimeout(() => (rpcStatus.value = ''), 5000);
     } catch (error) {
-      rpcStatus.value = `Not connected to ${
-        process.env.VUE_APP_NETWORK[0].toUpperCase() +
+      rpcStatus.value = `Not connected to ${process.env.VUE_APP_NETWORK[0].toUpperCase() +
         process.env.VUE_APP_NETWORK.substring(1)
-      }`;
+        }`;
       setTimeout(() => (rpcStatus.value = ''), 5000);
     }
   }
@@ -452,8 +378,17 @@ watch(
   () => isVisible.value,
   async () => {
     if (isVisible.value) {
+      if (account.value.isImported) {
+        // activeStep.value = 'private-key'
+        // manually trigger retrieving keys
+        changeStep('private-key', true);
+      } else {
+        // activeStep.value = 'public-key'
+        changeStep('public-key', true);
+        getPublicKey();
+
+      }
       await CryptoService.scanWallet();
-      getPublicKey();
     }
   }
 );
@@ -639,8 +574,6 @@ function selectAccount(account) {
   showArrow.value = account;
 }
 
-// manually trigger retrieving keys
-changeStep('public-key', true);
 </script>
 
 <style scoped>
@@ -713,7 +646,7 @@ changeStep('public-key', true);
   position: relative;
 }
 .nonclickable::before {
-  content: '';
+  content: "";
   cursor: not-allowed;
   position: absolute;
   top: 0;
@@ -789,7 +722,7 @@ changeStep('public-key', true);
   width: 100%;
 }
 .account-tabs a:after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   right: 0;
@@ -948,7 +881,7 @@ changeStep('public-key', true);
   opacity: 1 !important;
 }
 .radio::after {
-  content: '';
+  content: "";
   display: block;
   background-color: var(--grey200);
   width: 6px;
@@ -961,7 +894,7 @@ changeStep('public-key', true);
   transition: 0.3s;
 }
 .radio::before {
-  content: '';
+  content: "";
   display: block;
   width: 16px;
   height: 16px;
