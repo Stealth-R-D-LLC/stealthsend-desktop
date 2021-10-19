@@ -634,8 +634,8 @@ function amountFormat(account) {
 async function accountChanged(account) {
   mainStore.START_GLOBAL_LOADING();
   mainStore.SET_ACCOUNT_DETAILS(account);
-  await CryptoService.scanWallet();
   accountVisible.value = false;
+  await CryptoService.scanWallet();
   mainStore.STOP_GLOBAL_LOADING();
 }
 
