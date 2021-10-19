@@ -2,163 +2,143 @@
   <div class="st-transaction-list">
     <div class="overflow">
       <Filters @change="orderTransactions" @sort="orderTransactions"></Filters>
-      <template v-for="date in txDates" :key="date">
-        <p class="tx-date bold">{{ date }}</p>
+      <StSkeletonLoader v-if="isLoading" type="transactions" />
+      <template v-else>
+        <template v-for="date in txDates" :key="date">
+          <p class="tx-date bold">{{ date }}</p>
 
-        <StTable
-          :data="txs[date]"
-          :has-header="hasTableHeader"
-          :columns="[
-            {
-              key: 'status',
-              title: 'Status',
-              customCellClass:
-                $route.name === 'Dashboard' ? 'status' : 'status-text',
-            },
-            { key: 'blocktime', title: 'Time', customCellClass: 'blocktime' },
-            { key: 'account', title: 'Account' },
-            { key: 'recipient', title: 'Recipient' },
-            { key: 'label', title: 'Label' },
-            { key: 'amountFiat', title: 'USD Value' },
-            { key: 'amount', title: 'XST' },
-            { key: 'actions', title: '', customCellClass: 'items-center' },
-          ]"
-        >
-          <template #status="{ item }">
-            <div class="flex-center-vertical">
-              <template v-if="item.amount > 0">
-                <SvgIcon name="icon-transactions-received" />
-                <template v-if="$route.name !== 'Dashboard'">Received</template>
-              </template>
+          <StTable
+            :data="txs[date]"
+            :has-header="hasTableHeader"
+            :columns="[
+              {
+                key: 'status',
+                title: 'Status',
+                customCellClass:
+                  $route.name === 'Dashboard' ? 'status' : 'status-text',
+              },
+              { key: 'blocktime', title: 'Time', customCellClass: 'blocktime' },
+              { key: 'account', title: 'Account' },
+              { key: 'recipient', title: 'Recipient' },
+              { key: 'label', title: 'Label' },
+              { key: 'amountFiat', title: 'USD Value' },
+              { key: 'amount', title: 'XST' },
+              { key: 'actions', title: '', customCellClass: 'items-center' },
+            ]"
+          >
+            <template #status="{ item }">
+              <div class="flex-center-vertical">
+                <template v-if="item.amount > 0">
+                  <SvgIcon name="icon-transactions-received" />
+                  <template v-if="$route.name !== 'Dashboard'"
+                    >Received</template
+                  >
+                </template>
 
-              <template v-else-if="item.amount <= 0">
-                <SvgIcon name="icon-transactions-sent" />
-                <template v-if="$route.name !== 'Dashboard'">Sent</template>
-              </template>
-            </div>
-          </template>
-          <template #account="{ item }">
-            <div :class="{ ellipsis: isExpanded === item.index }">
-              {{ item.account }}
-            </div>
-          </template>
-          <template #recipient="{ item }">
-            <div
-              class="move"
-              :class="{ 'move-left': isExpanded === item.index }"
-            >
-              <span v-if="item.amount <= 0">
-                {{
-                  item.txinfo.destinations[
-                    item.txinfo.destinations.length - 1
-                  ] &&
-                  item.txinfo.destinations[item.txinfo.destinations.length - 1]
-                    .addresses
-                    ? item.txinfo.destinations[
-                        item.txinfo.destinations.length - 1
-                      ].addresses[0]
-                    : '-'
-                }}
-              </span>
-              <span v-else>
-                {{
-                  item.txinfo.sources[item.txinfo.sources.length - 1] &&
-                  item.txinfo.sources[item.txinfo.sources.length - 1].addresses
-                    ? item.txinfo.sources[item.txinfo.sources.length - 1]
-                        .addresses[0]
-                    : '-'
-                }}
-              </span>
-            </div>
-          </template>
-          <template #blocktime="{ item }">
-            {{ formatBlocktime(item.txinfo.blocktime) }}
-          </template>
-          <template #amount="{ item }">
-            <div
-              class="move amount-fixed"
-              :class="{ 'move-left': isExpanded === item.index }"
-            >
-              {{ item.amount > 0 ? '+' : '-' }}
-              {{
-                isHiddenAmounts
-                  ? '••• XST'
-                  : `${formatAmount(Math.abs(item.amount), false, 6, 6)} XST`
-              }}
-            </div>
-          </template>
-          <template #label="{ item }">
-            <div
-              class="move"
-              :class="{ 'move-left': isExpanded === item.index }"
-            >
-              {{
-                findLabelForTx(item.txid)
-                  ? findLabelForTx(item.txid)
-                  : 'No label'
-              }}
-            </div>
-          </template>
-          <template #amountFiat="{ item }">
-            <div
-              class="move amount-fixed"
-              :class="{ 'move-left': isExpanded === item.index }"
-            >
-              {{ item.amount > 0 ? '+' : '-' }}
-              <template v-if="item.amount * XST_USD_RATE < 1">
-                {{
-                  isHiddenAmounts
-                    ? '$••• USD'
-                    : `$${formatAmount(
-                        Math.abs(item.amount * XST_USD_RATE),
-                        false,
-                        4,
-                        4
-                      )} USD`
-                }}
-              </template>
-              <template v-else>
-                {{
-                  isHiddenAmounts
-                    ? '$••• USD'
-                    : `$${formatAmount(
-                        Math.abs(item.amount * XST_USD_RATE),
-                        false,
-                        4,
-                        4
-                      )} USD`
-                }}
-              </template>
-            </div>
-          </template>
-          <template #actions="{ item }">
-            <div class="icon-container">
-              <StTooltip
-                v-if="isTxFeeless(item.txinfo)"
-                tooltip="Feeless transaction"
+                <template v-else-if="item.amount <= 0">
+                  <SvgIcon name="icon-transactions-sent" />
+                  <template v-if="$route.name !== 'Dashboard'">Sent</template>
+                </template>
+              </div>
+            </template>
+            <template #account="{ item }">
+              <div :class="{ ellipsis: isExpanded === item.index }">
+                {{ item.account }}
+              </div>
+            </template>
+            <template #recipient="{ item }">
+              <div
+                class="move"
+                :class="{ 'move-left': isExpanded === item.index }"
               >
-                <SvgIcon name="icon-feeles" />
-              </StTooltip>
-
-              <SvgIcon
-                name="icon-hamburger-menu-light"
-                v-if="isExpanded !== item.index"
-                class="icon"
-                @click="expandIcons(item.index)"
-              />
-
-              <SvgIcon
-                name="icon-close-primary"
-                v-else
-                class="icon"
-                @click="expandIcons(item.index)"
-              />
-            </div>
-            <div
-              class="expanded"
-              :class="{ expanded__active: isExpanded === item.index }"
-            >
-              <div class="expanded__inner">
+                <span v-if="item.amount <= 0">
+                  {{
+                    item.txinfo.destinations[
+                      item.txinfo.destinations.length - 1
+                    ] &&
+                    item.txinfo.destinations[
+                      item.txinfo.destinations.length - 1
+                    ].addresses
+                      ? item.txinfo.destinations[
+                          item.txinfo.destinations.length - 1
+                        ].addresses[0]
+                      : '-'
+                  }}
+                </span>
+                <span v-else>
+                  {{
+                    item.txinfo.sources[item.txinfo.sources.length - 1] &&
+                    item.txinfo.sources[item.txinfo.sources.length - 1]
+                      .addresses
+                      ? item.txinfo.sources[item.txinfo.sources.length - 1]
+                          .addresses[0]
+                      : '-'
+                  }}
+                </span>
+              </div>
+            </template>
+            <template #blocktime="{ item }">
+              {{ formatBlocktime(item.txinfo.blocktime) }}
+            </template>
+            <template #amount="{ item }">
+              <div
+                class="move amount-fixed"
+                :class="{ 'move-left': isExpanded === item.index }"
+              >
+                {{ item.amount > 0 ? '+' : '-' }}
+                {{
+                  isHiddenAmounts
+                    ? '••• XST'
+                    : `${formatAmount(Math.abs(item.amount), false, 6, 6)} XST`
+                }}
+              </div>
+            </template>
+            <template #label="{ item }">
+              <div
+                class="move"
+                :class="{ 'move-left': isExpanded === item.index }"
+              >
+                {{
+                  findLabelForTx(item.txid)
+                    ? findLabelForTx(item.txid)
+                    : 'No label'
+                }}
+              </div>
+            </template>
+            <template #amountFiat="{ item }">
+              <div
+                class="move amount-fixed"
+                :class="{ 'move-left': isExpanded === item.index }"
+              >
+                {{ item.amount > 0 ? '+' : '-' }}
+                <template v-if="item.amount * XST_USD_RATE < 1">
+                  {{
+                    isHiddenAmounts
+                      ? '$••• USD'
+                      : `$${formatAmount(
+                          Math.abs(item.amount * XST_USD_RATE),
+                          false,
+                          4,
+                          4
+                        )} USD`
+                  }}
+                </template>
+                <template v-else>
+                  {{
+                    isHiddenAmounts
+                      ? '$••• USD'
+                      : `$${formatAmount(
+                          Math.abs(item.amount * XST_USD_RATE),
+                          false,
+                          4,
+                          4
+                        )} USD`
+                  }}
+                </template>
+              </div>
+            </template>
+            <template #actions="{ item }">
+              <div class="icon-container">
                 <StTooltip
                   v-if="isTxFeeless(item.txinfo)"
                   tooltip="Feeless transaction"
@@ -167,24 +147,51 @@
                 </StTooltip>
 
                 <SvgIcon
-                  name="icon-transaction-details"
-                  class="icon-expanded"
-                  @click="openTransaction(item)"
+                  name="icon-hamburger-menu-light"
+                  v-if="isExpanded !== item.index"
+                  class="icon"
+                  @click="expandIcons(item.index)"
                 />
 
                 <SvgIcon
-                  name="icon-edit"
-                  class="icon-expanded"
-                  @click="openTransaction(item, true)"
+                  name="icon-close-primary"
+                  v-else
+                  class="icon"
+                  @click="expandIcons(item.index)"
                 />
               </div>
-            </div>
-          </template>
-        </StTable>
+              <div
+                class="expanded"
+                :class="{ expanded__active: isExpanded === item.index }"
+              >
+                <div class="expanded__inner">
+                  <StTooltip
+                    v-if="isTxFeeless(item.txinfo)"
+                    tooltip="Feeless transaction"
+                  >
+                    <SvgIcon name="icon-feeles" />
+                  </StTooltip>
+
+                  <SvgIcon
+                    name="icon-transaction-details"
+                    class="icon-expanded"
+                    @click="openTransaction(item)"
+                  />
+
+                  <SvgIcon
+                    name="icon-edit"
+                    class="icon-expanded"
+                    @click="openTransaction(item, true)"
+                  />
+                </div>
+              </div>
+            </template>
+          </StTable>
+        </template>
+        <h6 class="no-results" v-if="txDates.length === 0">
+          No transaction data
+        </h6>
       </template>
-      <h6 class="no-results" v-if="txDates.length === 0">
-        No transaction data
-      </h6>
     </div>
   </div>
 </template>
@@ -201,6 +208,7 @@ import { ref, computed, watch, onMounted } from 'vue';
 import CryptoService from '@/services/crypto';
 import { useMainStore } from '@/store';
 import SvgIcon from '../partials/SvgIcon.vue';
+import StSkeletonLoader from '@/components/loader/StSkeletonLoader.vue';
 /* import emitter from '@/services/emitter'; */
 
 export default {
@@ -208,6 +216,7 @@ export default {
   components: {
     Filters,
     SvgIcon,
+    StSkeletonLoader,
   },
   props: {
     transactions: {
@@ -231,6 +240,10 @@ export default {
 
     const { formatBlocktime, fil, groupBy, formatAmount } = useHelpers();
     const txs = ref([]);
+
+    const isLoading = computed(() => {
+      return mainStore.globalLoading;
+    });
 
     function expandIcons(txid) {
       if (isExpanded.value === txid) {
@@ -350,6 +363,7 @@ export default {
       formatBlocktime,
       groupBy,
       formatAmount,
+      isLoading,
       filterByDirection,
       filterByPeriod,
       todayOrYesterday,
