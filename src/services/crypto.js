@@ -568,41 +568,24 @@ const CryptoService = {
           continue; // in case a target account is passed, run the scan only for that account
         let accUtxo = 0;
         let allTransactions = [];
-        if (account.isImported && account.wif) {
-          try {
-            accUtxo = await mainStore.rpc('getaddressbalance', [
-              account.address,
-            ]);
-          } catch (error) {
-            console.log(
-              'Cannot find address, probably no transactions, continuing anyways'
-            );
-          }
-
+        if (account.isImported && account.wif && !account.isArchived) {
           await mainStore
             .rpc('getaddresstxspg', [account.address, 1, 99999])
             .then((res) => {
               const txs = res.data;
               for (const tx of txs) {
                 if (tx.amount === 0) continue;
-                if (!account.isArchived) {
-                  allTransactions.push({
-                    account: account.label,
-                    amount:
-                      tx.address_outputs.length > 0
-                        ? tx.address_outputs[0].amount
-                        : 0,
-                    account_balance_change:
-                      tx.address_outputs.length > 0
-                        ? tx.address_outputs[0].amount
-                        : 0,
-                    blocktime: tx.txinfo.blocktime,
-                    txinfo: tx.txinfo,
-                    outputs: tx.address_outputs,
-                    inputs: tx.address_inputs,
-                    txid: tx.txid,
-                  });
-                }
+                allTransactions.push({
+                  account: account.label,
+                  amount: tx.txinfo.destinations[0].amount,
+                  account_balance_change: tx.txinfo.destinations[0].amount,
+                  blocktime: tx.txinfo.blocktime,
+                  txinfo: tx.txinfo,
+                  outputs: tx.address_outputs,
+                  inputs: tx.address_inputs,
+                  txid: tx.txid,
+                });
+                accUtxo = tx.balance;
               }
             });
 
