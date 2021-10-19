@@ -579,7 +579,12 @@ async function send() {
           account: account.value,
           isFeeless: isFeeless.value,
         });
-        if (transactionResponse.txid) {
+      } catch (e) {
+        console.log('Transaction builder error: ', e);
+        setTimeout(() => changeStep(7), 6000);
+      }
+    }
+            if (transactionResponse.txid) {
           CryptoService.storeTxAndLabel(transactionResponse.txid, label.value);
           setTimeout(async () => {
             changeStep(6);
@@ -589,11 +594,6 @@ async function send() {
         } else {
           setTimeout(() => changeStep(7), 6000);
         }
-      } catch (e) {
-        console.log('Transaction builder error: ', e);
-        setTimeout(() => changeStep(7), 6000);
-      }
-    }
   } catch (e) {
     if (e instanceof ValidationError) {
       console.log(e);
