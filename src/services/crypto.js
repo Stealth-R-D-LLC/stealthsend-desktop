@@ -589,12 +589,12 @@ const CryptoService = {
                   });
                   accUtxo = tx.balance;
                 }
+              }
 
                 newAccounts.push({
                   ...account,
                   utxo: Number(accUtxo),
                 });
-              }
             });
         } else {
           await mainStore
