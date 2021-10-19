@@ -35,8 +35,8 @@ const constraints = computed(() => {
 });
 
 const isLoading = computed(() => {
-      return mainStore.globalLoading;
-    });
+  return mainStore.globalLoading;
+});
 
 const wallet = computed(() => {
   return mainStore.wallet;
