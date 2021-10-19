@@ -415,7 +415,7 @@ function closeModal() {
   mainStore.SET_MODAL_VISIBILITY('send', false);
   mainStore.SET_SEND_ADDRESS('');
   mainStore.SET_REDO_ACCOUNT('');
-  mainStore.SET_FEELESS(false);
+  mainStore.SET_FEELESS(true);
   mainStore.SET_REDO_AMOUNT(null);
 
   // reset all variables
@@ -424,6 +424,8 @@ function closeModal() {
   currentStep.value = 1;
   depositAddress.value = '';
   label.value = '';
+  amount.value = null;
+  isFeeless.value = true;
 
   clearTimeout(counterTimeout.value);
   counter.value = 5;
