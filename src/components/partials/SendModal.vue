@@ -584,16 +584,16 @@ async function send() {
         setTimeout(() => changeStep(7), 6000);
       }
     }
-            if (transactionResponse.txid) {
-          CryptoService.storeTxAndLabel(transactionResponse.txid, label.value);
-          setTimeout(async () => {
-            changeStep(6);
-            await CryptoService.scanWallet();
-            emitter.emit('transactions:refresh');
-          }, 17000);
-        } else {
-          setTimeout(() => changeStep(7), 6000);
-        }
+    if (transactionResponse.txid) {
+      CryptoService.storeTxAndLabel(transactionResponse.txid, label.value);
+      setTimeout(async () => {
+        changeStep(6);
+        await CryptoService.scanWallet();
+        emitter.emit('transactions:refresh');
+      }, 17000);
+    } else {
+      setTimeout(() => changeStep(7), 6000);
+    }
   } catch (e) {
     if (e instanceof ValidationError) {
       console.log(e);
