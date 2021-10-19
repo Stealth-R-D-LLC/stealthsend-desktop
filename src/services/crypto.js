@@ -591,10 +591,10 @@ const CryptoService = {
                 }
               }
 
-                newAccounts.push({
-                  ...account,
-                  utxo: Number(accUtxo),
-                });
+              newAccounts.push({
+                ...account,
+                utxo: Number(accUtxo),
+              });
             });
         } else {
           await mainStore
