@@ -336,7 +336,8 @@ watchEffect(() => {
     }
   }
   if (currentStep.value === 2) {
-    if (mainStore.redoAmount) {
+    if (mainStore.redoAmount > 0) {
+      console.log('redo');
       amount.value = mainStore.redoAmount;
       isFeeless.value = mainStore.isFeeless;
     } else {

@@ -134,13 +134,13 @@
         <template #body>
           <div v-if="!checkPassword" class="account-tabs">
             <a
-              v-if="account && !account.isImported"
+              v-if="account && !account.isImported && activeStep.length > 0"
               :class="{ active: activeStep === 'public-key' }"
               @click="changeStep('public-key')"
               >Public Key</a
             >
             <a
-              v-if="account && account.isImported"
+              v-if="account && account.isImported && activeStep.length > 0"
               :class="{ active: activeStep === 'private-key' }"
               @click="changeStep('private-key')"
               >Private Key</a
@@ -159,7 +159,8 @@
               <p class="key">{{ publicKey }}</p>
               <div class="copy-key">
                 <p>
-                  Copy <span v-if="!account?.isImported">xpub</span>
+                  Copy
+                  <span v-if="!account?.isImported">xpub</span>
                   <span v-else>public key</span> to clipboard or show QR code
                 </p>
                 <div>
@@ -354,7 +355,7 @@ const route = useRoute();
 const isVisible = ref(false);
 const accountVisible = ref(false);
 const rpcStatus = ref('');
-const activeStep = ref('public-key');
+const activeStep = ref('');
 const publicKey = ref('');
 const privateKey = ref('');
 const publicQrCode = ref('');
@@ -452,8 +453,16 @@ watch(
   () => isVisible.value,
   async () => {
     if (isVisible.value) {
+      if (account.value.isImported) {
+        // activeStep.value = 'private-key'
+        // manually trigger retrieving keys
+        changeStep('private-key', true);
+      } else {
+        // activeStep.value = 'public-key'
+        changeStep('public-key', true);
+        getPublicKey();
+      }
       await CryptoService.scanWallet();
-      getPublicKey();
     }
   }
 );
@@ -638,9 +647,6 @@ function openAccountModal() {
 function selectAccount(account) {
   showArrow.value = account;
 }
-
-// manually trigger retrieving keys
-changeStep('public-key', true);
 </script>
 
 <style scoped>
