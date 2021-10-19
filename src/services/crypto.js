@@ -569,27 +569,23 @@ const CryptoService = {
         let accUtxo = 0;
         let allTransactions = [];
         if (account.isImported && account.wif && !account.isArchived) {
-
           await mainStore
             .rpc('getaddresstxspg', [account.address, 1, 99999])
             .then((res) => {
               const txs = res.data;
               for (const tx of txs) {
                 if (tx.amount === 0) continue;
-                  console.log('--> ', tx);
-                  allTransactions.push({
-                    account: account.label,
-                    amount:
-                      tx.txinfo.destinations[0].amount,
-                    account_balance_change:
-                      tx.txinfo.destinations[0].amount,
-                    blocktime: tx.txinfo.blocktime,
-                    txinfo: tx.txinfo,
-                    outputs: tx.address_outputs,
-                    inputs: tx.address_inputs,
-                    txid: tx.txid,
-                  });
-                  accUtxo = tx.balance;
+                allTransactions.push({
+                  account: account.label,
+                  amount: tx.txinfo.destinations[0].amount,
+                  account_balance_change: tx.txinfo.destinations[0].amount,
+                  blocktime: tx.txinfo.blocktime,
+                  txinfo: tx.txinfo,
+                  outputs: tx.address_outputs,
+                  inputs: tx.address_inputs,
+                  txid: tx.txid,
+                });
+                accUtxo = tx.balance;
               }
             });
 
