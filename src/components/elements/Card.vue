@@ -12,11 +12,14 @@
       </div>
       <div class="amount-container" v-if="steps && steps[type]">
         <h6 class="currency">
-          <CountUp
+          <!-- <CountUp
             v-if="!isHiddenAmounts"
             :currency="'XST'"
             :value="steps[type].amountLeft"
-          ></CountUp>
+          ></CountUp> -->
+          <template v-if="!isHiddenAmounts">{{
+            steps[type].amountLeft
+          }}</template>
           <template v-else>••• XST</template>
         </h6>
         <p class="medium grey">
@@ -59,13 +62,13 @@ import router from '@/router';
 // import emitter from '@/services/emitter';
 import { onClickOutside } from '@vueuse/core';
 import SvgIcon from '../partials/SvgIcon.vue';
-import CountUp from '@/components/elements/StCountUp.vue';
+/* import CountUp from '@/components/elements/StCountUp.vue'; */
 
 export default {
   name: 'StCard',
   components: {
     SvgIcon,
-    CountUp,
+    /* CountUp, */
   },
   props: {
     type: {
