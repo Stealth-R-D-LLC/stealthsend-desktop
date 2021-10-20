@@ -21,10 +21,12 @@
     <div class="sidebar-header__content">
       <h6>Total Balance</h6>
       <h4>
-        <CountUp
-          v-if="!isHiddenAmounts"
-          :value="steps[step].amountTop"
-        ></CountUp>
+        <!-- <CountUp
+            v-if="!isHiddenAmounts"
+            :currency="'XST'"
+            :value="steps[step].amountTop"
+          ></CountUp> -->
+        <template v-if="!isHiddenAmounts">{{ steps[step].amountTop }}</template>
         <template v-else>{{ '•••' }}</template>
         <!-- {{ isHiddenAmounts ? '•••' : steps[step].amountTop }}
          -->
@@ -50,7 +52,7 @@
 <script>
 import { ref, computed } from 'vue';
 import CryptoService from '@/services/crypto';
-import CountUp from '@/components/elements/StCountUp.vue';
+/* import CountUp from '@/components/elements/StCountUp.vue'; */
 import { useMainStore } from '@/store';
 import useHelpers from '@/composables/useHelpers';
 import { multiply } from 'mathjs';
@@ -60,7 +62,7 @@ export default {
   name: 'StCards',
   components: {
     SvgIcon,
-    CountUp,
+    /* CountUp, */
   },
   props: {
     amount: {
