@@ -156,14 +156,21 @@
               </div>
               <p class="bold" v-if="!account?.isImported">xpub</p>
               <p class="bold" v-else>Public Key</p>
-              <p class="key">{{ publicKey }}</p>
+              <p class="key" :class="{ 'key-right': !publicKey }">
+                <template v-if="publicKey">{{ publicKey }}</template>
+                <SvgIcon
+                  v-else
+                  name="icon-loader-address"
+                  class="address-loader"
+                />
+              </p>
               <div class="copy-key">
                 <p>
                   Copy
                   <span v-if="!account?.isImported">xpub</span>
                   <span v-else>public key</span> to clipboard or show QR code
                 </p>
-                <div>
+                <div :class="{ 'copy-key--loading': publicKey }">
                   <StTooltip
                     :tooltip="
                       copyPending ? 'Copied to Clipboard!' : 'Copy to Clipboard'
@@ -825,12 +832,53 @@ function selectAccount(account) {
   padding-bottom: 16px;
   border-bottom: 1px solid var(--grey100);
 }
+.key-right {
+  text-align: right;
+}
+.address-loader {
+  animation: rotating 2s linear infinite;
+}
+.address-loader :deep circle {
+  stroke: var(--marine500);
+}
+@-webkit-keyframes rotating /* Safari and Chrome */ {
+  from {
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes rotating {
+  from {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
 .copy-key {
   margin-top: 17px;
   margin-bottom: 49px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+.copy-key--loading {
+  pointer-events: none;
+  opacity: 0.6;
 }
 .copy-key__private {
   margin-bottom: 81px;
