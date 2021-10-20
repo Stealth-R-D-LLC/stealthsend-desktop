@@ -108,7 +108,7 @@
         </template>
       </div>
 
-      <div class="header-right">
+      <div class="header-right" :class="{ 'header-right--loading': isLoading }">
         <p class="rpc-status">{{ rpcStatus }}</p>
 
         <StTooltip class="tooltip" tooltip="Connected to Mainnet">
@@ -431,6 +431,10 @@ const isHiddenAmounts = computed(() => {
   return mainStore.isAmountsHidden;
 });
 
+const isLoading = computed(() => {
+  return mainStore.globalLoading;
+});
+
 onMounted(async () => {
   if (!componentVisibility.value.chart) {
     toggleComponentVisibility('chart');
@@ -698,6 +702,14 @@ function selectAccount(account) {
 .header-right {
   justify-content: flex-end;
   min-height: 24px;
+}
+
+.header-right--loading .tooltip :deep svg {
+  pointer-events: none;
+}
+
+.header-right--loading .tooltip {
+  cursor: not-allowed;
 }
 
 .header-left div + div,
