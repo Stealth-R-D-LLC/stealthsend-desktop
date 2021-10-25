@@ -58,60 +58,60 @@
       </div>
     </template>
     <template v-if="props.type === 'tx-details'">
-    <div class="loader-tx">
-      <div class="loader-tx__item">
-        <div class="title gradient" />
-        <div class="loader-tx__item-content">
-          <div class="icon gradient" />
-          <div class="info gradient" />
+      <div class="loader-tx">
+        <div class="loader-tx__item">
+          <div class="title gradient" />
+          <div class="loader-tx__item-content">
+            <div class="icon gradient" />
+            <div class="info gradient" />
+          </div>
         </div>
-      </div>
-      <div class="loader-tx__item">
-        <div class="title gradient" />
-        <div class="loader-tx__item-content">
-          <div class="info gradient" />
-        </div>
-      </div>
-      <div class="loader-tx__item">
-        <div class="title gradient" />
-        <div class="loader-tx__item-content">
-          <div class="info gradient" />
-        </div>
-      </div>
-      <div class="loader-tx__item">
-        <div class="title gradient" />
-        <div class="loader-tx__item-content">
-          <div class="info gradient" />
-        </div>
-      </div>
-      <div class="loader-tx__item">
-        <div class="title gradient" />
-        <div class="loader-tx__item-content">
-          <div class="info gradient" />
-        </div>
-      </div>
-      <div class="loader-tx__item loader-tx__item--grid">
-        <div>
+        <div class="loader-tx__item">
           <div class="title gradient" />
           <div class="loader-tx__item-content">
             <div class="info gradient" />
           </div>
         </div>
-        <div>
+        <div class="loader-tx__item">
           <div class="title gradient" />
-        <div class="loader-tx__item-content">
-          <div class="info gradient" />
+          <div class="loader-tx__item-content">
+            <div class="info gradient" />
+          </div>
         </div>
+        <div class="loader-tx__item">
+          <div class="title gradient" />
+          <div class="loader-tx__item-content">
+            <div class="info gradient" />
+          </div>
         </div>
+        <div class="loader-tx__item">
+          <div class="title gradient" />
+          <div class="loader-tx__item-content">
+            <div class="info gradient" />
+          </div>
+        </div>
+        <div class="loader-tx__item loader-tx__item--grid">
+          <div>
+            <div class="title gradient" />
+            <div class="loader-tx__item-content">
+              <div class="info gradient" />
+            </div>
+          </div>
+          <div>
+            <div class="title gradient" />
+            <div class="loader-tx__item-content">
+              <div class="info gradient" />
+            </div>
+          </div>
+        </div>
+        <div class="loader-tx__item">
+          <div class="title gradient" />
+          <div class="loader-tx__item-content">
+            <div class="info gradient" />
+          </div>
+        </div>
+        <div class="loader-tx__about gradient" />
       </div>
-      <div class="loader-tx__item">
-        <div class="title gradient" />
-        <div class="loader-tx__item-content">
-          <div class="info gradient" />
-        </div>
-      </div>
-      <div class="loader-tx__about gradient" />
-    </div>
     </template>
   </div>
 </template>
