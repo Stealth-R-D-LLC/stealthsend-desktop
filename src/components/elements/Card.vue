@@ -17,9 +17,9 @@
             :currency="'XST'"
             :value="steps[type].amountLeft"
           ></CountUp> -->
-          <template v-if="!isHiddenAmounts">{{
-            steps[type].amountLeft
-          }}</template>
+          <template v-if="!isHiddenAmounts"
+            >{{ steps[type].amountLeft }} XST</template
+          >
           <template v-else>••• XST</template>
         </h6>
         <p class="medium grey">
