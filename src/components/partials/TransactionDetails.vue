@@ -190,8 +190,8 @@ function close() {
     mainStore.SET_ADDRESS_ACTIVE_TAB('address-book');
     mainStore.SET_OFF_CANVAS_DATA(null);
     mainStore.SET_CURRENT_CANVAS('');
-    tx.value = null
-    loadingFee.value = true
+    tx.value = null;
+    loadingFee.value = true;
   }, 100);
   editMode.value = false;
 }
