@@ -1602,7 +1602,7 @@ async function recover() {
     await CryptoService.storeWalletInDb(password.value);
     await CryptoService.storeMnemonicInWallet(selectedRecoveryWords.value);
     const lastAccountPath = await CryptoService.findLastUsedAccountPath();
-    for (let i = 0; i <= lastAccountPath + 1; i++) {
+    for (let i = 0; i <= lastAccountPath; i++) {
       await restoreAccounts();
     }
     CryptoService.isFirstArrival = false;
