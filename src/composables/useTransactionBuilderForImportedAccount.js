@@ -105,7 +105,10 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         const bestBlock = await mainStore.rpc('getbestblock', []);
 
         const txUnsignedHex = rawTransaction.buildIncomplete().toHex();
-        console.log('FEELESS RAW TX: ', JSON.stringify(rawTransaction.__INPUTS.length));
+        console.log(
+          'FEELESS RAW TX: ',
+          JSON.stringify(rawTransaction.__INPUTS.length)
+        );
         console.log('FEELESS txUnsignedHex: ', JSON.stringify(txUnsignedHex));
         console.log('FEELESS height: ', JSON.stringify(bestBlock.height));
         console.log('FEELESS size: ', JSON.stringify(bestBlock.size));

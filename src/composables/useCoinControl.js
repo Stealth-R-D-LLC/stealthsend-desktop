@@ -1,7 +1,11 @@
 import { add, format, subtract } from 'mathjs';
 
 export default function useCoinControl(outputs, target) {
-  console.log('COIN CONTROL candidates', JSON.stringify(outputs), JSON.stringify(target));
+  console.log(
+    'COIN CONTROL candidates',
+    JSON.stringify(outputs),
+    JSON.stringify(target)
+  );
   const orderBy = (arr, props, orders) =>
     [...arr].sort((a, b) =>
       props.reduce((acc, prop, i) => {
@@ -228,7 +232,10 @@ export default function useCoinControl(outputs, target) {
     }
 
     let minSingleUtxo = getMinSingle(outputs, target);
-    console.info('COIN CONTROL: getMinSingle() ', JSON.stringify(minSingleUtxo));
+    console.info(
+      'COIN CONTROL: getMinSingle() ',
+      JSON.stringify(minSingleUtxo)
+    );
 
     if (
       minSingleUtxo &&
