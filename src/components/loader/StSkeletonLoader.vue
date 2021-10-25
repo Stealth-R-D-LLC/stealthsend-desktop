@@ -57,6 +57,62 @@
         </div>
       </div>
     </template>
+    <template v-if="props.type === 'tx-details'">
+    <div class="loader-tx">
+      <div class="loader-tx__item">
+        <div class="title gradient" />
+        <div class="loader-tx__item-content">
+          <div class="icon gradient" />
+          <div class="info gradient" />
+        </div>
+      </div>
+      <div class="loader-tx__item">
+        <div class="title gradient" />
+        <div class="loader-tx__item-content">
+          <div class="info gradient" />
+        </div>
+      </div>
+      <div class="loader-tx__item">
+        <div class="title gradient" />
+        <div class="loader-tx__item-content">
+          <div class="info gradient" />
+        </div>
+      </div>
+      <div class="loader-tx__item">
+        <div class="title gradient" />
+        <div class="loader-tx__item-content">
+          <div class="info gradient" />
+        </div>
+      </div>
+      <div class="loader-tx__item">
+        <div class="title gradient" />
+        <div class="loader-tx__item-content">
+          <div class="info gradient" />
+        </div>
+      </div>
+      <div class="loader-tx__item loader-tx__item--grid">
+        <div>
+          <div class="title gradient" />
+          <div class="loader-tx__item-content">
+            <div class="info gradient" />
+          </div>
+        </div>
+        <div>
+          <div class="title gradient" />
+        <div class="loader-tx__item-content">
+          <div class="info gradient" />
+        </div>
+        </div>
+      </div>
+      <div class="loader-tx__item">
+        <div class="title gradient" />
+        <div class="loader-tx__item-content">
+          <div class="info gradient" />
+        </div>
+      </div>
+      <div class="loader-tx__about gradient" />
+    </div>
+    </template>
   </div>
 </template>
 
@@ -93,6 +149,7 @@ const props = defineProps({
   }
 }
 
+/* CARDS */
 .loader .loader-cards {
   width: 100%;
   background: #fefefe;
@@ -145,6 +202,7 @@ const props = defineProps({
   height: 16px;
 }
 
+/* TRANSACTIONS */
 .loader-transactions {
   width: 100%;
   border-collapse: collapse;
@@ -233,6 +291,8 @@ const props = defineProps({
   width: 20px;
 }
 
+/* ACCOUNTS */
+
 .loader-accounts .main-title {
   padding: 24px 28px 88px;
   background: #f4f3f6;
@@ -313,5 +373,46 @@ const props = defineProps({
   width: 100%;
   max-width: 80px;
   height: 16px;
+}
+
+/* TX DETAILS */
+.loader-tx {
+  padding-top: 4px;
+}
+.loader-tx .loader-tx__item {
+  border-bottom: 1px solid var(--grey100);
+  padding: 16px 0;
+}
+.loader-tx .loader-tx__item.loader-tx__item--grid {
+  display: grid;
+  grid-template-columns: 6fr 6fr;
+  grid-gap: 32px;
+}
+.loader-tx .loader-tx__item .loader-tx__item-content {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+}
+.loader-tx .loader-tx__item .title {
+  height: 12px;
+  width: 100px;
+}
+.loader-tx .loader-tx__item .loader-tx__item-content .icon {
+  height: 24px;
+  min-width: 24px;
+  width: 24px;
+  border-radius: 24px;
+  margin-right: 12px;
+}
+
+.loader-tx .loader-tx__item .loader-tx__item-content .info {
+  height: 12px;
+  width: 100%;
+}
+.loader-tx .loader-tx__about {
+  margin: 22px auto;
+  height: 24px;
+  width: 100%;
+  max-width: 168px;
 }
 </style>
