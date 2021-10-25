@@ -12,6 +12,7 @@ import {
   systemPreferences,
 } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
+import pkgjson from '@/../package.json';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 // Scheme must be registered before the app is ready
@@ -102,23 +103,69 @@ async function createWindow() {
     win.setResizable(true);
   });
 
+  const isMac = process.platform === 'darwin';
+
   const menuTemplate = [
+    ...(isMac
+      ? [
+          {
+            label: 'StealthSend',
+            submenu: [
+              {
+                label: 'About StealthSend',
+                role: 'about'
+              },
+              {
+                label: 'Hide StealthSend',
+                role: 'hide'
+              },
+              {
+                role: 'hideOthers'
+              },
+              {
+                role: 'unhide'
+              },
+              {
+                label: 'Quit StealthSend',
+                accelerator: 'CmdOrCtrl+Q',
+                role: 'close',
+              },
+            ],
+          },
+        ]
+      : [
+          {
+            label: 'StealthSend',
+            submenu: [
+              {
+                label: 'About StealthSend',
+                role: 'about'
+              },
+              {
+                role: 'unhide'
+              },
+              {
+                label: 'Quit StealthSend',
+                accelerator: 'CmdOrCtrl+Q',
+                role: 'close',
+              },
+            ],
+          },
+        ]),
     {
-      label: 'StealthSend',
+      label: 'Edit',
       submenu: [
-        {
-          label: 'Quit StealthSend',
-          accelerator: 'CmdOrCtrl+Q',
-          role: 'close',
-        },
         { label: 'Copy', accelerator: 'CmdOrCtrl+C', selector: 'copy:' },
-        { label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:' },
+        {
+          label: 'Paste',
+          accelerator: 'CmdOrCtrl+V',
+          selector: 'paste:',
+        },
       ],
     },
     {
       label: 'View',
       submenu: [
-        { role: 'reload' },
         { role: 'forceReload' },
         { role: 'toggleDevTools' },
       ],
@@ -131,6 +178,15 @@ async function createWindow() {
 
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
+  
+  const options = {
+    applicationName: 'StealthSend',
+    applicationVersion: pkgjson.version,
+    copyright: 'This application is provided to you for free under the GNU General Public Licence by Stealth R&D LLC',
+    authors: [pkgjson.authors],
+    website: pkgjson.homepage,
+  }
+  app.setAboutPanelOptions(options)
 
   // webFrame.setZoomFactor(1);
   // webFrame.setVisualZoomLevelLimits(1, 1);
