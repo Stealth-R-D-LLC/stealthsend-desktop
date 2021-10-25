@@ -555,11 +555,11 @@ async function send() {
       setTimeout(() => changeStep(7), 6000);
       return;
     }
-    console.info('TRANSACTION BUILDER: candidates: ', unspentOutputs);
-    console.info('TRANSACTION BUILDER: coin control: ', utxo);
-    console.info('TRANSACTION BUILDER: entered amount: ', amount.value);
-    console.info('TRANSACTION BUILDER: fee: ', aproxFee.value);
-    console.info('TRANSACTION BUILDER: target amount: ', target);
+    console.info('TRANSACTION BUILDER: candidates: ', JSON.stringify(unspentOutputs));
+    console.info('TRANSACTION BUILDER: coin control: ', JSON.stringify(utxo));
+    console.info('TRANSACTION BUILDER: entered amount: ', JSON.stringify(amount.value));
+    console.info('TRANSACTION BUILDER: fee: ', JSON.stringify(aproxFee.value));
+    console.info('TRANSACTION BUILDER: target amount: ', JSON.stringify(target));
 
     let transactionResponse = '';
     if (account.value.wif && account.value.isImported) {
