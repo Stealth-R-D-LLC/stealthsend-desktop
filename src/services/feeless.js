@@ -181,8 +181,14 @@ const FeelessJS = {
     console.log('HASH_DENARY', JSON.stringify(HASH_DENARY));
     console.log('LIMIT_DENARY', JSON.stringify(LIMIT_DENARY));
     console.log('WORK bytes', JSON.stringify(WORK));
-    console.log('WORK bytes readBigUInt64BE', JSON.stringify(WORK.readBigUInt64BE()));
-    console.log('WORK bytes to hex to bn', JSON.stringify(this._hexToBn(WORK.toString('hex'))));
+    console.log(
+      'WORK bytes readBigUInt64BE',
+      JSON.stringify(WORK.readBigUInt64BE())
+    );
+    console.log(
+      'WORK bytes to hex to bn',
+      JSON.stringify(this._hexToBn(WORK.toString('hex')))
+    );
     WORK = WORK.readBigUInt64BE();
     console.log('WORK hex', JSON.stringify(WORK));
     console.log('RETURN');
@@ -290,10 +296,13 @@ const FeelessJS = {
     console.log(
       'hash denary is %s, limit denary is %s, work denary is %s',
       JSON.stringify(hash_denary),
-        JSON.stringify(limit_denary),
-          JSON.stringify(work_denary)
+      JSON.stringify(limit_denary),
+      JSON.stringify(work_denary)
     );
-    console.log('hash denary < limit denary: %s', JSON.stringify(hash_denary < limit_denary));
+    console.log(
+      'hash denary < limit denary: %s',
+      JSON.stringify(hash_denary < limit_denary)
+    );
     return hash_denary;
   },
 };
