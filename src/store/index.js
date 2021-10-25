@@ -137,6 +137,139 @@ export const useMainStore = defineStore({
           });
       });
     },
+    getTransactionInfo(txId) {
+      return new Promise((resolve, reject) => {
+        this.rpc('gettransaction', [txId])
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    getblock(hash) {
+      return new Promise((resolve, reject) => {
+        this.rpc('getblock', [hash])
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    getaddressinputs(address, from, to) {
+      return new Promise((resolve, reject) => {
+        this.rpc('getaddressinputs', [address, from, to])
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    async getTxFee(txId) {
+      let transaction = null;
+      await this.getTransactionInfo(txId)
+        .then((res) => {
+          transaction = res;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+      transaction.vin = await Promise.all(
+        transaction.vin
+          .map((item) => {
+            return new Promise((resolve, reject) => {
+              if (!item.txid) {
+                return resolve(item);
+              }
+
+              this.getTransactionInfo(item.txid)
+                .then((res) => ({
+                  ...res.vout[item.vout],
+                  blockhash: res.blockhash,
+                }))
+                .then((output) => resolve({ ...item, output }))
+                .catch(reject);
+            });
+          })
+          .concat([this.getblock(transaction.blockhash)])
+      );
+
+      const block = transaction.vin.pop();
+
+      // Here we will find all the address inputs
+      // that have referenced this transaction.
+      const spent = ( // Loop each output
+        await Promise.all(
+          transaction.vout.map((item) => {
+            return new Promise((resolveFirst, rejectFirst) => {
+              Promise.all(
+                // Loop each output address and gather its inputs
+                // Check if any of the inputs has referenced this tx
+                (item.scriptPubKey.addresses || []).map((address) => {
+                  return new Promise((resolveSecond, rejectSecond) => {
+                    this.getaddressinputs(address, 1, 99999)
+                      .then((res) => {
+                        const input =
+                          res.filter(
+                            (i) => i.prev_txid === transaction.txid
+                          )[0] || null;
+
+                        // We will resolve here for each address
+                        // input that has referenced this tx
+                        resolveSecond({
+                          address,
+                          input,
+                        });
+                      })
+                      .catch(rejectSecond);
+                  });
+                })
+              )
+                .then(resolveFirst)
+                .catch(rejectFirst);
+            });
+          })
+        )
+      ).flat();
+
+      // For "ease" of use we will create an object with address as key
+      // and input as value
+      const vOutInputs = {};
+      for (const input of spent) {
+        vOutInputs[input.address] = input.input;
+      }
+
+      // Here we will loop again through the outputs...
+      for (let i = 0; i < transaction.vout.length; i++) {
+        // And then output addresses...
+        for (
+          let j = 0;
+          j < (transaction.vout[i].scriptPubKey.addresses || []).length;
+          j++
+        ) {
+          // We will need this "spent" information on the output object,
+          // and not on the address itself, so we will create a new array on
+          // the root of the output item and attach the input info.
+          transaction.vout[i].inputs = transaction.vout[i].inputs || [];
+          transaction.vout[i].inputs.push({
+            address: transaction.vout[i].scriptPubKey.addresses[j],
+            input:
+              vOutInputs[transaction.vout[i].scriptPubKey.addresses[j]] || null,
+          });
+        }
+      }
+
+      return {
+        ...transaction,
+        block,
+      };
+    },
     rpc(method, payload) {
       return new Promise((resolve, reject) => {
         API.post('', {
