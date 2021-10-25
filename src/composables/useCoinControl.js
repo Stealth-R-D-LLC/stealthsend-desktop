@@ -1,7 +1,11 @@
 import { add, format, subtract } from 'mathjs';
 
 export default function useCoinControl(outputs, target) {
-  console.log('COIN CONTROL candidates', outputs, target);
+  console.log(
+    'COIN CONTROL candidates',
+    JSON.stringify(outputs),
+    JSON.stringify(target)
+  );
   const orderBy = (arr, props, orders) =>
     [...arr].sort((a, b) =>
       props.reduce((acc, prop, i) => {
@@ -194,28 +198,28 @@ export default function useCoinControl(outputs, target) {
     let result = null;
 
     result = exactMatch(outputs, adjustedTarget);
-    console.info('COIN CONTROL: exactMatch() ', result);
+    console.info('COIN CONTROL: exactMatch() ', JSON.stringify(result));
     if (result.length > 0) {
       bestSet = [...result];
       return bestSet;
     }
 
     result = sumOfSmaller(outputs, adjustedTarget);
-    console.info('COIN CONTROL: sumOfSmaller() ', result);
+    console.info('COIN CONTROL: sumOfSmaller() ', JSON.stringify(result));
     if (result.length > 0) {
       bestSet = [...result];
       return bestSet;
     }
 
     result = subsetSum(outputs, adjustedTarget);
-    console.info('COIN CONTROL: subsetSum() ', result);
+    console.info('COIN CONTROL: subsetSum() ', JSON.stringify(result));
     if (result.length > 0) {
       bestSet = [...result];
       return bestSet;
     }
 
     result = knapsackSelection(outputs, target);
-    console.info('COIN CONTROL: knapsackSelection() ', result);
+    console.info('COIN CONTROL: knapsackSelection() ', JSON.stringify(result));
     if (result.length > 0) {
       bestSet = [...result];
       let coinControlSum = bestSet
@@ -228,7 +232,10 @@ export default function useCoinControl(outputs, target) {
     }
 
     let minSingleUtxo = getMinSingle(outputs, target);
-    console.info('COIN CONTROL: getMinSingle() ', minSingleUtxo);
+    console.info(
+      'COIN CONTROL: getMinSingle() ',
+      JSON.stringify(minSingleUtxo)
+    );
 
     if (
       minSingleUtxo &&

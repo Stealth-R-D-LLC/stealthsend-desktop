@@ -563,7 +563,7 @@ const CryptoService = {
       let balance = 0;
       let txs = [];
       let newAccounts = [];
-      console.log('accounts', accounts);
+      console.log('debug accounts: ', JSON.stringify(accounts));
       for (let account of accounts) {
         if (targetAccount && account.address !== targetAccount.address)
           continue; // in case a target account is passed, run the scan only for that account
