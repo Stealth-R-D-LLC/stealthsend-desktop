@@ -199,10 +199,10 @@ const props = defineProps({
   width: 136px;
 }
 .loader-transactions tbody tr .td:nth-child(6) .info {
-  width: 168px;
+  width: 118px;
 }
 .loader-transactions tbody tr .td:nth-child(7) .info {
-  width: 168px;
+  width: 118px;
 }
 .loader-transactions tbody tr .td:nth-child(8) .info {
   width: 24px;
