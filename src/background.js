@@ -113,17 +113,17 @@ async function createWindow() {
             submenu: [
               {
                 label: 'About StealthSend',
-                role: 'about'
+                role: 'about',
               },
               {
                 label: 'Hide StealthSend',
-                role: 'hide'
+                role: 'hide',
               },
               {
-                role: 'hideOthers'
+                role: 'hideOthers',
               },
               {
-                role: 'unhide'
+                role: 'unhide',
               },
               {
                 label: 'Quit StealthSend',
@@ -139,10 +139,10 @@ async function createWindow() {
             submenu: [
               {
                 label: 'About StealthSend',
-                role: 'about'
+                role: 'about',
               },
               {
-                role: 'unhide'
+                role: 'unhide',
               },
               {
                 label: 'Quit StealthSend',
@@ -165,10 +165,7 @@ async function createWindow() {
     },
     {
       label: 'View',
-      submenu: [
-        { role: 'forceReload' },
-        { role: 'toggleDevTools' },
-      ],
+      submenu: [{ role: 'forceReload' }, { role: 'toggleDevTools' }],
     },
     {
       label: 'Window',
@@ -178,15 +175,16 @@ async function createWindow() {
 
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
-  
+
   const options = {
     applicationName: 'StealthSend',
     applicationVersion: pkgjson.version,
-    copyright: 'This application is provided to you for free under the GNU General Public Licence by Stealth R&D LLC',
+    copyright:
+      'This application is provided to you for free under the GNU General Public Licence by Stealth R&D LLC',
     authors: [pkgjson.authors],
     website: pkgjson.homepage,
-  }
-  app.setAboutPanelOptions(options)
+  };
+  app.setAboutPanelOptions(options);
 
   // webFrame.setZoomFactor(1);
   // webFrame.setVisualZoomLevelLimits(1, 1);
