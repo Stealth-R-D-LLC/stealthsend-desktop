@@ -165,7 +165,7 @@ async function createWindow() {
     },
     {
       label: 'View',
-      submenu: [{ role: 'forceReload' }, { role: 'toggleDevTools' }],
+      submenu: [{ role: 'toggleDevTools' }],
     },
     {
       label: 'Window',
@@ -178,11 +178,10 @@ async function createWindow() {
 
   const options = {
     applicationName: 'StealthSend',
-    applicationVersion: pkgjson.version,
+    applicationVersion: `Stealth: The Fastest Private Digital Currency \n\n  We are building the Holy Grail of Crypto: a fast, feeless, private and scalable digital currency \n\n Github Source Repository \n https://github.com/Stealth-R-D-LLC/Stealth \n\n Application version: v${pkgjson.version}`,
     copyright:
       'This application is provided to you for free under the GNU General Public Licence by Stealth R&D LLC',
     authors: [pkgjson.authors],
-    website: pkgjson.homepage,
   };
   app.setAboutPanelOptions(options);
 
