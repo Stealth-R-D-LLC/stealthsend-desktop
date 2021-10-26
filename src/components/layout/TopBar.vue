@@ -170,7 +170,7 @@
                   <span v-if="!account?.isImported">xpub</span>
                   <span v-else>public key</span> to clipboard or show QR code
                 </p>
-                <div :class="{ 'copy-key--loading': publicKey }">
+                <div :class="{ 'copy-key--loading': !publicKey }">
                   <StTooltip
                     :tooltip="
                       copyPending ? 'Copied to Clipboard!' : 'Copy to Clipboard'
