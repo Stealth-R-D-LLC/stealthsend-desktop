@@ -178,19 +178,13 @@ const FeelessJS = {
         throw new Error(e);
       }
     } while (HASH_DENARY > LIMIT_DENARY);
-    console.log('HASH_DENARY', JSON.stringify(HASH_DENARY));
-    console.log('LIMIT_DENARY', JSON.stringify(LIMIT_DENARY));
-    console.log('WORK bytes', JSON.stringify(WORK));
-    console.log(
-      'WORK bytes readBigUInt64BE',
-      JSON.stringify(WORK.readBigUInt64BE())
-    );
-    console.log(
-      'WORK bytes to hex to bn',
-      JSON.stringify(this._hexToBn(WORK.toString('hex')))
-    );
+    console.log('HASH_DENARY', HASH_DENARY);
+    console.log('LIMIT_DENARY', LIMIT_DENARY);
+    console.log('WORK bytes', WORK);
+    console.log('WORK bytes readBigUInt64BE', WORK.readBigUInt64BE());
+    console.log('WORK bytes to hex to bn', this._hexToBn(WORK.toString('hex')));
     WORK = WORK.readBigUInt64BE();
-    console.log('WORK hex', JSON.stringify(WORK));
+    console.log('WORK hex', WORK);
     console.log('RETURN');
     return WORK;
   },
