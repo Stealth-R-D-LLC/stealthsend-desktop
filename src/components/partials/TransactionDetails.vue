@@ -90,7 +90,9 @@
         </div>
         <div>
           <p class="bold">Network Fee</p>
-          <p v-if="!loadingFee">{{ formatAmount(fees) }} XST</p>
+          <p v-if="!loadingFee">
+            {{ formatAmount(fees).replace('-', '') }} XST
+          </p>
           <SvgIcon v-else name="icon-loader-address" class="address-loader" />
         </div>
       </div>
