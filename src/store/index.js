@@ -41,9 +41,17 @@ export const useMainStore = defineStore({
     isMenuExpanded: false,
     layoutFlash: false,
     isFeeless: true,
+    currentPeriod: { label: '3d', value: 3 },
+    currentDirection: { label: 'All', value: '' },
   }),
   getters: {},
   actions: {
+    SET_CURRENT_PERIOD(payload) {
+      this.currentPeriod = payload;
+    },
+    SET_CURRENT_DIRECTION(payload) {
+      this.currentDirection = payload;
+    },
     SET_WALLET(payload) {
       this.wallet = payload;
     },
@@ -204,7 +212,8 @@ export const useMainStore = defineStore({
 
       // Here we will find all the address inputs
       // that have referenced this transaction.
-      const spent = ( // Loop each output
+      const spent = // Loop each output
+      (
         await Promise.all(
           transaction.vout.map((item) => {
             return new Promise((resolveFirst, rejectFirst) => {

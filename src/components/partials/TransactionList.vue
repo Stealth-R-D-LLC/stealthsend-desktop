@@ -188,6 +188,14 @@
             </template>
           </StTable>
         </template>
+        <StButton
+          v-if="isLoadMore"
+          @click="loadMore"
+          class="load-more"
+          size="normal"
+          type="type-a"
+          >Load More</StButton
+        >
         <h6 class="no-results" v-if="txDates.length === 0">
           No transaction data
         </h6>
@@ -237,6 +245,8 @@ export default {
   setup(props) {
     const mainStore = useMainStore();
     const isExpanded = ref('');
+    const isLoadMore = ref(false);
+    const incrementBy = ref(20);
 
     const { formatBlocktime, fil, groupBy, formatAmount } = useHelpers();
     const txs = ref([]);
@@ -267,9 +277,14 @@ export default {
       return !!found;
     }
 
+    function loadMore() {
+      incrementBy.value += 20;
+      orderTransactions(mainStore.currentPeriod, mainStore.currentDirection);
+    }
+
     function orderTransactions(
-      filter = { label: '3d', value: 3 },
-      filterDirection = { label: 'All', value: '' }
+      filter = mainStore.currentPeriod,
+      filterDirection = mainStore.currentDirection
     ) {
       // sort transactions by blocktime
       const transactionsTmp = props.transactions
@@ -283,10 +298,26 @@ export default {
           return obj;
         })
         .sort((a, b) => (a.blocktime < b.blocktime ? 1 : -1));
+      let loadedTransactions = [];
+      if (
+        filter.value === Infinity ||
+        filter.value === 365 ||
+        filter.value === 180 ||
+        filter.value === 90
+      ) {
+        isLoadMore.value = true;
+        loadedTransactions = transactionsTmp.slice(0, incrementBy.value);
+      } else {
+        isLoadMore.value = false;
+        loadedTransactions = transactionsTmp;
+      }
+      if (incrementBy.value > transactionsTmp.length) {
+        isLoadMore.value = false;
+      }
       // filter transactions based on selected filter
       let filteredDirection = filterByDirection(
         filterDirection,
-        transactionsTmp
+        loadedTransactions
       );
       let filtered = filterByPeriod(filter, filteredDirection);
       // group transactions by date
@@ -358,12 +389,15 @@ export default {
 
     return {
       isExpanded,
+      isLoadMore,
+      incrementBy,
       expandIcons,
       openTransaction,
       formatBlocktime,
       groupBy,
       formatAmount,
       isLoading,
+      loadMore,
       filterByDirection,
       filterByPeriod,
       todayOrYesterday,
@@ -574,5 +608,8 @@ export default {
 
 :deep .table tbody td:nth-last-child(-n + 3) {
   text-align: right;
+}
+.load-more {
+  margin: 24px auto;
 }
 </style>

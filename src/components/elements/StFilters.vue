@@ -20,7 +20,7 @@
       <p
         v-for="filter in $route.name === 'Dashboard' ? filters : complexFilters"
         :key="filter.label"
-        :class="{ 'filter-item--active': currentFilter.value === filter.value }"
+        :class="{ 'filter-item--active': currentPeriod.value === filter.value }"
         class="filter-item"
         @click="changeFilter(filter)"
       >
@@ -32,6 +32,7 @@
 
 <script>
 import { ref } from 'vue';
+import { useMainStore } from '@/store';
 export default {
   name: 'StFilters',
   emits: ['change', 'sort'],
@@ -108,16 +109,19 @@ export default {
         value: Infinity,
       },
     ]);
-    const currentFilter = ref({ label: '3d', value: 3 });
+    const mainStore = useMainStore();
+    const currentPeriod = ref({ label: '3d', value: 3 });
     const currentDirection = ref({ label: 'All', value: '' });
 
     function changeFilter(filter) {
-      currentFilter.value = filter;
-      ctx.emit('change', filter, currentDirection.value);
+      mainStore.SET_CURRENT_PERIOD(filter);
+      currentPeriod.value = mainStore.currentPeriod;
+      ctx.emit('change', currentPeriod.value, currentDirection.value);
     }
     function sortByDirection(filter) {
-      currentDirection.value = filter;
-      ctx.emit('sort', currentFilter.value, filter);
+      mainStore.SET_CURRENT_DIRECTION(filter);
+      currentDirection.value = mainStore.currentDirection;
+      ctx.emit('sort', currentPeriod.value, currentDirection.value);
     }
     return {
       changeFilter,
@@ -125,7 +129,7 @@ export default {
       filters,
       complexFilters,
       directions,
-      currentFilter,
+      currentPeriod,
       currentDirection,
     };
   },
