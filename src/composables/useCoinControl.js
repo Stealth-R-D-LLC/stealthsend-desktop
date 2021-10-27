@@ -110,13 +110,12 @@ export default function useCoinControl(outputs, target) {
       }
     };
     findSubset(sortedUtxo, adjustedTarget);
-    
+
     if (result.length === 0) return [];
-    
+
     // obtain smallest array (result) from array of arrays
     let sortedRes = orderBy(result, ['amount'], ['desc']);
-    return sortedRes[sortedRes.length-1];
-
+    return sortedRes[sortedRes.length - 1];
   }
 
   function knapsackSelection(utxo, adjustedTarget) {
