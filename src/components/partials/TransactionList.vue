@@ -99,6 +99,7 @@
                 class="move"
                 :class="{ 'move-left': isExpanded === item.index }"
               >
+                <pre>{{ item.txinfo }}</pre>
                 <span v-if="item.amount <= 0">
                   <template
                     v-if="
@@ -208,16 +209,50 @@
                   <template v-else>
                     {{ item.amount > 0 ? '+' : '-' }}
                   </template>
-                  {{
-                    isHiddenAmounts
-                      ? '••• XST'
-                      : `${formatAmount(
-                          Math.abs(item.amount),
-                          false,
-                          6,
-                          6
-                        )} XST`
-                  }}
+                  <template
+                    v-if="
+                      wallet &&
+                      wallet.accounts.find((acc) => acc.label === item.account)
+                        .isImported &&
+                      wallet &&
+                      item.txinfo.sources.find(
+                        (obj) =>
+                          wallet &&
+                          wallet.accounts.find(
+                            (acc) => acc.label === item.account
+                          ).address === obj.addresses[0]
+                      )
+                    "
+                  >
+                    {{
+                      isHiddenAmounts
+                        ? '••• XST'
+                        : `${formatAmount(
+                            Math.abs(
+                              item.amount +
+                                calculateFee(
+                                  item.txinfo.destinations,
+                                  item.txinfo.sources
+                                )
+                            ),
+                            false,
+                            6,
+                            6
+                          )} XST`
+                    }}
+                  </template>
+                  <template v-else>
+                    {{
+                      isHiddenAmounts
+                        ? '••• XST'
+                        : `${formatAmount(
+                            Math.abs(item.amount),
+                            false,
+                            6,
+                            6
+                          )} XST`
+                    }}
+                  </template>
                 </template>
               </div>
             </template>
@@ -465,6 +500,16 @@ export default {
       }
     }
 
+    function calculateFee(vout, vin) {
+      let totalOutput = vout.reduce((total, item) => {
+        return total + item.amount;
+      }, 0);
+      let totalInput = vin.reduce((total, item) => {
+        return total + item.amount;
+      }, 0);
+      return totalInput - totalOutput;
+    }
+
     function isTxFeeless(txinfo = undefined) {
       let found = false;
       if (!txinfo) return found;
@@ -609,6 +654,7 @@ export default {
       orderTransactions,
       txs,
       findLabelForTx,
+      calculateFee,
       isTxFeeless,
       isHiddenAmounts: computed(() => mainStore.isAmountsHidden),
     };

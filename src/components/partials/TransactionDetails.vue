@@ -90,7 +90,14 @@
             </template>
             <template v-else>
               <SvgIcon name="icon-transactions-sent" />
-              -{{ formatAmount(tx.amount, false, 6, 6) }} XST
+              <template v-if="!loadingFee">
+                -{{ formatAmount(Math.abs(tx.amount + fees), false, 6, 6) }} XST
+              </template>
+              <SvgIcon
+                v-else
+                name="icon-loader-address"
+                class="address-loader"
+              />
             </template>
           </template>
           <template v-else>
