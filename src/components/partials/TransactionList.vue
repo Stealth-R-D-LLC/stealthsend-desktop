@@ -41,16 +41,50 @@
                   >
                 </template>
                 <template v-else>
-                  <template v-if="item.amount > 0">
-                    <SvgIcon name="icon-transactions-received" />
-                    <template v-if="$route.name !== 'Dashboard'"
-                      >Received</template
+                  <template
+                    v-if="
+                      wallet &&
+                      wallet.accounts.find((acc) => acc.label === item.account)
+                        .isImported
+                    "
+                  >
+                    <template
+                      v-if="
+                        item.txinfo.sources.find(
+                          (obj) =>
+                            wallet &&
+                            wallet.accounts.find(
+                              (acc) => acc.label === item.account
+                            ).address === obj.addresses[0]
+                        )
+                      "
                     >
+                      <SvgIcon name="icon-transactions-sent" />
+                      <template v-if="$route.name !== 'Dashboard'"
+                        >Sent</template
+                      >
+                    </template>
+                    <template v-else>
+                      <SvgIcon name="icon-transactions-received" />
+                      <template v-if="$route.name !== 'Dashboard'"
+                        >Received</template
+                      >
+                    </template>
                   </template>
+                  <template v-else>
+                    <template v-if="item.amount > 0">
+                      <SvgIcon name="icon-transactions-received" />
+                      <template v-if="$route.name !== 'Dashboard'"
+                        >Received</template
+                      >
+                    </template>
 
-                  <template v-else-if="item.amount <= 0">
-                    <SvgIcon name="icon-transactions-sent" />
-                    <template v-if="$route.name !== 'Dashboard'">Sent</template>
+                    <template v-else-if="item.amount <= 0">
+                      <SvgIcon name="icon-transactions-sent" />
+                      <template v-if="$route.name !== 'Dashboard'"
+                        >Sent</template
+                      >
+                    </template>
                   </template>
                 </template>
               </div>
@@ -152,7 +186,28 @@
                   }}
                 </template>
                 <template v-else>
-                  {{ item.amount > 0 ? '+' : '-' }}
+                  <template
+                    v-if="
+                      wallet &&
+                      wallet.accounts.find((acc) => acc.label === item.account)
+                        .isImported
+                    "
+                  >
+                    {{
+                      item.txinfo.sources.find(
+                        (obj) =>
+                          wallet &&
+                          wallet.accounts.find(
+                            (acc) => acc.label === item.account
+                          ).address === obj.addresses[0]
+                      )
+                        ? '-'
+                        : '+'
+                    }}
+                  </template>
+                  <template v-else>
+                    {{ item.amount > 0 ? '+' : '-' }}
+                  </template>
                   {{
                     isHiddenAmounts
                       ? '••• XST'
@@ -207,7 +262,29 @@
                     }}
                   </template>
                   <template v-else>
-                    {{ item.amount > 0 ? '+' : '-' }}
+                    <template
+                      v-if="
+                        wallet &&
+                        wallet.accounts.find(
+                          (acc) => acc.label === item.account
+                        ).isImported
+                      "
+                    >
+                      {{
+                        item.txinfo.sources.find(
+                          (obj) =>
+                            wallet &&
+                            wallet.accounts.find(
+                              (acc) => acc.label === item.account
+                            ).address === obj.addresses[0]
+                        )
+                          ? '-'
+                          : '+'
+                      }}
+                    </template>
+                    <template v-else>
+                      {{ item.amount > 0 ? '+' : '-' }}
+                    </template>
                     {{
                       isHiddenAmounts
                         ? '$••• USD'
@@ -376,6 +453,10 @@ export default {
       return mainStore.globalLoading;
     });
 
+    const wallet = computed(() => {
+      return mainStore.wallet;
+    });
+
     function expandIcons(txid) {
       if (isExpanded.value === txid) {
         isExpanded.value = '';
@@ -509,6 +590,7 @@ export default {
     );
 
     return {
+      wallet,
       isExpanded,
       isLoadMore,
       incrementBy,

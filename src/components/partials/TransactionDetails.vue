@@ -72,10 +72,33 @@
           XST
         </p>
         <p v-else class="amount">
-          <SvgIcon name="icon-transactions-received" v-if="tx.amount > 0" />
+          <template
+            v-if="
+              wallet &&
+              wallet.accounts.find((acc) => acc.label === tx.account).isImported
+            "
+          >
+            <template
+              v-if="
+                wallet &&
+                wallet.accounts.find((acc) => acc.label === tx.account)
+                  .address === tx.vout[tx.position].scriptPubKey.addresses[0]
+              "
+            >
+              <SvgIcon name="icon-transactions-received" />
+              {{ formatAmount(tx.amount, false, 6, 6) }} XST
+            </template>
+            <template v-else>
+              <SvgIcon name="icon-transactions-sent" />
+              -{{ formatAmount(tx.amount, false, 6, 6) }} XST
+            </template>
+          </template>
+          <template v-else>
+            <SvgIcon name="icon-transactions-received" v-if="tx.amount > 0" />
 
-          <SvgIcon name="icon-transactions-sent" v-else-if="tx.amount <= 0" />
-          {{ formatAmount(tx.amount, false, 6, 6) }} XST
+            <SvgIcon name="icon-transactions-sent" v-else-if="tx.amount <= 0" />
+            {{ formatAmount(tx.amount, false, 6, 6) }} XST
+          </template>
         </p>
       </div>
       <div class="item">
@@ -246,6 +269,10 @@ const totalInput = computed(() => {
 
 const fees = computed(() => {
   return totalInput.value - totalOutput.value;
+});
+
+const wallet = computed(() => {
+  return mainStore.wallet;
 });
 
 function close() {
