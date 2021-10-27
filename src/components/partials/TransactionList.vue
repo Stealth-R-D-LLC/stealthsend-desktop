@@ -28,16 +28,30 @@
           >
             <template #status="{ item }">
               <div class="flex-center-vertical">
-                <template v-if="item.amount > 0">
+                <template
+                  v-if="
+                    item.txinfo.destinations &&
+                    item.txinfo.destinations[0] &&
+                    item.txinfo.destinations[0].type === 'nonstandard'
+                  "
+                >
                   <SvgIcon name="icon-transactions-received" />
                   <template v-if="$route.name !== 'Dashboard'"
                     >Received</template
                   >
                 </template>
+                <template v-else>
+                  <template v-if="item.amount > 0">
+                    <SvgIcon name="icon-transactions-received" />
+                    <template v-if="$route.name !== 'Dashboard'"
+                      >Received</template
+                    >
+                  </template>
 
-                <template v-else-if="item.amount <= 0">
-                  <SvgIcon name="icon-transactions-sent" />
-                  <template v-if="$route.name !== 'Dashboard'">Sent</template>
+                  <template v-else-if="item.amount <= 0">
+                    <SvgIcon name="icon-transactions-sent" />
+                    <template v-if="$route.name !== 'Dashboard'">Sent</template>
+                  </template>
                 </template>
               </div>
             </template>
@@ -52,39 +66,60 @@
                 :class="{ 'move-left': isExpanded === item.index }"
               >
                 <span v-if="item.amount <= 0">
-                  <!-- {{
-                    item.txinfo.destinations[item.txinfo.destinations.length - 1] && 
-                    item.txinfo.destinations[item.txinfo.destinations.length - 1].addresses 
-                    ? item.txinfo.destinations[item.txinfo.destinations.length - 1].addresses[0] 
-                    : item.txinfo.destinations[0].addresses[0] 
-                    || '-'
-                  }} -->
-                  {{
-                    item.txinfo.destinations &&
-                    item.txinfo.destinations[0] &&
-                    item.txinfo.destinations[0].addresses &&
-                    item.txinfo.destinations[0].addresses[0]
-                      ? item.txinfo.destinations[0].addresses[0]
-                      : '-'
-                  }}
+                  <template
+                    v-if="
+                      item.txinfo.destinations &&
+                      item.txinfo.destinations[0] &&
+                      item.txinfo.destinations[0].type === 'nonstandard'
+                    "
+                  >
+                    {{
+                      item.txinfo.destinations[
+                        item.txinfo.destinations.length - 1
+                      ] &&
+                      item.txinfo.destinations[
+                        item.txinfo.destinations.length - 1
+                      ].addresses[0]
+                    }}
+                  </template>
+                  <template v-else>
+                    {{
+                      item.txinfo.destinations &&
+                      item.txinfo.destinations[0] &&
+                      item.txinfo.destinations[0].addresses &&
+                      item.txinfo.destinations[0].addresses[0]
+                        ? item.txinfo.destinations[0].addresses[0]
+                        : '-'
+                    }}
+                  </template>
                 </span>
                 <span v-else>
-                  <!-- {{
-                    item.txinfo.sources[item.txinfo.sources.length - 1] &&
-                    item.txinfo.sources[item.txinfo.sources.length - 1]
-                      .addresses
-                      ? item.txinfo.sources[item.txinfo.sources.length - 1]
-                          .addresses[0]
-                      : '-'
-                  }} -->
-                  {{
-                    item.txinfo.destinations &&
-                    item.txinfo.destinations[0] &&
-                    item.txinfo.destinations[0].addresses &&
-                    item.txinfo.destinations[0].addresses[0]
-                      ? item.txinfo.destinations[0].addresses[0]
-                      : '-'
-                  }}
+                  <template
+                    v-if="
+                      item.txinfo.destinations &&
+                      item.txinfo.destinations[0] &&
+                      item.txinfo.destinations[0].type === 'nonstandard'
+                    "
+                  >
+                    {{
+                      item.txinfo.destinations[
+                        item.txinfo.destinations.length - 1
+                      ] &&
+                      item.txinfo.destinations[
+                        item.txinfo.destinations.length - 1
+                      ].addresses[0]
+                    }}
+                  </template>
+                  <template v-else>
+                    {{
+                      item.txinfo.destinations &&
+                      item.txinfo.destinations[0] &&
+                      item.txinfo.destinations[0].addresses &&
+                      item.txinfo.destinations[0].addresses[0]
+                        ? item.txinfo.destinations[0].addresses[0]
+                        : '-'
+                    }}
+                  </template>
                 </span>
               </div>
             </template>
@@ -96,12 +131,39 @@
                 class="move amount-fixed"
                 :class="{ 'move-left': isExpanded === item.index }"
               >
-                {{ item.amount > 0 ? '+' : '-' }}
-                {{
-                  isHiddenAmounts
-                    ? '••• XST'
-                    : `${formatAmount(Math.abs(item.amount), false, 6, 6)} XST`
-                }}
+                <template
+                  v-if="
+                    item.txinfo.destinations &&
+                    item.txinfo.destinations[0] &&
+                    item.txinfo.destinations[0].type === 'nonstandard'
+                  "
+                >
+                  {{
+                    isHiddenAmounts
+                      ? '••• XST'
+                      : `${formatAmount(
+                          item.txinfo.destinations[
+                            item.txinfo.destinations.length - 1
+                          ].amount,
+                          false,
+                          6,
+                          6
+                        )} XST`
+                  }}
+                </template>
+                <template v-else>
+                  {{ item.amount > 0 ? '+' : '-' }}
+                  {{
+                    isHiddenAmounts
+                      ? '••• XST'
+                      : `${formatAmount(
+                          Math.abs(item.amount),
+                          false,
+                          6,
+                          6
+                        )} XST`
+                  }}
+                </template>
               </div>
             </template>
             <template #label="{ item }">
@@ -121,30 +183,78 @@
                 class="move amount-fixed"
                 :class="{ 'move-left': isExpanded === item.index }"
               >
-                {{ item.amount > 0 ? '+' : '-' }}
                 <template v-if="item.amount * XST_USD_RATE < 1">
-                  {{
-                    isHiddenAmounts
-                      ? '$••• USD'
-                      : `$${formatAmount(
-                          Math.abs(item.amount * XST_USD_RATE),
-                          false,
-                          4,
-                          4
-                        )} USD`
-                  }}
+                  <template
+                    v-if="
+                      item.txinfo.destinations &&
+                      item.txinfo.destinations[0] &&
+                      item.txinfo.destinations[0].type === 'nonstandard'
+                    "
+                  >
+                    {{
+                      isHiddenAmounts
+                        ? '$••• USD'
+                        : `$${formatAmount(
+                            Math.abs(
+                              item.txinfo.destinations[
+                                item.txinfo.destinations.length - 1
+                              ].amount * XST_USD_RATE
+                            ),
+                            false,
+                            4,
+                            4
+                          )} USD`
+                    }}
+                  </template>
+                  <template v-else>
+                    {{ item.amount > 0 ? '+' : '-' }}
+                    {{
+                      isHiddenAmounts
+                        ? '$••• USD'
+                        : `$${formatAmount(
+                            Math.abs(item.amount * XST_USD_RATE),
+                            false,
+                            4,
+                            4
+                          )} USD`
+                    }}
+                  </template>
                 </template>
                 <template v-else>
-                  {{
-                    isHiddenAmounts
-                      ? '$••• USD'
-                      : `$${formatAmount(
-                          Math.abs(item.amount * XST_USD_RATE),
-                          false,
-                          4,
-                          4
-                        )} USD`
-                  }}
+                  <template
+                    v-if="
+                      item.txinfo.destinations &&
+                      item.txinfo.destinations[0] &&
+                      item.txinfo.destinations[0].type === 'nonstandard'
+                    "
+                  >
+                    {{
+                      isHiddenAmounts
+                        ? '$••• USD'
+                        : `$${formatAmount(
+                            Math.abs(
+                              item.txinfo.destinations[
+                                item.txinfo.destinations.length - 1
+                              ].amount * XST_USD_RATE
+                            ),
+                            false,
+                            4,
+                            4
+                          )} USD`
+                    }}
+                  </template>
+                  <template v-else>
+                    {{
+                      isHiddenAmounts
+                        ? '$••• USD'
+                        : `$${formatAmount(
+                            Math.abs(item.amount * XST_USD_RATE),
+                            false,
+                            4,
+                            4
+                          )} USD`
+                    }}
+                  </template>
                 </template>
               </div>
             </template>
