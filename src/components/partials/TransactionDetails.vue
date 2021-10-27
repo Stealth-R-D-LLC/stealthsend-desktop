@@ -67,7 +67,15 @@
       <div class="item">
         <p class="bold">Receiving Address</p>
         <p
-          v-if="tx && tx.vout && tx.vout.length && tx.vout[tx.position]"
+          v-if="
+            tx &&
+            tx.vout &&
+            tx.vout.length &&
+            tx.vout[tx.position] &&
+            tx.vout[tx.position].scriptPubKey &&
+            tx.vout[tx.position].scriptPubKey.addresses &&
+            tx.vout[tx.position].scriptPubKey.addresses[0]
+          "
           class="item-link pointer"
           @click="
             openAddressExplorer(tx.vout[tx.position].scriptPubKey.addresses[0])
@@ -91,7 +99,7 @@
         <div>
           <p class="bold">Network Fee</p>
           <p v-if="!loadingFee">
-            {{ formatAmount(fees).replace('-', '') }} XST
+            {{ formatAmount(fees, false, 6, 6).replace('-', '') }} XST
           </p>
           <SvgIcon v-else name="icon-loader-address" class="address-loader" />
         </div>
