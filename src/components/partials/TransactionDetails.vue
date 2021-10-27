@@ -49,7 +49,29 @@
       </div>
       <div class="item">
         <p class="bold">Amount</p>
-        <p class="amount">
+        <p
+          class="amount"
+          v-if="
+            tx.vout &&
+            tx.vout[0] &&
+            tx.vout[0].scriptPubKey &&
+            tx.vout[0].scriptPubKey.type === 'nonstandard'
+          "
+        >
+          <SvgIcon name="icon-transactions-received" />
+          {{
+            formatAmount(
+              tx.vout &&
+                tx.vout[tx.vout.length - 1] &&
+                tx.vout[tx.vout.length - 1].value,
+              false,
+              6,
+              6
+            )
+          }}
+          XST
+        </p>
+        <p v-else class="amount">
           <SvgIcon name="icon-transactions-received" v-if="tx.amount > 0" />
 
           <SvgIcon name="icon-transactions-sent" v-else-if="tx.amount <= 0" />
@@ -68,22 +90,42 @@
         <p class="bold">Receiving Address</p>
         <p
           v-if="
-            tx &&
             tx.vout &&
-            tx.vout.length &&
-            tx.vout[tx.position] &&
-            tx.vout[tx.position].scriptPubKey &&
-            tx.vout[tx.position].scriptPubKey.addresses &&
-            tx.vout[tx.position].scriptPubKey.addresses[0]
+            tx.vout[0] &&
+            tx.vout[0].scriptPubKey &&
+            tx.vout[0].scriptPubKey.type === 'nonstandard'
           "
           class="item-link pointer"
           @click="
-            openAddressExplorer(tx.vout[tx.position].scriptPubKey.addresses[0])
+            openAddressExplorer(
+              tx.vout[tx.vout.length - 1].scriptPubKey.addresses[0]
+            )
           "
         >
-          {{ tx.vout[tx.position].scriptPubKey.addresses[0] }}
+          {{ tx.vout[tx.vout.length - 1].scriptPubKey.addresses[0] }}
         </p>
-        <p v-else>-</p>
+        <template v-else>
+          <p
+            v-if="
+              tx &&
+              tx.vout &&
+              tx.vout.length &&
+              tx.vout[tx.position] &&
+              tx.vout[tx.position].scriptPubKey &&
+              tx.vout[tx.position].scriptPubKey.addresses &&
+              tx.vout[tx.position].scriptPubKey.addresses[0]
+            "
+            class="item-link pointer"
+            @click="
+              openAddressExplorer(
+                tx.vout[tx.position].scriptPubKey.addresses[0]
+              )
+            "
+          >
+            {{ tx.vout[tx.position].scriptPubKey.addresses[0] }}
+          </p>
+          <p v-else>-</p>
+        </template>
       </div>
       <div class="item">
         <p class="bold">Transaction ID</p>
@@ -99,7 +141,19 @@
         <div>
           <p class="bold">Network Fee</p>
           <p v-if="!loadingFee">
-            {{ formatAmount(fees, false, 6, 6).replace('-', '') }} XST
+            <template
+              v-if="
+                tx.vout &&
+                tx.vout[0] &&
+                tx.vout[0].scriptPubKey &&
+                tx.vout[0].scriptPubKey.type === 'nonstandard'
+              "
+            >
+              {{ formatAmount(fees, false, 6, 6) }} XST
+            </template>
+            <template v-else>
+              {{ formatAmount(fees, false, 6, 6).replace('-', '') }} XST
+            </template>
           </p>
           <SvgIcon v-else name="icon-loader-address" class="address-loader" />
         </div>
