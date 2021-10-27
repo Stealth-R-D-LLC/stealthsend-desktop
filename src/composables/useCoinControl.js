@@ -95,6 +95,8 @@ export default function useCoinControl(outputs, target) {
   }
 
   function subsetSum(utxo, adjustedTarget) {
+    // attempt to find a subset of items which sum of amounts is larger than the target amount
+    // if there are multiple subsets, the one with the closest sum to the target amount will be used
     let sortedUtxo = orderBy(utxo, ['amount'], ['desc']);
     var result = [];
     const findSubset = (sortedUtxo, target, partial = [], sum = 0) => {
@@ -103,19 +105,18 @@ export default function useCoinControl(outputs, target) {
           let a = partial.concat([tx]);
           findSubset(sortedUtxo.slice(i + 1), target, a, sumOf(sum, tx.amount));
         });
-      } else if (sum == target) {
+      } else if (sum >= target) {
         result.push(partial);
       }
     };
     findSubset(sortedUtxo, adjustedTarget);
+    
+    if (result.length === 0) return [];
+    
     // obtain smallest array (result) from array of arrays
-    let smallest = [];
-    if (result.length > 0) {
-      smallest = result.reduce((prev, next) =>
-        prev.length > next.length ? next : prev
-      );
-    }
-    return smallest;
+    let sortedRes = orderBy(result, ['amount'], ['desc']);
+    return sortedRes[sortedRes.length-1];
+
   }
 
   function knapsackSelection(utxo, adjustedTarget) {
@@ -245,7 +246,7 @@ export default function useCoinControl(outputs, target) {
       bestSet = [minSingleUtxo];
       return bestSet;
     } else {
-      console.log('else');
+      console.log('else', bestSet);
       return bestSet;
     }
   }
