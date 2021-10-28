@@ -118,10 +118,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     };
     console.log(
       'TRANSACTION BUILDER: change:',
-      JSON.stringify(
-        floor(calculateChange(sumUtxo, Number(sendForm.amount)) * 1e6)
-      ),
-      JSON.stringify(calculateChange(sumUtxo, Number(sendForm.amount)))
+        change
     );
 
     // add the output for recipient
@@ -130,10 +127,12 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     // add the output for the change, send the change back to yourself.
     // Outputs - inputs = transaction fee, so always double-check your math!
     if (
-      calculateChange(sumUtxo, Number(sendForm.amount)) >
+      calculateChange(sumUtxo, Number(sendForm.amount)) >=
       CryptoService.constraints.MINIMAL_CHANGE
     ) {
       rawTransaction.addOutput(change.address, change.amount);
+    } else {
+      console.log('TRANSACTION BUILDER: no change, its smaller than min change amount');
     }
 
     // create feework and feeless scriptPubkey and add output for feeless trx
@@ -211,15 +210,21 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       }
     }
 
+    console.log("Raw TX for decode: ")
     console.dir(rawTransaction);
 
     const rawTransactionToHex = rawTransaction.build().toHex();
 
     console.dir(rawTransactionToHex);
 
-    const txid = await mainStore.rpc('sendrawtransaction', [
-      rawTransactionToHex,
-    ]);
+    let txid = '';
+    try {
+      txid = await mainStore.rpc('sendrawtransaction', [
+        rawTransactionToHex,
+      ]);
+    } catch (e) {
+      console.error("Transaction builded, but rejected from RPC. Reason: ", e)
+    }
 
     return txid;
   }
