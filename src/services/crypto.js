@@ -595,7 +595,6 @@ const CryptoService = {
                 accUtxo = txs.length > 0 ? txs[txs.length - 1].balance : 0;
               }
 
-
               newAccounts.push({
                 ...account,
                 utxo: Number(accUtxo),
