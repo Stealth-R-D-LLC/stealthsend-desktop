@@ -67,7 +67,11 @@
           v-if="componentVisibility.txDashboard"
           class="details-table"
           has-table-header
-          :transactions="fil((el) => el.account === account.label, wallet.txs)"
+          :transactions="
+            wallet && wallet?.txs
+              ? fil((el) => el.account === account.label, wallet.txs)
+              : []
+          "
         ></TransactionList>
       </div>
     </div>
@@ -122,6 +126,9 @@ const wallet = computed(() => {
 
 onMounted(async () => {
   mainStore.START_GLOBAL_LOADING();
+  if (!wallet.value) {
+    CryptoService.scanWallet();
+  }
   if (!componentVisibility.value.chart) {
     toggleComponentVisibility('chart');
   }
