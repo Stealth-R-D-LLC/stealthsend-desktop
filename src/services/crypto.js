@@ -576,7 +576,9 @@ const CryptoService = {
               const txs = res.data;
               if (!account.isArchived) {
                 for (const tx of txs) {
-                  if (tx.amount === 0) continue;
+                  if (tx.amount === 0) {
+                    continue;
+                  }
                   allTransactions.push({
                     account: account.label,
                     amount: tx.txinfo.destinations[0].amount,
@@ -589,6 +591,8 @@ const CryptoService = {
                   });
                   accUtxo = tx.balance;
                 }
+              } else {
+                accUtxo = txs.length > 0 ? txs[txs.length - 1].balance : 0;
               }
 
               newAccounts.push({
