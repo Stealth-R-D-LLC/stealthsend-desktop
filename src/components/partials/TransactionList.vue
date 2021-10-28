@@ -99,7 +99,6 @@
                 class="move"
                 :class="{ 'move-left': isExpanded === item.index }"
               >
-                <pre>{{ item.txinfo }}</pre>
                 <span v-if="item.amount <= 0">
                   <template
                     v-if="

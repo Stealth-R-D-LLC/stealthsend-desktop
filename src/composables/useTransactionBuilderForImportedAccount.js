@@ -16,7 +16,8 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     fee = feeEstimator.fee;
   }
 
-  console.log('TRANSACTION BUILDER: latest fee:', JSON.stringify(fee));
+  console.log('TRANSACTION BUILDER: latest fee:', fee);
+  console.log('TRANSACTION BUILDER: unspent outputs:', utxo);
 
   const sumOf = (x = 0, y = 0) => {
     let sum = add(x, y);
@@ -37,7 +38,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
   };
 
   function calculateChange(accountAmount, sendAmount) {
-    let change = subtractOf(accountAmount, sumOf(sendAmount, fee));
+    let change = subtractOf(accountAmount, sendAmount);
     return change;
   }
   async function buildTransaction() {
@@ -86,6 +87,20 @@ export default async function useTransactionBuilder(utxo, sendForm) {
           1e6
         ), // account amount - (send amount + fee)
       };
+      console.log('TRANSACTION BUILDER: sumUtxo: ', sumUtxo);
+      console.log('TRANSACTION BUILDER: change: ', change);
+      console.log(
+        'TRANSACTION BUILDER: input amount: ',
+        Number(sendForm.amount)
+      );
+      console.log(
+        'TRANSACTION BUILDER: calc: ',
+        calculateChange(sumUtxo, Number(sendForm.amount))
+      );
+      console.log(
+        'TRANSACTION BUILDER: change min : ',
+        CryptoService.constraints.MINIMAL_CHANGE
+      );
 
       // add the output for recipient
       rawTransaction.addOutput(recipient.address, recipient.amount);
@@ -93,10 +108,14 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       // add the output for the change, send the change back to yourself.
       // Outputs - inputs = transaction fee, so always double-check your math!
       if (
-        calculateChange(sumUtxo, Number(sendForm.amount)) >
+        calculateChange(sumUtxo, Number(sendForm.amount)) >=
         CryptoService.constraints.MINIMAL_CHANGE
       ) {
         rawTransaction.addOutput(change.address, change.amount);
+      } else {
+        console.log(
+          'TRANSACTION BUILDER: no change, its smaller than min change amount'
+        );
       }
 
       // create feework and feeless scriptPubkey and add output for feeless trx
@@ -178,15 +197,23 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         }
       }
 
+      console.log('Raw TX for decode: ');
       console.dir(rawTransaction);
       const rawTransactionToHex = rawTransaction.build().toHex();
       console.dir(rawTransactionToHex);
 
-      const res = await mainStore.rpc('sendrawtransaction', [
-        rawTransactionToHex,
-      ]);
+      let txid = '';
+      try {
+        txid = await mainStore.rpc('sendrawtransaction', [rawTransactionToHex]);
+      } catch (e) {
+        console.error(
+          'Transaction builded, but rejected from RPC. Reason: ',
+          e
+        );
+      }
 
-      resolve(res);
+      resolve(txid);
+      return txid;
     });
   }
 

@@ -560,18 +560,13 @@ async function send() {
       JSON.stringify(unspentOutputs)
     );
     console.info('TRANSACTION BUILDER: coin control: ', JSON.stringify(utxo));
-    console.info(
-      'TRANSACTION BUILDER: entered amount: ',
-      JSON.stringify(amount.value)
-    );
-    console.info('TRANSACTION BUILDER: fee: ', JSON.stringify(aproxFee.value));
-    console.info(
-      'TRANSACTION BUILDER: target amount: ',
-      JSON.stringify(target)
-    );
+    console.info('TRANSACTION BUILDER: entered amount: ', amount.value);
+    console.info('TRANSACTION BUILDER: fee: ', aproxFee.value);
+    console.info('TRANSACTION BUILDER: target amount: ', target);
 
     let transactionResponse = '';
     if (account.value.wif && account.value.isImported) {
+      console.log('imported');
       // build transaction for imported account
       transactionResponse = await useTransactionBuilderForImportedAccount(
         utxo,
@@ -584,6 +579,7 @@ async function send() {
       );
     } else {
       // build transaction for native hd account
+      console.log('native');
       try {
         transactionResponse = await useTransactionBuilder(utxo, {
           address: depositAddress.value.trim(),
