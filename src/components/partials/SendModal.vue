@@ -560,15 +560,9 @@ async function send() {
       JSON.stringify(unspentOutputs)
     );
     console.info('TRANSACTION BUILDER: coin control: ', JSON.stringify(utxo));
-    console.info(
-      'TRANSACTION BUILDER: entered amount: ',
-      amount.value
-    );
+    console.info('TRANSACTION BUILDER: entered amount: ', amount.value);
     console.info('TRANSACTION BUILDER: fee: ', aproxFee.value);
-    console.info(
-      'TRANSACTION BUILDER: target amount: ',
-      target
-    );
+    console.info('TRANSACTION BUILDER: target amount: ', target);
 
     let transactionResponse = '';
     if (account.value.wif && account.value.isImported) {
