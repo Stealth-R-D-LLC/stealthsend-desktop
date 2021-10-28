@@ -67,7 +67,11 @@
           v-if="componentVisibility.txDashboard"
           class="details-table"
           has-table-header
-          :transactions="wallet && wallet?.txs ? fil((el) => el.account === account.label, wallet.txs) : []"
+          :transactions="
+            wallet && wallet?.txs
+              ? fil((el) => el.account === account.label, wallet.txs)
+              : []
+          "
         ></TransactionList>
       </div>
     </div>
