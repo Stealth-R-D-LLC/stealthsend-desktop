@@ -89,9 +89,18 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       };
       console.log('TRANSACTION BUILDER: sumUtxo: ', sumUtxo);
       console.log('TRANSACTION BUILDER: change: ', change);
-      console.log('TRANSACTION BUILDER: input amount: ', Number(sendForm.amount));
-      console.log('TRANSACTION BUILDER: calc: ', calculateChange(sumUtxo, Number(sendForm.amount)));
-      console.log('TRANSACTION BUILDER: change min : ', CryptoService.constraints.MINIMAL_CHANGE);
+      console.log(
+        'TRANSACTION BUILDER: input amount: ',
+        Number(sendForm.amount)
+      );
+      console.log(
+        'TRANSACTION BUILDER: calc: ',
+        calculateChange(sumUtxo, Number(sendForm.amount))
+      );
+      console.log(
+        'TRANSACTION BUILDER: change min : ',
+        CryptoService.constraints.MINIMAL_CHANGE
+      );
 
       // add the output for recipient
       rawTransaction.addOutput(recipient.address, recipient.amount);
@@ -104,7 +113,9 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       ) {
         rawTransaction.addOutput(change.address, change.amount);
       } else {
-        console.log('TRANSACTION BUILDER: no change, its smaller than min change amount');
+        console.log(
+          'TRANSACTION BUILDER: no change, its smaller than min change amount'
+        );
       }
 
       // create feework and feeless scriptPubkey and add output for feeless trx
@@ -186,23 +197,23 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         }
       }
 
-      console.log("Raw TX for decode: ")
+      console.log('Raw TX for decode: ');
       console.dir(rawTransaction);
       const rawTransactionToHex = rawTransaction.build().toHex();
       console.dir(rawTransactionToHex);
 
+      let txid = '';
+      try {
+        txid = await mainStore.rpc('sendrawtransaction', [rawTransactionToHex]);
+      } catch (e) {
+        console.error(
+          'Transaction builded, but rejected from RPC. Reason: ',
+          e
+        );
+      }
 
-    let txid = '';
-    try {
-      txid = await mainStore.rpc('sendrawtransaction', [
-        rawTransactionToHex,
-      ]);
-    } catch (e) {
-      console.error("Transaction builded, but rejected from RPC. Reason: ", e)
-    }
-    
-    resolve(txid);
-    return txid;
+      resolve(txid);
+      return txid;
     });
   }
 

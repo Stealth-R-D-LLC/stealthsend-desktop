@@ -116,10 +116,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       address: child.address,
       amount: floor(calculateChange(sumUtxo, Number(sendForm.amount)) * 1e6), // account amount - (send amount + fee)
     };
-    console.log(
-      'TRANSACTION BUILDER: change:',
-        change
-    );
+    console.log('TRANSACTION BUILDER: change:', change);
 
     // add the output for recipient
     rawTransaction.addOutput(recipient.address, recipient.amount);
@@ -132,7 +129,9 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     ) {
       rawTransaction.addOutput(change.address, change.amount);
     } else {
-      console.log('TRANSACTION BUILDER: no change, its smaller than min change amount');
+      console.log(
+        'TRANSACTION BUILDER: no change, its smaller than min change amount'
+      );
     }
 
     // create feework and feeless scriptPubkey and add output for feeless trx
@@ -210,7 +209,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       }
     }
 
-    console.log("Raw TX for decode: ")
+    console.log('Raw TX for decode: ');
     console.dir(rawTransaction);
 
     const rawTransactionToHex = rawTransaction.build().toHex();
@@ -219,11 +218,9 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
     let txid = '';
     try {
-      txid = await mainStore.rpc('sendrawtransaction', [
-        rawTransactionToHex,
-      ]);
+      txid = await mainStore.rpc('sendrawtransaction', [rawTransactionToHex]);
     } catch (e) {
-      console.error("Transaction builded, but rejected from RPC. Reason: ", e)
+      console.error('Transaction builded, but rejected from RPC. Reason: ', e);
     }
 
     return txid;
