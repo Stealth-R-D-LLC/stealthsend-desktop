@@ -97,10 +97,10 @@ export default function useCoinControl(outputs, target) {
 
   function subsetSum(utxo, adjustedTarget) {
     // attempt to find a subset of items which sum of amounts is larger than the target amount
-    
+
     // the complexity of the subsetSum algo is too big
     // simply skip this algo for "big" pools of data
-    if (utxo.length > 10) return []; 
+    if (utxo.length > 10) return [];
 
     // if there are multiple subsets, the one with the closest sum to the target amount will be used
     let sortedUtxo = orderBy(utxo, ['amount'], ['desc']);
@@ -113,7 +113,6 @@ export default function useCoinControl(outputs, target) {
         });
       } else if (sum >= target) {
         result.push(partial);
-        
       }
     };
     findSubset(sortedUtxo, adjustedTarget);
@@ -187,7 +186,7 @@ export default function useCoinControl(outputs, target) {
 
   function iterateUntilTargetMet(utxo, adjustedTarget) {
     // iterate over all utxos until the target is met
-    // this should be the last line of defence 
+    // this should be the last line of defence
 
     // sort the utxos descending in order to spend small amounts
     let sortedUtxo = orderBy(utxo, ['amount'], ['asc']);
