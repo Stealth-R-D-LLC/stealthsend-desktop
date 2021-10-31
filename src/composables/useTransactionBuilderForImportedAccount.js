@@ -62,6 +62,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         // get prevoutscript
         const txDetails = await mainStore.rpc('gettransaction', [tx.txid]);
         let vout = txDetails.vout.find((el) =>
+          el.value === tx.amount &&
           el.scriptPubKey.addresses.includes(tx.address)
         );
         rawTransaction.addInput(
