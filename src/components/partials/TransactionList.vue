@@ -420,13 +420,13 @@
             </template>
           </StTable>
         </template>
-        <StButton
+        <StLink
           v-if="isLoadMore"
           @click="loadMore"
           class="load-more"
           size="normal"
           type="type-a"
-          >Load More</StButton
+          >Load More</StLink
         >
         <h6 class="no-results" v-if="txDates.length === 0">
           No transaction data
@@ -858,6 +858,11 @@ export default {
   text-align: right;
 }
 .load-more {
-  margin: 24px auto;
+  width: fit-content;
+  color: var(--marine500);
+  cursor: pointer;
+  font-weight: bold;
+  display: flex;
+  margin: 22px auto;
 }
 </style>
