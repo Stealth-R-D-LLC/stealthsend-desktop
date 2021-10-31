@@ -354,15 +354,13 @@
                   >
                     <template #header> Delete Account </template>
                     <template #body>
-                      Are you sure you want to delete this account? 
+                      Are you sure you want to delete this account?
                     </template>
                     <template #footer>
                       <StButton type="type-b" @click="closeDeleteModal"
                         >Cancel</StButton
                       >
-                      <StButton @click="deleteAccount()"
-                        >Delete</StButton
-                      >
+                      <StButton @click="deleteAccount()">Delete</StButton>
                     </template>
                   </StModal>
                   <StModal
@@ -694,7 +692,6 @@ async function openDeleteAccountModal(account) {
   resetFields();
   deleteAccountModal.value = true;
   accountForDelete = account;
-
 }
 
 async function deleteAccount() {
