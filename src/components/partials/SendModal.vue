@@ -337,7 +337,6 @@ watchEffect(() => {
   }
   if (currentStep.value === 2) {
     if (mainStore.redoAmount > 0) {
-      console.log('redo');
       amount.value = mainStore.redoAmount;
       isFeeless.value = mainStore.isFeeless;
     } else {
@@ -566,7 +565,6 @@ async function send() {
 
     let transactionResponse = '';
     if (account.value.wif && account.value.isImported) {
-      console.log('imported');
       // build transaction for imported account
       transactionResponse = await useTransactionBuilderForImportedAccount(
         utxo,
@@ -579,7 +577,6 @@ async function send() {
       );
     } else {
       // build transaction for native hd account
-      console.log('native');
       try {
         transactionResponse = await useTransactionBuilder(utxo, {
           address: depositAddress.value.trim(),
