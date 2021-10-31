@@ -342,6 +342,29 @@
                       >Edit Account Name</a
                     >
                   </li>
+                  <li>
+                    <a @click="openDeleteAccountModal(account)"
+                      >Delete Account</a
+                    >
+                  </li>
+                  <StModal
+                    light
+                    :visible="deleteAccountModal"
+                    @close="closeDeleteModal"
+                  >
+                    <template #header> Delete Account </template>
+                    <template #body>
+                      Are you sure you want to delete this account? 
+                    </template>
+                    <template #footer>
+                      <StButton type="type-b" @click="closeDeleteModal"
+                        >Cancel</StButton
+                      >
+                      <StButton @click="deleteAccount()"
+                        >Delete</StButton
+                      >
+                    </template>
+                  </StModal>
                   <StModal
                     light
                     :visible="editAccountNameModal"
@@ -420,6 +443,7 @@ import Sortable from 'sortablejs';
 import SvgIcon from '../partials/SvgIcon.vue';
 import { useRoute, onBeforeRouteLeave } from 'vue-router';
 import StSkeletonLoader from '@/components/loader/StSkeletonLoader.vue';
+import db from '@/db';
 
 const mainStore = useMainStore();
 const accountOptions = ref('');
@@ -428,6 +452,7 @@ const { formatAmount } = useHelpers();
 let editAccountNameModal = ref(false);
 let activateAccountModal = ref(false);
 let archiveAccountModal = ref(false);
+let deleteAccountModal = ref(false);
 let accounts = ref([]);
 let isDraggedActive = ref(false);
 let isDraggedInactive = ref(false);
@@ -664,6 +689,24 @@ function openEditAccountNameModal(account) {
   editAccountNameModal.value = true;
 }
 
+let accountForDelete = null;
+async function openDeleteAccountModal(account) {
+  resetFields();
+  deleteAccountModal.value = true;
+  accountForDelete = account;
+
+}
+
+async function deleteAccount() {
+  let oldAccounts = await db.getItem('accounts');
+  let newAccounts = oldAccounts.filter(
+    (el) => el.address !== accountForDelete.address
+  );
+  await db.setItem('accounts', newAccounts);
+  await scanWallet();
+  closeDeleteModal();
+}
+
 const openAccountDetails = (account) => {
   mainStore.SET_ACCOUNT_DETAILS(account);
 
@@ -697,6 +740,11 @@ async function scanWallet() {
   }
 
   accounts.value = [...tmpAccounts];
+}
+
+function closeDeleteModal() {
+  deleteAccountModal.value = false;
+  accountForDelete = null;
 }
 
 function closeEditModal() {
