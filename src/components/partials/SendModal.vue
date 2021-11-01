@@ -596,23 +596,30 @@ async function send() {
       const timeout = 5000; // wait 5 seconds between checks
       if (triesLeft > 0) {
         let txCheckInterval = setInterval(() => {
-          mainStore.rpc('gettransaction', [transactionResponse.txid]).then(async () => {
-            CryptoService.storeTxAndLabel(transactionResponse.txid, label.value);
+          mainStore
+            .rpc('gettransaction', [transactionResponse.txid])
+            .then(async () => {
+              CryptoService.storeTxAndLabel(
+                transactionResponse.txid,
+                label.value
+              );
               changeStep(6);
               await CryptoService.scanWallet();
               emitter.emit('transactions:refresh');
               clearInterval(txCheckInterval);
-          }).catch((err) => {
-            triesLeft = triesLeft - 1;
-            console.log(err);
-          }).finally(() => {
-            if (triesLeft === 0) {
-              // when you try your best but you don't succeed
-              changeStep(7);
-              clearInterval(txCheckInterval);
-            }
-          });
-        }, timeout)
+            })
+            .catch((err) => {
+              triesLeft = triesLeft - 1;
+              console.log(err);
+            })
+            .finally(() => {
+              if (triesLeft === 0) {
+                // when you try your best but you don't succeed
+                changeStep(7);
+                clearInterval(txCheckInterval);
+              }
+            });
+        }, timeout);
       }
     } else {
       setTimeout(() => changeStep(7), 1000);
