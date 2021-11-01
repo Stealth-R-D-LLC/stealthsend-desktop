@@ -590,14 +590,32 @@ async function send() {
       }
     }
     if (transactionResponse.txid) {
-      CryptoService.storeTxAndLabel(transactionResponse.txid, label.value);
-      setTimeout(async () => {
-        changeStep(6);
-        await CryptoService.scanWallet();
-        emitter.emit('transactions:refresh');
-      }, 17000);
+      // instead of waiting X seconds for the tx and the block to pass
+      // we'll ask the chain if that transaction is there
+      let triesLeft = 8; // try to check 5 times with the chain
+      const timeout = 5000; // wait 5 seconds between checks
+      if (triesLeft > 0) {
+        let txCheckInterval = setInterval(() => {
+          mainStore.rpc('gettransaction', [transactionResponse.txid]).then(async () => {
+            CryptoService.storeTxAndLabel(transactionResponse.txid, label.value);
+              changeStep(6);
+              await CryptoService.scanWallet();
+              emitter.emit('transactions:refresh');
+              clearInterval(txCheckInterval);
+          }).catch((err) => {
+            triesLeft = triesLeft - 1;
+            console.log(err);
+          }).finally(() => {
+            if (triesLeft === 0) {
+              // when you try your best but you don't succeed
+              changeStep(7);
+              clearInterval(txCheckInterval);
+            }
+          });
+        }, timeout)
+      }
     } else {
-      setTimeout(() => changeStep(7), 6000);
+      setTimeout(() => changeStep(7), 1000);
     }
   } catch (e) {
     if (e instanceof ValidationError) {
