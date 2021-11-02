@@ -43,7 +43,7 @@ export default {
 <script setup>
 import TransactionList from '@/components/partials/TransactionList.vue';
 import CryptoService from '@/services/crypto';
-import { ref, computed, onMounted, watchEffect } from 'vue';
+import { ref, computed, onMounted, watchEffect, onBeforeUnmount } from 'vue';
 import DatePicker from 'vue2-datepicker';
 import 'vue2-datepicker/index.css';
 import isWithinInterval from 'date-fns/isWithinInterval';
@@ -67,6 +67,10 @@ const currentRoute = computed(() => {
 const wallet = computed(() => {
   if (!mainStore?.wallet) return null;
   return mainStore.wallet;
+});
+
+onBeforeUnmount(() => {
+  mainStore.SET_CURRENT_DIRECTION({ label: 'All', value: '' });
 });
 
 onMounted(async () => {
