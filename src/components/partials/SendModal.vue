@@ -603,10 +603,12 @@ async function send() {
                 transactionResponse.txid,
                 label.value
               );
-              changeStep(6);
-              await CryptoService.scanWallet();
-              emitter.emit('transactions:refresh');
-              clearInterval(txCheckInterval);
+              setTimeout(async () => {
+                changeStep(6);
+                await CryptoService.scanWallet();
+                emitter.emit('transactions:refresh');
+                clearInterval(txCheckInterval);
+              }, 3500);
             })
             .catch((err) => {
               triesLeft = triesLeft - 1;
