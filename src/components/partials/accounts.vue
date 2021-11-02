@@ -354,7 +354,11 @@
                   >
                     <template #header> Delete Account </template>
                     <template #body>
-                      Are you sure you want to delete this account?
+                      Do you want to delete account "{{accountForDelete.label}}" holding {{accountForDelete.utxo}} XST?
+                      <div class="delete-acc-details">
+                        <p class="label">XST Address:</p>
+                        <p>{{accountForDelete.address}}</p>
+                      </div>
                     </template>
                     <template #footer>
                       <StButton type="type-b" @click="closeDeleteModal"
@@ -687,17 +691,17 @@ function openEditAccountNameModal(account) {
   editAccountNameModal.value = true;
 }
 
-let accountForDelete = null;
+const accountForDelete = ref(null);
 async function openDeleteAccountModal(account) {
   resetFields();
   deleteAccountModal.value = true;
-  accountForDelete = account;
+  accountForDelete.value = account;
 }
 
 async function deleteAccount() {
   let oldAccounts = await db.getItem('accounts');
   let newAccounts = oldAccounts.filter(
-    (el) => el.address !== accountForDelete.address
+    (el) => el.address !== accountForDelete.value.address
   );
   await db.setItem('accounts', newAccounts);
   await scanWallet();
@@ -706,7 +710,6 @@ async function deleteAccount() {
 
 const openAccountDetails = (account) => {
   mainStore.SET_ACCOUNT_DETAILS(account);
-
   router.push('/account/details');
 };
 
@@ -741,7 +744,7 @@ async function scanWallet() {
 
 function closeDeleteModal() {
   deleteAccountModal.value = false;
-  accountForDelete = null;
+  accountForDelete.value = null;
 }
 
 function closeEditModal() {
@@ -1130,5 +1133,12 @@ svg {
 .archived-overlay .account-options,
 .active-overlay .account-options {
   opacity: 0;
+}
+
+.delete-acc-details {
+  margin: 24px 0;
+}
+.delete-acc-details .label {
+  font-weight: bold;
 }
 </style>
