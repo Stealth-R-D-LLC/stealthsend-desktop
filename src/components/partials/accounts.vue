@@ -354,10 +354,12 @@
                   >
                     <template #header> Delete Account </template>
                     <template #body>
-                      Do you want to delete account "{{accountForDelete.label}}" holding {{accountForDelete.utxo}} XST?
+                      Do you want to delete account "{{
+                        accountForDelete.label
+                      }}" holding {{ accountForDelete.utxo }} XST?
                       <div class="delete-acc-details">
                         <p class="label">XST Address:</p>
-                        <p>{{accountForDelete.address}}</p>
+                        <p>{{ accountForDelete.address }}</p>
                       </div>
                     </template>
                     <template #footer>
