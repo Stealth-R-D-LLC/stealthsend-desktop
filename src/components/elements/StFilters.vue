@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useMainStore } from '@/store';
 export default {
   name: 'StFilters',
@@ -110,8 +110,13 @@ export default {
       },
     ]);
     const mainStore = useMainStore();
-    const currentPeriod = ref({ label: '3d', value: 3 });
-    const currentDirection = ref({ label: 'All', value: '' });
+
+    const currentPeriod = computed(() => {
+      return mainStore.currentPeriod;
+    });
+    const currentDirection = computed(() => {
+      return mainStore.currentDirection;
+    });
 
     function changeFilter(filter) {
       mainStore.SET_CURRENT_PERIOD(filter);
