@@ -557,15 +557,15 @@ export default {
         isLoadMore.value = false;
         loadedTransactions = transactionsTmp;
       }
-      if (incrementBy.value > transactionsTmp.length) {
-        isLoadMore.value = false;
-      }
       // filter transactions based on selected filter
       let filteredDirection = filterByDirection(
         filterDirection,
         loadedTransactions
       );
       let filtered = filterByPeriod(filter, filteredDirection);
+      if (incrementBy.value > filtered.length) {
+        isLoadMore.value = false;
+      }
       // group transactions by date
       txs.value = groupBy(filtered, 'blocktimeDate');
     }
