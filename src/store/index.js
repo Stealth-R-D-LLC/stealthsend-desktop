@@ -224,39 +224,39 @@ export const useMainStore = defineStore({
       // Here we will find all the address inputs
       // that have referenced this transaction.
       const spent = // Loop each output
-        (
-          await Promise.all(
-            transaction.vout.map((item) => {
-              return new Promise((resolveFirst, rejectFirst) => {
-                Promise.all(
-                  // Loop each output address and gather its inputs
-                  // Check if any of the inputs has referenced this tx
-                  (item.scriptPubKey.addresses || []).map((address) => {
-                    return new Promise((resolveSecond, rejectSecond) => {
-                      this.getaddressinputs(address, 1, 99999)
-                        .then((res) => {
-                          const input =
-                            res.filter(
-                              (i) => i.prev_txid === transaction.txid
-                            )[0] || null;
+      (
+        await Promise.all(
+          transaction.vout.map((item) => {
+            return new Promise((resolveFirst, rejectFirst) => {
+              Promise.all(
+                // Loop each output address and gather its inputs
+                // Check if any of the inputs has referenced this tx
+                (item.scriptPubKey.addresses || []).map((address) => {
+                  return new Promise((resolveSecond, rejectSecond) => {
+                    this.getaddressinputs(address, 1, 99999)
+                      .then((res) => {
+                        const input =
+                          res.filter(
+                            (i) => i.prev_txid === transaction.txid
+                          )[0] || null;
 
-                          // We will resolve here for each address
-                          // input that has referenced this tx
-                          resolveSecond({
-                            address,
-                            input,
-                          });
-                        })
-                        .catch(rejectSecond);
-                    });
-                  })
-                )
-                  .then(resolveFirst)
-                  .catch(rejectFirst);
-              });
-            })
-          )
-        ).flat();
+                        // We will resolve here for each address
+                        // input that has referenced this tx
+                        resolveSecond({
+                          address,
+                          input,
+                        });
+                      })
+                      .catch(rejectSecond);
+                  });
+                })
+              )
+                .then(resolveFirst)
+                .catch(rejectFirst);
+            });
+          })
+        )
+      ).flat();
 
       // For "ease" of use we will create an object with address as key
       // and input as value
