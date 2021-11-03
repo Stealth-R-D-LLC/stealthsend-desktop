@@ -71,11 +71,11 @@
       <template #body>
         <template v-if="!isCleared">
           <p>
-            All of your accounts and your private keys are backed up by your
-            Recovery Phrase. If you can't remember your password, the only way
-            to regain access to your StealthSend application is to clear all
-            application data and restore from Recovery Phrase. After you restore
-            your backup you will be able to choose a new password.
+            All of your accounts are backed up by your Recovery Phrase. If you
+            can't remember your password, the only way to regain access to your
+            StealthSend application is to clear all application data and restore
+            from Recovery Phrase. After you restore your backup you will be able
+            to choose a new password.
           </p>
           <div class="info">
             <p>
