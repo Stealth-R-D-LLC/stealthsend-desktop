@@ -616,6 +616,7 @@ async function send() {
                 isPending: true,
               });
               clearInterval(txCheckInterval);
+              triesLeft = 0;
               await CryptoService.scanWallet();
               changeStep(6);
               emitter.emit('transactions:refresh');
