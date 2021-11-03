@@ -101,9 +101,12 @@
             </template>
           </template>
           <template v-else>
-            <SvgIcon name="icon-transactions-received" v-if="tx.amount > 0" />
+            <SvgIcon name="icon-transactions-pending" v-if="tx.isPending"/>
+
+            <SvgIcon name="icon-transactions-received" v-else-if="tx.amount > 0" />
 
             <SvgIcon name="icon-transactions-sent" v-else-if="tx.amount <= 0" />
+            <template v-if="tx.isPending">-</template>
             {{ formatAmount(tx.amount, false, 6, 6) }} XST
           </template>
         </p>
