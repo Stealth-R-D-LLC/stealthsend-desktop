@@ -683,11 +683,32 @@ const CryptoService = {
         return obj;
       }
 
+      let pendingTransactions = [];
+      for (let ptx of mainStore?.pendingTransactions) {
+        pendingTransactions.push(JSON.parse(JSON.stringify(ptx))); // avoid proxy
+      }
+
       let reducedTxs = [];
+      // logic for showing/hiding pending transactions
       for (const tx of txs) {
+        let found = pendingTransactions.find(el => el.txid === tx.txid);
+        if (found) {
+          // if current transaction is in pending transactions, remove it, we'll show only the real tx
+          mainStore.REMOVE_PENDING_TRANSACTION(tx.txid); // tx retrieved from chain, it is no longer pending
+          pendingTransactions = pendingTransactions.filter(el => el.txid !== tx.txid);
+        } 
+        
+        // push regular tx into array
         let result = JSON.parse(JSON.stringify(removeProps(tx), null, 4));
         reducedTxs.push(result);
       }
+      
+      // after this array has been reduced with the transactions that came in the meantime, concat the rest with the array of all txs
+      for (let pendingTx of mainStore?.pendingTransactions) {
+        reducedTxs.push(pendingTx);
+      }
+
+
 
       if (!targetAccount) {
         // do not store in store in case we are searching only for one account

@@ -72,14 +72,21 @@
                     </template>
                   </template>
                   <template v-else>
-                    <template v-if="item.amount > 0">
+                    <template v-if="item.isPending">
+                      <SvgIcon name="icon-transactions-pending" />
+                                            <template v-if="$route.name !== 'Dashboard'"
+                        >Pending</template
+                      >
+                    </template>
+                    <template v-else-if="!item.isPending && item.amount > 0">
                       <SvgIcon name="icon-transactions-received" />
+
                       <template v-if="$route.name !== 'Dashboard'"
                         >Received</template
                       >
                     </template>
 
-                    <template v-else-if="item.amount <= 0">
+                    <template v-else-if="!item.isPending && item.amount <= 0">
                       <SvgIcon name="icon-transactions-sent" />
                       <template v-if="$route.name !== 'Dashboard'"
                         >Sent</template
@@ -158,7 +165,7 @@
               </div>
             </template>
             <template #blocktime="{ item }">
-              {{ formatBlocktime(item.txinfo.blocktime) }}
+              {{ formatBlocktime(item.blocktime) }}
             </template>
             <template #amount="{ item }">
               <div
@@ -206,7 +213,7 @@
                     }}
                   </template>
                   <template v-else>
-                    {{ item.amount > 0 ? '+' : '-' }}
+                    {{ item.amount > 0 && !item.isPending ? '+' : '-' }}
                   </template>
                   <template
                     v-if="
