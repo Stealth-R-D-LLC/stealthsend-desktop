@@ -292,6 +292,7 @@ import emitter from '@/services/emitter';
 import { QrStream } from 'vue3-qr-reader';
 import SvgIcon from '../partials/SvgIcon.vue';
 import CircleProgress from '../partials/CircleProgress.vue';
+import getUnixTime from 'date-fns/getUnixTime';
 
 const sumOf = (x = 0, y = 0) => {
   let sum = addIt(x, y);
@@ -598,17 +599,26 @@ async function send() {
         let txCheckInterval = setInterval(() => {
           mainStore
             .rpc('gettransaction', [transactionResponse.txid])
-            .then(async () => {
+            .then(async (res) => {
               CryptoService.storeTxAndLabel(
                 transactionResponse.txid,
                 label.value
               );
-              setTimeout(async () => {
-                changeStep(6);
-                await CryptoService.scanWallet();
-                emitter.emit('transactions:refresh');
-                clearInterval(txCheckInterval);
-              }, 3500);
+              mainStore.ADD_PENDING_TRANSACTION({
+                account: account.value.label,
+                account_balance_change: amount.value,
+                amount: sumOf(amount.value, aproxFee.value),
+                txinfo: {
+                  blocktime: getUnixTime(new Date()),
+                },
+                blocktime: getUnixTime(new Date()),
+                txid: res.txid,
+                isPending: true,
+              });
+              clearInterval(txCheckInterval);
+              await CryptoService.scanWallet();
+              changeStep(6);
+              emitter.emit('transactions:refresh');
             })
             .catch((err) => {
               triesLeft = triesLeft - 1;
