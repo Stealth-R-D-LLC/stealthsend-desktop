@@ -604,21 +604,21 @@ async function send() {
                 transactionResponse.txid,
                 label.value
               );
-                mainStore.ADD_PENDING_TRANSACTION({
-                  account: account.value.label,
-                  account_balance_change: amount.value,
-                  amount: sumOf(amount.value, aproxFee.value),
-                  txinfo: {
-                    blocktime:  getUnixTime(new Date()),
-                  },
+              mainStore.ADD_PENDING_TRANSACTION({
+                account: account.value.label,
+                account_balance_change: amount.value,
+                amount: sumOf(amount.value, aproxFee.value),
+                txinfo: {
                   blocktime: getUnixTime(new Date()),
-                  txid: res.txid,
-                  isPending: true
-                });
-                clearInterval(txCheckInterval);
-                await CryptoService.scanWallet();
-                    changeStep(6);
-                emitter.emit('transactions:refresh');
+                },
+                blocktime: getUnixTime(new Date()),
+                txid: res.txid,
+                isPending: true,
+              });
+              clearInterval(txCheckInterval);
+              await CryptoService.scanWallet();
+              changeStep(6);
+              emitter.emit('transactions:refresh');
             })
             .catch((err) => {
               triesLeft = triesLeft - 1;

@@ -46,15 +46,16 @@ export const useMainStore = defineStore({
 
     pendingTransactions: [],
   }),
-  getters: {
-  },
+  getters: {},
   actions: {
     ADD_PENDING_TRANSACTION(tx) {
       this.pendingTransactions.push(tx);
       // this.wallet.txs.push(tx);
     },
     REMOVE_PENDING_TRANSACTION(txid) {
-      this.pendingTransactions = this.pendingTransactions.filter(el => el.txid !== txid);
+      this.pendingTransactions = this.pendingTransactions.filter(
+        (el) => el.txid !== txid
+      );
     },
     SET_CURRENT_PERIOD(payload) {
       this.currentPeriod = payload;
@@ -222,7 +223,8 @@ export const useMainStore = defineStore({
 
       // Here we will find all the address inputs
       // that have referenced this transaction.
-      const spent = ( // Loop each output
+      const spent = // Loop each output
+      (
         await Promise.all(
           transaction.vout.map((item) => {
             return new Promise((resolveFirst, rejectFirst) => {
