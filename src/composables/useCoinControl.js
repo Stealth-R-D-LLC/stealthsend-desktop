@@ -237,7 +237,7 @@ export default function useCoinControl(outputs, target) {
 
     // the complexity of the subsetSum algo is too big
     // simply skip this algo for "big" pools of data
-    result = outputs.length > 10 ? subsetSum(outputs, adjustedTarget) : []; 
+    result = outputs.length > 10 ? subsetSum(outputs, adjustedTarget) : [];
     console.info('COIN CONTROL: subsetSum() ', JSON.stringify(result));
     if (result.length > 0) {
       bestSet = [...result];
