@@ -342,7 +342,7 @@
                       >Edit Account Name</a
                     >
                   </li>
-                  <li>
+                  <li v-if="account.isImported">
                     <a @click="openDeleteAccountModal(account)"
                       >Delete Account</a
                     >
@@ -352,21 +352,48 @@
                     :visible="deleteAccountModal"
                     @close="closeDeleteModal"
                   >
-                    <template #header> Delete Account </template>
+                    <template #header>
+                      {{
+                        deleteAccountPasswordModal
+                          ? 'Enter Password'
+                          : 'Delete Account'
+                      }}
+                    </template>
                     <template #body>
-                      Do you want to delete account "{{
-                        accountForDelete.label
-                      }}" holding {{ accountForDelete.utxo }} XST?
-                      <div class="delete-acc-details">
-                        <p class="label">XST Address:</p>
-                        <p>{{ accountForDelete.address }}</p>
-                      </div>
+                      <template v-if="!deleteAccountPasswordModal">
+                        Do you want to delete account "{{
+                          accountForDelete.label
+                        }}" holding {{ accountForDelete.utxo }} XST?
+                        <div class="delete-acc-details">
+                          <p class="label">XST Address:</p>
+                          <p>{{ accountForDelete.address }}</p>
+                        </div>
+                      </template>
+                      <template v-else>
+                        <StFormItem
+                          label="Password"
+                          :filled="formDelete.accountPassword.$value"
+                          :error-message="formDelete.accountPassword.$errors"
+                        >
+                          <StInput
+                            id="password"
+                            v-model="formDelete.accountPassword.$value"
+                            type="password"
+                            placeholder="Please enter your password"
+                            @keyup.enter="deleteAccount"
+                          />
+                        </StFormItem>
+                      </template>
                     </template>
                     <template #footer>
-                      <StButton type="type-b" @click="closeDeleteModal"
-                        >Cancel</StButton
-                      >
-                      <StButton @click="deleteAccount()">Delete</StButton>
+                      <template v-if="!deleteAccountPasswordModal">
+                        <StButton type="type-b" @click="closeDeleteModal"
+                          >Cancel</StButton
+                        >
+                        <StButton @click="openPasswordModal()"
+                          >Confirm</StButton
+                        >
+                      </template>
                     </template>
                   </StModal>
                   <StModal
@@ -452,11 +479,14 @@ import db from '@/db';
 const mainStore = useMainStore();
 const accountOptions = ref('');
 const accountName = ref('');
+const accountPassword = ref('');
+const isValid = ref('');
 const { formatAmount } = useHelpers();
 let editAccountNameModal = ref(false);
 let activateAccountModal = ref(false);
 let archiveAccountModal = ref(false);
 let deleteAccountModal = ref(false);
+let deleteAccountPasswordModal = ref(false);
 let accounts = ref([]);
 let isDraggedActive = ref(false);
 let isDraggedInactive = ref(false);
@@ -475,6 +505,27 @@ const { form, validateFields, resetFields } = useValidation({
         }
         if (accounts.value.some((el) => el.label === accountName)) {
           return 'Account name already exists';
+        }
+      },
+    ],
+  },
+});
+
+const {
+  form: formDelete,
+  validateFields: validateAccountFields,
+  resetFields: resetAccountFields,
+} = useValidation({
+  accountPassword: {
+    $value: accountPassword,
+    $rules: [
+      async (accountPassword) => {
+        if (!accountPassword) {
+          return 'Password is required';
+        }
+        isValid.value = await CryptoService.validatePassword(accountPassword);
+        if (!isValid.value) {
+          return 'Incorrect password.';
         }
       },
     ],
@@ -700,14 +751,25 @@ async function openDeleteAccountModal(account) {
   accountForDelete.value = account;
 }
 
+function openPasswordModal() {
+  deleteAccountPasswordModal.value = true;
+}
+
 async function deleteAccount() {
-  let oldAccounts = await db.getItem('accounts');
-  let newAccounts = oldAccounts.filter(
-    (el) => el.address !== accountForDelete.value.address
-  );
-  await db.setItem('accounts', newAccounts);
-  await scanWallet();
-  closeDeleteModal();
+  try {
+    await validateAccountFields();
+    let oldAccounts = await db.getItem('accounts');
+    let newAccounts = oldAccounts.filter(
+      (el) => el.address !== accountForDelete.value.address
+    );
+    await db.setItem('accounts', newAccounts);
+    await scanWallet();
+    closeDeleteModal();
+  } catch (e) {
+    if (e instanceof ValidationError) {
+      console.log(e);
+    }
+  }
 }
 
 const openAccountDetails = (account) => {
@@ -745,8 +807,10 @@ async function scanWallet() {
 }
 
 function closeDeleteModal() {
+  deleteAccountPasswordModal.value = false;
   deleteAccountModal.value = false;
   accountForDelete.value = null;
+  resetAccountFields();
 }
 
 function closeEditModal() {
