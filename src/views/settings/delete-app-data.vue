@@ -6,8 +6,7 @@
       <div class="content" :class="{ content__full: isCleared }">
         <template v-if="!isCleared">
           <p class="desc">
-            All of your accounts and your private keys are backed up by your
-            Recovery Phrase.
+            All of your accounts are backed up by your Recovery Phrase.
           </p>
           <p class="desc">
             If you clear your Stealthsend application data, the only way to
