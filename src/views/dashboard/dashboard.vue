@@ -48,18 +48,6 @@ const componentVisibility = computed(() => {
   return mainStore.componentVisibility;
 });
 
-const checkFilters = computed(() => {
-  if (
-    mainStore.currentPeriod.value === 90 ||
-    mainStore.currentPeriod.value === 180 ||
-    mainStore.currentPeriod.value === 365
-  ) {
-    return true;
-  } else {
-    return false;
-  }
-});
-
 async function scanWallet() {
   await CryptoService.scanWallet();
   utxo.value = mainStore.wallet.utxo;
@@ -69,9 +57,7 @@ async function scanWallet() {
 
 onMounted(async () => {
   mainStore.START_GLOBAL_LOADING();
-  if (checkFilters.value) {
-    mainStore.SET_CURRENT_PERIOD({ label: '3d', value: 3 });
-  }
+  mainStore.SET_CURRENT_PERIOD({ label: '3d', value: 3 });
   await scanWallet();
   mainStore.STOP_GLOBAL_LOADING();
 });

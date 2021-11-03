@@ -433,7 +433,7 @@
           class="load-more"
           size="normal"
           type="type-a"
-          >Load More</StLink
+          >Load more</StLink
         >
         <h6 class="no-results" v-if="txDates.length === 0">
           No transaction data
@@ -871,5 +871,6 @@ export default {
   font-weight: bold;
   display: flex;
   margin: 22px auto;
+  font-family: 'Noto Sans' !important;
 }
 </style>
