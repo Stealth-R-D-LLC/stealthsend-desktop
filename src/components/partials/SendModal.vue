@@ -559,7 +559,6 @@ async function send() {
       'TRANSACTION BUILDER: candidates: ',
       JSON.stringify(unspentOutputs)
     );
-    console.info('TRANSACTION BUILDER: coin control: ', JSON.stringify(utxo));
     console.info('TRANSACTION BUILDER: entered amount: ', amount.value);
     console.info('TRANSACTION BUILDER: fee: ', aproxFee.value);
     console.info('TRANSACTION BUILDER: target amount: ', target);
@@ -616,7 +615,7 @@ async function send() {
                 isPending: true,
               });
               clearInterval(txCheckInterval);
-              triesLeft = 0;
+              triesLeft = -1;
               await CryptoService.scanWallet();
               changeStep(6);
               emitter.emit('transactions:refresh');
