@@ -44,16 +44,17 @@
                   <template
                     v-if="
                       wallet &&
-                      wallet.accounts.find((acc) => acc.label === item.account)
-                        .isImported
+                      wallet?.accounts?.find(
+                        (acc) => acc.label === item.account
+                      ).isImported
                     "
                   >
                     <template
                       v-if="
-                        item.txinfo.sources.find(
+                        item?.txinfo?.sources?.find(
                           (obj) =>
                             wallet &&
-                            wallet.accounts.find(
+                            wallet?.accounts?.find(
                               (acc) => acc.label === item.account
                             ).address === obj.addresses[0]
                         )
@@ -196,15 +197,16 @@
                   <template
                     v-if="
                       wallet &&
-                      wallet.accounts.find((acc) => acc.label === item.account)
-                        .isImported
+                      wallet?.accounts?.find(
+                        (acc) => acc.label === item.account
+                      ).isImported
                     "
                   >
                     {{
-                      item.txinfo.sources.find(
+                      item?.txinfo?.sources?.find(
                         (obj) =>
                           wallet &&
-                          wallet.accounts.find(
+                          wallet?.accounts?.find(
                             (acc) => acc.label === item.account
                           ).address === obj.addresses[0]
                       )
@@ -218,13 +220,14 @@
                   <template
                     v-if="
                       wallet &&
-                      wallet.accounts.find((acc) => acc.label === item.account)
-                        .isImported &&
+                      wallet?.accounts?.find(
+                        (acc) => acc.label === item.account
+                      ).isImported &&
                       wallet &&
-                      item.txinfo.sources.find(
+                      item?.txinfo?.sources?.find(
                         (obj) =>
                           wallet &&
-                          wallet.accounts.find(
+                          wallet?.accounts?.find(
                             (acc) => acc.label === item.account
                           ).address === obj.addresses[0]
                       )
@@ -306,16 +309,16 @@
                     <template
                       v-if="
                         wallet &&
-                        wallet.accounts.find(
+                        wallet?.accounts?.find(
                           (acc) => acc.label === item.account
                         ).isImported
                       "
                     >
                       {{
-                        item.txinfo.sources.find(
+                        item?.txinfo?.sources?.find(
                           (obj) =>
                             wallet &&
-                            wallet.accounts.find(
+                            wallet?.accounts?.find(
                               (acc) => acc.label === item.account
                             ).address === obj.addresses[0]
                         )
@@ -520,9 +523,9 @@ export default {
       let found = false;
       if (!txinfo) return found;
       else if (txinfo.vout) {
-        found = txinfo.vout.find((el) => el.scriptPubKey.type === 'feework');
+        found = txinfo?.vout?.find((el) => el.scriptPubKey.type === 'feework');
       } else if (txinfo.destinations) {
-        found = txinfo.destinations.find(
+        found = txinfo?.destinations?.find(
           (el) => el.amount === 0 && el.type === 'feework'
         );
       }
