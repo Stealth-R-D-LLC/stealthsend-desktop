@@ -44,8 +44,9 @@
                   <template
                     v-if="
                       wallet &&
-                      wallet?.accounts?.find((acc) => acc.label === item.account)
-                        .isImported
+                      wallet?.accounts?.find(
+                        (acc) => acc.label === item.account
+                      ).isImported
                     "
                   >
                     <template
@@ -196,8 +197,9 @@
                   <template
                     v-if="
                       wallet &&
-                      wallet?.accounts?.find((acc) => acc.label === item.account)
-                        .isImported
+                      wallet?.accounts?.find(
+                        (acc) => acc.label === item.account
+                      ).isImported
                     "
                   >
                     {{
@@ -218,8 +220,9 @@
                   <template
                     v-if="
                       wallet &&
-                      wallet?.accounts?.find((acc) => acc.label === item.account)
-                        .isImported &&
+                      wallet?.accounts?.find(
+                        (acc) => acc.label === item.account
+                      ).isImported &&
                       wallet &&
                       item?.txinfo?.sources?.find(
                         (obj) =>
