@@ -614,6 +614,7 @@ async function send() {
                 amount: sumOf(amount.value, aproxFee.value),
                 txinfo: {
                   blocktime: getUnixTime(new Date()),
+                  destinations: [depositAddress.value]
                 },
                 blocktime: getUnixTime(new Date()),
                 txid: res.txid,
