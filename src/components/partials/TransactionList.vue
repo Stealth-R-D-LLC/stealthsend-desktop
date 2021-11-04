@@ -49,8 +49,14 @@
                       ).isImported
                     "
                   >
+                    <template v-if="item.isPending">
+                      <SvgIcon name="icon-transactions-pending" />
+                      <template v-if="$route.name !== 'Dashboard'"
+                        >Pending</template
+                      >
+                    </template>
                     <template
-                      v-if="
+                      v-else-if="
                         item?.txinfo?.sources?.find(
                           (obj) =>
                             wallet &&
