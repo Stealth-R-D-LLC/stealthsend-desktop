@@ -6,14 +6,36 @@
         <StTooltip class="tooltip" tooltip="Edit Label">
           <SvgIcon name="icon-edit" @click="openEditMode" />
         </StTooltip>
-
-        <StTooltip
-          class="tooltip"
-          tooltip="Resend Transaction"
-          v-if="tx && tx.amount < 0"
+        <template
+          v-if="
+            tx &&
+            wallet &&
+            wallet.accounts.find((acc) => acc.label === tx.account).isImported
+          "
         >
-          <SvgIcon name="icon-redo-transaction" @click="redoTransaction" />
-        </StTooltip>
+          <template
+            v-if="
+              wallet &&
+              wallet.accounts.find((acc) => acc.label === tx.account) &&
+              wallet.accounts.find((acc) => acc.label === tx.account)
+                .address !== tx.vout[tx.position].scriptPubKey.addresses[0]
+            "
+          >
+            <StTooltip class="tooltip" tooltip="Resend Transaction">
+              <SvgIcon name="icon-redo-transaction" @click="redoTransaction" />
+            </StTooltip>
+          </template>
+        </template>
+
+        <template v-else>
+          <StTooltip
+            class="tooltip"
+            tooltip="Resend Transaction"
+            v-if="tx && tx.amount < 0"
+          >
+            <SvgIcon name="icon-redo-transaction" @click="redoTransaction" />
+          </StTooltip>
+        </template>
 
         <SvgIcon name="icon-close-primary" @click="close" />
       </div>
