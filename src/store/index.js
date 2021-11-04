@@ -37,6 +37,7 @@ export const useMainStore = defineStore({
     sendAddress: '',
     redoAccount: '',
     redoAmount: 0,
+    redoLabel: '',
     isLock: false,
     isMenuExpanded: false,
     layoutFlash: false,
@@ -77,6 +78,9 @@ export const useMainStore = defineStore({
     },
     SET_REDO_AMOUNT(payload) {
       this.redoAmount = payload;
+    },
+    SET_REDO_LABEL(payload) {
+      this.redoLabel = payload;
     },
     SET_FEELESS(payload) {
       this.isFeeless = payload;
