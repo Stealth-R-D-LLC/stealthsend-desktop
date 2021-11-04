@@ -614,7 +614,7 @@ async function send() {
                 amount: sumOf(amount.value, aproxFee.value),
                 txinfo: {
                   blocktime: getUnixTime(new Date()),
-                  destinations: [depositAddress.value]
+                  destinations: [depositAddress.value],
                 },
                 blocktime: getUnixTime(new Date()),
                 txid: res.txid,
@@ -661,11 +661,11 @@ async function validateSecondStep() {
     }
   }
 }
-  const subtractOf = (x = 0, y = 0) => {
-    let diff = subtract(x, y);
-    diff = format(diff, { precision: 14 });
-    return Number(diff);
-  };
+const subtractOf = (x = 0, y = 0) => {
+  let diff = subtract(x, y);
+  diff = format(diff, { precision: 14 });
+  return Number(diff);
+};
 async function validateFirstStep() {
   try {
     await validateFields();
