@@ -327,7 +327,7 @@
                       }}
                     </template>
                     <template v-else>
-                      {{ item.amount > 0 ? '+' : '-' }}
+                      {{ item.amount > 0 && !item.isPending ? '+' : '-' }}
                     </template>
                     {{
                       isHiddenAmounts
