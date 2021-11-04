@@ -200,9 +200,7 @@
                   }}
                 </template>
                 <template v-else>
-                  <template v-if="item.isPending">
-                   -
-                  </template>
+                  <template v-if="item.isPending"> - </template>
                   <template
                     v-else-if="
                       wallet &&
