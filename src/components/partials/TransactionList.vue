@@ -200,8 +200,9 @@
                   }}
                 </template>
                 <template v-else>
+                  <template v-if="item.isPending"> - </template>
                   <template
-                    v-if="
+                    v-else-if="
                       wallet &&
                       wallet?.accounts?.find(
                         (acc) => acc.label === item.account
@@ -312,8 +313,9 @@
                     }}
                   </template>
                   <template v-else>
+                    <template v-if="item.isPending">-</template>
                     <template
-                      v-if="
+                      v-else-if="
                         wallet &&
                         wallet?.accounts?.find(
                           (acc) => acc.label === item.account
