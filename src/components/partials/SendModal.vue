@@ -337,6 +337,10 @@ watchEffect(() => {
     }
   }
   if (currentStep.value === 2) {
+    console.log('STORE', mainStore.redoLabel);
+    if (mainStore.redoLabel) {
+      label.value = mainStore.redoLabel;
+    }
     if (mainStore.redoAmount > 0) {
       amount.value = mainStore.redoAmount;
       isFeeless.value = mainStore.isFeeless;
@@ -415,6 +419,7 @@ function closeModal() {
   mainStore.SET_MODAL_VISIBILITY('send', false);
   mainStore.SET_SEND_ADDRESS('');
   mainStore.SET_REDO_ACCOUNT('');
+  mainStore.SET_REDO_LABEL('');
   mainStore.SET_FEELESS(true);
   mainStore.SET_REDO_AMOUNT(null);
 
