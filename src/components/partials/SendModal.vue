@@ -337,7 +337,6 @@ watchEffect(() => {
     }
   }
   if (currentStep.value === 2) {
-    console.log('STORE', mainStore.redoLabel);
     if (mainStore.redoLabel) {
       label.value = mainStore.redoLabel;
     }
@@ -516,10 +515,11 @@ function findFee(fee = 0.01) {
   let newFee = useFeeEstimator(bestOutputs.length);
   // 5. if fee !== newFee, goTo step 1
   if (newFee.fee > fee) {
-    return findFee(newFee.fee);
+    findFee(newFee.fee);
+  } else {
+    aproxFee.value = newFee.fee;
+    return aproxFee.value;
   }
-  aproxFee.value = newFee.fee;
-  return aproxFee.value;
 }
 
 function coinSelection(targetAmount) {
@@ -614,7 +614,7 @@ async function send() {
                 amount: sumOf(amount.value, aproxFee.value),
                 txinfo: {
                   blocktime: getUnixTime(new Date()),
-                  destinations: [depositAddress.value]
+                  destinations: [depositAddress.value],
                 },
                 blocktime: getUnixTime(new Date()),
                 txid: res.txid,
@@ -661,6 +661,11 @@ async function validateSecondStep() {
     }
   }
 }
+const subtractOf = (x = 0, y = 0) => {
+  let diff = subtract(x, y);
+  diff = format(diff, { precision: 14 });
+  return Number(diff);
+};
 async function validateFirstStep() {
   try {
     await validateFields();
@@ -670,9 +675,7 @@ async function validateFirstStep() {
         (amount) => {
           let fee = findFee();
           // subtract real fee from amount
-          const maxAmount = format(subtract(account.value.utxo, fee), {
-            precision: 8,
-          });
+          const maxAmount = subtractOf(account.value.utxo, fee);
           if (inputAmountState.value === 'XST') {
             if (!amount || Number(amount) < minimumXSTForSend.value) {
               return 'Minimum amount is ' + minimumXSTForSend.value + ' XST';
@@ -707,9 +710,9 @@ function loadMax(item) {
   // check if amount is less than miminim amount for send
   // if not, find real fee
   amount.value = 0;
-  let fee = findFee();
+  let fee = aproxFee.value;
   // subtract real fee from amount
-  const maxAmount = format(subtract(item.utxo, fee), { precision: 14 });
+  const maxAmount = subtractOf(item.utxo, fee);
   form.amount.$value = maxAmount;
   setTimeout(() => (inputAmountState.value = 'USD'), 1);
   setTimeout(() => (inputAmountState.value = 'XST'), 1);
