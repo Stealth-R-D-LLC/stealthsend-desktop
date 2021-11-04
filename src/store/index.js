@@ -45,6 +45,7 @@ export const useMainStore = defineStore({
     currentDirection: { label: 'All', value: '' },
 
     pendingTransactions: [],
+    // {"account":"123123123","account_balance_change":1.05,"amount":1.06,"txinfo":{"blocktime":1636028004},"blocktime":1636028004,"txid":"2cd2b9277568066a2dd53fbee49635839829df804794101cdd9d450ae8c15e11","isPending":true}
   }),
   getters: {},
   actions: {

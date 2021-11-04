@@ -100,9 +100,9 @@
               wallet.accounts.find((acc) => acc.label === tx.account).isImported
             "
           >
-            <template v-if="item.isPending">
+            <template v-if="tx.isPending">
               <SvgIcon name="icon-transactions-pending" />
-              <template v-if="$route.name !== 'Dashboard'">Pending</template>
+              -{{ formatAmount(tx.amount, false, 6, 6) }} XST
             </template>
             <template
               v-else-if="
@@ -128,7 +128,6 @@
           </template>
           <template v-else>
             <SvgIcon name="icon-transactions-pending" v-if="tx.isPending" />
-
             <SvgIcon
               name="icon-transactions-received"
               v-else-if="tx.amount > 0"
