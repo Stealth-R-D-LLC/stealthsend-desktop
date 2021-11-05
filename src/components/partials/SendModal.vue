@@ -497,7 +497,6 @@ async function getUnspentOutputs(acc) {
   console.log('UNSPENT', unspentOutputs);
 }
 
-
 function findFee(fee = 0.01) {
   console.log('find fee');
   if (fee < aproxFee.value) fee = aproxFee.value;
@@ -723,7 +722,7 @@ function loadMax(item) {
   console.log('unspentOutputs', unspentOutputs);
   if (!isFeeless.value) {
     let feeObj = useFeeEstimator(unspentOutputs.length);
-    fee = feeObj.fee
+    fee = feeObj.fee;
   }
   console.log('feeeeee', fee);
   aproxFee.value = fee;
