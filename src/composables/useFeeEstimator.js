@@ -107,6 +107,7 @@ export default function useTransactionBuilder(inputs = 0, outputs = 2) {
   }
 
   function estimateFee(bytes = 1000) {
+    console.log('EST FEE', Math.ceil(bytes / 1000) / 100);
     return Math.ceil(bytes / 1000) / 100;
   }
 

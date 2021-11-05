@@ -398,7 +398,7 @@ const { form, remove, add, validateFields, resetFields } = useValidation({
 watch(
   () => isFeeless.value,
   () => {
-    findFee(0.01);
+    findFee();
   }
 );
 
@@ -452,7 +452,7 @@ async function scanWallet() {
   if (pickedAccount.value) {
     // already picked from account details
     account.value = { ...mainStore.accountDetails };
-    getUnspentOutputs(account.value);
+    await getUnspentOutputs(account.value);
     return;
   }
   if (mainStore.redoAccount) {
@@ -468,7 +468,7 @@ async function scanWallet() {
     )[0];
   }
 
-  getUnspentOutputs(account.value);
+  // getUnspentOutputs(account.value);
 }
 
 let unspentOutputs = [];
@@ -494,31 +494,37 @@ async function getUnspentOutputs(acc) {
     res = await mainStore.rpc('getaddressoutputs', [acc.address, 1, 99999]);
     unspentOutputs = fil((el) => el.isspent === 'false', res);
   }
+  console.log('UNSPENT', unspentOutputs);
 }
 
+
 function findFee(fee = 0.01) {
+  console.log('find fee');
+  if (fee < aproxFee.value) fee = aproxFee.value;
   if (isFeeless.value) {
     aproxFee.value = 0;
-    return 0;
+    return;
   }
   if (!amount.value || amount.value === 0) {
-    return 0.01;
+    aproxFee.value = 0.01;
+    return;
   }
   // steps:
   // 1. find unspentOutputs for selected account
   // 2. start with fee = 0.01
   // 3. target = sendForm.amount + fee
-  let target = sumOf(amount.value, fee);
+  let target = sumOf(amount.value, aproxFee.value);
   // 4. bestOutputs = coinControl(target, unspentOutputs)
   let bestOutputs = coinSelection(target);
   // 5. newFee = feeEstimator(bestOutputs.length)
   let newFee = useFeeEstimator(bestOutputs.length);
   // 5. if fee !== newFee, goTo step 1
   if (newFee.fee > fee) {
+    console.log('trazim opet');
     findFee(newFee.fee);
   } else {
+    console.log('naso konacno');
     aproxFee.value = newFee.fee;
-    return aproxFee.value;
   }
 }
 
@@ -673,9 +679,11 @@ async function validateFirstStep() {
       $value: amount,
       $rules: [
         (amount) => {
-          let fee = findFee();
+          // findFee();
+          let fee = aproxFee.value;
           // subtract real fee from amount
           const maxAmount = subtractOf(account.value.utxo, fee);
+          console.log('-----', fee, amount, maxAmount);
           if (inputAmountState.value === 'XST') {
             if (!amount || Number(amount) < minimumXSTForSend.value) {
               return 'Minimum amount is ' + minimumXSTForSend.value + ' XST';
@@ -710,7 +718,15 @@ function loadMax(item) {
   // check if amount is less than miminim amount for send
   // if not, find real fee
   amount.value = 0;
-  let fee = aproxFee.value;
+  let fee = 0;
+  // console.log('getUnspentOutputs(account.value)', getUnspentOutputs(account.value));
+  console.log('unspentOutputs', unspentOutputs);
+  if (!isFeeless.value) {
+    let feeObj = useFeeEstimator(unspentOutputs.length);
+    fee = feeObj.fee
+  }
+  console.log('feeeeee', fee);
+  aproxFee.value = fee;
   // subtract real fee from amount
   const maxAmount = subtractOf(item.utxo, fee);
   form.amount.$value = maxAmount;
