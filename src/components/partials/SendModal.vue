@@ -494,11 +494,9 @@ async function getUnspentOutputs(acc) {
     res = await mainStore.rpc('getaddressoutputs', [acc.address, 1, 99999]);
     unspentOutputs = fil((el) => el.isspent === 'false', res);
   }
-  console.log('UNSPENT', unspentOutputs);
 }
 
 function findFee(fee = 0.01) {
-  console.log('find fee');
   if (fee < aproxFee.value) fee = aproxFee.value;
   if (isFeeless.value) {
     aproxFee.value = 0;
@@ -519,10 +517,8 @@ function findFee(fee = 0.01) {
   let newFee = useFeeEstimator(bestOutputs.length);
   // 5. if fee !== newFee, goTo step 1
   if (newFee.fee > fee) {
-    console.log('trazim opet');
     findFee(newFee.fee);
   } else {
-    console.log('naso konacno');
     aproxFee.value = newFee.fee;
   }
 }
@@ -682,7 +678,6 @@ async function validateFirstStep() {
           let fee = aproxFee.value;
           // subtract real fee from amount
           const maxAmount = subtractOf(account.value.utxo, fee);
-          console.log('-----', fee, amount, maxAmount);
           if (inputAmountState.value === 'XST') {
             if (!amount || Number(amount) < minimumXSTForSend.value) {
               return 'Minimum amount is ' + minimumXSTForSend.value + ' XST';
@@ -719,12 +714,10 @@ function loadMax(item) {
   amount.value = 0;
   let fee = 0;
   // console.log('getUnspentOutputs(account.value)', getUnspentOutputs(account.value));
-  console.log('unspentOutputs', unspentOutputs);
   if (!isFeeless.value) {
     let feeObj = useFeeEstimator(unspentOutputs.length);
     fee = feeObj.fee;
   }
-  console.log('feeeeee', fee);
   aproxFee.value = fee;
   // subtract real fee from amount
   const maxAmount = subtractOf(item.utxo, fee);
