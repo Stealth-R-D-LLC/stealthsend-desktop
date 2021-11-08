@@ -61,14 +61,15 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       for await (let tx of utxo) {
         // get prevoutscript
         const txDetails = await mainStore.rpc('gettransaction', [tx.txid]);
-        let vout = txDetails.vout.find(
-          (el) =>
-            el.value === tx.amount &&
-            el.scriptPubKey.addresses.includes(tx.address)
-        );
+        // let vout = txDetails.vout.find(
+        //   (el) =>
+        //     el.value === tx.amount &&
+        //     el.scriptPubKey.addresses.includes(tx.address)
+        // );
+        let vout = txDetails.vout[tx.vout]; 
         rawTransaction.addInput(
           txDetails.txid,
-          vout.n,
+          vout.n, // same as tx.vout
           null,
           Buffer.from(vout.scriptPubKey.hex, 'hex')
         );
@@ -90,7 +91,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         ), // account amount - (send amount + fee)
       };
       console.log('TRANSACTION BUILDER: sumUtxo: ', sumUtxo);
-      console.log('TRANSACTION BUILDER: change: ', change);
+      console.log('TRANSACTION BUILDER: change: ', JSON.stringify(change));
       console.log(
         'TRANSACTION BUILDER: input amount: ',
         Number(sendForm.amount)
@@ -98,10 +99,6 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       console.log(
         'TRANSACTION BUILDER: calc: ',
         calculateChange(sumUtxo, Number(sendForm.amount))
-      );
-      console.log(
-        'TRANSACTION BUILDER: change min : ',
-        CryptoService.constraints.MINIMAL_CHANGE
       );
 
       // add the output for recipient
