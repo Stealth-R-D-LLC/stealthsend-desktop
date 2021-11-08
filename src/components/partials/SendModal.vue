@@ -77,10 +77,10 @@
               <div v-if="!isLoading">
                 <div class="multiselect-single-label">
                   <p class="account-label">
-                    {{ account && account.label }}
+                    {{ account && Object.keys(account).length > 0 && account?.label }}
                   </p>
                   <p class="account-utxo">
-                    {{ account && formatAmount(account.utxo, false, 6, 6) }}
+                    {{ account && Object.keys(account).length > 0 && formatAmount(account.utxo, false, 6, 6) }}
                   </p>
                 </div>
               </div>
@@ -313,7 +313,7 @@ const isVisible = computed(() => {
   return mainStore.modals.send;
 });
 const inputAmountState = ref('XST');
-const account = ref(null);
+const account = ref({});
 const amount = ref(null);
 const amountUSD = ref(null);
 const depositAddress = ref('');
@@ -410,7 +410,7 @@ watch(
       await CryptoService.scanWallet();
       await scanWallet();
       mainStore.checkRpcStatus();
-      if (mainStore.redoAmount && account.value) {
+      if (mainStore.redoAmount && Object.keys(account.value).length > 0) {
         await getUnspentOutputs(account.value);
       }
       console.log('c');
@@ -576,7 +576,7 @@ async function send() {
     console.info('TRANSACTION BUILDER: target amount: ', target);
 
     let transactionResponse = '';
-    if (account.value.wif && account.value.isImported) {
+    if (account?.value?.wif && account?.value?.isImported) {
       // build transaction for imported account
       transactionResponse = await useTransactionBuilderForImportedAccount(
         utxo,
@@ -590,7 +590,7 @@ async function send() {
     } else {
       console.log(
         'TRANSACTION BUILDER: sending from HD account',
-        account.value.xpub
+        account?.value?.xpub
       );
       // build transaction for native hd account
       try {
