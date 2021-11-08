@@ -86,12 +86,8 @@
               </div>
               <div v-else>
                 <div class="multiselect-single-label">
-                  <p class="account-label">
-                    Loading...
-                  </p>
-                  <p class="account-utxo">
-                    0.000000
-                  </p>
+                  <p class="account-label">Loading...</p>
+                  <p class="account-utxo">0.000000</p>
                 </div>
               </div>
             </template>
@@ -401,7 +397,7 @@ watch(
   }
 );
 
-  const isLoading = ref(false);
+const isLoading = ref(false);
 watch(
   () => isVisible.value,
   async () => {
@@ -415,7 +411,7 @@ watch(
       await scanWallet();
       mainStore.checkRpcStatus();
       if (mainStore.redoAmount && account.value) {
-        await getUnspentOutputs(account.value)
+        await getUnspentOutputs(account.value);
       }
       console.log('c');
       isLoading.value = false;
@@ -592,7 +588,10 @@ async function send() {
         }
       );
     } else {
-      console.log('TRANSACTION BUILDER: sending from HD account', account.value.xpub);
+      console.log(
+        'TRANSACTION BUILDER: sending from HD account',
+        account.value.xpub
+      );
       // build transaction for native hd account
       try {
         transactionResponse = await useTransactionBuilder(utxo, {
@@ -681,12 +680,12 @@ const subtractOf = (x = 0, y = 0) => {
 async function validateFirstStep() {
   try {
     await validateFields();
-        if (mainStore.redoLabel) {
+    if (mainStore.redoLabel) {
       label.value = mainStore.redoLabel;
     }
     if (mainStore.redoAmount > 0) {
       // setTimeout(() => {
-        amount.value = mainStore?.redoAmount || 0;
+      amount.value = mainStore?.redoAmount || 0;
       // }, 1);
       isFeeless.value = mainStore.isFeeless;
     } else {
