@@ -62,6 +62,7 @@ export default function useCoinControl(outputs, target) {
 
   function sumOfSmaller(utxo, adjustedTarget) {
     let sortedUtxo = orderBy(utxo, ['amount'], ['desc']);
+    if (!sortedUtxo || sortedUtxo.length === 0) return [];
 
     // The UTXO pool is reduced to only the UTXOs that are smaller than (adjustedTarget + minimalChange).
     // This subset will be referred to as smallerCoins henceforth. If the sum of smallerCoins matches adjustedTarget,

@@ -10,38 +10,14 @@ fieldset[disabled] .multiselect {
   border-color: var(--white) transparent transparent transparent;
 }
 
-
 .multiselect__spinner {
   position: absolute;
-  right: 1px;
-  top: 1px;
-  width: 48px;
-  height: 35px;
-  background: var(--white);
   display: block;
-}
-.multiselect__spinner::before,
-.multiselect__spinner::after {
   position: absolute;
-  content: "";
-  top: 50%;
-  left: 50%;
-  margin: -8px 0 0 -8px;
-  width: 16px;
-  height: 16px;
-  border-radius: 100%;
-  border-color: #41b883 transparent transparent;
-  border-style: solid;
-  border-width: 2px;
-  box-shadow: 0 0 0 1px transparent;
-}
-.multiselect__spinner::before {
-  animation: spinning 2.4s cubic-bezier(0.41, 0.26, 0.2, 0.62);
-  animation-iteration-count: infinite;
-}
-.multiselect__spinner::after {
-  animation: spinning 2.4s cubic-bezier(0.51, 0.09, 0.21, 0.8);
-  animation-iteration-count: infinite;
+  right: 16px;
+  height: 20px;
+  top: 14px;
+  display: block;
 }
 .multiselect__loading-enter-active,
 .multiselect__loading-leave-active {

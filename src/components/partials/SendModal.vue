@@ -54,7 +54,7 @@
       <template v-if="currentStep === 1">
         <StFormItem
           color="dark"
-          :filled="form.account.$value"
+          :filled="form?.account?.$value?.address"
           :error-message="form.account.$errors"
           label="Account"
         >
@@ -70,18 +70,29 @@
             :can-deselect="false"
             :clear-on-select="false"
             placeholder="Select account"
-            :disabled="!form.account.$value"
             @select="getUnspentOutputs"
             @remove="preventRemove($event)"
           >
             <template #singleLabel>
-              <div class="multiselect-single-label">
-                <p class="account-label">
-                  {{ account && account.label }}
-                </p>
-                <p class="account-utxo">
-                  {{ account && formatAmount(account.utxo, false, 6, 6) }}
-                </p>
+              <div v-if="!isLoading">
+                <div class="multiselect-single-label">
+                  <p class="account-label">
+                    {{ account && account.label }}
+                  </p>
+                  <p class="account-utxo">
+                    {{ account && formatAmount(account.utxo, false, 6, 6) }}
+                  </p>
+                </div>
+              </div>
+              <div v-else>
+                <div class="multiselect-single-label">
+                  <p class="account-label">
+                    Loading...
+                  </p>
+                  <p class="account-utxo">
+                    0.000000
+                  </p>
+                </div>
               </div>
             </template>
 
@@ -336,18 +347,6 @@ watchEffect(() => {
       depositAddress.value = mainStore.sendAddress;
     }
   }
-  if (currentStep.value === 2) {
-    if (mainStore.redoLabel) {
-      label.value = mainStore.redoLabel;
-    }
-    if (mainStore.redoAmount > 0) {
-      amount.value = mainStore.redoAmount;
-      isFeeless.value = mainStore.isFeeless;
-    } else {
-      setTimeout(() => (inputAmountState.value = 'USD'), 1);
-      setTimeout(() => (inputAmountState.value = 'XST'), 1);
-    }
-  }
   if (currentStep.value === 4) {
     sendTimeout.value = setTimeout(() => send(), 4900);
   }
@@ -402,14 +401,24 @@ watch(
   }
 );
 
+  const isLoading = ref(false);
 watch(
   () => isVisible.value,
-  () => {
+  async () => {
     if (!isVisible.value) {
       closeModal();
     } else {
-      scanWallet();
+      console.log('a', accounts.value);
+      isLoading.value = true;
+      console.log('b');
+      await CryptoService.scanWallet();
+      await scanWallet();
       mainStore.checkRpcStatus();
+      if (mainStore.redoAmount && account.value) {
+        await getUnspentOutputs(account.value)
+      }
+      console.log('c');
+      isLoading.value = false;
     }
   }
 );
@@ -424,7 +433,7 @@ function closeModal() {
 
   // reset all variables
   inputAmountState.value = 'XST';
-  accounts.value = [];
+  accounts.value = [{}];
   currentStep.value = 1;
   depositAddress.value = '';
   label.value = '';
@@ -442,8 +451,7 @@ function closeModal() {
   }
 }
 
-const accounts = ref([]);
-
+const accounts = ref([{}]);
 async function scanWallet() {
   accounts.value = fil(
     (el) => !el.isArchived && el.utxo > minimumXSTForSend.value,
@@ -452,8 +460,8 @@ async function scanWallet() {
   if (pickedAccount.value) {
     // already picked from account details
     account.value = { ...mainStore.accountDetails };
-    await getUnspentOutputs(account.value);
-    return;
+    // await getUnspentOutputs(account.value);
+    // return;
   }
   if (mainStore.redoAccount) {
     // redo account has a priority
@@ -468,12 +476,13 @@ async function scanWallet() {
     )[0];
   }
 
-  // getUnspentOutputs(account.value);
+  await getUnspentOutputs(account.value);
 }
 
 let unspentOutputs = [];
 
 async function getUnspentOutputs(acc) {
+  console.log('-------GET UNSPENT OUTPUTS-------');
   if (!acc || Object.keys(acc).length === 0) return;
   let res = [];
   if (acc.xpub) {
@@ -494,6 +503,7 @@ async function getUnspentOutputs(acc) {
     res = await mainStore.rpc('getaddressoutputs', [acc.address, 1, 99999]);
     unspentOutputs = fil((el) => el.isspent === 'false', res);
   }
+  console.log('RESULT', unspentOutputs);
 }
 
 function findFee(fee = 0.01) {
@@ -582,6 +592,7 @@ async function send() {
         }
       );
     } else {
+      console.log('TRANSACTION BUILDER: sending from HD account', account.value.xpub);
       // build transaction for native hd account
       try {
         transactionResponse = await useTransactionBuilder(utxo, {
@@ -624,8 +635,8 @@ async function send() {
               clearInterval(txCheckInterval);
               triesLeft = -1;
               await CryptoService.scanWallet();
-              changeStep(6);
               emitter.emit('transactions:refresh');
+              changeStep(6);
             })
             .catch((err) => {
               triesLeft = triesLeft - 1;
@@ -670,6 +681,18 @@ const subtractOf = (x = 0, y = 0) => {
 async function validateFirstStep() {
   try {
     await validateFields();
+        if (mainStore.redoLabel) {
+      label.value = mainStore.redoLabel;
+    }
+    if (mainStore.redoAmount > 0) {
+      // setTimeout(() => {
+        amount.value = mainStore?.redoAmount || 0;
+      // }, 1);
+      isFeeless.value = mainStore.isFeeless;
+    } else {
+      setTimeout(() => (inputAmountState.value = 'USD'), 1);
+      setTimeout(() => (inputAmountState.value = 'XST'), 1);
+    }
     add(['amount'], {
       $value: amount,
       $rules: [
@@ -690,7 +713,6 @@ async function validateFirstStep() {
       ],
     });
     changeStep(2);
-    findFee();
   } catch (e) {
     if (e instanceof ValidationError) {
       console.log(e);
