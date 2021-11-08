@@ -77,10 +77,18 @@
               <div v-if="!isLoading">
                 <div class="multiselect-single-label">
                   <p class="account-label">
-                    {{ account && Object.keys(account).length > 0 && account?.label }}
+                    {{
+                      account &&
+                      Object.keys(account).length > 0 &&
+                      account?.label
+                    }}
                   </p>
                   <p class="account-utxo">
-                    {{ account && Object.keys(account).length > 0 && formatAmount(account.utxo, false, 6, 6) }}
+                    {{
+                      account &&
+                      Object.keys(account).length > 0 &&
+                      formatAmount(account.utxo, false, 6, 6)
+                    }}
                   </p>
                 </div>
               </div>
@@ -404,16 +412,13 @@ watch(
     if (!isVisible.value) {
       closeModal();
     } else {
-      console.log('a', accounts.value);
       isLoading.value = true;
-      console.log('b');
       await CryptoService.scanWallet();
       await scanWallet();
       mainStore.checkRpcStatus();
       if (mainStore.redoAmount && Object.keys(account.value).length > 0) {
         await getUnspentOutputs(account.value);
       }
-      console.log('c');
       isLoading.value = false;
     }
   }
