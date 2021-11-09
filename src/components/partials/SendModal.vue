@@ -751,8 +751,8 @@ function loadMax(item) {
   aproxFee.value = fee;
   // subtract real fee from all utxos
   let sumUtxo = unspentOutputs
-        .map((el) => el.amount)
-        .reduce((a, b) => sumOf(a, b), 0)
+    .map((el) => el.amount)
+    .reduce((a, b) => sumOf(a, b), 0);
   const maxAmount = subtractOf(sumUtxo, fee);
   console.log('load max: max amount', maxAmount);
   console.log('load max: actual utxos', unspentOutputs);
