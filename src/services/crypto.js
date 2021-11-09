@@ -553,6 +553,7 @@ const CryptoService = {
     return JSON.parse(bytes);
   },
   async scanWallet(targetAccount = null, skipArchived = true) {
+    console.log('retrieving  whole wallet...');
     // extend function with targetAccount argument in case you want to refresh the state of a particular account (XST-801)
     const mainStore = useMainStore();
     // initially scan all accounts in the wallet for utxos

@@ -266,7 +266,7 @@
     <template #footer class="flex-center-all">
       <template v-if="currentStep === 1">
         <StButton
-          :disabled="!account || Object.keys(account).length === 0"
+          :disabled="!account || Object.keys(account).length === 0 || isLoading"
           type="type-d"
           @click="validateFirstStep"
           >Proceed</StButton
@@ -724,12 +724,15 @@ async function validateFirstStep() {
   }
 }
 
-function changeStep(step) {
+async function changeStep(step) {
   currentStep.value = step;
   if (step === 1) {
+    isLoading.value = true;
     // if going back from step 2 to step 1
     // remove address from validation
+    await CryptoService.scanWallet();
     remove(['amount']);
+    isLoading.value = false;
   }
 }
 
@@ -737,6 +740,7 @@ function loadMax(item) {
   // get amount from account
   // check if amount is less than miminim amount for send
   // if not, find real fee
+  console.log('load max for account: ', item);
   amount.value = 0;
   let fee = 0;
   // console.log('getUnspentOutputs(account.value)', getUnspentOutputs(account.value));
@@ -745,8 +749,13 @@ function loadMax(item) {
     fee = feeObj.fee;
   }
   aproxFee.value = fee;
-  // subtract real fee from amount
-  const maxAmount = subtractOf(item.utxo, fee);
+  // subtract real fee from all utxos
+  let sumUtxo = unspentOutputs
+        .map((el) => el.amount)
+        .reduce((a, b) => sumOf(a, b), 0)
+  const maxAmount = subtractOf(sumUtxo, fee);
+  console.log('load max: max amount', maxAmount);
+  console.log('load max: actual utxos', unspentOutputs);
   form.amount.$value = maxAmount;
   setTimeout(() => (inputAmountState.value = 'USD'), 1);
   setTimeout(() => (inputAmountState.value = 'XST'), 1);
