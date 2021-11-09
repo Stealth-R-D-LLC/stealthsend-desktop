@@ -416,9 +416,9 @@ watch(
       await CryptoService.scanWallet();
       await scanWallet();
       mainStore.checkRpcStatus();
-      if (mainStore.redoAmount && Object.keys(account.value).length > 0) {
-        await getUnspentOutputs(account.value);
-      }
+      // if (mainStore.redoAmount && Object.keys(account.value).length > 0) {
+      //   await getUnspentOutputs(account.value);
+      // }
       isLoading.value = false;
     }
   }
@@ -483,7 +483,7 @@ async function scanWallet() {
 let unspentOutputs = [];
 
 async function getUnspentOutputs(acc) {
-  console.log('-------GET UNSPENT OUTPUTS-------');
+  console.log('-------GET UNSPENT OUTPUTS-------', acc);
   if (!acc || Object.keys(acc).length === 0) return;
   let res = [];
   if (acc.xpub) {
@@ -504,6 +504,7 @@ async function getUnspentOutputs(acc) {
     res = await mainStore.rpc('getaddressoutputs', [acc.address, 1, 99999]);
     unspentOutputs = fil((el) => el.isspent === 'false', res);
   }
+  account.value = accounts.value.find(el => el.address === acc.address);
   console.log('RESULT', unspentOutputs);
 }
 
