@@ -731,6 +731,7 @@ async function changeStep(step) {
     // if going back from step 2 to step 1
     // remove address from validation
     await CryptoService.scanWallet();
+    await scanWallet();
     remove(['amount']);
     isLoading.value = false;
   }
