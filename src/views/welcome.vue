@@ -1601,8 +1601,12 @@ async function recover() {
     CryptoService.master = master;
     await CryptoService.storeWalletInDb(password.value);
     await CryptoService.storeMnemonicInWallet(selectedRecoveryWords.value);
-    const lastAccountPath = await CryptoService.findLastUsedAccountPath();
-    for (let i = 0; i <= lastAccountPath + 1; i++) {
+    let lastAccountPath = await CryptoService.findLastUsedAccountPath();
+    /* If first wallet in account have balance 0 and you try to restore it, lastAccountPath is NaN so we have to put lastAccountPath to 0 */
+    if (!lastAccountPath) {
+      lastAccountPath = 0;
+    }
+    for (let i = 0; i <= lastAccountPath; i++) {
       await restoreAccounts();
     }
     CryptoService.isFirstArrival = false;

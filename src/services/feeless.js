@@ -72,7 +72,7 @@ const FeelessJS = {
 
     const BYTES_SIZE = _getBytesSize(txUnsignedHex, inputsLength);
 
-    console.log('BYTES_SIZE', BYTES_SIZE);
+    console.log('BYTES_SIZE', JSON.stringify(BYTES_SIZE));
 
     BLOCKHASH = BLOCKHASH.match(/.{1,2}/g)
       .reverse()
@@ -283,17 +283,20 @@ const FeelessJS = {
     let limit_denary = this._getLimitDenary();
     let work = Buffer.from('cc807acecec4b2b4', 'hex');
 
-    console.log('data', data);
-    console.log('work', work);
+    console.log('data', JSON.stringify(data));
+    console.log('work', JSON.stringify(work));
     let hash_denary = await this._getHashWithArgon2(data, work, mcost);
     let work_denary = work.readBigUInt64BE();
     console.log(
       'hash denary is %s, limit denary is %s, work denary is %s',
-      hash_denary,
-      limit_denary,
-      work_denary
+      JSON.stringify(hash_denary),
+      JSON.stringify(limit_denary),
+      JSON.stringify(work_denary)
     );
-    console.log('hash denary < limit denary: %s', hash_denary < limit_denary);
+    console.log(
+      'hash denary < limit denary: %s',
+      JSON.stringify(hash_denary < limit_denary)
+    );
     return hash_denary;
   },
 };

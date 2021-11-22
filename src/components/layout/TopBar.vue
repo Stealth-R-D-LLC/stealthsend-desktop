@@ -48,7 +48,7 @@
               />
             </StTooltip>
 
-            <StTooltip class="tooltip" tooltip="Account Keys">
+            <StTooltip class="tooltip" tooltip="Account Key">
               <SvgIcon name="icon-account-keys" @click="isVisible = true" />
             </StTooltip>
           </div>
@@ -108,7 +108,7 @@
         </template>
       </div>
 
-      <div class="header-right">
+      <div class="header-right" :class="{ 'header-right--loading': isLoading }">
         <p class="rpc-status">{{ rpcStatus }}</p>
 
         <StTooltip class="tooltip" tooltip="Connected to Mainnet">
@@ -130,22 +130,17 @@
         @close="closeModal"
         class="account-modal"
       >
-        <template #header>{{
-          checkPassword
-            ? 'Password Required'
-            : account?.isImported
-            ? 'Account Keys'
-            : 'Account Key'
-        }}</template>
+        <template #header>Account Key</template>
         <template #body>
           <div v-if="!checkPassword" class="account-tabs">
             <a
+              v-if="account && !account.isImported && activeStep.length > 0"
               :class="{ active: activeStep === 'public-key' }"
               @click="changeStep('public-key')"
               >Public Key</a
             >
             <a
-              v-if="account && account.isImported"
+              v-if="account && account.isImported && activeStep.length > 0"
               :class="{ active: activeStep === 'private-key' }"
               @click="changeStep('private-key')"
               >Private Key</a
@@ -161,13 +156,21 @@
               </div>
               <p class="bold" v-if="!account?.isImported">xpub</p>
               <p class="bold" v-else>Public Key</p>
-              <p class="key">{{ publicKey }}</p>
+              <p class="key" :class="{ 'key-right': !publicKey }">
+                <template v-if="publicKey">{{ publicKey }}</template>
+                <SvgIcon
+                  v-else
+                  name="icon-loader-address"
+                  class="address-loader"
+                />
+              </p>
               <div class="copy-key">
                 <p>
-                  Copy <span v-if="!account?.isImported">xpub</span>
+                  Copy
+                  <span v-if="!account?.isImported">xpub</span>
                   <span v-else>public key</span> to clipboard or show QR code
                 </p>
-                <div>
+                <div :class="{ 'copy-key--loading': !publicKey }">
                   <StTooltip
                     :tooltip="
                       copyPending ? 'Copied to Clipboard!' : 'Copy to Clipboard'
@@ -359,7 +362,7 @@ const route = useRoute();
 const isVisible = ref(false);
 const accountVisible = ref(false);
 const rpcStatus = ref('');
-const activeStep = ref('public-key');
+const activeStep = ref('');
 const publicKey = ref('');
 const privateKey = ref('');
 const publicQrCode = ref('');
@@ -428,6 +431,10 @@ const isHiddenAmounts = computed(() => {
   return mainStore.isAmountsHidden;
 });
 
+const isLoading = computed(() => {
+  return mainStore.globalLoading;
+});
+
 onMounted(async () => {
   if (!componentVisibility.value.chart) {
     toggleComponentVisibility('chart');
@@ -457,8 +464,16 @@ watch(
   () => isVisible.value,
   async () => {
     if (isVisible.value) {
+      if (account.value.isImported) {
+        // activeStep.value = 'private-key'
+        // manually trigger retrieving keys
+        changeStep('private-key', true);
+      } else {
+        // activeStep.value = 'public-key'
+        changeStep('public-key', true);
+        getPublicKey();
+      }
       await CryptoService.scanWallet();
-      getPublicKey();
     }
   }
 );
@@ -630,8 +645,8 @@ function amountFormat(account) {
 async function accountChanged(account) {
   mainStore.START_GLOBAL_LOADING();
   mainStore.SET_ACCOUNT_DETAILS(account);
-  await CryptoService.scanWallet();
   accountVisible.value = false;
+  await CryptoService.scanWallet();
   mainStore.STOP_GLOBAL_LOADING();
 }
 
@@ -643,9 +658,6 @@ function openAccountModal() {
 function selectAccount(account) {
   showArrow.value = account;
 }
-
-// manually trigger retrieving keys
-changeStep('public-key', true);
 </script>
 
 <style scoped>
@@ -690,6 +702,14 @@ changeStep('public-key', true);
 .header-right {
   justify-content: flex-end;
   min-height: 24px;
+}
+
+.header-right--loading .tooltip :deep svg {
+  pointer-events: none;
+}
+
+.header-right--loading .tooltip {
+  cursor: not-allowed;
 }
 
 .header-left div + div,
@@ -824,12 +844,53 @@ changeStep('public-key', true);
   padding-bottom: 16px;
   border-bottom: 1px solid var(--grey100);
 }
+.key-right {
+  text-align: right;
+}
+.address-loader {
+  animation: rotating 2s linear infinite;
+}
+.address-loader :deep circle {
+  stroke: var(--marine500);
+}
+@-webkit-keyframes rotating /* Safari and Chrome */ {
+  from {
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes rotating {
+  from {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
 .copy-key {
   margin-top: 17px;
   margin-bottom: 49px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+.copy-key--loading {
+  pointer-events: none;
+  opacity: 0.6;
 }
 .copy-key__private {
   margin-bottom: 81px;

@@ -6,14 +6,36 @@
         <StTooltip class="tooltip" tooltip="Edit Label">
           <SvgIcon name="icon-edit" @click="openEditMode" />
         </StTooltip>
-
-        <StTooltip
-          class="tooltip"
-          tooltip="Resend Transaction"
-          v-if="tx && tx.amount < 0"
+        <template
+          v-if="
+            tx &&
+            wallet &&
+            wallet.accounts.find((acc) => acc.label === tx.account).isImported
+          "
         >
-          <SvgIcon name="icon-redo-transaction" @click="redoTransaction" />
-        </StTooltip>
+          <template
+            v-if="
+              wallet &&
+              wallet.accounts.find((acc) => acc.label === tx.account) &&
+              wallet.accounts.find((acc) => acc.label === tx.account)
+                .address !== tx.vout[tx.position].scriptPubKey.addresses[0]
+            "
+          >
+            <StTooltip class="tooltip" tooltip="Resend Transaction">
+              <SvgIcon name="icon-redo-transaction" @click="redoTransaction" />
+            </StTooltip>
+          </template>
+        </template>
+
+        <template v-else>
+          <StTooltip
+            class="tooltip"
+            tooltip="Resend Transaction"
+            v-if="tx && tx.amount < 0"
+          >
+            <SvgIcon name="icon-redo-transaction" @click="redoTransaction" />
+          </StTooltip>
+        </template>
 
         <SvgIcon name="icon-close-primary" @click="close" />
       </div>
@@ -49,11 +71,72 @@
       </div>
       <div class="item">
         <p class="bold">Amount</p>
-        <p class="amount">
-          <SvgIcon name="icon-transactions-received" v-if="tx.amount > 0" />
+        <p
+          class="amount"
+          v-if="
+            tx.vout &&
+            tx.vout[0] &&
+            tx.vout[0].scriptPubKey &&
+            tx.vout[0].scriptPubKey.type === 'nonstandard'
+          "
+        >
+          <SvgIcon name="icon-transactions-received" />
+          {{
+            formatAmount(
+              tx.vout &&
+                tx.vout[tx.vout.length - 1] &&
+                tx.vout[tx.vout.length - 1].value,
+              false,
+              6,
+              6
+            )
+          }}
+          XST
+        </p>
+        <p v-else class="amount">
+          <template
+            v-if="
+              wallet &&
+              wallet.accounts.find((acc) => acc.label === tx.account).isImported
+            "
+          >
+            <template v-if="tx.isPending">
+              <SvgIcon name="icon-transactions-pending" />
+              -{{ formatAmount(tx.amount, false, 6, 6) }} XST
+            </template>
+            <template
+              v-else-if="
+                wallet &&
+                wallet.accounts.find((acc) => acc.label === tx.account)
+                  .address === tx.vout[tx.position].scriptPubKey.addresses[0]
+              "
+            >
+              <SvgIcon name="icon-transactions-received" />
+              {{ formatAmount(tx.amount, false, 6, 6) }} XST
+            </template>
+            <template v-else>
+              <SvgIcon name="icon-transactions-sent" />
+              <template v-if="!loadingFee">
+                -{{ formatAmount(Math.abs(tx.amount + fees), false, 6, 6) }} XST
+              </template>
+              <SvgIcon
+                v-else
+                name="icon-loader-address"
+                class="address-loader"
+              />
+            </template>
+          </template>
+          <template v-else>
+            <SvgIcon name="icon-transactions-pending" v-if="tx.isPending" />
+            <SvgIcon
+              name="icon-transactions-received"
+              v-else-if="tx.amount > 0"
+            />
 
-          <SvgIcon name="icon-transactions-sent" v-else-if="tx.amount <= 0" />
-          {{ formatAmount(tx.amount, false, 6, 6) }} XST
+            <SvgIcon name="icon-transactions-sent" v-else-if="tx.amount <= 0" />
+            <template v-if="tx.isPending">-</template>
+            {{ formatAmount(tx.amount, false, 6, 6) }} XST
+          </template>
         </p>
       </div>
       <div class="item">
@@ -67,15 +150,43 @@
       <div class="item">
         <p class="bold">Receiving Address</p>
         <p
-          v-if="tx && tx.vout && tx.vout.length && tx.vout[tx.position]"
+          v-if="
+            tx.vout &&
+            tx.vout[0] &&
+            tx.vout[0].scriptPubKey &&
+            tx.vout[0].scriptPubKey.type === 'nonstandard'
+          "
           class="item-link pointer"
           @click="
-            openAddressExplorer(tx.vout[tx.position].scriptPubKey.addresses[0])
+            openAddressExplorer(
+              tx.vout[tx.vout.length - 1].scriptPubKey.addresses[0]
+            )
           "
         >
-          {{ tx.vout[tx.position].scriptPubKey.addresses[0] }}
+          {{ tx.vout[tx.vout.length - 1].scriptPubKey.addresses[0] }}
         </p>
-        <p v-else>-</p>
+        <template v-else>
+          <p
+            v-if="
+              tx &&
+              tx.vout &&
+              tx.vout.length &&
+              tx.vout[tx.position] &&
+              tx.vout[tx.position].scriptPubKey &&
+              tx.vout[tx.position].scriptPubKey.addresses &&
+              tx.vout[tx.position].scriptPubKey.addresses[0]
+            "
+            class="item-link pointer"
+            @click="
+              openAddressExplorer(
+                tx.vout[tx.position].scriptPubKey.addresses[0]
+              )
+            "
+          >
+            {{ tx.vout[tx.position].scriptPubKey.addresses[0] }}
+          </p>
+          <p v-else>-</p>
+        </template>
       </div>
       <div class="item">
         <p class="bold">Transaction ID</p>
@@ -83,18 +194,42 @@
           {{ tx.txid }}
         </p>
       </div>
-      <div class="item">
-        <p>Confirmations</p>
-        <p>{{ tx.confirmations }}</p>
+      <div class="item item--grid">
+        <div>
+          <p class="bold">Confirmations</p>
+          <p>{{ tx.confirmations }}</p>
+        </div>
+        <div>
+          <p class="bold">Network Fee</p>
+          <p v-if="!loadingFee">
+            <template
+              v-if="
+                tx.vout &&
+                tx.vout[0] &&
+                tx.vout[0].scriptPubKey &&
+                tx.vout[0].scriptPubKey.type === 'nonstandard'
+              "
+            >
+              {{ formatAmount(fees, false, 6, 6) }} XST
+            </template>
+            <template v-else>
+              {{ formatAmount(fees, false, 6, 6).replace('-', '') }} XST
+            </template>
+          </p>
+          <SvgIcon v-else name="icon-loader-address" class="address-loader" />
+        </div>
       </div>
       <div class="item">
-        <p>Date</p>
+        <p class="bold">Date</p>
         <p>{{ formatBlocktime(tx.blocktime, 'd MMM, y, h:mm:ss a') }}</p>
       </div>
       <p class="more-info bold" @click="openBlockExplorer(tx.txid)">
         View on StealthMonitor.org
       </p>
     </div>
+    <template v-else>
+      <StSkeletonLoader type="tx-details" />
+    </template>
   </div>
 </template>
 
@@ -105,6 +240,7 @@ import useHelpers from '@/composables/useHelpers';
 import CryptoService from '@/services/crypto';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import SvgIcon from '../partials/SvgIcon.vue';
+import StSkeletonLoader from '@/components/loader/StSkeletonLoader.vue';
 
 const mainStore = useMainStore();
 const { formatBlocktime, formatAmount } = useHelpers();
@@ -112,6 +248,8 @@ const { formatBlocktime, formatAmount } = useHelpers();
 const tx = ref(null);
 const editMode = ref(false);
 const label = ref('');
+const txDetails = ref(null);
+const loadingFee = ref(true);
 
 const { form, validateFields } = useValidation({
   label: {
@@ -131,6 +269,10 @@ watch(
   async () => {
     if (mainStore.offCanvasData && mainStore.offCanvasData.txid) {
       await getTx(mainStore.offCanvasData.txid);
+      await mainStore.getTxFee(mainStore.offCanvasData.txid).then((res) => {
+        txDetails.value = res;
+        loadingFee.value = false;
+      });
       if (mainStore.offCanvasData.isEditMode) {
         openEditMode();
       }
@@ -143,12 +285,42 @@ const txWithLabels = computed(() => {
   return mainStore.txWithLabels;
 });
 
+const totalOutput = computed(() => {
+  if (!txDetails.value) {
+    return 0;
+  }
+
+  return txDetails.value.vout.reduce((total, item) => {
+    return total + item.value;
+  }, 0);
+});
+
+const totalInput = computed(() => {
+  if (!txDetails.value) {
+    return 0;
+  }
+
+  return txDetails.value.vin.reduce((total, item) => {
+    return total + (item.output || {}).value || 0;
+  }, 0);
+});
+
+const fees = computed(() => {
+  return totalInput.value - totalOutput.value;
+});
+
+const wallet = computed(() => {
+  return mainStore.wallet;
+});
+
 function close() {
   mainStore.TOGGLE_DRAWER(false);
   setTimeout(() => {
     mainStore.SET_ADDRESS_ACTIVE_TAB('address-book');
     mainStore.SET_OFF_CANVAS_DATA(null);
     mainStore.SET_CURRENT_CANVAS('');
+    tx.value = null;
+    loadingFee.value = true;
   }, 100);
   editMode.value = false;
 }
@@ -235,6 +407,7 @@ function redoTransaction() {
   mainStore.SET_SEND_ADDRESS(tx.value.vout[0].scriptPubKey.addresses[0]);
   mainStore.SET_REDO_ACCOUNT(tx.value.account);
   mainStore.SET_REDO_AMOUNT(tx.value.vout[0].value);
+  mainStore.SET_REDO_LABEL(txWithLabels.value[tx.value.txid]);
   mainStore.SET_MODAL_VISIBILITY('send', true);
   mainStore.SET_FEELESS(isFeeless);
   close();
@@ -259,6 +432,10 @@ function redoTransaction() {
   padding: 16px 0;
   font-size: 12px;
 }
+.item--grid {
+  display: grid;
+  grid-template-columns: 6fr 6fr;
+}
 .item--label {
   padding: 30px 0 24px;
   margin-bottom: 12px;
@@ -279,6 +456,41 @@ function redoTransaction() {
 }
 .item p :deep svg {
   margin-right: 12px;
+}
+
+.address-loader {
+  animation: rotating 2s linear infinite;
+}
+.address-loader :deep circle {
+  stroke: var(--marine500);
+}
+@-webkit-keyframes rotating /* Safari and Chrome */ {
+  from {
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes rotating {
+  from {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
 }
 .body {
   display: flex;

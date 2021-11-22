@@ -6,9 +6,8 @@ Stealth desktop App for MacOs, Linux and Windows.
 * Postman Workspace: https://barrage-team.postman.co/workspace/Stealth~d7086fad-cb9c-4467-a6f2-37514d478f79
 
 Main technologies:
-* Vue (3.0.x)
-* Electron (11.2.x)
-* Vite (2.0.x beta)
+* Vue (3.2.0)
+* Electron (13.x.x)
 * PostCSS (8.2.x) 
 
 ### Prerequisites
@@ -19,7 +18,7 @@ v12.18.2
 ```
 ```
 └─ $ ▶ npm -v
-6.14.5 
+7.5.4 
 ```
 
 ### Initial configuration for running and developing

@@ -53,11 +53,11 @@ async function scanWallet() {
   utxo.value = mainStore.wallet.utxo;
   transactions.value = mainStore.wallet.txs;
   accounts.value = mainStore.wallet.accounts;
-  console.log('-', transactions.value);
 }
 
 onMounted(async () => {
   mainStore.START_GLOBAL_LOADING();
+  mainStore.SET_CURRENT_PERIOD({ label: '3d', value: 3 });
   await scanWallet();
   mainStore.STOP_GLOBAL_LOADING();
 });

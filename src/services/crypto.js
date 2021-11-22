@@ -552,7 +552,8 @@ const CryptoService = {
     let bytes = cryptoJs.AES.decrypt(decData, key).toString(cryptoJs.enc.Utf8);
     return JSON.parse(bytes);
   },
-  async scanWallet(targetAccount = null) {
+  async scanWallet(targetAccount = null, skipArchived = true) {
+    console.log('retrieving  whole wallet...');
     // extend function with targetAccount argument in case you want to refresh the state of a particular account (XST-801)
     const mainStore = useMainStore();
     // initially scan all accounts in the wallet for utxos
@@ -563,91 +564,43 @@ const CryptoService = {
       let balance = 0;
       let txs = [];
       let newAccounts = [];
+      console.log('debug accounts: ', JSON.stringify(accounts));
       for (let account of accounts) {
         if (targetAccount && account.address !== targetAccount.address)
           continue; // in case a target account is passed, run the scan only for that account
         let accUtxo = 0;
         let allTransactions = [];
         if (account.isImported && account.wif) {
-          let importedAccountBalance = 0;
-          try {
-            importedAccountBalance = await mainStore.rpc('getaddressbalance', [
-              account.address,
-            ]);
-          } catch (error) {
-            console.log(
-              'Cannot find address, probably no transactions, continuing anyways'
-            );
-          }
-
           await mainStore
-            .rpc('getaddressinputs', [account.address, 1, 10000])
-            .then(async (inputs) => {
-              const allInputsTxIdArray = inputs.map((input) => [input.txid]);
-              let inputsTransactions = await mainStore.rpcMulti(
-                'gettransaction',
-                allInputsTxIdArray
-              );
-              for (let txIndex in inputsTransactions) {
-                let indexOfDestination = inputsTransactions[
-                  txIndex
-                ].vout.findIndex(
-                  (dest) =>
-                    dest.scriptPubKey.addresses &&
-                    dest.scriptPubKey.addresses[0] !== account.address
-                );
-                allTransactions.push({
-                  ...inputs[txIndex],
-                  account: account.label,
-                  amount: -inputs[txIndex].amount,
-                  txinfo: {
-                    ...inputsTransactions[txIndex],
-                  },
-                  output:
-                    indexOfDestination === -1
-                      ? []
-                      : [
-                          inputsTransactions[txIndex].vout[indexOfDestination]
-                            .scriptPubKey,
-                        ],
-                });
+            .rpc('getaddresstxspg', [account.address, 1, 99999])
+            .then((res) => {
+              const txs = res.data;
+              if (!account.isArchived) {
+                for (const tx of txs) {
+                  if (tx.amount === 0) {
+                    continue;
+                  }
+                  allTransactions.push({
+                    account: account.label,
+                    amount: tx.txinfo.destinations[0].amount,
+                    account_balance_change: tx.txinfo.destinations[0].amount,
+                    blocktime: tx.txinfo.blocktime,
+                    txinfo: tx.txinfo,
+                    outputs: tx.address_outputs,
+                    inputs: tx.address_inputs,
+                    txid: tx.txid,
+                  });
+                  accUtxo = tx.balance;
+                }
+              } else {
+                accUtxo = txs.length > 0 ? txs[txs.length - 1].balance : 0;
               }
+
+              newAccounts.push({
+                ...account,
+                utxo: Number(accUtxo),
+              });
             });
-          await mainStore
-            .rpc('getaddressoutputs', [account.address, 1, 10000])
-            .then(async (outputs) => {
-              const allOutputsTxIdArray = outputs.map((output) => [
-                output.txid,
-              ]);
-              let outputTransactions = await mainStore.rpcMulti(
-                'gettransaction',
-                allOutputsTxIdArray
-              );
-              for (let txIndex in outputTransactions) {
-                allTransactions.push({
-                  ...outputs[txIndex],
-                  account: account.label,
-                  txinfo: {
-                    ...outputTransactions[txIndex],
-                  },
-                  output: [
-                    outputTransactions[txIndex].vout[outputs[txIndex].vout]
-                      .scriptPubKey,
-                  ],
-                });
-              }
-            });
-
-          accUtxo = add(accUtxo, importedAccountBalance);
-          accUtxo = format(accUtxo, { precision: 14 });
-
-          newAccounts.push({
-            ...account,
-            utxo: accUtxo,
-          });
-
-          const processed = this.processImportedTxs(allTransactions);
-          allTransactions = processed;
         } else {
           await mainStore
             .rpc('gethdaccount', [account.xpub])
@@ -672,14 +625,15 @@ const CryptoService = {
                 if (indexOfDestination === -1) {
                   indexOfDestination = 0;
                 }
-
-                allTransactions.push({
-                  ...tx,
-                  output: [tx.txinfo.destinations[indexOfDestination]],
-                  amount: tx.account_balance_change,
-                  blocktime: tx.txinfo.blocktime,
-                  account: account.label,
-                });
+                if (!account.isArchived) {
+                  allTransactions.push({
+                    ...tx,
+                    output: [tx.txinfo.destinations[indexOfDestination]],
+                    amount: tx.account_balance_change,
+                    blocktime: tx.txinfo.blocktime,
+                    account: account.label,
+                  });
+                }
               }
             });
 
@@ -730,22 +684,45 @@ const CryptoService = {
         return obj;
       }
 
+      let pendingTransactions = [];
+      for (let ptx of mainStore?.pendingTransactions) {
+        pendingTransactions.push(JSON.parse(JSON.stringify(ptx))); // avoid proxy
+      }
+
       let reducedTxs = [];
+      // logic for showing/hiding pending transactions
       for (const tx of txs) {
+        let found = pendingTransactions.find((el) => el.txid === tx.txid);
+        if (found) {
+          // if current transaction is in pending transactions, remove it, we'll show only the real tx
+          mainStore.REMOVE_PENDING_TRANSACTION(tx.txid); // tx retrieved from chain, it is no longer pending
+          pendingTransactions = pendingTransactions.filter(
+            (el) => el.txid !== tx.txid
+          );
+        }
+
+        // push regular tx into array
         let result = JSON.parse(JSON.stringify(removeProps(tx), null, 4));
         reducedTxs.push(result);
+      }
+
+      // after this array has been reduced with the transactions that came in the meantime, concat the rest with the array of all txs
+      for (let pendingTx of mainStore?.pendingTransactions) {
+        reducedTxs.push(pendingTx);
       }
 
       if (!targetAccount) {
         // do not store in store in case we are searching only for one account
         mainStore.SET_WALLET({
-          utxo: balance, // sum of all utxo (except archived accounts)
+          utxo: Number(balance), // sum of all utxo (except archived accounts)
           txs: reducedTxs, // all transactions,
-          accounts: newAccounts,
+          accounts: skipArchived
+            ? newAccounts.filter((el) => !el.isArchived)
+            : newAccounts,
         });
       }
       resolve({
-        utxo: balance, // sum of all utxo (except archived accounts)
+        utxo: Number(balance), // sum of all utxo (except archived accounts)
         txs: reducedTxs, // all transactions,
         accounts: newAccounts,
       });

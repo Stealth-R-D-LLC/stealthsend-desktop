@@ -54,7 +54,7 @@
       <template v-if="currentStep === 1">
         <StFormItem
           color="dark"
-          :filled="form.account.$value"
+          :filled="form?.account?.$value?.address"
           :error-message="form.account.$errors"
           label="Account"
         >
@@ -70,18 +70,33 @@
             :can-deselect="false"
             :clear-on-select="false"
             placeholder="Select account"
-            :disabled="!form.account.$value"
             @select="getUnspentOutputs"
             @remove="preventRemove($event)"
           >
             <template #singleLabel>
-              <div class="multiselect-single-label">
-                <p class="account-label">
-                  {{ account && account.label }}
-                </p>
-                <p class="account-utxo">
-                  {{ account && formatAmount(account.utxo, false, 6, 6) }}
-                </p>
+              <div v-if="!isLoading">
+                <div class="multiselect-single-label">
+                  <p class="account-label">
+                    {{
+                      account &&
+                      Object.keys(account).length > 0 &&
+                      account?.label
+                    }}
+                  </p>
+                  <p class="account-utxo">
+                    {{
+                      account &&
+                      Object.keys(account).length > 0 &&
+                      formatAmount(account.utxo, false, 6, 6)
+                    }}
+                  </p>
+                </div>
+              </div>
+              <div v-else>
+                <div class="multiselect-single-label">
+                  <p class="account-label">Loading...</p>
+                  <p class="account-utxo">0.000000</p>
+                </div>
               </div>
             </template>
 
@@ -251,7 +266,7 @@
     <template #footer class="flex-center-all">
       <template v-if="currentStep === 1">
         <StButton
-          :disabled="!account || Object.keys(account).length === 0"
+          :disabled="!account || Object.keys(account).length === 0 || isLoading"
           type="type-d"
           @click="validateFirstStep"
           >Proceed</StButton
@@ -292,6 +307,7 @@ import emitter from '@/services/emitter';
 import { QrStream } from 'vue3-qr-reader';
 import SvgIcon from '../partials/SvgIcon.vue';
 import CircleProgress from '../partials/CircleProgress.vue';
+import getUnixTime from 'date-fns/getUnixTime';
 
 const sumOf = (x = 0, y = 0) => {
   let sum = addIt(x, y);
@@ -305,7 +321,7 @@ const isVisible = computed(() => {
   return mainStore.modals.send;
 });
 const inputAmountState = ref('XST');
-const account = ref(null);
+const account = ref({});
 const amount = ref(null);
 const amountUSD = ref(null);
 const depositAddress = ref('');
@@ -319,7 +335,7 @@ const isScaning = ref(false);
 const QRData = ref(null);
 const cameraAllowed = ref(false);
 const isCameraLoading = ref(false);
-const isFeeless = ref(false);
+const isFeeless = ref(true);
 
 const pickedAccount = computed(() => {
   return mainStore.accountDetails;
@@ -335,21 +351,10 @@ watchEffect(() => {
       depositAddress.value = mainStore.sendAddress;
     }
   }
-  if (currentStep.value === 2) {
-    if (mainStore.redoAmount) {
-      amount.value = mainStore.redoAmount;
-      isFeeless.value = mainStore.isFeeless;
-    } else {
-      amount.value = null;
-      setTimeout(() => (inputAmountState.value = 'USD'), 1);
-      setTimeout(() => (inputAmountState.value = 'XST'), 1);
-    }
-  }
   if (currentStep.value === 4) {
     sendTimeout.value = setTimeout(() => send(), 4900);
   }
   if (currentStep.value === 5) {
-    // setTimeout(() => send(), 4000)
     clearTimeout(counterTimeout.value);
     counter.value = 5;
   }
@@ -396,18 +401,25 @@ const { form, remove, add, validateFields, resetFields } = useValidation({
 watch(
   () => isFeeless.value,
   () => {
-    findFee(0.01);
+    findFee();
   }
 );
 
+const isLoading = ref(false);
 watch(
   () => isVisible.value,
-  () => {
+  async () => {
     if (!isVisible.value) {
       closeModal();
     } else {
-      scanWallet();
+      isLoading.value = true;
+      await CryptoService.scanWallet();
+      await scanWallet();
       mainStore.checkRpcStatus();
+      // if (mainStore.redoAmount && Object.keys(account.value).length > 0) {
+      //   await getUnspentOutputs(account.value);
+      // }
+      isLoading.value = false;
     }
   }
 );
@@ -416,28 +428,31 @@ function closeModal() {
   mainStore.SET_MODAL_VISIBILITY('send', false);
   mainStore.SET_SEND_ADDRESS('');
   mainStore.SET_REDO_ACCOUNT('');
-  mainStore.SET_FEELESS(false);
+  mainStore.SET_REDO_LABEL('');
+  mainStore.SET_FEELESS(true);
   mainStore.SET_REDO_AMOUNT(null);
+
   // reset all variables
   inputAmountState.value = 'XST';
-  // account.value = null;
-  accounts.value = [];
-  // amount.value = null;
+  accounts.value = [{}];
   currentStep.value = 1;
   depositAddress.value = '';
   label.value = '';
+  amount.value = null;
+  isFeeless.value = true;
+
   clearTimeout(counterTimeout.value);
   counter.value = 5;
   remove(['amount']);
   resetFields();
+
   if (currentRoute.value !== 'AccountDetails') {
     // because we don't want to mess up the account details screen if the modal is opened there
     mainStore.SET_ACCOUNT_DETAILS(null);
   }
 }
 
-const accounts = ref([]);
-
+const accounts = ref([{}]);
 async function scanWallet() {
   accounts.value = fil(
     (el) => !el.isArchived && el.utxo > minimumXSTForSend.value,
@@ -446,8 +461,8 @@ async function scanWallet() {
   if (pickedAccount.value) {
     // already picked from account details
     account.value = { ...mainStore.accountDetails };
-    getUnspentOutputs(account.value);
-    return;
+    // await getUnspentOutputs(account.value);
+    // return;
   }
   if (mainStore.redoAccount) {
     // redo account has a priority
@@ -456,20 +471,20 @@ async function scanWallet() {
     );
   }
   // select first option so it doesn't remain empty
-  if (!account.value) {
-    account.value = mainStore.wallet.accounts[0];
+  if (!account.value || Object.keys(account.value).length === 0) {
+    account.value = mainStore.wallet.accounts.filter(
+      (el) => el.utxo > minimumXSTForSend.value
+    )[0];
   }
 
-  getUnspentOutputs(account.value);
-  // // manually start finding address for preselected account
-  // changeAccount(account.value)
+  await getUnspentOutputs(account.value);
 }
 
-// scanWallet();
 let unspentOutputs = [];
 
 async function getUnspentOutputs(acc) {
-  if (!acc) return;
+  console.log('-------GET UNSPENT OUTPUTS-------', acc);
+  if (!acc || Object.keys(acc).length === 0) return;
   let res = [];
   if (acc.xpub) {
     res = await mainStore.rpc('gethdaccount', [acc.xpub]);
@@ -489,31 +504,35 @@ async function getUnspentOutputs(acc) {
     res = await mainStore.rpc('getaddressoutputs', [acc.address, 1, 99999]);
     unspentOutputs = fil((el) => el.isspent === 'false', res);
   }
+  account.value = accounts.value.find((el) => el.address === acc.address);
+  console.log('RESULT', unspentOutputs);
 }
 
 function findFee(fee = 0.01) {
+  if (fee < aproxFee.value) fee = aproxFee.value;
   if (isFeeless.value) {
     aproxFee.value = 0;
-    return 0;
+    return;
   }
   if (!amount.value || amount.value === 0) {
-    return 0.01;
+    aproxFee.value = 0.01;
+    return;
   }
   // steps:
   // 1. find unspentOutputs for selected account
   // 2. start with fee = 0.01
   // 3. target = sendForm.amount + fee
-  let target = sumOf(amount.value, fee);
+  let target = sumOf(amount.value, aproxFee.value);
   // 4. bestOutputs = coinControl(target, unspentOutputs)
   let bestOutputs = coinSelection(target);
   // 5. newFee = feeEstimator(bestOutputs.length)
   let newFee = useFeeEstimator(bestOutputs.length);
   // 5. if fee !== newFee, goTo step 1
   if (newFee.fee > fee) {
-    return findFee(newFee.fee);
+    findFee(newFee.fee);
+  } else {
+    aproxFee.value = newFee.fee;
   }
-  aproxFee.value = newFee.fee;
-  return aproxFee.value;
 }
 
 function coinSelection(targetAmount) {
@@ -554,14 +573,16 @@ async function send() {
       setTimeout(() => changeStep(7), 6000);
       return;
     }
-    console.info('TRANSACTION BUILDER: candidates: ', unspentOutputs);
-    console.info('TRANSACTION BUILDER: coin control: ', utxo);
+    console.info(
+      'TRANSACTION BUILDER: candidates: ',
+      JSON.stringify(unspentOutputs)
+    );
     console.info('TRANSACTION BUILDER: entered amount: ', amount.value);
     console.info('TRANSACTION BUILDER: fee: ', aproxFee.value);
     console.info('TRANSACTION BUILDER: target amount: ', target);
 
     let transactionResponse = '';
-    if (account.value.wif && account.value.isImported) {
+    if (account?.value?.wif && account?.value?.isImported) {
       // build transaction for imported account
       transactionResponse = await useTransactionBuilderForImportedAccount(
         utxo,
@@ -573,6 +594,10 @@ async function send() {
         }
       );
     } else {
+      console.log(
+        'TRANSACTION BUILDER: sending from HD account',
+        account?.value?.xpub
+      );
       // build transaction for native hd account
       try {
         transactionResponse = await useTransactionBuilder(utxo, {
@@ -581,21 +606,58 @@ async function send() {
           account: account.value,
           isFeeless: isFeeless.value,
         });
-        if (transactionResponse.txid) {
-          CryptoService.storeTxAndLabel(transactionResponse.txid, label.value);
-          setTimeout(async () => {
-            changeStep(6);
-            await CryptoService.scanWallet();
-            console.log('refreshing accounts');
-            emitter.emit('transactions:refresh');
-          }, 17000);
-        } else {
-          setTimeout(() => changeStep(7), 6000);
-        }
       } catch (e) {
         console.log('Transaction builder error: ', e);
         setTimeout(() => changeStep(7), 6000);
       }
+    }
+    if (transactionResponse.txid) {
+      // instead of waiting X seconds for the tx and the block to pass
+      // we'll ask the chain if that transaction is there
+      let triesLeft = 8; // try to check 5 times with the chain
+      const timeout = 5000; // wait 5 seconds between checks
+      if (triesLeft > 0) {
+        let txCheckInterval = setInterval(() => {
+          mainStore
+            .rpc('gettransaction', [transactionResponse.txid])
+            .then(async (res) => {
+              CryptoService.storeTxAndLabel(
+                transactionResponse.txid,
+                label.value
+              );
+              mainStore.ADD_PENDING_TRANSACTION({
+                account: account.value.label,
+                account_balance_change: amount.value,
+                amount: sumOf(amount.value, aproxFee.value),
+                txinfo: {
+                  blocktime: getUnixTime(new Date()),
+                  destinations: [depositAddress.value],
+                },
+                blocktime: getUnixTime(new Date()),
+                txid: res.txid,
+                isPending: true,
+              });
+              clearInterval(txCheckInterval);
+              triesLeft = -1;
+              await CryptoService.scanWallet();
+              emitter.emit('transactions:refresh');
+              changeStep(6);
+            })
+            .catch((err) => {
+              triesLeft = triesLeft - 1;
+              console.log(err);
+            })
+            .finally(() => {
+              if (triesLeft === 0) {
+                // when you try your best but you don't succeed
+                changeStep(7);
+                clearInterval(txCheckInterval);
+              }
+            });
+        }, timeout);
+      }
+    } else {
+      setTimeout(() => changeStep(7), 1000);
     }
   } catch (e) {
     if (e instanceof ValidationError) {
@@ -616,18 +678,34 @@ async function validateSecondStep() {
     }
   }
 }
+const subtractOf = (x = 0, y = 0) => {
+  let diff = subtract(x, y);
+  diff = format(diff, { precision: 14 });
+  return Number(diff);
+};
 async function validateFirstStep() {
   try {
     await validateFields();
+    if (mainStore.redoLabel) {
+      label.value = mainStore.redoLabel;
+    }
+    if (mainStore.redoAmount > 0) {
+      // setTimeout(() => {
+      amount.value = mainStore?.redoAmount || 0;
+      // }, 1);
+      isFeeless.value = mainStore.isFeeless;
+    } else {
+      setTimeout(() => (inputAmountState.value = 'USD'), 1);
+      setTimeout(() => (inputAmountState.value = 'XST'), 1);
+    }
     add(['amount'], {
       $value: amount,
       $rules: [
         (amount) => {
-          let fee = findFee();
+          // findFee();
+          let fee = aproxFee.value;
           // subtract real fee from amount
-          const maxAmount = format(subtract(account.value.utxo, fee), {
-            precision: 8,
-          });
+          const maxAmount = subtractOf(account.value.utxo, fee);
           if (inputAmountState.value === 'XST') {
             if (!amount || Number(amount) < minimumXSTForSend.value) {
               return 'Minimum amount is ' + minimumXSTForSend.value + ' XST';
@@ -640,7 +718,6 @@ async function validateFirstStep() {
       ],
     });
     changeStep(2);
-    findFee();
   } catch (e) {
     if (e instanceof ValidationError) {
       console.log(e);
@@ -648,12 +725,16 @@ async function validateFirstStep() {
   }
 }
 
-function changeStep(step) {
+async function changeStep(step) {
   currentStep.value = step;
   if (step === 1) {
+    isLoading.value = true;
     // if going back from step 2 to step 1
     // remove address from validation
+    await CryptoService.scanWallet();
+    await scanWallet();
     remove(['amount']);
+    isLoading.value = false;
   }
 }
 
@@ -661,11 +742,22 @@ function loadMax(item) {
   // get amount from account
   // check if amount is less than miminim amount for send
   // if not, find real fee
+  console.log('load max for account: ', item);
   amount.value = 0;
-  let fee = findFee();
-  // console.log('fee: ', fee);
-  // subtract real fee from amount
-  const maxAmount = format(subtract(item.utxo, fee), { precision: 14 });
+  let fee = 0;
+  // console.log('getUnspentOutputs(account.value)', getUnspentOutputs(account.value));
+  if (!isFeeless.value) {
+    let feeObj = useFeeEstimator(unspentOutputs.length);
+    fee = feeObj.fee;
+  }
+  aproxFee.value = fee;
+  // subtract real fee from all utxos
+  let sumUtxo = unspentOutputs
+    .map((el) => el.amount)
+    .reduce((a, b) => sumOf(a, b), 0);
+  const maxAmount = subtractOf(sumUtxo, fee);
+  console.log('load max: max amount', maxAmount);
+  console.log('load max: actual utxos', unspentOutputs);
   form.amount.$value = maxAmount;
   setTimeout(() => (inputAmountState.value = 'USD'), 1);
   setTimeout(() => (inputAmountState.value = 'XST'), 1);
