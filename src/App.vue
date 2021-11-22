@@ -2,7 +2,7 @@
   <div class="container">
     <NoInternet v-if="!isOnline" />
     <!-- <NoStealthConnection v-if="!isRpcAvailable" /> -->
-    <StLoading :visibility="isLoading"></StLoading>
+    <!-- <StLoading :visibility="isLoading"></StLoading> -->
     <component :is="layout"> </component>
   </div>
 </template>

@@ -1,6 +1,7 @@
 <template>
   <div class="accounts-container__inner">
-    <h4 class="title">Active Accounts</h4>
+    <StSkeletonLoader v-if="isLoading" type="accounts" />
+    <h4 v-if="!isLoading" class="title">Active Accounts</h4>
     <div
       class="active-container"
       :class="{
@@ -12,215 +13,221 @@
         class="accounts-container__inner--grid active-container__relative"
         :class="{ 'active-container__disabled': isDraggedInactive }"
       >
-        <div
-          v-for="(account, index) in activeAccounts"
-          :key="account.address"
-          class="card"
-          :class="{ 'card-purple': account.utxo === 0 && index === 0 }"
-        >
-          <StModal
-            v-if="accountOptions === `${account.label}_${index}`"
-            :has-click-outside="false"
-            light
-            :visible="archiveAccountModal"
-            @close="cancelArchiveActive"
-            class="st-modal--container__archive-account"
+        <template v-if="!isLoading">
+          <div
+            v-for="(account, index) in activeAccounts"
+            :key="account.address"
+            class="card"
+            :class="{ 'card-purple': account.utxo === 0 && index === 0 }"
           >
-            <template #header>Archive Account</template>
-            <template #body>
-              <div class="archive-account">
-                <div class="archive-account__content">
-                  <div class="desc">
+            <StModal
+              v-if="accountOptions === `${account.label}_${index}`"
+              :has-click-outside="false"
+              light
+              :visible="archiveAccountModal"
+              @close="cancelArchiveActive"
+              class="st-modal--container__archive-account"
+            >
+              <template #header>Archive Account</template>
+              <template #body>
+                <div class="archive-account">
+                  <div class="archive-account__content">
+                    <div class="desc">
+                      <p>
+                        Archive an account if you don’t intend to use it for a
+                        long time. Archived accounts are not monitored, and you
+                        cannot work with them while they are archived.
+                      </p>
+                    </div>
                     <p>
-                      Archive an account if you don’t intend to use it for a
-                      long time. Archived accounts are not monitored, and you
-                      cannot work with them while they are archived.
+                      The account "{{ account.label }}" will be archived and
+                      available in your Archive. To activate archived accounts
+                      go to your Archive, select an account and activate.
                     </p>
                   </div>
-                  <p>
-                    The account "{{ account.label }}" will be archived and
-                    available in your Archive. To activate archived accounts go
-                    to your Archive, select an account and activate.
-                  </p>
                 </div>
-              </div>
-            </template>
-            <template #footer>
-              <div class="archive-account__actions">
-                <div class="buttons">
-                  <StButton type="type-b" @click="cancelArchiveActive"
-                    >Cancel</StButton
-                  >
-                  <StButton @click="archiveAccount(account)">Archive</StButton>
-                </div>
-              </div>
-            </template>
-          </StModal>
-          <div class="card__inner">
-            <div class="card-header">
-              <h5>{{ account.label }}</h5>
-              <div class="action-icons">
-                <SvgIcon
-                  name="icon-hamburger-menu-primary"
-                  :class="[
-                    account.utxo === 0 && index === 0 ? 'info-purple' : 'info',
-                  ]"
-                  @click="toggleAccountOptions(`${account.label}_${index}`)"
-                />
-
-                <SvgIcon
-                  name="icon-options"
-                  class="handle"
-                  v-if="activeAccounts.length > 1"
-                  @mousedown="isDraggedActive = true"
-                  @mouseup="isDraggedActive = false"
-                />
-              </div>
-            </div>
-            <div class="amount-container">
-              <p class="currency">
-                {{
-                  isHiddenAmounts
-                    ? '•••'
-                    : formatAmount(Math.abs(account.utxo), false, 6, 6)
-                }}
-                XST
-              </p>
-              <p class="grey">
-                ~
-                <template v-if="Number(account.utxo) * XST_USD_RATE < 1">
-                  ${{
-                    isHiddenAmounts
-                      ? '•••'
-                      : formatAmount(
-                          Math.abs(account.utxo * XST_USD_RATE),
-                          false,
-                          4,
-                          4
-                        )
-                  }}
-                </template>
-                <template v-else>
-                  ${{
-                    isHiddenAmounts
-                      ? '•••'
-                      : formatAmount(
-                          Math.abs(account.utxo * XST_USD_RATE),
-                          false,
-                          4,
-                          4
-                        )
-                  }}
-                </template>
-                USD
-              </p>
-            </div>
-            <div class="card__footer">
-              <a
-                v-if="account.utxo === 0"
-                @click="openReceiveModal(account)"
-                :class="[
-                  account.utxo === 0 && index === 0
-                    ? 'link-purple'
-                    : 'link-white',
-                ]"
-                >Receive XST</a
-              >
-              <a v-else-if="account.isFavourite" class="link">
-                <SvgIcon name="icon-favorite" />
-                Favorite
-              </a>
-              <StTooltip class="tooltip" tooltip="Imported Account">
-                <div v-if="account.isImported" class="imported" />
-              </StTooltip>
-            </div>
-          </div>
-          <transition name="fill">
-            <div
-              v-show="accountOptions === `${account.label}_${index}`"
-              class="account-options"
-            >
-              <SvgIcon
-                name="icon-close"
-                class="close"
-                @click="accountOptions = ''"
-              />
-              <ul>
-                <li
-                  v-if="
-                    !account.isFavourite &&
-                    accounts.filter((obj) => obj.isFavourite).length < 10 &&
-                    account.utxo > 0
-                  "
-                >
-                  <a @click="favouriteAccount(account)">Add to Favorites</a>
-                </li>
-                <li v-if="account.isFavourite">
-                  <a @click="unfavouriteAccount(account)"
-                    >Remove from Favorites</a
-                  >
-                </li>
-                <li v-if="activeAccounts.length > 1">
-                  <a @click="openArchiveAccountModal()">Archive Account</a>
-                </li>
-                <li>
-                  <a @click="openAccountDetails(account)">View Account</a>
-                </li>
-                <li>
-                  <a @click="openEditAccountNameModal(account)"
-                    >Edit Account Name</a
-                  >
-                </li>
-                <StModal
-                  :has-click-outside="false"
-                  light
-                  :visible="editAccountNameModal"
-                  @close="closeEditModal"
-                >
-                  <template #header> Account Wizard </template>
-                  <template #body>
-                    <StFormItem
-                      :class="{
-                        'st-form-item__error':
-                          form.accountName.$value.length > 50,
-                      }"
-                      label="Account Name"
-                      :filled="form.accountName.$value"
-                      :error-message="form.accountName.$errors"
-                    >
-                      <StInput
-                        v-model="form.accountName.$value"
-                        placeholder="Enter Account Name"
-                      ></StInput>
-                      <template
-                        v-if="form.accountName.$value.length > 50"
-                        #description
-                      >
-                        <span class="error">Name too long</span>
-                      </template>
-                    </StFormItem>
-                  </template>
-                  <template #footer>
-                    <StButton type="type-b" @click="closeEditModal"
+              </template>
+              <template #footer>
+                <div class="archive-account__actions">
+                  <div class="buttons">
+                    <StButton type="type-b" @click="cancelArchiveActive"
                       >Cancel</StButton
                     >
-                    <StButton @click="changeAccountName(account)"
-                      >Save</StButton
+                    <StButton @click="archiveAccount(account)"
+                      >Archive</StButton
                     >
+                  </div>
+                </div>
+              </template>
+            </StModal>
+            <div class="card__inner">
+              <div class="card-header">
+                <h5>{{ account.label }}</h5>
+                <div class="action-icons">
+                  <SvgIcon
+                    name="icon-hamburger-menu-primary"
+                    :class="[
+                      account.utxo === 0 && index === 0
+                        ? 'info-purple'
+                        : 'info',
+                    ]"
+                    @click="toggleAccountOptions(`${account.label}_${index}`)"
+                  />
+
+                  <SvgIcon
+                    name="icon-options"
+                    class="handle"
+                    v-if="activeAccounts.length > 1"
+                    @mousedown="isDraggedActive = true"
+                    @mouseup="isDraggedActive = false"
+                  />
+                </div>
+              </div>
+              <div class="amount-container">
+                <p class="currency">
+                  {{
+                    isHiddenAmounts
+                      ? '•••'
+                      : formatAmount(Math.abs(account.utxo), false, 6, 6)
+                  }}
+                  XST
+                </p>
+                <p class="grey">
+                  ~
+                  <template v-if="Number(account.utxo) * XST_USD_RATE < 1">
+                    ${{
+                      isHiddenAmounts
+                        ? '•••'
+                        : formatAmount(
+                            Math.abs(account.utxo * XST_USD_RATE),
+                            false,
+                            4,
+                            4
+                          )
+                    }}
                   </template>
-                </StModal>
-              </ul>
+                  <template v-else>
+                    ${{
+                      isHiddenAmounts
+                        ? '•••'
+                        : formatAmount(
+                            Math.abs(account.utxo * XST_USD_RATE),
+                            false,
+                            4,
+                            4
+                          )
+                    }}
+                  </template>
+                  USD
+                </p>
+              </div>
+              <div class="card__footer">
+                <a
+                  v-if="account.utxo === 0"
+                  @click="openReceiveModal(account)"
+                  :class="[
+                    account.utxo === 0 && index === 0
+                      ? 'link-purple'
+                      : 'link-white',
+                  ]"
+                  >Receive XST</a
+                >
+                <a v-else-if="account.isFavourite" class="link">
+                  <SvgIcon name="icon-favorite" />
+                  Favorite
+                </a>
+                <StTooltip class="tooltip" tooltip="Imported Account">
+                  <div v-if="account.isImported" class="imported" />
+                </StTooltip>
+              </div>
             </div>
-          </transition>
-        </div>
+            <transition name="fill">
+              <div
+                v-show="accountOptions === `${account.label}_${index}`"
+                class="account-options"
+              >
+                <SvgIcon
+                  name="icon-close"
+                  class="close"
+                  @click="accountOptions = ''"
+                />
+                <ul>
+                  <li
+                    v-if="
+                      !account.isFavourite &&
+                      accounts.filter((obj) => obj.isFavourite).length < 10 &&
+                      account.utxo > 0
+                    "
+                  >
+                    <a @click="favouriteAccount(account)">Add to Favorites</a>
+                  </li>
+                  <li v-if="account.isFavourite">
+                    <a @click="unfavouriteAccount(account)"
+                      >Remove from Favorites</a
+                    >
+                  </li>
+                  <li v-if="activeAccounts.length > 1">
+                    <a @click="openArchiveAccountModal()">Archive Account</a>
+                  </li>
+                  <li>
+                    <a @click="openAccountDetails(account)">View Account</a>
+                  </li>
+                  <li>
+                    <a @click="openEditAccountNameModal(account)"
+                      >Edit Account Name</a
+                    >
+                  </li>
+                  <StModal
+                    :has-click-outside="false"
+                    light
+                    :visible="editAccountNameModal"
+                    @close="closeEditModal"
+                  >
+                    <template #header> Account Wizard </template>
+                    <template #body>
+                      <StFormItem
+                        :class="{
+                          'st-form-item__error':
+                            form.accountName.$value.length > 50,
+                        }"
+                        label="Account Name"
+                        :filled="form.accountName.$value"
+                        :error-message="form.accountName.$errors"
+                      >
+                        <StInput
+                          v-model="form.accountName.$value"
+                          placeholder="Enter Account Name"
+                        ></StInput>
+                        <template
+                          v-if="form.accountName.$value.length > 50"
+                          #description
+                        >
+                          <span class="error">Name too long</span>
+                        </template>
+                      </StFormItem>
+                    </template>
+                    <template #footer>
+                      <StButton type="type-b" @click="closeEditModal"
+                        >Cancel</StButton
+                      >
+                      <StButton @click="changeAccountName(account)"
+                        >Save</StButton
+                      >
+                    </template>
+                  </StModal>
+                </ul>
+              </div>
+            </transition>
+          </div>
+        </template>
       </div>
     </div>
     <div
       class="archived-container"
       :class="{ 'archived-container__disabled': isDraggedActive }"
     >
-      <h4>Archived Accounts</h4>
-      <h6 v-if="!archivedAccounts.length" class="no-archived">
+      <h4 v-if="!isLoading">Archived Accounts</h4>
+      <h6 v-if="!archivedAccounts.length && !isLoading" class="no-archived">
         No archived accounts
       </h6>
       <div
@@ -230,151 +237,207 @@
           'has-archived': archivedAccounts.length,
         }"
       >
-        <div
-          v-for="(account, index) in archivedAccounts"
-          :key="account.address"
-          class="card"
-        >
-          <StModal
-            v-if="accountOptions === `${account.label}_${index}`"
-            :has-click-outside="false"
-            light
-            :visible="activateAccountModal"
-            @close="cancelArchiveActive"
-            class="st-modal--container__activate-account"
+        <template v-if="!isLoading">
+          <div
+            v-for="(account, index) in archivedAccounts"
+            :key="account.address"
+            class="card"
           >
-            <template #header>Activate Account</template>
-            <template #body>
-              <div class="activate-account">
-                <div class="activate-account__content">
-                  <p>
-                    Activate and return "{{ account.label }}" to Active
-                    Accounts.
-                  </p>
-                </div>
-              </div>
-            </template>
-            <template #footer>
-              <div class="activate-account__actions">
-                <div class="buttons">
-                  <StButton type="type-b" @click="cancelArchiveActive"
-                    >Cancel</StButton
-                  >
-                  <StButton @click="activateAccount(account)"
-                    >Activate</StButton
-                  >
-                </div>
-              </div>
-            </template>
-          </StModal>
-
-          <div class="card__inner">
-            <div class="card-header">
-              <h5>{{ account.label }}</h5>
-              <div class="action-icons">
-                <SvgIcon
-                  name="icon-hamburger-menu-primary"
-                  class="info-grey"
-                  @click="toggleAccountOptions(`${account.label}_${index}`)"
-                />
-
-                <SvgIcon
-                  name="icon-options"
-                  class="handle"
-                  @mousedown="isDraggedInactive = true"
-                  @mouseup="isDraggedInactive = false"
-                />
-              </div>
-            </div>
-            <div class="amount-container">
-              <p class="currency">
-                {{
-                  isHiddenAmounts
-                    ? '•••'
-                    : formatAmount(Math.abs(account.utxo), false, 6, 6)
-                }}
-                XST
-              </p>
-              <p class="grey">
-                ~ ${{
-                  isHiddenAmounts
-                    ? '•••'
-                    : formatAmount(
-                        Math.abs(account.utxo * XST_USD_RATE),
-                        false,
-                        4,
-                        4
-                      )
-                }}
-                USD
-              </p>
-            </div>
-            <StTooltip class="tooltip" tooltip="Imported Account">
-              <div v-if="account.isImported" class="imported" />
-            </StTooltip>
-          </div>
-          <transition name="fill">
-            <div
+            <StModal
               v-if="accountOptions === `${account.label}_${index}`"
-              class="account-options"
+              :has-click-outside="false"
+              light
+              :visible="activateAccountModal"
+              @close="cancelArchiveActive"
+              class="st-modal--container__activate-account"
             >
-              <SvgIcon
-                name="icon-close"
-                class="close"
-                @click="accountOptions = ''"
-              />
-              <ul>
-                <li>
-                  <a @click="openActivateAccountModal(account)"
-                    >Activate Account</a
-                  >
-                </li>
-                <li>
-                  <a @click="openEditAccountNameModal(account)"
-                    >Edit Account Name</a
-                  >
-                </li>
-                <StModal
-                  light
-                  :visible="editAccountNameModal"
-                  @close="closeEditModal"
-                >
-                  <template #header> Account Wizard </template>
-                  <template #body>
-                    <StFormItem
-                      label="Account Name"
-                      :class="{
-                        'st-form-item__error':
-                          form.accountName.$value.length > 50,
-                      }"
-                      :filled="form.accountName.$value"
-                      :error-message="form.accountName.$errors"
-                    >
-                      <StInput
-                        v-model="form.accountName.$value"
-                        placeholder="Enter Account Name"
-                      ></StInput>
-                      <template
-                        v-if="form.accountName.$value.length > 50"
-                        #description
-                      >
-                        <span class="error">Name too long</span>
-                      </template>
-                    </StFormItem>
-                  </template>
-                  <template #footer>
-                    <StButton type="type-b" @click="closeEditModal"
+              <template #header>Activate Account</template>
+              <template #body>
+                <div class="activate-account">
+                  <div class="activate-account__content">
+                    <p>
+                      Activate and return "{{ account.label }}" to Active
+                      Accounts.
+                    </p>
+                  </div>
+                </div>
+              </template>
+              <template #footer>
+                <div class="activate-account__actions">
+                  <div class="buttons">
+                    <StButton type="type-b" @click="cancelArchiveActive"
                       >Cancel</StButton
                     >
-                    <StButton @click="changeAccountName(account)"
-                      >Save</StButton
+                    <StButton @click="activateAccount(account)"
+                      >Activate</StButton
                     >
-                  </template>
-                </StModal>
-              </ul>
+                  </div>
+                </div>
+              </template>
+            </StModal>
+
+            <div class="card__inner">
+              <div class="card-header">
+                <h5>{{ account.label }}</h5>
+                <div class="action-icons">
+                  <SvgIcon
+                    name="icon-hamburger-menu-primary"
+                    class="info-grey"
+                    @click="toggleAccountOptions(`${account.label}_${index}`)"
+                  />
+
+                  <SvgIcon
+                    name="icon-options"
+                    class="handle"
+                    @mousedown="isDraggedInactive = true"
+                    @mouseup="isDraggedInactive = false"
+                  />
+                </div>
+              </div>
+              <div class="amount-container">
+                <p class="currency">
+                  {{
+                    isHiddenAmounts
+                      ? '•••'
+                      : formatAmount(Math.abs(account.utxo), false, 6, 6)
+                  }}
+                  XST
+                </p>
+                <p class="grey">
+                  ~ ${{
+                    isHiddenAmounts
+                      ? '•••'
+                      : formatAmount(
+                          Math.abs(account.utxo * XST_USD_RATE),
+                          false,
+                          4,
+                          4
+                        )
+                  }}
+                  USD
+                </p>
+              </div>
+              <StTooltip class="tooltip" tooltip="Imported Account">
+                <div v-if="account.isImported" class="imported" />
+              </StTooltip>
             </div>
-          </transition>
-        </div>
+            <transition name="fill">
+              <div
+                v-if="accountOptions === `${account.label}_${index}`"
+                class="account-options"
+              >
+                <SvgIcon
+                  name="icon-close"
+                  class="close"
+                  @click="accountOptions = ''"
+                />
+                <ul>
+                  <li>
+                    <a @click="openActivateAccountModal(account)"
+                      >Activate Account</a
+                    >
+                  </li>
+                  <li>
+                    <a @click="openEditAccountNameModal(account)"
+                      >Edit Account Name</a
+                    >
+                  </li>
+                  <li v-if="account.isImported">
+                    <a @click="openDeleteAccountModal(account)"
+                      >Delete Account</a
+                    >
+                  </li>
+                  <StModal
+                    light
+                    :visible="deleteAccountModal"
+                    @close="closeDeleteModal"
+                  >
+                    <template #header>
+                      {{
+                        deleteAccountPasswordModal
+                          ? 'Enter Password'
+                          : 'Delete Account'
+                      }}
+                    </template>
+                    <template #body>
+                      <template v-if="!deleteAccountPasswordModal">
+                        Do you want to delete account "{{
+                          accountForDelete.label
+                        }}" holding {{ accountForDelete.utxo }} XST?
+                        <div class="delete-acc-details">
+                          <p class="label">XST Address:</p>
+                          <p>{{ accountForDelete.address }}</p>
+                        </div>
+                      </template>
+                      <template v-else>
+                        <StFormItem
+                          label="Password"
+                          :filled="formDelete.accountPassword.$value"
+                          :error-message="formDelete.accountPassword.$errors"
+                        >
+                          <StInput
+                            id="password"
+                            v-model="formDelete.accountPassword.$value"
+                            type="password"
+                            placeholder="Please enter your password"
+                            @keyup.enter="deleteAccount"
+                          />
+                        </StFormItem>
+                      </template>
+                    </template>
+                    <template #footer>
+                      <template v-if="!deleteAccountPasswordModal">
+                        <StButton type="type-b" @click="closeDeleteModal"
+                          >Cancel</StButton
+                        >
+                        <StButton @click="openPasswordModal()"
+                          >Confirm</StButton
+                        >
+                      </template>
+                    </template>
+                  </StModal>
+                  <StModal
+                    light
+                    :visible="editAccountNameModal"
+                    @close="closeEditModal"
+                  >
+                    <template #header> Account Wizard </template>
+                    <template #body>
+                      <StFormItem
+                        label="Account Name"
+                        :class="{
+                          'st-form-item__error':
+                            form.accountName.$value.length > 50,
+                        }"
+                        :filled="form.accountName.$value"
+                        :error-message="form.accountName.$errors"
+                      >
+                        <StInput
+                          v-model="form.accountName.$value"
+                          placeholder="Enter Account Name"
+                        ></StInput>
+                        <template
+                          v-if="form.accountName.$value.length > 50"
+                          #description
+                        >
+                          <span class="error">Name too long</span>
+                        </template>
+                      </StFormItem>
+                    </template>
+                    <template #footer>
+                      <StButton type="type-b" @click="closeEditModal"
+                        >Cancel</StButton
+                      >
+                      <StButton @click="changeAccountName(account)"
+                        >Save</StButton
+                      >
+                    </template>
+                  </StModal>
+                </ul>
+              </div>
+            </transition>
+          </div>
+        </template>
       </div>
     </div>
     <div
@@ -409,15 +472,21 @@ import emitter from '@/services/emitter';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import Sortable from 'sortablejs';
 import SvgIcon from '../partials/SvgIcon.vue';
-import { useRoute } from 'vue-router';
+import { useRoute, onBeforeRouteLeave } from 'vue-router';
+import StSkeletonLoader from '@/components/loader/StSkeletonLoader.vue';
+import db from '@/db';
 
 const mainStore = useMainStore();
 const accountOptions = ref('');
 const accountName = ref('');
+const accountPassword = ref('');
+const isValid = ref('');
 const { formatAmount } = useHelpers();
 let editAccountNameModal = ref(false);
 let activateAccountModal = ref(false);
 let archiveAccountModal = ref(false);
+let deleteAccountModal = ref(false);
+let deleteAccountPasswordModal = ref(false);
 let accounts = ref([]);
 let isDraggedActive = ref(false);
 let isDraggedInactive = ref(false);
@@ -442,6 +511,27 @@ const { form, validateFields, resetFields } = useValidation({
   },
 });
 
+const {
+  form: formDelete,
+  validateFields: validateAccountFields,
+  resetFields: resetAccountFields,
+} = useValidation({
+  accountPassword: {
+    $value: accountPassword,
+    $rules: [
+      async (accountPassword) => {
+        if (!accountPassword) {
+          return 'Password is required';
+        }
+        isValid.value = await CryptoService.validatePassword(accountPassword);
+        if (!isValid.value) {
+          return 'Incorrect password.';
+        }
+      },
+    ],
+  },
+});
+
 const activeAccounts = computed(() => {
   return accounts.value.filter((obj) => obj.isArchived === false);
 });
@@ -456,11 +546,23 @@ const XST_USD_RATE = computed(() => {
 
 const isHiddenAmounts = computed(() => mainStore.isAmountsHidden);
 
+const isLoading = computed(() => {
+  return mainStore.globalLoading;
+});
+
 const archivedAcc = ref(null);
 const activeAcc = ref(null);
 const activeAccOldIndex = ref(null);
 const archivedAccOldIndex = ref(null);
 let isDragged = ref(false);
+let hasBeenChanged = false;
+
+onBeforeRouteLeave(() => {
+  if (hasBeenChanged) {
+    // if anything has been moved to/from archive, we need to remove the wallet data in order to refresh it
+    mainStore.SET_WALLET(null);
+  }
+});
 
 onMounted(async () => {
   mainStore.START_GLOBAL_LOADING();
@@ -602,20 +704,22 @@ async function unfavouriteAccount(account) {
 async function archiveAccount(account) {
   accountOptions.value = '';
   if (isDragged.value) {
-    archivedAccounts.value.push(archivedAcc.value);
+    accounts.value.push(archivedAcc.value);
   }
   archiveAccountModal.value = false;
   await CryptoService.archiveAccount(account);
+  hasBeenChanged = true;
   emitter.emit('favorite:refresh');
 }
 
 async function activateAccount(account) {
   accountOptions.value = '';
   if (isDragged.value) {
-    activeAccounts.value.push(activeAcc.value);
+    accounts.value.push(activeAcc.value);
   }
   activateAccountModal.value = false;
   await CryptoService.activateAccount(account);
+  hasBeenChanged = true;
   emitter.emit('favorite:refresh');
 }
 
@@ -640,20 +744,48 @@ function openEditAccountNameModal(account) {
   editAccountNameModal.value = true;
 }
 
+const accountForDelete = ref(null);
+async function openDeleteAccountModal(account) {
+  resetFields();
+  deleteAccountModal.value = true;
+  accountForDelete.value = account;
+}
+
+function openPasswordModal() {
+  deleteAccountPasswordModal.value = true;
+}
+
+async function deleteAccount() {
+  try {
+    await validateAccountFields();
+    let oldAccounts = await db.getItem('accounts');
+    let newAccounts = oldAccounts.filter(
+      (el) => el.address !== accountForDelete.value.address
+    );
+    await db.setItem('accounts', newAccounts);
+    await scanWallet();
+    closeDeleteModal();
+  } catch (e) {
+    if (e instanceof ValidationError) {
+      console.log(e);
+    }
+  }
+}
+
 const openAccountDetails = (account) => {
   mainStore.SET_ACCOUNT_DETAILS(account);
-
   router.push('/account/details');
 };
 
 async function scanWallet() {
   let hdWallet = [];
   hdWallet = await CryptoService.getAccounts();
-  let activeAccounts = hdWallet.filter((obj) => obj.isArchived === false);
+  accounts.value = hdWallet;
+  // let activeAccounts = hdWallet.filter((obj) => obj.isArchived === false);
 
   // find first account with 0 balance
   let firstZeroAccount = null;
-  for (let acc of activeAccounts) {
+  for (let acc of activeAccounts.value) {
     if (acc.utxo === 0) {
       firstZeroAccount = acc;
       break;
@@ -672,6 +804,13 @@ async function scanWallet() {
   }
 
   accounts.value = [...tmpAccounts];
+}
+
+function closeDeleteModal() {
+  deleteAccountPasswordModal.value = false;
+  deleteAccountModal.value = false;
+  accountForDelete.value = null;
+  resetAccountFields();
 }
 
 function closeEditModal() {
@@ -1060,5 +1199,12 @@ svg {
 .archived-overlay .account-options,
 .active-overlay .account-options {
   opacity: 0;
+}
+
+.delete-acc-details {
+  margin: 24px 0;
+}
+.delete-acc-details .label {
+  font-weight: bold;
 }
 </style>

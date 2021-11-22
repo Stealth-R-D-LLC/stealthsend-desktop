@@ -16,7 +16,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     fee = feeEstimator.fee;
   }
 
-  console.log('TRANSACTION BUILDER: latest fee:', fee);
+  console.log('TRANSACTION BUILDER: latest fee:', JSON.stringify(fee));
 
   const sumOf = (x = 0, y = 0) => {
     let sum = add(x, y);
@@ -72,13 +72,16 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     for await (let tx of utxo) {
       // get prevoutscript
       const txDetails = await mainStore.rpc('gettransaction', [tx.txid]);
-      let vout = txDetails.vout.find((el) =>
-        el.scriptPubKey.addresses.includes(tx.address)
-      );
+      // let vout = txDetails.vout.find(
+      //   (el) =>
+      //     el.value === tx.amount &&
+      //     el.scriptPubKey.addresses.includes(tx.address)
+      // );
+      let vout = txDetails.vout[tx.vout];
 
       rawTransaction.addInput(
         txDetails.txid,
-        vout.n,
+        vout.n, // same as tx.vout
         null,
         Buffer.from(vout.scriptPubKey.hex, 'hex')
       );
@@ -92,7 +95,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
     console.log(
       'TRANSACTION BUILDER: recipient will get:',
-      Number(sumOf(sendForm.amount, fee * -1))
+      JSON.stringify(Number(sumOf(sendForm.amount, fee * -1)))
     );
 
     let sumUtxo = utxo.map((el) => el.amount).reduce((a, b) => sumOf(a, b), 0);
@@ -116,11 +119,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       address: child.address,
       amount: floor(calculateChange(sumUtxo, Number(sendForm.amount)) * 1e6), // account amount - (send amount + fee)
     };
-    console.log(
-      'TRANSACTION BUILDER: change:',
-      floor(calculateChange(sumUtxo, Number(sendForm.amount)) * 1e6),
-      calculateChange(sumUtxo, Number(sendForm.amount))
-    );
+    console.log('TRANSACTION BUILDER: change:', JSON.stringify(change));
 
     // add the output for recipient
     rawTransaction.addOutput(recipient.address, recipient.amount);
@@ -128,10 +127,14 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     // add the output for the change, send the change back to yourself.
     // Outputs - inputs = transaction fee, so always double-check your math!
     if (
-      calculateChange(sumUtxo, Number(sendForm.amount)) >
+      calculateChange(sumUtxo, Number(sendForm.amount)) >=
       CryptoService.constraints.MINIMAL_CHANGE
     ) {
       rawTransaction.addOutput(change.address, change.amount);
+    } else {
+      console.log(
+        'TRANSACTION BUILDER: no change, its smaller than min change amount'
+      );
     }
 
     // create feework and feeless scriptPubkey and add output for feeless trx
@@ -140,11 +143,14 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       const bestBlock = await mainStore.rpc('getbestblock', []);
 
       const txUnsignedHex = rawTransaction.buildIncomplete().toHex();
-      console.log('FEELESS RAW TX: ', rawTransaction.__INPUTS.length);
-      console.log('FEELESS txUnsignedHex: ', txUnsignedHex);
-      console.log('FEELESS height: ', bestBlock.height);
-      console.log('FEELESS size: ', bestBlock.size);
-      console.log('FEELESS hash: ', bestBlock.hash);
+      console.log(
+        'FEELESS RAW TX: ',
+        JSON.stringify(rawTransaction.__INPUTS.length)
+      );
+      console.log('FEELESS txUnsignedHex: ', JSON.stringify(txUnsignedHex));
+      console.log('FEELESS height: ', JSON.stringify(bestBlock.height));
+      console.log('FEELESS size: ', JSON.stringify(bestBlock.size));
+      console.log('FEELESS hash: ', JSON.stringify(bestBlock.hash));
       console.time('FEELESS create_feework_and_script_pubkey');
 
       const feelessScriptPubkey = await FeelessJS.createFeeworkAndScriptPubkey(
@@ -159,7 +165,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
       console.log(
         'TRANSACTION BUILDER: feeless script sig key hex: ',
-        feelessScriptPubkey.toString('hex')
+        JSON.stringify(feelessScriptPubkey.toString('hex'))
       );
       const testFeelessScriptPubkey =
         await FeelessJS.testCreateFeeworkAndScriptPubkey(
@@ -171,7 +177,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         );
       console.log(
         'FEELESS test results for script pubkey: ',
-        testFeelessScriptPubkey
+        JSON.stringify(testFeelessScriptPubkey)
       );
       rawTransaction.addOutput(Buffer.from(feelessScriptPubkey, 'hex'), 0);
       console.log(
@@ -206,15 +212,19 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       }
     }
 
+    console.log('Raw TX for decode: ');
     console.dir(rawTransaction);
 
     const rawTransactionToHex = rawTransaction.build().toHex();
 
     console.dir(rawTransactionToHex);
 
-    const txid = await mainStore.rpc('sendrawtransaction', [
-      rawTransactionToHex,
-    ]);
+    let txid = '';
+    try {
+      txid = await mainStore.rpc('sendrawtransaction', [rawTransactionToHex]);
+    } catch (e) {
+      console.error('Transaction builded, but rejected from RPC. Reason: ', e);
+    }
 
     return txid;
   }

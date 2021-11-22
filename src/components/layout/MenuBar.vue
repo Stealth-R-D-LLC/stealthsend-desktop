@@ -7,6 +7,7 @@
     :class="[
       { width: isCollapsed || menuExpanded },
       { 'layout__aside--fixed': !menuExpanded },
+      { 'navigation-loading': isLoading },
     ]"
   >
     <nav>
@@ -35,8 +36,8 @@
             <span class="item__span"> Dashboard </span>
           </router-link>
         </li>
-        <li @click="openModal('send')">
-          <span class="item">
+        <li>
+          <span @click="openModal('send')" class="item">
             <div class="icon">
               <StTooltip
                 :tooltip="!isCollapsed ? 'Send XST' : null"
@@ -48,8 +49,8 @@
             <span class="item__span"> Send </span>
           </span>
         </li>
-        <li @click="openModal('receive')">
-          <span class="item">
+        <li>
+          <span @click="openModal('receive')" class="item">
             <div class="icon">
               <StTooltip
                 :tooltip="!isCollapsed ? 'Receive XST' : null"
@@ -74,8 +75,8 @@
             <span class="item__span"> Transactions </span>
           </router-link>
         </li>
-        <li @click="openModal('account')">
-          <span class="item">
+        <li>
+          <span @click="openModal('account')" class="item">
             <div class="icon">
               <StTooltip
                 :tooltip="!isCollapsed ? 'Add Account' : null"
@@ -100,8 +101,8 @@
             <span class="item__span"> Manager </span>
           </router-link>
         </li>
-        <li @click="toggleDrawer('address-book')">
-          <span class="item">
+        <li>
+          <span @click="toggleDrawer('address-book')" class="item">
             <div class="icon">
               <StTooltip
                 :tooltip="!isCollapsed ? 'Address Book' : null"
@@ -144,6 +145,10 @@ const menuExpanded = computed(() => {
   return mainStore.isMenuExpanded;
 });
 
+const isLoading = computed(() => {
+  return mainStore.globalLoading;
+});
+
 function toggleMenu() {
   isCollapsed.value = !isCollapsed.value;
 }
@@ -159,8 +164,10 @@ function toggleDrawer(canvas) {
   mainStore.TOGGLE_DRAWER(true);
 }
 function lock() {
-  mainStore.SET_IS_LOCK(true);
-  router.push('/lock');
+  if (!isLoading.value) {
+    mainStore.SET_IS_LOCK(true);
+    router.push('/lock');
+  }
 }
 
 onClickOutside(asideMenu, () => {
@@ -171,6 +178,17 @@ onClickOutside(asideMenu, () => {
 </script>
 
 <style scoped>
+.navigation-loading nav ul li {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.navigation-loading nav ul li .item {
+  pointer-events: none;
+}
+.navigation-loading .item__footer {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
 .layout__aside {
   width: 64px;
   transition: width 0.3s;
