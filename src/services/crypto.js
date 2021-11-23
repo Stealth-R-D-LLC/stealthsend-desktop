@@ -615,8 +615,10 @@ const CryptoService = {
                 if (tx.account_balance_change < 0) {
                   indexOfDestination = tx.txinfo.destinations.findIndex(
                     (dest) => {
-                      if (dest && dest.address && dest.addresses.length > 0) {
-                        return outputAddresses.indexOf(dest.addresses[0]) === -1;
+                      if (dest && dest.addresses && dest.addresses.length > 0) {
+                        return (
+                          outputAddresses.indexOf(dest.addresses[0]) === -1
+                        );
                       }
                     }
                   );
