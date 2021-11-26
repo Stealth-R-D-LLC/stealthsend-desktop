@@ -46,7 +46,16 @@ export const useMainStore = defineStore({
     currentDirection: { label: 'All', value: '' },
 
     pendingTransactions: [],
-    // {"account":"123123123","account_balance_change":1.05,"amount":1.06,"txinfo":{"blocktime":1636028004},"blocktime":1636028004,"txid":"2cd2b9277568066a2dd53fbee49635839829df804794101cdd9d450ae8c15e11","isPending":true}
+    /* {
+        account: '123123123',
+        account_balance_change: 1.05,
+        amount: 1.06,
+        txinfo: { blocktime: Math.floor(Date.now() / 1000) },
+        blocktime: Math.floor(Date.now() / 1000),
+        txid: '2cd2b9277568066a2dd53fbee49635839829df804794101cdd9d450ae8c15e11',
+        isPending: true,
+        isFailed: true,
+      }, */
   }),
   getters: {},
   actions: {
@@ -54,9 +63,19 @@ export const useMainStore = defineStore({
       this.pendingTransactions.push(tx);
       // this.wallet.txs.push(tx);
     },
+    ADD_FAILED_TRANSACTION(tx) {
+      this.pendingTransactions.push(tx);
+      // this.wallet.txs.push(tx);
+    },
+
     REMOVE_PENDING_TRANSACTION(txid) {
       this.pendingTransactions = this.pendingTransactions.filter(
         (el) => el.txid !== txid
+      );
+    },
+    REMOVE_FAILED_TRANSACTIONS() {
+      this.pendingTransactions = this.pendingTransactions.filter(
+        (el) => el.isFailed === true
       );
     },
     SET_CURRENT_PERIOD(payload) {
@@ -228,8 +247,7 @@ export const useMainStore = defineStore({
 
       // Here we will find all the address inputs
       // that have referenced this transaction.
-      const spent = // Loop each output
-      (
+      const spent = ( // Loop each output
         await Promise.all(
           transaction.vout.map((item) => {
             return new Promise((resolveFirst, rejectFirst) => {
