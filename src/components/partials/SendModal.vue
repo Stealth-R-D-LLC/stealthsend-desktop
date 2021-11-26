@@ -534,11 +534,12 @@ async function addFailedTx() {
     account: account.value.label,
     account_balance_change: amount.value,
     amount: sumOf(amount.value, aproxFee.value),
+    blocktime: getUnixTime(new Date()),
     txinfo: {
       blocktime: getUnixTime(new Date()),
       destinations: [depositAddress.value],
     },
-    txid: 'skabo klonpo',
+    txid: '-',
     isPending: true,
     isFailed: true,
   });
@@ -601,6 +602,7 @@ async function send() {
         account: account.value.label,
         account_balance_change: amount.value,
         amount: sumOf(amount.value, aproxFee.value),
+        txid: transactionResponse.txid,
         txinfo: {
           blocktime: getUnixTime(new Date()),
           destinations: [depositAddress.value],
@@ -609,8 +611,13 @@ async function send() {
         isPending: true,
         isFailed: false,
       });
+      await CryptoService.storeTxAndLabel(
+        transactionResponse.txid,
+        label.value
+      );
       await CryptoService.scanWallet();
       emitter.emit('transactions:refresh');
+      changeStep(6);
     } else {
       setTimeout(() => addFailedTx(), 1);
     }

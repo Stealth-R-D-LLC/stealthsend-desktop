@@ -709,6 +709,7 @@ const CryptoService = {
 
       // after this array has been reduced with the transactions that came in the meantime, concat the rest with the array of all txs
       for (let pendingTx of mainStore?.pendingTransactions) {
+        console.log('jedna od pending: ', pendingTx);
         reducedTxs.push(pendingTx);
       }
 

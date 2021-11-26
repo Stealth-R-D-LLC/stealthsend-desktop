@@ -3,7 +3,7 @@
     <div class="top">
       <h6>Transaction Details</h6>
       <div class="icons">
-        <StTooltip class="tooltip" tooltip="Edit Label">
+        <StTooltip v-if="!tx?.isFailed" class="tooltip" tooltip="Edit Label">
           <SvgIcon name="icon-edit" @click="openEditMode" />
         </StTooltip>
         <template
@@ -100,7 +100,11 @@
               wallet.accounts.find((acc) => acc.label === tx.account).isImported
             "
           >
-            <template v-if="tx.isPending">
+            <template v-if="tx?.isFailed">
+              <SvgIcon name="icon-transactions-failed" />
+              -{{ formatAmount(tx.amount, false, 6, 6) }} XST
+            </template>
+            <template v-else-if="tx.isPending">
               <SvgIcon name="icon-transactions-pending" />
               -{{ formatAmount(tx.amount, false, 6, 6) }} XST
             </template>
@@ -127,7 +131,12 @@
             </template>
           </template>
           <template v-else>
-            <SvgIcon name="icon-transactions-pending" v-if="tx.isPending" />
+            <SvgIcon name="icon-transactions-failed" v-if="tx?.isFailed" />
+            <SvgIcon
+              name="icon-transactions-pending"
+              v-else-if="tx.isPending"
+            />
+
             <SvgIcon
               name="icon-transactions-received"
               v-else-if="tx.amount > 0"
@@ -149,43 +158,48 @@
       </div>
       <div class="item">
         <p class="bold">Receiving Address</p>
-        <p
-          v-if="
-            tx.vout &&
-            tx.vout[0] &&
-            tx.vout[0].scriptPubKey &&
-            tx.vout[0].scriptPubKey.type === 'nonstandard'
-          "
-          class="item-link pointer"
-          @click="
-            openAddressExplorer(
-              tx.vout[tx.vout.length - 1].scriptPubKey.addresses[0]
-            )
-          "
-        >
-          {{ tx.vout[tx.vout.length - 1].scriptPubKey.addresses[0] }}
+        <p v-if="tx?.isFailed">
+          {{ tx.txinfo.destinations[0] }}
         </p>
         <template v-else>
           <p
             v-if="
-              tx &&
               tx.vout &&
-              tx.vout.length &&
-              tx.vout[tx.position] &&
-              tx.vout[tx.position].scriptPubKey &&
-              tx.vout[tx.position].scriptPubKey.addresses &&
-              tx.vout[tx.position].scriptPubKey.addresses[0]
+              tx.vout[0] &&
+              tx.vout[0].scriptPubKey &&
+              tx.vout[0].scriptPubKey.type === 'nonstandard'
             "
             class="item-link pointer"
             @click="
               openAddressExplorer(
-                tx.vout[tx.position].scriptPubKey.addresses[0]
+                tx.vout[tx.vout.length - 1].scriptPubKey.addresses[0]
               )
             "
           >
-            {{ tx.vout[tx.position].scriptPubKey.addresses[0] }}
+            {{ tx.vout[tx.vout.length - 1].scriptPubKey.addresses[0] }}
           </p>
-          <p v-else>-</p>
+          <template v-else>
+            <p
+              v-if="
+                tx &&
+                tx.vout &&
+                tx.vout.length &&
+                tx.vout[tx.position] &&
+                tx.vout[tx.position].scriptPubKey &&
+                tx.vout[tx.position].scriptPubKey.addresses &&
+                tx.vout[tx.position].scriptPubKey.addresses[0]
+              "
+              class="item-link pointer"
+              @click="
+                openAddressExplorer(
+                  tx.vout[tx.position].scriptPubKey.addresses[0]
+                )
+              "
+            >
+              {{ tx.vout[tx.position].scriptPubKey.addresses[0] }}
+            </p>
+            <p v-else>-</p>
+          </template>
         </template>
       </div>
       <div class="item">
@@ -197,33 +211,40 @@
       <div class="item item--grid">
         <div>
           <p class="bold">Confirmations</p>
-          <p>{{ tx.confirmations }}</p>
+          <p>{{ tx.confirmations ? tx.confirmations : 0 }}</p>
         </div>
         <div>
           <p class="bold">Network Fee</p>
-          <p v-if="!loadingFee">
-            <template
-              v-if="
-                tx.vout &&
-                tx.vout[0] &&
-                tx.vout[0].scriptPubKey &&
-                tx.vout[0].scriptPubKey.type === 'nonstandard'
-              "
-            >
-              {{ formatAmount(fees, false, 6, 6) }} XST
-            </template>
-            <template v-else>
-              {{ formatAmount(fees, false, 6, 6).replace('-', '') }} XST
-            </template>
-          </p>
-          <SvgIcon v-else name="icon-loader-address" class="address-loader" />
+          <p v-if="tx?.isFailed">{{ formatAmount(0, false, 6, 6) }} XST</p>
+          <template v-else-if="!tx?.isFailed">
+            <p v-if="!loadingFee">
+              <template
+                v-if="
+                  tx.vout &&
+                  tx.vout[0] &&
+                  tx.vout[0].scriptPubKey &&
+                  tx.vout[0].scriptPubKey.type === 'nonstandard'
+                "
+              >
+                {{ formatAmount(fees, false, 6, 6) }} XST
+              </template>
+              <template v-else>
+                {{ formatAmount(fees, false, 6, 6).replace('-', '') }} XST
+              </template>
+            </p>
+            <SvgIcon v-else name="icon-loader-address" class="address-loader" />
+          </template>
         </div>
       </div>
       <div class="item">
         <p class="bold">Date</p>
         <p>{{ formatBlocktime(tx.blocktime, 'd MMM, y, h:mm:ss a') }}</p>
       </div>
-      <p class="more-info bold" @click="openBlockExplorer(tx.txid)">
+      <p
+        v-if="!tx?.isFailed"
+        class="more-info bold"
+        @click="openBlockExplorer(tx.txid)"
+      >
         View on StealthMonitor.org
       </p>
     </div>
@@ -267,6 +288,11 @@ const { form, validateFields } = useValidation({
 watch(
   () => mainStore.offCanvasData,
   async () => {
+    if (mainStore.offCanvasData && mainStore.offCanvasData.txid === '-') {
+      // handle failed tx
+      // loadingFee.value = false;
+      // return;
+    }
     if (mainStore.offCanvasData && mainStore.offCanvasData.txid) {
       await getTx(mainStore.offCanvasData.txid);
       await mainStore.getTxFee(mainStore.offCanvasData.txid).then((res) => {
@@ -370,6 +396,13 @@ function openAddressExplorer(address) {
 }
 
 async function getTx(txid) {
+  if (!txid || txid === '-') {
+    tx.value = {
+      ...mainStore.offCanvasData,
+      position: 0,
+    };
+    return;
+  }
   const res = await mainStore.rpc('gettransaction', [txid]);
   let position = 0;
   let outputAddresses =

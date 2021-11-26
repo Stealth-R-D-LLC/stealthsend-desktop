@@ -75,7 +75,7 @@ export const useMainStore = defineStore({
     },
     REMOVE_FAILED_TRANSACTIONS() {
       this.pendingTransactions = this.pendingTransactions.filter(
-        (el) => el.isFailed === true
+        (el) => !el.isFailed
       );
     },
     SET_CURRENT_PERIOD(payload) {
