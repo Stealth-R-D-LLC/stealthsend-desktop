@@ -77,10 +77,14 @@
                     </template>
                     <template v-else>
                       <SvgIcon
-                        v-if="!item.isFailed"
+                        v-if="item.isPending && !item.isFailed"
                         name="icon-transactions-pending"
                       />
-                      <SvgIcon v-else name="icon-transactions-failed" />
+                      <SvgIcon
+                        v-else-if="item.isPending && item.isFailed"
+                        name="icon-transactions-failed"
+                      />
+                      <SvgIcon v-else name="icon-transactions-received" />
                       <template v-if="$route.name !== 'Dashboard'"
                         >Received</template
                       >

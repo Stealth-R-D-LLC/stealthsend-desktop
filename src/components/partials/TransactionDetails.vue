@@ -299,7 +299,7 @@ watch(
         txDetails.value = res;
         loadingFee.value = false;
       });
-      if (mainStore.offCanvasData.isEditMode) {
+      if (mainStore?.offCanvasData?.isEditMode) {
         openEditMode();
       }
     }
