@@ -401,3 +401,7 @@ fieldset[disabled] .multiselect {
 .st-form-item--dark .multiselect--disabled {
   background: transparent;
 }
+
+.st-form-item--dark .multiselect .multiselect__placeholder {
+  color: var(--grey100);
+}
