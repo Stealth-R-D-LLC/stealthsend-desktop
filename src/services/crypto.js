@@ -688,7 +688,8 @@ const CryptoService = {
       for (let ptx of mainStore?.pendingTransactions) {
         pendingTransactions.push(JSON.parse(JSON.stringify(ptx))); // avoid proxy
       }
-
+      console.log('STORE PENDING', mainStore?.pendingTransactions);
+      console.log('PENDING', pendingTransactions);
       let reducedTxs = [];
       // logic for showing/hiding pending transactions
       for (const tx of txs) {
