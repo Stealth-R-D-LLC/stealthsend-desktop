@@ -22,9 +22,7 @@
           }"
         >
           <TopBar></TopBar>
-          <transition name="fade">
-            <component :is="Component" />
-          </transition>
+          <component :is="Component" />
         </div>
       </router-view>
     </main>

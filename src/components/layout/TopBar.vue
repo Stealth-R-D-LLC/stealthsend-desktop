@@ -320,20 +320,15 @@
                   <h6>{{ amountFormat(acc).amountLeft }} XST</h6>
                   <p>~ ${{ amountFormat(acc).amountRight }} USD</p>
                 </div>
-                <transition name="fade">
-                  <div
-                    v-if="showArrow === acc.label"
-                    class="account-card__content--icon"
-                    @click="accountChanged(acc)"
-                  >
-                    <StTooltip class="tooltip" tooltip="Apply">
-                      <SvgIcon
-                        name="icon-arrow-right"
-                        class="icon-arrow-right"
-                      />
-                    </StTooltip>
-                  </div>
-                </transition>
+                <div
+                  v-if="showArrow === acc.label"
+                  class="account-card__content--icon"
+                  @click="accountChanged(acc)"
+                >
+                  <StTooltip class="tooltip" tooltip="Apply">
+                    <SvgIcon name="icon-arrow-right" class="icon-arrow-right" />
+                  </StTooltip>
+                </div>
               </div>
             </div>
           </div>
