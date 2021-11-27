@@ -77,7 +77,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
       let recipient = {
         address: sendForm.address,
-        amount: Number(sumOf(sendForm.amount, fee * -1)) * 1e6,
+        amount: multiplyOf(Number(sumOf(sendForm.amount, fee * -1)), 1e6),
       };
 
       let sumUtxo = utxo

@@ -618,8 +618,6 @@ async function send() {
       await CryptoService.scanWallet();
       emitter.emit('transactions:refresh');
       changeStep(6);
-    } else {
-      setTimeout(() => addFailedTx(), 1);
     }
   } catch (e) {
     if (e instanceof ValidationError) {
