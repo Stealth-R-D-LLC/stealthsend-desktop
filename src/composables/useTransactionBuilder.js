@@ -5,7 +5,7 @@ import { useMainStore } from '@/store';
 import * as bitcoinFeeless from '../../bitcoinjs-lib-feeless/src/index.js';
 import * as bitcoin from 'bitcoinjs-lib';
 import { Buffer } from 'buffer';
-import { add, format, subtract, floor } from 'mathjs';
+import { add, format, subtract, floor, multiply } from 'mathjs';
 
 export default async function useTransactionBuilder(utxo, sendForm) {
   const mainStore = useMainStore();
@@ -29,6 +29,14 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     diff = format(diff, { precision: 14 });
     return Number(diff);
   };
+
+    const multiplyOf = (x = 0, y = 0) => {
+    let result = multiply(x, y);
+    result = format(result, { precision: 14 });
+    return Number(result);
+  };
+
+
   function calculateChange(accountAmount, sendAmount) {
     let change = subtractOf(accountAmount, sendAmount);
     return change;
@@ -89,13 +97,13 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
     let recipient = {
       address: sendForm.address,
-      amount: Number(sumOf(sendForm.amount, fee * -1)) * 1e6,
+      amount: Number(multiplyOf(sumOf(sendForm.amount, fee * -1), 1e6)),
       // amount: multiply(bignumber(sendForm.amount), bignumber(-Math.abs(0.01)), 1e6).d[0]
     };
 
     console.log(
       'TRANSACTION BUILDER: recipient will get:',
-      JSON.stringify(Number(sumOf(sendForm.amount, fee * -1)))
+      Number(sumOf(sendForm.amount, fee * -1))
     );
 
     let sumUtxo = utxo.map((el) => el.amount).reduce((a, b) => sumOf(a, b), 0);
@@ -117,8 +125,9 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
     let change = {
       address: child.address,
-      amount: floor(calculateChange(sumUtxo, Number(sendForm.amount)) * 1e6), // account amount - (send amount + fee)
+      amount: floor(multiplyOf(calculateChange(sumUtxo, Number(sendForm.amount), 1e6))), // account amount - (send amount + fee)
     };
+
     console.log('TRANSACTION BUILDER: change:', JSON.stringify(change));
 
     // add the output for recipient

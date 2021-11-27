@@ -15,10 +15,7 @@
         >
           <template
             v-if="
-              wallet &&
-              wallet.accounts.find((acc) => acc.label === tx.account) &&
-              wallet.accounts.find((acc) => acc.label === tx.account)
-                .address !== tx.vout[tx.position].scriptPubKey.addresses[0]
+              wallet && wallet.accounts.find((acc) => acc.label === tx.account)
             "
           >
             <StTooltip class="tooltip" tooltip="Resend Transaction">
@@ -112,7 +109,7 @@
               v-else-if="
                 wallet &&
                 wallet.accounts.find((acc) => acc.label === tx.account)
-                  .address === tx.vout[tx.position].scriptPubKey.addresses[0]
+                  .address === tx?.vout[tx.position]?.scriptPubKey?.addresses[0]
               "
             >
               <SvgIcon name="icon-transactions-received" />
@@ -159,7 +156,7 @@
       <div class="item">
         <p class="bold">Receiving Address</p>
         <p v-if="tx?.isFailed">
-          {{ tx.txinfo.destinations[0] }}
+          {{ tx?.txinfo?.destinations[0] }}
         </p>
         <template v-else>
           <p
@@ -172,11 +169,11 @@
             class="item-link pointer"
             @click="
               openAddressExplorer(
-                tx.vout[tx.vout.length - 1].scriptPubKey.addresses[0]
+                tx?.vout[tx.vout.length - 1]?.scriptPubKey?.addresses[0]
               )
             "
           >
-            {{ tx.vout[tx.vout.length - 1].scriptPubKey.addresses[0] }}
+            {{ tx?.vout[tx.vout.length - 1]?.scriptPubKey?.addresses[0] }}
           </p>
           <template v-else>
             <p
@@ -192,11 +189,11 @@
               class="item-link pointer"
               @click="
                 openAddressExplorer(
-                  tx.vout[tx.position].scriptPubKey.addresses[0]
+                  tx?.vout[tx.position]?.scriptPubKey?.addresses[0]
                 )
               "
             >
-              {{ tx.vout[tx.position].scriptPubKey.addresses[0] }}
+              {{ tx?.vout[tx.position]?.scriptPubKey?.addresses[0] }}
             </p>
             <p v-else>-</p>
           </template>
@@ -410,7 +407,7 @@ async function getTx(txid) {
   if (mainStore.account_balance_change < 0) {
     position =
       mainStore.offCanvasData.txinfo.destinations?.findIndex(
-        (dest) => outputAddresses.indexOf(dest.addresses[0]) === -1
+        (dest) => outputAddresses?.indexOf(dest?.addresses[0]) === -1
       ) || 0;
   } else {
     position = 0;
@@ -437,9 +434,9 @@ function redoTransaction() {
   const isFeeless = !!tx.value.vout.filter((output) => {
     return output.scriptPubKey.type === 'feework';
   }).length;
-  mainStore.SET_SEND_ADDRESS(tx.value.vout[0].scriptPubKey.addresses[0]);
-  mainStore.SET_REDO_ACCOUNT(tx.value.account);
-  mainStore.SET_REDO_AMOUNT(tx.value.vout[0].value);
+  mainStore.SET_SEND_ADDRESS(tx?.value?.vout[0]?.scriptPubKey?.addresses[0]);
+  mainStore.SET_REDO_ACCOUNT(tx?.value?.account);
+  mainStore.SET_REDO_AMOUNT(tx?.value?.vout[0].value);
   mainStore.SET_REDO_LABEL(txWithLabels.value[tx.value.txid]);
   mainStore.SET_MODAL_VISIBILITY('send', true);
   mainStore.SET_FEELESS(isFeeless);
