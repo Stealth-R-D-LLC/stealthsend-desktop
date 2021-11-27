@@ -30,12 +30,11 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     return Number(diff);
   };
 
-    const multiplyOf = (x = 0, y = 0) => {
+  const multiplyOf = (x = 0, y = 0) => {
     let result = multiply(x, y);
     result = format(result, { precision: 14 });
     return Number(result);
   };
-
 
   function calculateChange(accountAmount, sendAmount) {
     let change = subtractOf(accountAmount, sendAmount);
@@ -125,7 +124,9 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
     let change = {
       address: child.address,
-      amount: floor(multiplyOf(calculateChange(sumUtxo, Number(sendForm.amount), 1e6))), // account amount - (send amount + fee)
+      amount: floor(
+        multiplyOf(calculateChange(sumUtxo, Number(sendForm.amount), 1e6))
+      ), // account amount - (send amount + fee)
     };
 
     console.log('TRANSACTION BUILDER: change:', JSON.stringify(change));
