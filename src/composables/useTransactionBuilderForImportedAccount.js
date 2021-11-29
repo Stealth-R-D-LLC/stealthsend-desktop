@@ -44,7 +44,6 @@ export default async function useTransactionBuilder(utxo, sendForm) {
   }
   async function buildTransaction() {
     // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve) => {
       // eslint-disable-next-line no-async-promise-executor
       let rawTransaction = null;
       if (sendForm.isFeeless) {
@@ -213,9 +212,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         throw e;
       }
 
-      resolve(txid);
       return txid;
-    });
   }
 
   const txid = await buildTransaction(utxo, sendForm);
