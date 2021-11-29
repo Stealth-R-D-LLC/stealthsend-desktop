@@ -1,0 +1,56 @@
+<svg
+  width="21"
+  height="18"
+  viewBox="0 0 21 18"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M5 1.5H19"
+    stroke="#FAF9FC"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M0 1.5H2"
+    stroke="#FAF9FC"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M5 6.5H19"
+    stroke="#FAF9FC"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M0 6.5H2"
+    stroke="#FAF9FC"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M5 11.5H19"
+    stroke="#FAF9FC"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M0 11.5H2"
+    stroke="#FAF9FC"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M5 16.5H19"
+    stroke="#FAF9FC"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M0 16.5H2"
+    stroke="#FAF9FC"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+</svg>

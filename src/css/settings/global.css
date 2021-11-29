@@ -1,1 +1,51 @@
 /* global */
+
+html,
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+}
+
+button {
+  width: fit-content;
+  margin: 0 auto;
+}
+.type-d:disabled:hover {
+  color: var(--grey200) !important;
+}
+a {
+  outline: none;
+}
+
+.st-form-item {
+  position: relative;
+}
+
+.no-margin {
+  margin: 0;
+}
+
+.st-input .st-icon {
+  height: 35px;
+  display: flex;
+  align-items: center;
+  bottom: 2px;
+}
+
+.st-modal-container--light {
+  background-color: var(--background0) !important;
+}
+
+.error {
+  color: var(--red300);
+}
+
+.tooltip:before {
+  padding: 4px 12px !important;
+}
+
+.qr-stream-camera {
+  transform: rotateY(180deg);
+}

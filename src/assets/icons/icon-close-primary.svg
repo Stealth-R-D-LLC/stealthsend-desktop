@@ -1,0 +1,14 @@
+<svg
+  width="18"
+  height="18"
+  viewBox="0 0 18 18"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M3 3l12 12M3 15L15 3"
+    stroke="#4E00F6"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+</svg>
