@@ -135,7 +135,7 @@ function cancelClearAppData() {
   line-height: 28px;
   letter-spacing: 0.12px;
   font-family: var(--secondary-font);
-  background-color: var(--white);
+  background-color: #fff;
   border-radius: 100%;
   position: absolute;
   top: 1px;

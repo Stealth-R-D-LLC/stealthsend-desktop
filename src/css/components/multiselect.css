@@ -3,11 +3,11 @@ fieldset[disabled] .multiselect {
   pointer-events: none;
 }
 .st-form-item--dark .multiselect__tags .multiselect__single {
-  color: var(--white);
+  color: #fff;
 }
 
 .st-form-item--dark .multiselect__select::before {
-  border-color: var(--white) transparent transparent transparent;
+  border-color: #fff transparent transparent transparent;
 }
 
 .multiselect__spinner {
@@ -386,7 +386,7 @@ fieldset[disabled] .multiselect {
 }
 
 .dark .multiselect__select::before {
-  border-color: var(--white) transparent transparent transparent;
+  border-color: #fff transparent transparent transparent;
 }
 
 .st-form-item--dark .multiselect--disabled {

@@ -256,7 +256,7 @@ export default {
   cursor: pointer;
   text-decoration: none;
   white-space: nowrap;
-  color: var(--white);
+  color: #fff;
   font-family: var(--secondary-font);
   font-size: 14px;
   line-height: 24px;
