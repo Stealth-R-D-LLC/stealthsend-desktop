@@ -145,7 +145,9 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       rawTransaction.addOutput(change.address, change.amount);
     } else {
       console.log(
-        'TRANSACTION BUILDER: no change, its smaller than min change amount', calculateChange(sumUtxo, Number(sendForm.amount)), CryptoService.constraints.MINIMAL_CHANGE
+        'TRANSACTION BUILDER: no change, its smaller than min change amount',
+        calculateChange(sumUtxo, Number(sendForm.amount)),
+        CryptoService.constraints.MINIMAL_CHANGE
       );
     }
 
