@@ -204,7 +204,6 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
       let txid = '';
       try {
-        throw new Error();
         txid = await mainStore.rpc('sendrawtransaction', [rawTransactionToHex]);
       } catch (e) {
         console.error(
