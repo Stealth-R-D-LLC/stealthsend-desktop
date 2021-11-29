@@ -263,6 +263,9 @@
       <template v-if="currentStep === 3">
         <StButton type="type-d" @click="prepareSend">Confirm Payment</StButton>
       </template>
+      <template v-if="currentStep === 6">
+      <StButton type="type-d" @click="closeModal">OK</StButton>
+      </template>
     </template>
   </StModal>
 </template>
