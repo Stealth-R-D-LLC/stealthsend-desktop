@@ -5,7 +5,7 @@ import { useMainStore } from '@/store';
 import * as bitcoinFeeless from '../../bitcoinjs-lib-feeless/src/index.js';
 import * as bitcoin from 'bitcoinjs-lib';
 import { Buffer } from 'buffer';
-import { add, format, subtract, floor, multiply } from 'mathjs';
+import { add, format, subtract, floor, multiply, round } from 'mathjs';
 
 export default async function useTransactionBuilder(utxo, sendForm) {
   const mainStore = useMainStore();
@@ -26,7 +26,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
   const subtractOf = (x = 0, y = 0) => {
     let diff = subtract(x, y);
-    diff = format(diff, { precision: 14 });
+    diff = round(diff, 6);
     return Number(diff);
   };
 
@@ -128,7 +128,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         multiplyOf(calculateChange(sumUtxo, Number(sendForm.amount)), 1e6)
       ), // account amount - (send amount + fee)
     };
-    console.log('---2', change.amount);
+    console.log('TRANSACTION BUILDER: change amount', change.amount);
 
     console.log('TRANSACTION BUILDER: change:', JSON.stringify(change));
 
@@ -145,7 +145,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       rawTransaction.addOutput(change.address, change.amount);
     } else {
       console.log(
-        'TRANSACTION BUILDER: no change, its smaller than min change amount'
+        'TRANSACTION BUILDER: no change, its smaller than min change amount', calculateChange(sumUtxo, Number(sendForm.amount)), CryptoService.constraints.MINIMAL_CHANGE
       );
     }
 
@@ -238,6 +238,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       txid = await mainStore.rpc('sendrawtransaction', [rawTransactionToHex]);
     } catch (e) {
       console.error('Transaction builded, but rejected from RPC. Reason: ', e);
+      return e;
     }
 
     return txid;

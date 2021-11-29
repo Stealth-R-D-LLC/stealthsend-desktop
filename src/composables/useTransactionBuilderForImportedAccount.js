@@ -5,7 +5,7 @@ import { useMainStore } from '@/store';
 import * as bitcoinFeeless from '../../bitcoinjs-lib-feeless/src/index.js';
 import * as bitcoin from 'bitcoinjs-lib';
 import { Buffer } from 'buffer';
-import { add, format, subtract, multiply } from 'mathjs';
+import { add, format, subtract, multiply, round } from 'mathjs';
 
 export default async function useTransactionBuilder(utxo, sendForm) {
   const mainStore = useMainStore();
@@ -27,7 +27,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
   const subtractOf = (x = 0, y = 0) => {
     let diff = subtract(x, y);
-    diff = format(diff, { precision: 14 });
+    diff = round(diff, 6);
     return Number(diff);
   };
 
@@ -209,6 +209,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
           'Transaction builded, but rejected from RPC. Reason: ',
           e
         );
+        return e;
       }
 
       resolve(txid);
