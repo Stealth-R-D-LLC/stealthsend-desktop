@@ -46,11 +46,15 @@
                       wallet &&
                       wallet?.accounts?.find(
                         (acc) => acc.label === item.account
-                      ).isImported
+                      )?.isImported
                     "
                   >
                     <template v-if="item.isPending">
-                      <SvgIcon name="icon-transactions-pending" />
+                      <SvgIcon
+                        v-if="!item.isFailed"
+                        name="icon-transactions-pending"
+                      />
+                      <SvgIcon v-else name="icon-transactions-failed" />
                       <template v-if="$route.name !== 'Dashboard'"
                         >Pending</template
                       >
@@ -72,7 +76,15 @@
                       >
                     </template>
                     <template v-else>
-                      <SvgIcon name="icon-transactions-received" />
+                      <SvgIcon
+                        v-if="item.isPending && !item.isFailed"
+                        name="icon-transactions-pending"
+                      />
+                      <SvgIcon
+                        v-else-if="item.isPending && item.isFailed"
+                        name="icon-transactions-failed"
+                      />
+                      <SvgIcon v-else name="icon-transactions-received" />
                       <template v-if="$route.name !== 'Dashboard'"
                         >Received</template
                       >
@@ -80,7 +92,11 @@
                   </template>
                   <template v-else>
                     <template v-if="item.isPending">
-                      <SvgIcon name="icon-transactions-pending" />
+                      <SvgIcon
+                        v-if="!item.isFailed"
+                        name="icon-transactions-pending"
+                      />
+                      <SvgIcon v-else name="icon-transactions-failed" />
                       <template v-if="$route.name !== 'Dashboard'"
                         >Pending</template
                       >
@@ -206,7 +222,7 @@
                       wallet &&
                       wallet?.accounts?.find(
                         (acc) => acc.label === item.account
-                      ).isImported
+                      )?.isImported
                     "
                   >
                     {{
@@ -229,7 +245,7 @@
                       wallet &&
                       wallet?.accounts?.find(
                         (acc) => acc.label === item.account
-                      ).isImported &&
+                      )?.isImported &&
                       wallet &&
                       item?.txinfo?.sources?.find(
                         (obj) =>
@@ -319,7 +335,7 @@
                         wallet &&
                         wallet?.accounts?.find(
                           (acc) => acc.label === item.account
-                        ).isImported
+                        )?.isImported
                       "
                     >
                       {{

@@ -1842,7 +1842,7 @@ function goToDashboard() {
 }
 .left .box .box__inner .title,
 .left .box .box__inner .subtitle {
-  color: var(--white);
+  color: #fff;
 }
 .left .box .box__inner .buttons {
   margin: 0 auto;
@@ -1862,7 +1862,7 @@ function goToDashboard() {
 }
 .left .box .box__inner .support p {
   margin-left: 25px;
-  color: var(--white);
+  color: #fff;
 }
 .right {
   overflow: hidden;

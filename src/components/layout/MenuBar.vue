@@ -165,6 +165,7 @@ function toggleDrawer(canvas) {
 }
 function lock() {
   if (!isLoading.value) {
+    mainStore.REMOVE_FAILED_TRANSACTIONS();
     mainStore.SET_IS_LOCK(true);
     router.push('/lock');
   }

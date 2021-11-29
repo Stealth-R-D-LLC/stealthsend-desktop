@@ -445,7 +445,7 @@ function preventRemove(acc) {
 .multiselect-single-label {
   display: flex;
   flex-direction: column;
-  color: var(--white);
+  color: #fff;
 }
 .multiselect-single-label .account-utxo {
   margin-top: 6px;

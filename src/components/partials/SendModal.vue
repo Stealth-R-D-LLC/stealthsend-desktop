@@ -3,11 +3,11 @@
     :has-click-outside="false"
     :show-back-button="currentStep < 4"
     :steps="3"
-    :show-close-button="currentStep <= 4 || currentStep === 6"
+    :show-close-button="currentStep <= 3 || currentStep === 6"
     :current-step="currentStep"
     :visible="isVisible"
     class="send-modal"
-    @close="cancelSend"
+    @close="closeModal"
     @back="changeStep"
     :class="{
       'no-step':
@@ -19,10 +19,8 @@
   >
     <template #header>
       <template v-if="currentStep < 4">Send XST</template>
-      <template v-if="currentStep === 4">Sending XST</template>
       <template v-if="currentStep === 5">Sending XST</template>
-      <template v-if="currentStep === 6">Success</template>
-      <template v-if="currentStep === 7">Warning</template>
+      <template v-if="currentStep === 6">Pending</template>
     </template>
     <template #body>
       <StModal
@@ -234,13 +232,6 @@
           </div>
         </div>
       </template>
-      <template v-if="currentStep === 4">
-        <div class="progress">
-          <SvgIcon name="icon-loader-light" class="progress-animated" />
-          <div class="overlay">{{ counter }}s</div>
-        </div>
-        <p class="progress-note">Your transactions is being prepared</p>
-      </template>
       <template v-if="currentStep === 5">
         <div class="progress">
           <CircleProgress></CircleProgress>
@@ -254,13 +245,7 @@
         <div class="progress no-background">
           <SvgIcon name="icon-loader-success-light" />
         </div>
-        <p class="progress-note">Transaction sent</p>
-      </template>
-      <template v-if="currentStep === 7">
-        <div class="progress no-background">
-          <SvgIcon name="icon-loader-fail-light" />
-        </div>
-        <p class="progress-note">Transaction failed</p>
+        <p class="progress-note">Transaction submitted</p>
       </template>
     </template>
     <template #footer class="flex-center-all">
@@ -278,15 +263,9 @@
       <template v-if="currentStep === 3">
         <StButton type="type-d" @click="prepareSend">Confirm Payment</StButton>
       </template>
-      <template v-if="currentStep === 4">
-        <StButton type="type-d" @click="cancelSend">Cancel</StButton>
+      <template v-if="currentStep === 6">
+        <StButton type="type-d" @click="closeModal">OK</StButton>
       </template>
-      <div class="tx-failed-controls" v-if="currentStep === 7">
-        <StButton @click="prepareSend" type="type-d">Try Again</StButton>
-        <StButton class="cancel-btn" @click="closeModal" type="type-b"
-          >Cancel</StButton
-        >
-      </div>
     </template>
   </StModal>
 </template>
@@ -302,7 +281,7 @@ import useFeeEstimator from '@/composables/useFeeEstimator';
 import useHelpers from '@/composables/useHelpers';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import { useRoute } from 'vue-router';
-import { format, add as addIt, subtract } from 'mathjs';
+import { format, add as addIt, subtract, round } from 'mathjs';
 import emitter from '@/services/emitter';
 import { QrStream } from 'vue3-qr-reader';
 import SvgIcon from '../partials/SvgIcon.vue';
@@ -329,7 +308,6 @@ const aproxFee = ref(0.01);
 const currentStep = ref(1);
 const counter = ref(5);
 const counterTimeout = ref(null);
-const sendTimeout = ref(null);
 const label = ref('');
 const isScaning = ref(false);
 const QRData = ref(null);
@@ -352,7 +330,7 @@ watchEffect(() => {
     }
   }
   if (currentStep.value === 4) {
-    sendTimeout.value = setTimeout(() => send(), 4900);
+    // sendTimeout.value = setTimeout(() => send(), 4900);
   }
   if (currentStep.value === 5) {
     clearTimeout(counterTimeout.value);
@@ -544,7 +522,8 @@ async function prepareSend() {
   try {
     await validateFields();
     changeStep(4);
-    countdown();
+    //countdown();
+    send();
   } catch (e) {
     if (e instanceof ValidationError) {
       console.log(e);
@@ -552,14 +531,24 @@ async function prepareSend() {
   }
 }
 
-function countdown() {
-  counter.value -= 1;
-  counterTimeout.value = setTimeout(() => countdown(), 1000);
-}
+async function addFailedTx() {
+  changeStep(6);
+  mainStore.ADD_FAILED_TRANSACTION({
+    account: account.value.label,
+    account_balance_change: amount.value,
+    amount: sumOf(amount.value, aproxFee.value),
+    blocktime: getUnixTime(new Date()),
+    txinfo: {
+      blocktime: getUnixTime(new Date()),
+      destinations: [depositAddress.value],
+    },
+    txid: '-',
+    isPending: true,
+    isFailed: true,
+  });
 
-function cancelSend() {
-  closeModal();
-  clearTimeout(sendTimeout.value);
+  await CryptoService.scanWallet();
+  emitter.emit('transactions:refresh');
 }
 
 async function send() {
@@ -570,7 +559,7 @@ async function send() {
     const utxo = coinSelection(target);
 
     if (utxo.length === 0) {
-      setTimeout(() => changeStep(7), 6000);
+      setTimeout(() => addFailedTx(), 1);
       return;
     }
     console.info(
@@ -608,62 +597,36 @@ async function send() {
         });
       } catch (e) {
         console.log('Transaction builder error: ', e);
-        setTimeout(() => changeStep(7), 6000);
+        setTimeout(() => addFailedTx(), 1);
       }
     }
     if (transactionResponse.txid) {
-      // instead of waiting X seconds for the tx and the block to pass
-      // we'll ask the chain if that transaction is there
-      let triesLeft = 8; // try to check 5 times with the chain
-      const timeout = 5000; // wait 5 seconds between checks
-      if (triesLeft > 0) {
-        let txCheckInterval = setInterval(() => {
-          mainStore
-            .rpc('gettransaction', [transactionResponse.txid])
-            .then(async (res) => {
-              CryptoService.storeTxAndLabel(
-                transactionResponse.txid,
-                label.value
-              );
-              mainStore.ADD_PENDING_TRANSACTION({
-                account: account.value.label,
-                account_balance_change: amount.value,
-                amount: sumOf(amount.value, aproxFee.value),
-                txinfo: {
-                  blocktime: getUnixTime(new Date()),
-                  destinations: [depositAddress.value],
-                },
-                blocktime: getUnixTime(new Date()),
-                txid: res.txid,
-                isPending: true,
-              });
-              clearInterval(txCheckInterval);
-              triesLeft = -1;
-              await CryptoService.scanWallet();
-              emitter.emit('transactions:refresh');
-              changeStep(6);
-            })
-            .catch((err) => {
-              triesLeft = triesLeft - 1;
-              console.log(err);
-            })
-            .finally(() => {
-              if (triesLeft === 0) {
-                // when you try your best but you don't succeed
-                changeStep(7);
-                clearInterval(txCheckInterval);
-              }
-            });
-        }, timeout);
-      }
-    } else {
-      setTimeout(() => changeStep(7), 1000);
+      mainStore.ADD_PENDING_TRANSACTION({
+        account: account.value.label,
+        account_balance_change: amount.value,
+        amount: sumOf(amount.value, aproxFee.value),
+        txid: transactionResponse.txid,
+        txinfo: {
+          blocktime: getUnixTime(new Date()),
+          destinations: [depositAddress.value],
+        },
+        blocktime: getUnixTime(new Date()),
+        isPending: true,
+        isFailed: false,
+      });
+      await CryptoService.storeTxAndLabel(
+        transactionResponse.txid,
+        label.value
+      );
+      await CryptoService.scanWallet();
+      emitter.emit('transactions:refresh');
+      changeStep(6);
     }
   } catch (e) {
     if (e instanceof ValidationError) {
       console.log(e);
     } else {
-      setTimeout(() => changeStep(7), 6000);
+      setTimeout(() => addFailedTx(), 1);
     }
   }
 }
@@ -680,7 +643,7 @@ async function validateSecondStep() {
 }
 const subtractOf = (x = 0, y = 0) => {
   let diff = subtract(x, y);
-  diff = format(diff, { precision: 14 });
+  diff = round(diff, 6);
   return Number(diff);
 };
 async function validateFirstStep() {
@@ -838,7 +801,7 @@ function preventRemove(acc) {
   font-size: 14px;
   line-height: 24px;
   font-weight: 700;
-  color: var(--white);
+  color: #fff;
   letter-spacing: 0.12px;
 }
 .payment-grid {
@@ -855,7 +818,7 @@ function preventRemove(acc) {
 .multiselect-single-label {
   display: flex;
   flex-direction: column;
-  color: var(--white);
+  color: #fff;
 }
 .multiselect-single-label .account-utxo {
   margin-top: 6px;
@@ -954,10 +917,10 @@ function preventRemove(acc) {
   width: 140px;
 }
 .no-camera :deep svg path {
-  fill: var(--white);
+  fill: #fff;
 }
 .no-camera h6 {
-  color: var(--white);
+  color: #fff;
 }
 .loading-gif {
   position: absolute;

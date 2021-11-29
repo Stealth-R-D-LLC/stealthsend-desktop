@@ -926,7 +926,7 @@ emitter.on('favorite:refresh', async () => {
   transition: 0.3s;
 }
 .info-purple:hover path {
-  stroke: var(--white);
+  stroke: #fff;
 }
 .info path {
   stroke: var(--marine700);
@@ -984,7 +984,7 @@ emitter.on('favorite:refresh', async () => {
   cursor: pointer;
   text-decoration: none;
   white-space: nowrap;
-  color: var(--white);
+  color: #fff;
   font-size: 14px;
   line-height: 24px;
   transition: 0.3s;
@@ -1056,7 +1056,7 @@ emitter.on('favorite:refresh', async () => {
   letter-spacing: 0.12px;
 }
 .link-purple:hover {
-  color: var(--white);
+  color: #fff;
 }
 .link-white:hover {
   color: var(--marine200);
