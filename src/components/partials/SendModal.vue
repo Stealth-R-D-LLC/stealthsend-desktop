@@ -573,15 +573,20 @@ async function send() {
     let transactionResponse = '';
     if (account?.value?.wif && account?.value?.isImported) {
       // build transaction for imported account
-      transactionResponse = await useTransactionBuilderForImportedAccount(
-        utxo,
-        {
-          address: depositAddress.value.trim(),
-          amount: target,
-          account: account.value,
-          isFeeless: isFeeless.value,
-        }
-      );
+      try {
+        transactionResponse = await useTransactionBuilderForImportedAccount(
+          utxo,
+          {
+            address: depositAddress.value.trim(),
+            amount: target,
+            account: account.value,
+            isFeeless: isFeeless.value,
+          }
+        );
+      } catch (e) {
+        console.log('Transaction builder error: ', e);
+        setTimeout(() => addFailedTx(), 1);
+      }
     } else {
       console.log(
         'TRANSACTION BUILDER: sending from HD account',
