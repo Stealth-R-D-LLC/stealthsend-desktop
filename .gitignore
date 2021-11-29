@@ -1,11 +1,12 @@
 node_modules
 .DS_Store
 dist
-build
 *.local
-.env
 yarn-error.log
 .vscode
+.idea
 
 #Electron-builder output
 /dist_electron
+/out
+.githooks

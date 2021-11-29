@@ -1,0 +1,71 @@
+Build Linux:
+  image: nexus.barrage.net:13455/barrage-internal/electronjs-builder
+  script:
+    - apt-get update ; apt-get --yes install rsync
+    - cp -R ./ /project
+    - cd /project
+    - npm install --only=prod --no-package-lock --legacy-peer-deps
+    - npm run electron:build --linux
+    - cd $CI_PROJECT_DIR
+    - rsync -r /project/dist_electron ./
+  tags:
+    - docker-executor
+  artifacts:
+    paths:
+      - dist_electron/*.AppImage
+      - dist_electron/*.deb
+
+Build MacOS:
+  script:
+    - source ~/.zshrc
+    - WORKDIR=$(mktemp -d)
+    - rsync -r --exclude=.git ./ "$WORKDIR"
+    - cd "$WORKDIR"
+    - nvm use 14
+    - npm install --no-package-lock --legacy-peer-deps --registry=https://nexus.barrage.net/repository/npm.barrage.net/ --username=gitlab-ci-readonly --password=$CI_NEXUS_DOCKER_REGISTRY_READ_ONLY
+    - security unlock-keychain -p $KEYCHAIN_PASSWORD stealthdesktop.keychain
+    - npm run electron:build --mac
+    - cd $CI_PROJECT_DIR
+    - rsync -r $WORKDIR/dist_electron ./
+    - rm -rf "$WORKDIR"
+    - nvm use default
+  tags:
+    - macos-electronjs
+  artifacts:
+    paths:
+      - dist_electron/*.dmg
+
+Build Windows:
+  script:
+    - Set-Variable -name NODE_EXTRA_CA_CERTS -value C:\runner\bipa.crt
+    - $Env:CSC_LINK = "C:\Users\runner\barrage-codesigning.pfx"
+    - $Env:CSC_KEY_PASSWORD = "$env:WINDOWS_CODESIGN_CERT_PASS"
+    - npm cache clean --force
+    - npm install
+    - npm run electron:build --windows
+  tags:
+    - windows
+  artifacts:
+    paths:
+      - dist_electron/*.msi
+      - dist_electron/*.exe
+
+
+sonarqube-check:
+  image:
+    name: nexus.barrage.net:13455/barrage-internal/sonar-scanner-cli
+    entrypoint: [""]
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - sonar-scanner
+  allow_failure: true
+  only:
+    - develop # or the name of your main branch
+  tags:
+    - docker-executor

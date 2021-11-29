@@ -1,9 +1,10 @@
 :root {
   --zApp: 1;
   --zDropdown: 2;
-  --zModal: 3;
-  --zTooltip: 4;
-  --zGlobalLoading: 5;
+  --zTooltip: 3;
+  --zGlobalLoading: 4;
+  --zAside: 5;
+  --zModal: 6;
 }
 
 #app {
@@ -12,24 +13,30 @@
   display: grid;
 }
 
-.default-layout {
+.layout {
   display: flex;
   z-index: var(--zApp);
   height: 100%;
 }
 
-.default-layout__header {
-  padding: 12px 0;
+.layout__header {
+  padding: 43px 0 29px;
+  margin: 0 24px;
 }
-.default-layout__main {
-  /* background-color: #220365; */
+.layout__main {
   flex: 1;
   overflow: auto;
-  padding: 0 12px;
   position: relative;
+  display: flex;
 }
 
-.default-layout__main .triangle {
+.layout__single {
+    flex: 1;
+    overflow: auto;
+    position: relative;
+}
+
+.layout__main .triangle {
   clip-path: polygon(0 0, 0% 100%, 100% 100%);
   background-color: white;
   width: 66vw;
@@ -37,17 +44,14 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  /* border-bottom: 460px solid white;
-  border-right: 800px solid transparent;
-  background-color: transparent; */
 }
 
-.default-layout__aside {
+.layout__aside {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   background-color: var(--marine900);
-  width: 280px;
+  /* fixed and no scrolling  */
+  z-index: var(--zAside);
+  height: 100vh;
 }
-
-/* .container {
-  padding: 12px 0;
-} */
-

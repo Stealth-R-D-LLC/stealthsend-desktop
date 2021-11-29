@@ -1,7 +1,46 @@
 /* fonts  */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&family=Source+Sans+Pro:wght@300;400;600;700;900&display=swap');
+
+/* @font-face {
+  font-family: var(--primary-font);
+  font-display: swap;
+  src: local('SourceSansPro'), local('SourceSansPro'),
+    url('./fonts/SourceSansPro/SourceSansPro-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: var(--primary-font);
+  font-display: swap;
+  src: local('SourceSansPro'), local('SourceSansPro'),
+    url('./fonts/SourceSansPro/SourceSansPro-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: var(--secondary-font);
+  font-display: swap;
+  src: local('NotoSans'), local('NotoSans'),
+    url('./fonts/NotoSans/NotoSans-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: var(--secondary-font);
+  font-display: swap;
+  src: local('NotoSans'), local('NotoSans'),
+    url('./fonts/NotoSans/NotoSans-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+} */
+
 
 :root {
   --primary-font: 'Source Sans Pro', Sans-serif;
+  --secondary-font: 'Noto Sans', Sans-serif;
 }
 
 html,
