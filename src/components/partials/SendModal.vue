@@ -801,7 +801,7 @@ function preventRemove(acc) {
   font-size: 14px;
   line-height: 24px;
   font-weight: 700;
-  color: var(--white);
+  color: #fff;
   letter-spacing: 0.12px;
 }
 .payment-grid {
@@ -818,7 +818,7 @@ function preventRemove(acc) {
 .multiselect-single-label {
   display: flex;
   flex-direction: column;
-  color: var(--white);
+  color: #fff;
 }
 .multiselect-single-label .account-utxo {
   margin-top: 6px;
@@ -917,10 +917,10 @@ function preventRemove(acc) {
   width: 140px;
 }
 .no-camera :deep svg path {
-  fill: var(--white);
+  fill: #fff;
 }
 .no-camera h6 {
-  color: var(--white);
+  color: #fff;
 }
 .loading-gif {
   position: absolute;
