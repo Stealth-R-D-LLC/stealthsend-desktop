@@ -211,7 +211,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
           'Transaction builded, but rejected from RPC. Reason: ',
           e
         );
-        return e;
+        throw e;
       }
 
       resolve(txid);

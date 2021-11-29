@@ -235,15 +235,12 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
     let txid = '';
     try {
-      throw new Error();
-      // eslint-disable-next-line no-unreachable
       txid = await mainStore.rpc('sendrawtransaction', [rawTransactionToHex]);
     } catch (e) {
       console.error('Transaction builded, but rejected from RPC. Reason: ', e);
-      return e;
+      throw e;
     }
 
-    // eslint-disable-next-line no-unreachable
     return txid;
   }
 
