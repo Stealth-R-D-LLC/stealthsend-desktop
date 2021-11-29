@@ -235,7 +235,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
     let txid = '';
     try {
-      // throw new Error();
+      throw new Error();
       // eslint-disable-next-line no-unreachable
       txid = await mainStore.rpc('sendrawtransaction', [rawTransactionToHex]);
     } catch (e) {
@@ -243,6 +243,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       return e;
     }
 
+    // eslint-disable-next-line no-unreachable
     return txid;
   }
 

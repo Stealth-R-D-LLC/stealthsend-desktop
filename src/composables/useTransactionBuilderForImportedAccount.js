@@ -1,3 +1,4 @@
+/* eslint-disable no-unreachable */
 import useFeeEstimator from '@/composables/useFeeEstimator';
 import CryptoService from '@/services/crypto';
 import FeelessJS from '@/services/feeless';
@@ -203,6 +204,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
       let txid = '';
       try {
+        throw new Error();
         txid = await mainStore.rpc('sendrawtransaction', [rawTransactionToHex]);
       } catch (e) {
         console.error(
