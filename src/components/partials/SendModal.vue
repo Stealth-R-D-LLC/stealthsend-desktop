@@ -281,7 +281,7 @@ import useFeeEstimator from '@/composables/useFeeEstimator';
 import useHelpers from '@/composables/useHelpers';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import { useRoute } from 'vue-router';
-import { format, add as addIt, subtract } from 'mathjs';
+import { format, add as addIt, subtract, round } from 'mathjs';
 import emitter from '@/services/emitter';
 import { QrStream } from 'vue3-qr-reader';
 import SvgIcon from '../partials/SvgIcon.vue';
@@ -643,7 +643,7 @@ async function validateSecondStep() {
 }
 const subtractOf = (x = 0, y = 0) => {
   let diff = subtract(x, y);
-  diff = format(diff, { precision: 14 });
+  diff = round(diff, 6);
   return Number(diff);
 };
 async function validateFirstStep() {
