@@ -11,12 +11,10 @@
       :class="{ 'layout__single--fixed': !menuExpanded }"
     >
       <router-view v-slot="{ Component }">
-        <transition name="fade">
-          <div>
-            <TopBar></TopBar>
-            <component :is="Component" />
-          </div>
-        </transition>
+        <div>
+          <TopBar></TopBar>
+          <component :is="Component" />
+        </div>
       </router-view>
     </main>
   </div>

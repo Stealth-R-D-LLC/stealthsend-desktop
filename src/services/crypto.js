@@ -688,7 +688,8 @@ const CryptoService = {
       for (let ptx of mainStore?.pendingTransactions) {
         pendingTransactions.push(JSON.parse(JSON.stringify(ptx))); // avoid proxy
       }
-
+      console.log('STORE PENDING', mainStore?.pendingTransactions);
+      console.log('PENDING', pendingTransactions);
       let reducedTxs = [];
       // logic for showing/hiding pending transactions
       for (const tx of txs) {
@@ -708,6 +709,7 @@ const CryptoService = {
 
       // after this array has been reduced with the transactions that came in the meantime, concat the rest with the array of all txs
       for (let pendingTx of mainStore?.pendingTransactions) {
+        console.log('jedna od pending: ', pendingTx);
         reducedTxs.push(pendingTx);
       }
 
