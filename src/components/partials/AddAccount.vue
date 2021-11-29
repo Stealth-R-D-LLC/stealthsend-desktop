@@ -215,7 +215,7 @@ const { form, validateFields, resetFields } = useValidation({
   privateKey: {
     $value: privateKey,
     $rules: [
-      (privateKey) => {
+      async (privateKey) => {
         if (
           existingAccounts.some((el) => {
             if (!el.isImported) {
@@ -261,7 +261,8 @@ watch(
   async () => {
     if (isVisible.value) {
       await CryptoService.scanWallet();
-      existingAccounts = mainStore.wallet.accounts;
+      /* existingAccounts = mainStore.wallet.accounts; */
+      existingAccounts = await CryptoService.getAccounts();
       wallet = await CryptoService.getWalletFromDb();
       isLastAccountEmpty.value = mainStore.wallet.accounts.some(
         (el) => el.utxo === 0

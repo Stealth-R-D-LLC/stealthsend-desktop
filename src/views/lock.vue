@@ -371,11 +371,11 @@ function cancelClearData() {
 h4 {
   margin-top: 20px;
   margin-bottom: 100px;
-  color: var(--white);
+  color: #fff;
 }
 h5 {
   margin-bottom: 36px;
-  color: var(--white);
+  color: #fff;
 }
 :deep .st-input input {
   background-position: 92% 49% !important;
@@ -426,7 +426,7 @@ h5 {
   transition: 0.3s;
 }
 .forgot:hover {
-  color: var(--white);
+  color: #fff;
 }
 :deep .st-modal-container {
   width: 416px !important;
@@ -473,7 +473,7 @@ h5 {
   line-height: 28px;
   letter-spacing: 0.12px;
   font-family: var(--secondary-font);
-  background-color: var(--white);
+  background-color: #fff;
   border-radius: 100%;
   position: absolute;
   top: 1px;

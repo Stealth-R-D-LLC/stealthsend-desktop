@@ -305,6 +305,7 @@ export default {
   height: calc(100vh - 385px);
 }
 .chart-container {
+  position: relative;
   min-height: 450px;
 }
 .st-dashboard-chart {
