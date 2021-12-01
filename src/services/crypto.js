@@ -553,7 +553,7 @@ const CryptoService = {
     return JSON.parse(bytes);
   },
   async scanWallet(targetAccount = null, skipArchived = true) {
-    console.log('retrieving  whole wallet...');
+    console.log('scanWallet() retrieving  whole wallet...');
     // extend function with targetAccount argument in case you want to refresh the state of a particular account (XST-801)
     const mainStore = useMainStore();
     // initially scan all accounts in the wallet for utxos
@@ -564,7 +564,7 @@ const CryptoService = {
       let balance = 0;
       let txs = [];
       let newAccounts = [];
-      console.log('debug accounts: ', JSON.stringify(accounts));
+      console.log('scanWallet() debug accounts: ', JSON.stringify(accounts));
       for (let account of accounts) {
         if (targetAccount && account.address !== targetAccount.address)
           continue; // in case a target account is passed, run the scan only for that account
@@ -620,7 +620,7 @@ const CryptoService = {
                           outputAddresses.indexOf(dest.addresses[0]) === -1
                         );
                       } else {
-                        return
+                        return;
                       }
                     }
                   );
@@ -695,8 +695,6 @@ const CryptoService = {
       for (let ptx of mainStore?.pendingTransactions) {
         pendingTransactions.push(JSON.parse(JSON.stringify(ptx))); // avoid proxy
       }
-      console.log('STORE PENDING', mainStore?.pendingTransactions);
-      console.log('PENDING', pendingTransactions);
       let reducedTxs = [];
       // logic for showing/hiding pending transactions
       for (const tx of txs) {
@@ -716,7 +714,6 @@ const CryptoService = {
 
       // after this array has been reduced with the transactions that came in the meantime, concat the rest with the array of all txs
       for (let pendingTx of mainStore?.pendingTransactions) {
-        console.log('jedna od pending: ', pendingTx);
         reducedTxs.push(pendingTx);
       }
 
