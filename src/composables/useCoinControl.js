@@ -219,7 +219,7 @@ export default function useCoinControl(outputs, target) {
 
     // let bestSet = [...outputs]; // fallback
     let bestSet = iterateUntilTargetMet(outputs, adjustedTarget);
-    console.log('best: ', bestSet);
+    console.log('COIN CONTROL: best set: ', bestSet);
     let result = null;
 
     result = exactMatch(outputs, adjustedTarget);
