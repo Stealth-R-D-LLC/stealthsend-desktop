@@ -59,10 +59,17 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
     let recipient = {
       address: sendForm.address,
-      amount: Number(MathService.multiply(Number(MathService.add(sendForm.amount, fee * -1)), 1e6)),
+      amount: Number(
+        MathService.multiply(
+          Number(MathService.add(sendForm.amount, fee * -1)),
+          1e6
+        )
+      ),
     };
 
-    let sumUtxo = utxo.map((el) => el.amount).reduce((a, b) => MathService.add(a, b), 0);
+    let sumUtxo = utxo
+      .map((el) => el.amount)
+      .reduce((a, b) => MathService.add(a, b), 0);
     let change = {
       address: sendForm.account.address,
       amount: MathService.multiply(

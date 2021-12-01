@@ -79,7 +79,9 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
     let recipient = {
       address: sendForm.address,
-      amount: Number(MathService.multiply(MathService.subtract(sendForm.amount, fee), 1e6)),
+      amount: Number(
+        MathService.multiply(MathService.subtract(sendForm.amount, fee), 1e6)
+      ),
     };
 
     console.log(
@@ -87,7 +89,9 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       Number(MathService.subtract(sendForm.amount, fee))
     );
 
-    let sumUtxo = utxo.map((el) => el.amount).reduce((a, b) => MathService.add(a, b), 0);
+    let sumUtxo = utxo
+      .map((el) => el.amount)
+      .reduce((a, b) => MathService.add(a, b), 0);
     const { account } = CryptoService.breakAccountPath(sendForm.account.path);
     const discoveredAddresses = await CryptoService.accountDiscovery(
       account,
@@ -106,8 +110,13 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
     let change = {
       address: child.address,
-      amount: Number(floor(
-        MathService.multiply(calculateChange(sumUtxo, Number(sendForm.amount)), 1e6))
+      amount: Number(
+        floor(
+          MathService.multiply(
+            calculateChange(sumUtxo, Number(sendForm.amount)),
+            1e6
+          )
+        )
       ), // account amount - (send amount + fee)
     };
     console.log('TRANSACTION BUILDER: change amount', change.amount);
