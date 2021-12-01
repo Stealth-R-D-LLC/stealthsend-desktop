@@ -620,7 +620,7 @@ const CryptoService = {
                           outputAddresses.indexOf(dest.addresses[0]) === -1
                         );
                       } else {
-                        return
+                        return;
                       }
                     }
                   );
