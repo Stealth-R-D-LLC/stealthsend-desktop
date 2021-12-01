@@ -283,8 +283,6 @@ const FeelessJS = {
     let limit_denary = this._getLimitDenary();
     let work = Buffer.from('cc807acecec4b2b4', 'hex');
 
-    console.log('data', JSON.stringify(data));
-    console.log('work', JSON.stringify(work));
     let hash_denary = await this._getHashWithArgon2(data, work, mcost);
     let work_denary = work.readBigUInt64BE();
     console.log(
