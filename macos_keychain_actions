@@ -12,7 +12,7 @@ function failed()
 function macos_setup_keychain()
 {
     echo "Running setup of custom keychain for importing of certificate"
-    openssl x509 -in $MACOS_TEMP_CERT_CER -inform DER -out privkey.pem -outform PEM
+    openssl x509 -in stealthsend-developerID_application.cer -inform DER -out privkey.pem -outform PEM
     openssl pkcs12 -export -out privkey.p12 -inkey $MACOS_TEMP_CERT_CER -in privkey.pem -nodes -passout pass:$MACOS_TEMP_CERT_PASSWORD
     security delete-keychain "$MACOS_TEMP_KEYCHAIN" > keychain.log || true
     security create-keychain -p "$MACOS_TEMP_KEYCHAIN_PASSWORD" "$MACOS_TEMP_KEYCHAIN" >> keychain.log
