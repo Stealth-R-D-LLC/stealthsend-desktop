@@ -461,7 +461,7 @@ async function scanWallet() {
 let unspentOutputs = [];
 
 async function getUnspentOutputs(acc) {
-  console.log('-------GET UNSPENT OUTPUTS-------', acc);
+  console.log('GET UNSPENT OUTPUTS', acc);
   if (!acc || Object.keys(acc).length === 0) return;
   let res = [];
   if (acc.xpub) {
@@ -710,7 +710,6 @@ function loadMax(item) {
   // get amount from account
   // check if amount is less than miminim amount for send
   // if not, find real fee
-  console.log('load max for account: ', item);
   amount.value = 0;
   let fee = 0;
   // console.log('getUnspentOutputs(account.value)', getUnspentOutputs(account.value));
@@ -724,8 +723,6 @@ function loadMax(item) {
     .map((el) => el.amount)
     .reduce((a, b) => sumOf(a, b), 0);
   const maxAmount = subtractOf(sumUtxo, fee);
-  console.log('load max: max amount', maxAmount);
-  console.log('load max: actual utxos', unspentOutputs);
   form.amount.$value = maxAmount;
   setTimeout(() => (inputAmountState.value = 'USD'), 1);
   setTimeout(() => (inputAmountState.value = 'XST'), 1);
