@@ -1203,7 +1203,7 @@ import * as bip32 from 'bip32';
 import { useMainStore } from '@/store';
 import router from '../router';
 import CryptoService from '../services/crypto';
-import { add, format } from 'mathjs';
+import MathService from '@/services/math';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import StProgress from '@/components/elements/StProgress.vue';
 import _shuffle from 'lodash/shuffle';
@@ -1636,8 +1636,7 @@ async function restoreAccounts() {
   let accUtxo = 0;
 
   for (let tx of hdAccount) {
-    accUtxo = add(accUtxo, tx.account_balance_change);
-    accUtxo = format(accUtxo, { precision: 14 });
+    accUtxo = MathService.add(accUtxo, tx.account_balance_change);
   }
 
   let acc = {

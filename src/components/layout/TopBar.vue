@@ -345,7 +345,7 @@ import { useRoute } from 'vue-router';
 import router from '@/router';
 import CryptoService from '@/services/crypto';
 import useHelpers from '@/composables/useHelpers';
-import { multiply } from 'mathjs';
+import MathService from '@/services/math';
 import VanillaQR from 'vanillaqr';
 import { useValidation } from 'vue3-form-validation';
 import db from '../../db';
@@ -624,7 +624,7 @@ function amountFormat(account) {
     asset: 'XST',
     amountLeft: `${formatAmount(account.utxo, false, 6, 6)}`,
     amountRight: `${formatAmount(
-      multiply(account.utxo, CryptoService.constraints.XST_USD),
+      MathService.multiply(account.utxo, CryptoService.constraints.XST_USD),
       false,
       4,
       4

@@ -274,6 +274,7 @@
 import { useMainStore } from '@/store';
 import { computed, ref, watch, watchEffect } from 'vue';
 import CryptoService from '@/services/crypto';
+import MathService from '@/services/math';
 import useCoinControl from '@/composables/useCoinControl';
 import useTransactionBuilder from '@/composables/useTransactionBuilder';
 import useTransactionBuilderForImportedAccount from '@/composables/useTransactionBuilderForImportedAccount';
@@ -281,18 +282,12 @@ import useFeeEstimator from '@/composables/useFeeEstimator';
 import useHelpers from '@/composables/useHelpers';
 import { useValidation, ValidationError } from 'vue3-form-validation';
 import { useRoute } from 'vue-router';
-import { format, add as addIt, subtract, round } from 'mathjs';
 import emitter from '@/services/emitter';
 import { QrStream } from 'vue3-qr-reader';
 import SvgIcon from '../partials/SvgIcon.vue';
 import CircleProgress from '../partials/CircleProgress.vue';
 import getUnixTime from 'date-fns/getUnixTime';
 
-const sumOf = (x = 0, y = 0) => {
-  let sum = addIt(x, y);
-  sum = format(sum, { precision: 14 });
-  return Number(sum);
-};
 const mainStore = useMainStore();
 const { formatAmount, fil } = useHelpers();
 
@@ -500,7 +495,7 @@ function findFee(fee = 0.01) {
   // 1. find unspentOutputs for selected account
   // 2. start with fee = 0.01
   // 3. target = sendForm.amount + fee
-  let target = sumOf(amount.value, aproxFee.value);
+  let target = MathService.add(amount.value, aproxFee.value);
   // 4. bestOutputs = coinControl(target, unspentOutputs)
   let bestOutputs = coinSelection(target);
   // 5. newFee = feeEstimator(bestOutputs.length)
@@ -536,7 +531,7 @@ async function addFailedTx() {
   mainStore.ADD_FAILED_TRANSACTION({
     account: account.value.label,
     account_balance_change: amount.value,
-    amount: sumOf(amount.value, aproxFee.value),
+    amount: MathService.add(amount.value, aproxFee.value),
     blocktime: getUnixTime(new Date()),
     txinfo: {
       blocktime: getUnixTime(new Date()),
@@ -555,7 +550,7 @@ async function send() {
   try {
     changeStep(5);
     await validateFields();
-    let target = sumOf(amount.value, aproxFee.value);
+    let target = MathService.add(amount.value, aproxFee.value);
     const utxo = coinSelection(target);
 
     if (utxo.length === 0) {
@@ -609,7 +604,7 @@ async function send() {
       mainStore.ADD_PENDING_TRANSACTION({
         account: account.value.label,
         account_balance_change: amount.value,
-        amount: sumOf(amount.value, aproxFee.value),
+        amount: MathService.add(amount.value, aproxFee.value),
         txid: transactionResponse.txid,
         txinfo: {
           blocktime: getUnixTime(new Date()),
@@ -646,11 +641,7 @@ async function validateSecondStep() {
     }
   }
 }
-const subtractOf = (x = 0, y = 0) => {
-  let diff = subtract(x, y);
-  diff = round(diff, 6);
-  return Number(diff);
-};
+
 async function validateFirstStep() {
   try {
     await validateFields();
@@ -673,7 +664,7 @@ async function validateFirstStep() {
           // findFee();
           let fee = aproxFee.value;
           // subtract real fee from amount
-          const maxAmount = subtractOf(account.value.utxo, fee);
+          const maxAmount = MathService.subtract(account.value.utxo, fee);
           if (inputAmountState.value === 'XST') {
             if (!amount || Number(amount) < minimumXSTForSend.value) {
               return 'Minimum amount is ' + minimumXSTForSend.value + ' XST';
@@ -706,7 +697,7 @@ async function changeStep(step) {
   }
 }
 
-function loadMax(item) {
+function loadMax() {
   // get amount from account
   // check if amount is less than miminim amount for send
   // if not, find real fee
@@ -721,8 +712,8 @@ function loadMax(item) {
   // subtract real fee from all utxos
   let sumUtxo = unspentOutputs
     .map((el) => el.amount)
-    .reduce((a, b) => sumOf(a, b), 0);
-  const maxAmount = subtractOf(sumUtxo, fee);
+    .reduce((a, b) => MathService.add(a, b), 0);
+  const maxAmount = MathService.subtract(sumUtxo, fee);
   form.amount.$value = maxAmount;
   setTimeout(() => (inputAmountState.value = 'USD'), 1);
   setTimeout(() => (inputAmountState.value = 'XST'), 1);
