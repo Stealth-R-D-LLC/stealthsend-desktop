@@ -706,7 +706,7 @@ async function changeStep(step) {
   }
 }
 
-function loadMax(item) {
+function loadMax() {
   // get amount from account
   // check if amount is less than miminim amount for send
   // if not, find real fee
