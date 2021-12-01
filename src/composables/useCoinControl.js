@@ -100,7 +100,12 @@ export default function useCoinControl(outputs, target) {
       if (sum < target) {
         sortedUtxo.forEach((tx, i) => {
           let a = partial.concat([tx]);
-          findSubset(sortedUtxo.slice(i + 1), target, a, MathService.add(sum, tx.amount));
+          findSubset(
+            sortedUtxo.slice(i + 1),
+            target,
+            a,
+            MathService.add(sum, tx.amount)
+          );
         });
       } else if (sum >= target) {
         result.push(partial);
@@ -156,7 +161,10 @@ export default function useCoinControl(outputs, target) {
                     bestSet = [...selectedUtxos];
                     bestSetValue = selectionSum;
                     // deselect last addition and try for better combinations
-                    selectionSum = MathService.subtract(selectionSum, tx.amount);
+                    selectionSum = MathService.subtract(
+                      selectionSum,
+                      tx.amount
+                    );
                     // selectionSum = Number(
                     //   format(selectionSum, { precision: 14 })
                     // );
