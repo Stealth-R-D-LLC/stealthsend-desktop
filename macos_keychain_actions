@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Variables are inherited from Gitlab CI/CD Settings page of the project
+
+function failed()
+{
+    local error=${1:-Undefined error}
+    echo "Failed: $error" >&2
+    exit 1
+}
+
+function macos_setup_keychain()
+{
+    echo "Running setup of custom keychain for importing of certificate"
+    openssl x509 -in $MACOS_TEMP_CERT_CER -inform DER -out privkey.pem -outform PEM
+    openssl pkcs12 -export -out privkey.p12 -inkey $MACOS_TEMP_CERT_CER -in privkey.pem -nodes -passout pass:$MACOS_TEMP_CERT_PASSWORD
+    security delete-keychain "$MACOS_TEMP_KEYCHAIN" > keychain.log || true
+    security create-keychain -p "$MACOS_TEMP_KEYCHAIN_PASSWORD" "$MACOS_TEMP_KEYCHAIN" >> keychain.log
+    security list-keychains -d user -s "$MACOS_TEMP_KEYCHAIN" $(security list-keychains -d user | sed s/\"//g) 
+    security set-keychain-settings "$MACOS_TEMP_KEYCHAIN" >> keychain.log
+    security unlock-keychain -p "$MACOS_TEMP_KEYCHAIN_PASSWORD" "$MACOS_TEMP_KEYCHAIN" >> keychain.log
+    security import privkey.p12 -k "$MACOS_TEMP_KEYCHAIN" -P "$MACOS_TEMP_CERT_PASSWORD" -T "/usr/bin/codesign" >> keychain.log
+    MACOS_TEMP_CERT_IDENTITY=$(security find-identity -v -p codesigning "$MACOS_TEMP_KEYCHAIN" | head -1 | grep '"' | sed -e 's/[^"]*"//' -e 's/".*//') 
+    MACOS_TEMP_CERT_UUID=$(security find-identity -v -p codesigning "$MACOS_TEMP_KEYCHAIN" | head -1 | grep '"' | awk '{print $2}') 
+    security set-key-partition-list -S apple-tool:,apple: -s -k $MACOS_TEMP_KEYCHAIN_PASSWORD -D "$MACOS_TEMP_CERT_IDENTITY" -t private $MACOS_TEMP_KEYCHAIN >> keychain.log || failed macos_setup_keychain
+    echo "Setup custom keychain completed"
+}
+
+function macos_cleanup_keychain() 
+{
+    security delete-keychain "$MACOS_TEMP_KEYCHAIN"
+    rm -fr privkey.*
+}
+
