@@ -608,14 +608,21 @@ const CryptoService = {
               for (let tx of hdAccount) {
                 accUtxo = add(accUtxo, tx.account_balance_change);
                 accUtxo = format(accUtxo, { precision: 14 });
-
                 let outputAddresses = tx.outputs.map(
                   (output) => output.address
                 );
                 let indexOfDestination;
                 if (tx.account_balance_change < 0) {
                   indexOfDestination = tx.txinfo.destinations.findIndex(
-                    (dest) => outputAddresses.indexOf(dest.addresses[0]) === -1
+                    (dest) => {
+                      if (dest && dest.addresses && dest.addresses.length > 0) {
+                        return (
+                          outputAddresses.indexOf(dest.addresses[0]) === -1
+                        );
+                      } else {
+                        return
+                      }
+                    }
                   );
                 } else {
                   indexOfDestination = tx.txinfo.destinations.findIndex(
