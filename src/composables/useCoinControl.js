@@ -1,4 +1,4 @@
-import { add, format, subtract } from 'mathjs';
+import MathService from '@/services/math';
 import CryptoService from '@/services/crypto';
 
 export default function useCoinControl(outputs, target) {
@@ -20,12 +20,6 @@ export default function useCoinControl(outputs, target) {
         return acc;
       }, 0)
     );
-
-  const sumOf = (x = 0, y = 0) => {
-    let sum = add(x, y);
-    sum = format(sum, { precision: 14 });
-    return Number(sum);
-  };
 
   const removeFromArray = (arr, predicate) => {
     var complement = function (f) {
@@ -106,7 +100,7 @@ export default function useCoinControl(outputs, target) {
       if (sum < target) {
         sortedUtxo.forEach((tx, i) => {
           let a = partial.concat([tx]);
-          findSubset(sortedUtxo.slice(i + 1), target, a, sumOf(sum, tx.amount));
+          findSubset(sortedUtxo.slice(i + 1), target, a, MathService.add(sum, tx.amount));
         });
       } else if (sum >= target) {
         result.push(partial);
@@ -151,7 +145,7 @@ export default function useCoinControl(outputs, target) {
               (j === 1 && Math.random() < 0.5)
             ) {
               if (!selectedUtxos.some((el) => el.txid === tx.txid)) {
-                selectionSum = sumOf(selectionSum, tx.amount);
+                selectionSum = MathService.add(selectionSum, tx.amount);
                 selectedUtxos.push(tx);
                 if (selectionSum === adjustedTarget) {
                   return selectedUtxos;
@@ -162,10 +156,10 @@ export default function useCoinControl(outputs, target) {
                     bestSet = [...selectedUtxos];
                     bestSetValue = selectionSum;
                     // deselect last addition and try for better combinations
-                    selectionSum = subtract(selectionSum, tx.amount);
-                    selectionSum = Number(
-                      format(selectionSum, { precision: 14 })
-                    );
+                    selectionSum = MathService.subtract(selectionSum, tx.amount);
+                    // selectionSum = Number(
+                    //   format(selectionSum, { precision: 14 })
+                    // );
                     selectedUtxos = removeFromArray(
                       selectedUtxos,
                       (el) => el.txid === tx.txid
@@ -193,7 +187,7 @@ export default function useCoinControl(outputs, target) {
     for (let candidate of sortedUtxo) {
       if (sum < adjustedTarget) {
         if (candidate.amount >= CryptoService.constraints.MINIMAL_CHANGE) {
-          sum = sumOf(sum, candidate.amount);
+          sum = MathService.add(sum, candidate.amount);
           result.push(candidate);
         }
       }
@@ -215,7 +209,7 @@ export default function useCoinControl(outputs, target) {
     // output. Finally, it will pick the smaller out of the knapsack result or the minimal
     // larger UTXO.
 
-    let adjustedTarget = sumOf(target, 0); // no need to add fee here because we are already increasing the target amount before sending it to coinControl
+    let adjustedTarget = MathService.add(target, 0); // no need to add fee here because we are already increasing the target amount before sending it to coinControl
 
     // let bestSet = [...outputs]; // fallback
     let bestSet = iterateUntilTargetMet(outputs, adjustedTarget);
