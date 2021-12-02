@@ -6,7 +6,7 @@ import { useMainStore } from '@/store';
 import * as bitcoinFeeless from '../../bitcoinjs-lib-feeless/src/index.js';
 import * as bitcoin from 'bitcoinjs-lib';
 import { Buffer } from 'buffer';
-import { add, format, subtract, multiply, round } from 'mathjs';
+import MathService from '@/services/math';
 
 export default async function useTransactionBuilder(utxo, sendForm) {
   const mainStore = useMainStore();
@@ -20,26 +20,8 @@ export default async function useTransactionBuilder(utxo, sendForm) {
   console.log('TRANSACTION BUILDER: latest fee:', fee);
   console.log('TRANSACTION BUILDER: unspent outputs:', utxo);
 
-  const sumOf = (x = 0, y = 0) => {
-    let sum = add(x, y);
-    sum = format(sum, { precision: 14 });
-    return Number(sum);
-  };
-
-  const subtractOf = (x = 0, y = 0) => {
-    let diff = subtract(x, y);
-    diff = round(diff, 6);
-    return Number(diff);
-  };
-
-  const multiplyOf = (x = 0, y = 0) => {
-    let result = multiply(x, y);
-    result = format(result, { precision: 14 });
-    return Number(result);
-  };
-
   function calculateChange(accountAmount, sendAmount) {
-    let change = subtractOf(accountAmount, sendAmount);
+    let change = MathService.subtract(accountAmount, sendAmount);
     return change;
   }
   async function buildTransaction() {
@@ -77,13 +59,20 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
     let recipient = {
       address: sendForm.address,
-      amount: multiplyOf(Number(sumOf(sendForm.amount, fee * -1)), 1e6),
+      amount: Number(
+        MathService.multiply(
+          Number(MathService.add(sendForm.amount, fee * -1)),
+          1e6
+        )
+      ),
     };
 
-    let sumUtxo = utxo.map((el) => el.amount).reduce((a, b) => sumOf(a, b), 0);
+    let sumUtxo = utxo
+      .map((el) => el.amount)
+      .reduce((a, b) => MathService.add(a, b), 0);
     let change = {
       address: sendForm.account.address,
-      amount: multiplyOf(
+      amount: MathService.multiply(
         calculateChange(sumUtxo, Number(sendForm.amount)),
         1e6
       ), // account amount - (send amount + fee)

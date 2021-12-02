@@ -5,7 +5,7 @@ import * as bip39 from 'bip39';
 import * as bitcoin from '../../bitcoinjs-lib-feeless/src/index.js';
 import { Buffer } from 'buffer';
 import cryptoJs from 'crypto-js';
-import { add, format } from 'mathjs';
+import MathService from '@/services/math';
 import db from '../db';
 import useHelpers from '@/composables/useHelpers';
 const { fil } = useHelpers();
@@ -606,8 +606,7 @@ const CryptoService = {
             .rpc('gethdaccount', [account.xpub])
             .then((hdAccount) => {
               for (let tx of hdAccount) {
-                accUtxo = add(accUtxo, tx.account_balance_change);
-                accUtxo = format(accUtxo, { precision: 14 });
+                accUtxo = MathService.add(accUtxo, tx.account_balance_change);
                 let outputAddresses = tx.outputs.map(
                   (output) => output.address
                 );
@@ -655,8 +654,7 @@ const CryptoService = {
         // Bitcoin doesn’t know balances associated with an account or username as they appear in banking.
         if (!account.isArchived) {
           // do not include archived accounts into calculating the whole balance of the wallet XST-167
-          balance = add(balance, accUtxo);
-          balance = format(balance, { precision: 14 });
+          balance = MathService.add(balance, accUtxo);
         }
       }
       if (!targetAccount) await db.setItem('accounts', newAccounts);
@@ -815,14 +813,8 @@ const CryptoService = {
 
     return accounts;
   },
-  sumOf(x = 0, y = 0) {
-    let sum = add(x, y);
-    sum = format(sum, { precision: 14 });
-    return Number(sum);
-  },
 
   processImportedTxs(transactions) {
-    let self = this;
     let helper = {};
 
     return transactions.reduce((r, o) => {
@@ -833,7 +825,7 @@ const CryptoService = {
 
         r.push(helper[key]);
       } else {
-        helper[key].amount = self.sumOf(helper[key].amount, o.amount);
+        helper[key].amount = MathService.add(helper[key].amount, o.amount);
       }
 
       return r;

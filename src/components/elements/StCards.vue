@@ -55,7 +55,7 @@ import CryptoService from '@/services/crypto';
 /* import CountUp from '@/components/elements/StCountUp.vue'; */
 import { useMainStore } from '@/store';
 import useHelpers from '@/composables/useHelpers';
-import { multiply } from 'mathjs';
+import MathService from '@/services/math';
 import SvgIcon from '../partials/SvgIcon.vue';
 
 export default {
@@ -85,7 +85,10 @@ export default {
           asset: 'XST',
           amountTop: `${formatAmount(props.amount, false, 6, 6)}`,
           amountBottom: `$${formatAmount(
-            multiply(props.amount, CryptoService.constraints.XST_USD),
+            MathService.multiply(
+              props.amount,
+              CryptoService.constraints.XST_USD
+            ),
             false,
             4,
             4
