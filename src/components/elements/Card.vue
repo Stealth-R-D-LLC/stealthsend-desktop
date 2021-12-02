@@ -55,7 +55,7 @@
 <script>
 import { ref, computed } from 'vue';
 import { useMainStore } from '@/store';
-import { multiply } from 'mathjs';
+import MathService from '@/services/math';
 import useHelpers from '@/composables/useHelpers';
 import CryptoService from '@/services/crypto';
 import router from '@/router';
@@ -114,7 +114,10 @@ export default {
           asset: 'XST',
           amountLeft: formatAmount(props.account.utxo, false, 6, 6),
           amountRight: `$${formatAmount(
-            multiply(props.account.utxo, CryptoService.constraints.XST_USD),
+            MathService.multiply(
+              props.account.utxo,
+              CryptoService.constraints.XST_USD
+            ),
             false,
             4,
             4

@@ -5,7 +5,8 @@ import { useMainStore } from '@/store';
 import * as bitcoinFeeless from '../../bitcoinjs-lib-feeless/src/index.js';
 import * as bitcoin from 'bitcoinjs-lib';
 import { Buffer } from 'buffer';
-import { add, format, subtract, floor, multiply, round } from 'mathjs';
+import { floor } from 'mathjs';
+import MathService from '@/services/math';
 
 export default async function useTransactionBuilder(utxo, sendForm) {
   const mainStore = useMainStore();
@@ -18,26 +19,8 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
   console.log('TRANSACTION BUILDER: latest fee:', JSON.stringify(fee));
 
-  const sumOf = (x = 0, y = 0) => {
-    let sum = add(x, y);
-    sum = format(sum, { precision: 14 });
-    return Number(sum);
-  };
-
-  const subtractOf = (x = 0, y = 0) => {
-    let diff = subtract(x, y);
-    diff = round(diff, 6);
-    return Number(diff);
-  };
-
-  const multiplyOf = (x = 0, y = 0) => {
-    let result = multiply(x, y);
-    result = format(result, { precision: 14 });
-    return Number(result);
-  };
-
   function calculateChange(accountAmount, sendAmount) {
-    let change = subtractOf(accountAmount, sendAmount);
+    let change = MathService.subtract(accountAmount, sendAmount);
     return change;
   }
 
@@ -96,16 +79,19 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
     let recipient = {
       address: sendForm.address,
-      amount: multiplyOf(sumOf(sendForm.amount, fee * -1), 1e6),
-      // amount: multiply(bignumber(sendForm.amount), bignumber(-Math.abs(0.01)), 1e6).d[0]
+      amount: Number(
+        MathService.multiply(MathService.subtract(sendForm.amount, fee), 1e6)
+      ),
     };
 
     console.log(
       'TRANSACTION BUILDER: recipient will get:',
-      Number(sumOf(sendForm.amount, fee * -1))
+      Number(MathService.subtract(sendForm.amount, fee))
     );
 
-    let sumUtxo = utxo.map((el) => el.amount).reduce((a, b) => sumOf(a, b), 0);
+    let sumUtxo = utxo
+      .map((el) => el.amount)
+      .reduce((a, b) => MathService.add(a, b), 0);
     const { account } = CryptoService.breakAccountPath(sendForm.account.path);
     const discoveredAddresses = await CryptoService.accountDiscovery(
       account,
@@ -124,8 +110,13 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
     let change = {
       address: child.address,
-      amount: floor(
-        multiplyOf(calculateChange(sumUtxo, Number(sendForm.amount)), 1e6)
+      amount: Number(
+        floor(
+          MathService.multiply(
+            calculateChange(sumUtxo, Number(sendForm.amount)),
+            1e6
+          )
+        )
       ), // account amount - (send amount + fee)
     };
     console.log('TRANSACTION BUILDER: change amount', change.amount);
