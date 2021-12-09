@@ -42,7 +42,6 @@ export default {
   border: solid #fcfaff;
   border-width: 0 0 2px 2px;
   transform: rotate(45deg);
-  position: relative;
 }
 
 .arrow-container::after {
