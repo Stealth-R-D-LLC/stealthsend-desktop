@@ -4,7 +4,7 @@
     :steps="activeStep === 'add-account' ? 0 : steps"
     :current-step="currentStep"
     :visible="isVisible"
-    :has-click-outside="true"
+    :has-click-outside="false"
     @close="closeModal"
     class="account-modal"
     :class="{ 'account-modal__hide-header': currentStep > 2 }"
