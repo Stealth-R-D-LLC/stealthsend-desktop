@@ -320,7 +320,6 @@ export const useMainStore = defineStore({
           params: payload,
         })
           .then((res) => {
-            //console.log(`RPC response (${method}): `, res.data.result);
             resolve(res.data.result);
           })
           .catch((err) => {
