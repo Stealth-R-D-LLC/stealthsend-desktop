@@ -67,7 +67,9 @@ export default function useCoinControl(outputs, target) {
     let bestSet = [];
 
     //  If the sum of smallerCoins matches adjustedTarget, smallerCoins is returned as the candidate input set
-    const sum = smallerCoins.map((el) => el.amount).reduce((a, b) => MathService.add(a, b), 0);
+    const sum = smallerCoins
+      .map((el) => el.amount)
+      .reduce((a, b) => MathService.add(a, b), 0);
 
     if (sum < adjustedTarget) {
       let minGreater = sortedUtxo[0].amount; // initially is the largest
@@ -108,10 +110,13 @@ export default function useCoinControl(outputs, target) {
           );
         });
       } else if (sum >= target) {
-        const partialSum = partial.reduce((a, b) => MathService.add(a, b.amount), 0);
+        const partialSum = partial.reduce(
+          (a, b) => MathService.add(a, b.amount),
+          0
+        );
         if (partialSum >= adjustedTarget) {
           result.push(partial);
-        } 
+        }
       }
     };
 

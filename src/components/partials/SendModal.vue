@@ -514,7 +514,9 @@ function coinSelection(targetAmount) {
     best.reduce((a, b) => MathService.add(a, b.amount), 0) <
     unspentOutputs.reduce((a, b) => MathService.add(a, b.amount), 0)
   ) {
-    console.log('COIN CONTROL: algo failed to find best sum, falling back to all utxos');
+    console.log(
+      'COIN CONTROL: algo failed to find best sum, falling back to all utxos'
+    );
     // if something is wrong with a coin control algo, return all utxos as a fallback
     return unspentOutputs;
   }
