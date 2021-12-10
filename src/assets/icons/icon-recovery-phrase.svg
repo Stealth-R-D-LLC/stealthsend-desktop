@@ -1,0 +1,155 @@
+<svg
+  width="104"
+  height="80"
+  viewBox="0 0 104 80"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M40 13H64.0262V33.3125L83 56.3333V78H40L40 13Z"
+    fill="url(#paint0_linear)"
+  />
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M37.2342 13H61.8525V33.3125L81 56.3333V78H8L37.2342 13Z"
+    fill="url(#paint1_linear)"
+  />
+  <path
+    d="M83 56.3333V78H2L2 13H63.4032"
+    stroke="#4E00F6"
+    stroke-width="3"
+    stroke-linecap="square"
+  />
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M102 13.8537V33.6098L82.5 56L63 33.6098L63 13.8537L82.4987 2L102 13.8537Z"
+    stroke="#4E00F6"
+    stroke-width="3"
+  />
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M11 33H15V24H11V33Z"
+    stroke="#4E00F6"
+    stroke-width="2"
+    stroke-linecap="square"
+  />
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M39 33H43V24H39V33Z"
+    stroke="#4E00F6"
+    stroke-width="2"
+    stroke-linecap="square"
+  />
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M11 68H15V59H11V68Z"
+    stroke="#4E00F6"
+    stroke-width="2"
+    stroke-linecap="square"
+  />
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M39 68H43V59H39V68Z"
+    stroke="#4E00F6"
+    stroke-width="2"
+    stroke-linecap="square"
+  />
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M46 52H50V43H46V52Z"
+    stroke="#4E00F6"
+    stroke-width="2"
+    stroke-linecap="square"
+  />
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M22 52H26V43H22V52Z"
+    stroke="#4E00F6"
+    stroke-width="2"
+    stroke-linecap="square"
+  />
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M79 22H88V15H79V22Z"
+    stroke="#4E00F6"
+    stroke-width="2"
+  />
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M77 34H91V24H77V34Z"
+    stroke="#4E00F6"
+    stroke-width="2"
+  />
+  <path
+    d="M10.5 43V52"
+    stroke="#4E00F6"
+    stroke-width="2"
+    stroke-linecap="square"
+  />
+  <path
+    d="M54.5 24V33"
+    stroke="#4E00F6"
+    stroke-width="2"
+    stroke-linecap="square"
+  />
+  <path
+    d="M54.5 59V68"
+    stroke="#4E00F6"
+    stroke-width="2"
+    stroke-linecap="square"
+  />
+  <path
+    d="M37.5 43V52"
+    stroke="#4E00F6"
+    stroke-width="2"
+    stroke-linecap="square"
+  />
+  <path
+    d="M28.5 24V33"
+    stroke="#4E00F6"
+    stroke-width="2"
+    stroke-linecap="square"
+  />
+  <path
+    d="M28.5 59V68"
+    stroke="#4E00F6"
+    stroke-width="2"
+    stroke-linecap="square"
+  />
+  <defs>
+    <linearGradient
+      id="paint0_linear"
+      x1="40"
+      y1="13"
+      x2="40"
+      y2="78"
+      gradientUnits="userSpaceOnUse"
+    >
+      <stop stop-color="#E0D3FC" stop-opacity="0.25" />
+      <stop offset="1" stop-color="#C3A9FB" stop-opacity="0.5" />
+    </linearGradient>
+    <linearGradient
+      id="paint1_linear"
+      x1="8"
+      y1="13"
+      x2="8"
+      y2="78"
+      gradientUnits="userSpaceOnUse"
+    >
+      <stop stop-color="#E0D3FC" stop-opacity="0.15" />
+      <stop offset="1" stop-color="#C3A9FB" stop-opacity="0.25" />
+    </linearGradient>
+  </defs>
+</svg>

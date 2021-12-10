@@ -1,76 +1,135 @@
-import AddAccount from '@/views/add-account.vue'
-import Dashboard from '@/views/dashboard.vue'
-import Settings from '@/views/settings.vue'
-import UIKit from '@/views/uikit.vue'
-import Welcome from '@/views/welcome.vue'
-import { createRouter, createWebHistory } from 'vue-router'
-import db from '../db'
-
-// dump whole db
-// db.remove({}, { multi: true })
-
-async function bla() {
-  let a = await db.find({}, { multi: true })
-  console.log("cijela baza", a)
-} 
-
-bla()
+const RpcError = () =>
+  import('@/components/connection/NoStealthConnection.vue');
+const ArchivedAccounts = () => import('@/views/account/archived.vue');
+const AccountDetails = () => import('@/views/account/details.vue');
+const Dashboard = () => import('@/views/dashboard/dashboard.vue');
+const Lock = () => import('@/views/lock.vue');
+const SettingsAutoLock = () => import('@/views/settings/auto-lock.vue');
+const SettingsDeleteAppData = () =>
+  import('@/views/settings/delete-app-data.vue');
+const SettingsGeneralInformation = () =>
+  import('@/views/settings/general-information.vue');
+const SettingsPassword = () => import('@/views/settings/password.vue');
+const SettingsPrivacyPolicy = () =>
+  import('@/views/settings/privacy-policy.vue');
+const SettingsRecoveryPhrase = () =>
+  import('@/views/settings/recovery-phrase.vue');
+const Settings = () => import('@/views/settings/settings.vue');
+const SettingsTermsOfUse = () => import('@/views/settings/terms-of-use.vue');
+const SettingsWebsite = () => import('@/views/settings/website.vue');
+const Transactions = () => import('@/views/transactions.vue');
+const Welcome = () => import('@/views/welcome.vue');
+import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
   {
     path: '/',
     // redirect: 'dashboard',
     pathMatch: 'full',
-    beforeEnter: (to, from, next) => {
-      db.find({ name: 'wallet' }).then(docs => {
-        console.log('docs', docs)
-        if (!docs || docs.length === 0) {
-          console.log('aj na welcome')
-          next('/welcome')
-        } else {
-          console.log('aj na dash');
-          next('/dashboard')
-        }
-
-      })
-    }
   },
+  {
+    path: '/lock',
+    name: 'Lock',
+    component: Lock,
+    meta: {
+      layout: 'lock',
+    },
+  },
+  {
+    path: '/rpcerror',
+    name: 'RpcError',
+    component: RpcError,
+    meta: {
+      layout: 'lock',
+    },
+  },
+
   {
     path: '/dashboard',
     name: 'Dashboard',
     component: Dashboard,
     meta: {
-      layout: 'default'
-    }
+      layout: 'default',
+    },
   },
   {
-    path: '/uikit',
-    name: 'UIKit',
-    component: UIKit
+    path: '/transactions/:address',
+    name: 'TransactionsQuery',
+    component: Transactions,
+  },
+  {
+    path: '/transactions',
+    name: 'Transactions',
+    component: Transactions,
   },
   {
     path: '/settings',
     name: 'Settings',
-    component: Settings
+    component: Settings,
+    meta: {
+      layout: 'default',
+    },
+    children: [
+      {
+        path: 'password',
+        component: SettingsPassword,
+      },
+      {
+        path: 'recovery-phrase',
+        component: SettingsRecoveryPhrase,
+      },
+      {
+        path: 'auto-lock',
+        component: SettingsAutoLock,
+      },
+      {
+        path: 'delete-app-data',
+        component: SettingsDeleteAppData,
+      },
+      {
+        path: 'general-information',
+        component: SettingsGeneralInformation,
+      },
+      {
+        path: 'website',
+        component: SettingsWebsite,
+      },
+      {
+        path: 'privacy-policy',
+        component: SettingsPrivacyPolicy,
+      },
+      {
+        path: 'terms-of-use',
+        component: SettingsTermsOfUse,
+      },
+    ],
   },
   {
-    path: '/add-account',
-    name: 'AddAccount',
-    component: AddAccount
+    path: '/account/details',
+    name: 'AccountDetails',
+    component: AccountDetails,
+    meta: {
+      layout: 'single',
+    },
+  },
+  {
+    path: '/account/archived',
+    name: 'ArchivedAccounts',
+    component: ArchivedAccounts,
   },
   {
     path: '/welcome',
     name: 'Welcome',
     meta: {
-      layout: 'new-user'
+      layout: 'new-user',
     },
-    component: Welcome
-  }
-]
+    component: Welcome,
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;
