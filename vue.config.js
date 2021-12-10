@@ -6,17 +6,17 @@ module.exports = {
   css: {
     requireModuleExtension: true,
   },
-  chainWebpack: config => config.resolve.symlinks(false),
+  chainWebpack: (config) => config.resolve.symlinks(false),
   configureWebpack: {
     module: {
       noParse: /argon2\.wasm$/,
       rules: [
-          {
-              test: /argon2\.wasm$/,
-              loaders: ['base64-loader'],
-              type: 'javascript/auto'
-          }
-      ]
+        {
+          test: /argon2\.wasm$/,
+          loaders: ['base64-loader'],
+          type: 'javascript/auto',
+        },
+      ],
     },
     resolve: {
       alias: {
@@ -44,13 +44,14 @@ module.exports = {
         dmg: {
           sign: false,
         },
-        "linux": {
-          "artifactName": "${productName}-${version}.${ext}",
-          "target": ["deb", "AppImage"],
-          "maintainer": "Stealth R&D LLC",
-          "icon": "src/assets/logo.png",
-          "description": "Stealth is the fastest cryptographically private digital currency. With blazing fast 5 second blocks, Junaeth is a game-changer and offers what state-of-the-art payment systems of the future require: a fast, feeless, private and scalable crypto.",
-          "category": "Development, Science, Utility"
+        linux: {
+          artifactName: '${productName}-${version}.${ext}',
+          target: ['deb', 'AppImage'],
+          maintainer: 'Stealth R&D LLC',
+          icon: 'src/assets/logo.png',
+          description:
+            'Stealth is the fastest cryptographically private digital currency. With blazing fast 5 second blocks, Junaeth is a game-changer and offers what state-of-the-art payment systems of the future require: a fast, feeless, private and scalable crypto.',
+          category: 'Development, Science, Utility',
         },
         win: {
           target: ['nsis', 'msi'],

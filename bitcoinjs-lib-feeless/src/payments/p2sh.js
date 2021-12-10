@@ -35,7 +35,7 @@ function p2sh(a, opts) {
       input: typef.maybe(typef.Buffer),
       witness: typef.maybe(typef.arrayOf(typef.Buffer)),
     },
-    a,
+    a
   );
   let network = a.network;
   if (!network) {
@@ -86,7 +86,7 @@ function p2sh(a, opts) {
   lazy.prop(o, 'input', () => {
     if (!a.redeem || !a.redeem.input || !a.redeem.output) return;
     return bscript.compile(
-      [].concat(bscript.decompile(a.redeem.input), a.redeem.output),
+      [].concat(bscript.decompile(a.redeem.input), a.redeem.output)
     );
   });
   lazy.prop(o, 'witness', () => {
@@ -125,7 +125,7 @@ function p2sh(a, opts) {
       else hash = hash2;
     }
     // inlined to prevent 'no-inner-declarations' failing
-    const checkRedeem = redeem => {
+    const checkRedeem = (redeem) => {
       // is the redeem output empty/invalid?
       if (redeem.output) {
         const decompile = bscript.decompile(redeem.output);

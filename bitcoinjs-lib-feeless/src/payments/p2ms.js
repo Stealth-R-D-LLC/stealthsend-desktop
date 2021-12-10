@@ -40,7 +40,7 @@ function p2ms(a, opts) {
       signatures: typef.maybe(typef.arrayOf(isAcceptableSignature)),
       input: typef.maybe(typef.Buffer),
     },
-    a,
+    a
   );
   const network = a.network || networks_1.bitcoin;
   const o = { network };
@@ -63,8 +63,8 @@ function p2ms(a, opts) {
         OP_INT_BASE + a.m,
         a.pubkeys,
         OP_INT_BASE + o.n,
-        OPS.OP_CHECKMULTISIG,
-      ),
+        OPS.OP_CHECKMULTISIG
+      )
     );
   });
   lazy.prop(o, 'm', () => {
@@ -108,7 +108,7 @@ function p2ms(a, opts) {
         throw new TypeError('Output is invalid');
       if (o.m <= 0 || o.n > 16 || o.m > o.n || o.n !== chunks.length - 3)
         throw new TypeError('Output is invalid');
-      if (!o.pubkeys.every(x => ecc.isPoint(x)))
+      if (!o.pubkeys.every((x) => ecc.isPoint(x)))
         throw new TypeError('Output is invalid');
       if (a.m !== undefined && a.m !== o.m) throw new TypeError('m mismatch');
       if (a.n !== undefined && a.n !== o.n) throw new TypeError('n mismatch');
