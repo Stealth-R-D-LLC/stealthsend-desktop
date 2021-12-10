@@ -18,7 +18,7 @@ import {
   StTable,
   StTag,
   StTooltip,
-} from 'stealth-kit';
+} from 'stealthsend-frontend-components';
 import { createApp } from 'vue';
 import VueMultiselect from 'vue-multiselect';
 import App from './App.vue';
