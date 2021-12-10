@@ -10,7 +10,7 @@ const isOptions = typeforce.maybe(
   typeforce.compile({
     compressed: types.maybe(types.Boolean),
     network: types.maybe(types.Network),
-  }),
+  })
 );
 class ECPair {
   constructor(__D, __Q, options) {
@@ -77,7 +77,7 @@ function fromWIF(wifString, network) {
   // list of networks?
   if (types.Array(network)) {
     network = network
-      .filter(x => {
+      .filter((x) => {
         return version === x.wif;
       })
       .pop();

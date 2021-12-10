@@ -20,7 +20,7 @@ function p2pk(a, opts) {
       signature: typef.maybe(bscript.isCanonicalScriptSignature),
       input: typef.maybe(typef.Buffer),
     },
-    a,
+    a
   );
   const _chunks = lazy.value(() => {
     return bscript.decompile(a.input);

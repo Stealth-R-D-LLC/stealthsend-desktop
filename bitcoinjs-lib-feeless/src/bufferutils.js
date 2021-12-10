@@ -84,7 +84,7 @@ class BufferWriter {
   }
   writeVector(vector) {
     this.writeVarInt(vector.length);
-    vector.forEach(buf => this.writeVarSlice(buf));
+    vector.forEach((buf) => this.writeVarSlice(buf));
   }
 }
 exports.BufferWriter = BufferWriter;

@@ -10,7 +10,7 @@ module.exports = {
         'nesting-rules': true,
       },
     },
-    autoprefixer
+    autoprefixer,
   },
   // plugins: [autoprefixer],
 };

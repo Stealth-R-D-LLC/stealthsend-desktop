@@ -8,10 +8,10 @@ const fastMerkleRoot = require('merkle-lib/fastRoot');
 const typeforce = require('typeforce');
 const varuint = require('varuint-bitcoin');
 const errorMerkleNoTxes = new TypeError(
-  'Cannot compute merkle root for zero transactions',
+  'Cannot compute merkle root for zero transactions'
 );
 const errorWitnessNotSegwit = new TypeError(
-  'Cannot compute witness commit for non-segwit block',
+  'Cannot compute witness commit for non-segwit block'
 );
 class Block {
   constructor() {
@@ -38,7 +38,7 @@ class Block {
     const readTransaction = () => {
       const tx = transaction_1.Transaction.fromBuffer(
         bufferReader.buffer.slice(bufferReader.offset),
-        true,
+        true
       );
       bufferReader.offset += tx.byteLength();
       return tx;
@@ -69,13 +69,13 @@ class Block {
     if (transactions.length === 0) throw errorMerkleNoTxes;
     if (forWitness && !txesHaveWitnessCommit(transactions))
       throw errorWitnessNotSegwit;
-    const hashes = transactions.map(transaction =>
-      transaction.getHash(forWitness),
+    const hashes = transactions.map((transaction) =>
+      transaction.getHash(forWitness)
     );
     const rootHash = fastMerkleRoot(hashes, bcrypto.hash256);
     return forWitness
       ? bcrypto.hash256(
-          Buffer.concat([rootHash, transactions[0].ins[0].witness[0]]),
+          Buffer.concat([rootHash, transactions[0].ins[0].witness[0]])
         )
       : rootHash;
   }
@@ -86,10 +86,10 @@ class Block {
     // The root is prepended with 0xaa21a9ed so check for 0x6a24aa21a9ed
     // If multiple commits are found, the output with highest index is assumed.
     const witnessCommits = this.transactions[0].outs
-      .filter(out =>
-        out.script.slice(0, 6).equals(Buffer.from('6a24aa21a9ed', 'hex')),
+      .filter((out) =>
+        out.script.slice(0, 6).equals(Buffer.from('6a24aa21a9ed', 'hex'))
       )
-      .map(out => out.script.slice(6, 38));
+      .map((out) => out.script.slice(6, 38));
     if (witnessCommits.length === 0) return null;
     // Use the commit with the highest output (should only be one though)
     const result = witnessCommits[witnessCommits.length - 1];
@@ -145,7 +145,7 @@ class Block {
     if (headersOnly || !this.transactions) return buffer;
     varuint.encode(this.transactions.length, buffer, bufferWriter.offset);
     bufferWriter.offset += varuint.encode.bytes;
-    this.transactions.forEach(tx => {
+    this.transactions.forEach((tx) => {
       const txSize = tx.byteLength(); // TODO: extract from toBuffer?
       tx.toBuffer(buffer, bufferWriter.offset);
       bufferWriter.offset += txSize;
@@ -180,7 +180,7 @@ class Block {
     if (!this.hasWitnessCommit()) throw errorWitnessNotSegwit;
     const actualWitnessCommit = Block.calculateMerkleRoot(
       this.transactions,
-      true,
+      true
     );
     return this.witnessCommit.compare(actualWitnessCommit) === 0;
   }
@@ -202,15 +202,15 @@ function anyTxHasWitness(transactions) {
   return (
     transactions instanceof Array &&
     transactions.some(
-      tx =>
+      (tx) =>
         typeof tx === 'object' &&
         tx.ins instanceof Array &&
         tx.ins.some(
-          input =>
+          (input) =>
             typeof input === 'object' &&
             input.witness instanceof Array &&
-            input.witness.length > 0,
-        ),
+            input.witness.length > 0
+        )
     )
   );
 }

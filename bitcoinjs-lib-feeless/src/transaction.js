@@ -24,11 +24,11 @@ const EMPTY_SCRIPT = Buffer.allocUnsafe(0);
 const EMPTY_WITNESS = [];
 const ZERO = Buffer.from(
   '0000000000000000000000000000000000000000000000000000000000000000',
-  'hex',
+  'hex'
 );
 const ONE = Buffer.from(
   '0000000000000000000000000000000000000000000000000000000000000001',
-  'hex',
+  'hex'
 );
 const VALUE_UINT64_MAX = Buffer.from('ffffffffffffffff', 'hex');
 const BLANK_OUTPUT = {
@@ -112,9 +112,9 @@ class Transaction {
         types.Hash256bit,
         types.UInt32,
         types.maybe(types.UInt32),
-        types.maybe(types.Buffer),
+        types.maybe(types.Buffer)
       ),
-      arguments,
+      arguments
     );
     if (types.Null(sequence)) {
       sequence = Transaction.DEFAULT_SEQUENCE;
@@ -141,7 +141,7 @@ class Transaction {
     );
   }
   hasWitnesses() {
-    return this.ins.some(x => {
+    return this.ins.some((x) => {
       return x.witness.length !== 0;
     });
   }
@@ -176,7 +176,7 @@ class Transaction {
     const newTx = new Transaction();
     newTx.version = this.version;
     newTx.locktime = this.locktime;
-    newTx.ins = this.ins.map(txIn => {
+    newTx.ins = this.ins.map((txIn) => {
       return {
         hash: txIn.hash,
         index: txIn.index,
@@ -185,7 +185,7 @@ class Transaction {
         witness: txIn.witness,
       };
     });
-    newTx.outs = this.outs.map(txOut => {
+    newTx.outs = this.outs.map((txOut) => {
       return {
         script: txOut.script,
         value: txOut.value,
@@ -204,15 +204,15 @@ class Transaction {
   hashForSignature(inIndex, prevOutScript, hashType) {
     typeforce(
       types.tuple(types.UInt32, types.Buffer, /* types.UInt8 */ types.Number),
-      arguments,
+      arguments
     );
     // https://github.com/bitcoin/bitcoin/blob/master/src/test/sighash_tests.cpp#L29
     if (inIndex >= this.ins.length) return ONE;
     // ignore OP_CODESEPARATOR
     const ourScript = bscript.compile(
-      bscript.decompile(prevOutScript).filter(x => {
+      bscript.decompile(prevOutScript).filter((x) => {
         return x !== script_1.OPS.OP_CODESEPARATOR;
-      }),
+      })
     );
     const txTmp = this.clone();
     // SIGHASH_NONE: ignore all outputs? (wildcard payee)
@@ -246,7 +246,7 @@ class Transaction {
       // SIGHASH_ALL: only ignore input scripts
     } else {
       // "blank" others input scripts
-      txTmp.ins.forEach(input => {
+      txTmp.ins.forEach((input) => {
         input.script = EMPTY_SCRIPT;
       });
       txTmp.ins[inIndex].script = ourScript;
@@ -280,7 +280,7 @@ class Transaction {
   hashForWitnessV0(inIndex, prevOutScript, value, hashType) {
     typeforce(
       types.tuple(types.UInt32, types.Buffer, types.Satoshi, types.UInt32),
-      arguments,
+      arguments
     );
     let tbuffer = Buffer.from([]);
     let bufferWriter;
@@ -290,7 +290,7 @@ class Transaction {
     if (!(hashType & Transaction.SIGHASH_ANYONECANPAY)) {
       tbuffer = Buffer.allocUnsafe(36 * this.ins.length);
       bufferWriter = new bufferutils_1.BufferWriter(tbuffer, 0);
-      this.ins.forEach(txIn => {
+      this.ins.forEach((txIn) => {
         bufferWriter.writeSlice(txIn.hash);
         bufferWriter.writeUInt32(txIn.index);
       });
@@ -303,7 +303,7 @@ class Transaction {
     ) {
       tbuffer = Buffer.allocUnsafe(4 * this.ins.length);
       bufferWriter = new bufferutils_1.BufferWriter(tbuffer, 0);
-      this.ins.forEach(txIn => {
+      this.ins.forEach((txIn) => {
         bufferWriter.writeUInt32(txIn.sequence);
       });
       hashSequence = bcrypto.hash256(tbuffer);
@@ -317,7 +317,7 @@ class Transaction {
       }, 0);
       tbuffer = Buffer.allocUnsafe(txOutsSize);
       bufferWriter = new bufferutils_1.BufferWriter(tbuffer, 0);
-      this.outs.forEach(out => {
+      this.outs.forEach((out) => {
         bufferWriter.writeUInt64(out.value);
         bufferWriter.writeVarSlice(out.script);
       });
@@ -357,13 +357,13 @@ class Transaction {
     if (forWitness && this.isCoinbase()) {
       return Buffer.alloc(32, 0);
     }
-    if (this.version < 3 || this.isCoinbase()){
+    if (this.version < 3 || this.isCoinbase()) {
       return bcrypto.hash256(this.__toBuffer(undefined, undefined, forWitness));
     }
     // version >= 3 hash
     let txTmp = this.clone();
     // 1. blank the input scripts
-    txTmp.ins.forEach(input => {
+    txTmp.ins.forEach((input) => {
       input.script = EMPTY_SCRIPT;
     });
     // 2. get the hash of the tx with all blank input scripts
@@ -393,7 +393,7 @@ class Transaction {
     if (!buffer) buffer = Buffer.allocUnsafe(this.byteLength(_ALLOW_WITNESS));
     const bufferWriter = new bufferutils_1.BufferWriter(
       buffer,
-      initialOffset || 0,
+      initialOffset || 0
     );
     bufferWriter.writeInt32(this.version);
     const hasWitnesses = _ALLOW_WITNESS && this.hasWitnesses();
@@ -402,14 +402,14 @@ class Transaction {
       bufferWriter.writeUInt8(Transaction.ADVANCED_TRANSACTION_FLAG);
     }
     bufferWriter.writeVarInt(this.ins.length);
-    this.ins.forEach(txIn => {
+    this.ins.forEach((txIn) => {
       bufferWriter.writeSlice(txIn.hash);
       bufferWriter.writeUInt32(txIn.index);
       bufferWriter.writeVarSlice(txIn.script);
       bufferWriter.writeUInt32(txIn.sequence);
     });
     bufferWriter.writeVarInt(this.outs.length);
-    this.outs.forEach(txOut => {
+    this.outs.forEach((txOut) => {
       if (isOutput(txOut)) {
         bufferWriter.writeUInt64(txOut.value);
       } else {
@@ -418,7 +418,7 @@ class Transaction {
       bufferWriter.writeVarSlice(txOut.script);
     });
     if (hasWitnesses) {
-      this.ins.forEach(input => {
+      this.ins.forEach((input) => {
         bufferWriter.writeVector(input.witness);
       });
     }
