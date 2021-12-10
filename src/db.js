@@ -1,5 +1,8 @@
-import Datastore from 'nedb-promise';
+import * as localforage from 'localforage';
 
-const db = new Datastore({ filename: 'records.json', autoload: true });
+const db = localforage.createInstance({
+  driver: localforage.INDEXEDDB,
+  name: 'records',
+});
 
 export default db;

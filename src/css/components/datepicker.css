@@ -1,0 +1,92 @@
+.mx-datepicker {
+    width: 100%;
+}
+.mx-input {
+    display: inline-block;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 8px 30px 8px 0;
+    font-family: var(--secondary-font);
+    font-size: 12px;
+    line-height: 24px;
+    letter-spacing: 0.12px;
+    color: var(--grey900);
+    background-color: transparent;
+    border: none;
+    border-bottom: 1.5px solid var(--grey200);
+    border-radius: 0;
+    box-shadow: none;
+}
+.mx-input::placeholder {
+    color: var(--grey900);
+}
+.mx-input-wrapper {
+    position: relative;
+}
+.mx-input-wrapper::after {
+    content: '';
+    width: 0;
+    border-bottom: 1.5px solid var(--marine400);
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: 0.3s;
+}
+.mx-input-wrapper:focus-within::after{
+    width: 60px;
+}
+.mx-datepicker__filled .mx-input-wrapper::after {
+    width: 100%;
+}
+.mx-input:hover, .mx-input:focus {
+    border-color: var(--grey200);
+}
+.mx-icon-calendar {
+    display: none;
+}
+.mx-calendar-header button, .mx-calendar-content {
+    font-family: var(--secondary-font);
+}
+.mx-calendar-header .mx-btn, .mx-calendar-header-label {
+    color: var(--text);
+}
+.mx-calendar-header .mx-btn:hover {
+    color: var(--marine400);
+}
+.mx-calendar-content thead tr th {
+    color: var(--text);
+}
+.mx-calendar-content tbody tr .cell, .mx-calendar-content table tr .cell {
+    color: var(--text);
+}
+.mx-calendar-content tbody tr .cell:hover, .mx-calendar-content table tr .cell:hover {
+    color: var(--text);
+    background-color: var(--marine50);
+}
+.mx-calendar-content tbody tr .not-current-month:hover {
+    color: #ccc;
+    background-color: var(--grey50);
+}
+.mx-calendar-content tbody tr .today {
+    color: var(--marine400);
+}
+.mx-calendar-content tbody tr .active, .mx-calendar-content table tr .active {
+    background-color: var(--marine400) !important;
+}
+.mx-calendar-content tbody tr .active:hover, .mx-calendar-content table tr .active:hover {
+    color: #fff;
+}
+.mx-calendar-content tbody tr .in-range {
+    color: var(--text) !important;
+    background-color: var(--marine50) !important;
+}
+.mx-calendar-content tbody tr td div, .mx-calendar-content table tr td div {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.mx-icon-clear {
+    right: 25px;
+}
