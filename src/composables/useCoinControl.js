@@ -67,7 +67,9 @@ export default function useCoinControl(outputs, target) {
     let bestSet = [];
 
     //  If the sum of smallerCoins matches adjustedTarget, smallerCoins is returned as the candidate input set
-    const sum = smallerCoins.map((el) => el.amount).reduce((a, b) => a + b, 0);
+    const sum = smallerCoins
+      .map((el) => el.amount)
+      .reduce((a, b) => MathService.add(a, b), 0);
 
     if (sum < adjustedTarget) {
       let minGreater = sortedUtxo[0].amount; // initially is the largest
@@ -91,11 +93,13 @@ export default function useCoinControl(outputs, target) {
   }
 
   function subsetSum(utxo, adjustedTarget) {
+    console.log('ajmo subset sum');
     // attempt to find a subset of items which sum of amounts is larger than the target amount
 
     // if there are multiple subsets, the one with the closest sum to the target amount will be used
     let sortedUtxo = orderBy(utxo, ['amount'], ['desc']);
     var result = [];
+    console.log('adj target: ', adjustedTarget);
     const findSubset = (sortedUtxo, target, partial = [], sum = 0) => {
       if (sum < target) {
         sortedUtxo.forEach((tx, i) => {
@@ -108,9 +112,17 @@ export default function useCoinControl(outputs, target) {
           );
         });
       } else if (sum >= target) {
-        result.push(partial);
+        const partialSum = partial.reduce(
+          (a, b) => MathService.add(a, b.amount),
+          0
+        );
+        console.log('partial sum: ', partialSum);
+        if (partialSum >= adjustedTarget) {
+          result.push(partial);
+        }
       }
     };
+
     findSubset(sortedUtxo, adjustedTarget);
 
     if (result.length === 0) return [];
@@ -203,6 +215,16 @@ export default function useCoinControl(outputs, target) {
     return result;
   }
 
+  function validateAlgorithm(results, adjustedTarget) {
+    // validate the result of the algorithm
+    // the sum of the algorithm results should be >= adjustedTarget
+    const resultsSum = results.reduce(
+      (a, b) => MathService.add(a, b.amount),
+      0
+    );
+    return resultsSum >= adjustedTarget;
+  }
+
   function coinSelection() {
     // Bitcoin Core’s current coin selection
     // consists of multiple steps and is focused on
@@ -219,45 +241,54 @@ export default function useCoinControl(outputs, target) {
 
     let adjustedTarget = MathService.add(target, 0); // no need to add fee here because we are already increasing the target amount before sending it to coinControl
 
-    // let bestSet = [...outputs]; // fallback
     let bestSet = iterateUntilTargetMet(outputs, adjustedTarget);
-    console.log('COIN CONTROL: best set: ', bestSet);
+    console.log('COIN CONTROL: best set: ', JSON.stringify(bestSet));
     let result = null;
 
     result = exactMatch(outputs, adjustedTarget);
     console.info('COIN CONTROL: exactMatch() ', JSON.stringify(result));
-    if (result.length > 0) {
+    if (
+      result.length > 0 &&
+      validateAlgorithm(result, adjustedTarget) &&
+      result.length < bestSet.length
+    ) {
       bestSet = [...result];
-      return bestSet;
+      // return bestSet;
     }
 
     result = sumOfSmaller(outputs, adjustedTarget);
     console.info('COIN CONTROL: sumOfSmaller() ', JSON.stringify(result));
-    if (result.length > 0) {
+    if (
+      result.length > 0 &&
+      validateAlgorithm(result, adjustedTarget) &&
+      result.length < bestSet.length
+    ) {
       bestSet = [...result];
-      return bestSet;
+      // return bestSet;
     }
 
     // the complexity of the subsetSum algo is too big
     // simply skip this algo for "big" pools of data
     result = outputs.length > 10 ? [] : subsetSum(outputs, adjustedTarget);
     console.info('COIN CONTROL: subsetSum() ', JSON.stringify(result));
-    if (result.length > 0) {
+    if (
+      result.length > 0 &&
+      validateAlgorithm(result, adjustedTarget) &&
+      result.length < bestSet.length
+    ) {
       bestSet = [...result];
-      return bestSet;
+      // return bestSet;
     }
 
     result = knapsackSelection(outputs, target);
     console.info('COIN CONTROL: knapsackSelection() ', JSON.stringify(result));
-    if (result.length > 0) {
+    if (
+      result.length > 0 &&
+      validateAlgorithm(result, adjustedTarget) &&
+      result.length < bestSet.length
+    ) {
       bestSet = [...result];
-      // let coinControlSum = bestSet
-      //   .map((el) => el.amount)
-      //   .reduce((a, b) => a + b, 0);
-      // if (coinControlSum > adjustedTarget) {
-      //   bestSet = knapsackSelection(outputs, target); // treba svim fjama rijesiti parametre a ne da gledaju u globalno
-      // }
-      return bestSet;
+      // return bestSet;
     }
 
     let minSingleUtxo = getMinSingle(outputs, target);
@@ -279,7 +310,7 @@ export default function useCoinControl(outputs, target) {
   }
 
   let best = coinSelection(); // run coin selection on init
-  console.log('COIN CONTROL RESULT: ', best);
+  console.log('COIN CONTROL RESULT: ', JSON.stringify(best));
 
   return {
     best,

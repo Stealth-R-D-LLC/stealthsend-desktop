@@ -7,13 +7,13 @@ const math = create(all, {
 
 const MathService = {
   add(x, y) {
-    return math.add(x, y).toFixed(6);
+    return Number(math.add(x, y).toFixed(6));
   },
   subtract(x, y) {
-    return math.subtract(x, y).toFixed(6);
+    return Number(math.subtract(x, y).toFixed(6));
   },
   multiply(x, y) {
-    return math.multiply(x, y).toFixed(6);
+    return Number(math.multiply(x, y).toFixed(6));
   },
 };
 
