@@ -163,10 +163,10 @@ async function createWindow() {
         },
       ],
     },
-    // {
-    //   label: 'View',
-    //   submenu: [{ role: 'toggleDevTools' }],
-    // },
+    {
+      label: 'View',
+      submenu: [{ role: 'toggleDevTools' }],
+    },
     {
       label: 'Window',
       submenu: [{ role: 'minimize' }],
