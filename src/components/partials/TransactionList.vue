@@ -55,9 +55,9 @@
                         name="icon-transactions-pending"
                       />
                       <SvgIcon v-else name="icon-transactions-failed" />
-                      <template v-if="$route.name !== 'Dashboard'"
-                        >Pending</template
-                      >
+                      <template v-if="$route.name !== 'Dashboard'">
+                        {{ item.isFailed ? 'Failed' : 'Pending' }}
+                      </template>
                     </template>
                     <template
                       v-else-if="
@@ -97,9 +97,9 @@
                         name="icon-transactions-pending"
                       />
                       <SvgIcon v-else name="icon-transactions-failed" />
-                      <template v-if="$route.name !== 'Dashboard'"
-                        >Pending</template
-                      >
+                      <template v-if="$route.name !== 'Dashboard'">
+                        {{ item.isFailed ? 'Failed' : 'Pending' }}
+                      </template>
                     </template>
                     <template v-else-if="!item.isPending && item.amount > 0">
                       <SvgIcon name="icon-transactions-received" />
