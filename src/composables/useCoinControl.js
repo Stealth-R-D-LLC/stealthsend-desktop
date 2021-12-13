@@ -218,9 +218,12 @@ export default function useCoinControl(outputs, target) {
   function validateAlgorithm(results, adjustedTarget) {
     // validate the result of the algorithm
     // the sum of the algorithm results should be >= adjustedTarget
-    const resultsSum = results.reduce((a, b) => MathService.add(a, b.amount), 0);
+    const resultsSum = results.reduce(
+      (a, b) => MathService.add(a, b.amount),
+      0
+    );
     return resultsSum >= adjustedTarget;
-  } 
+  }
 
   function coinSelection() {
     // Bitcoin Core’s current coin selection
