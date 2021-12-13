@@ -247,32 +247,32 @@ export default function useCoinControl(outputs, target) {
 
     result = exactMatch(outputs, adjustedTarget);
     console.info('COIN CONTROL: exactMatch() ', JSON.stringify(result));
-    if (result.length > 0 && validateAlgorithm(result, adjustedTarget)) {
+    if (result.length > 0 && validateAlgorithm(result, adjustedTarget) && result.length < bestSet.length) {
       bestSet = [...result];
-      return bestSet;
+      // return bestSet;
     }
 
     result = sumOfSmaller(outputs, adjustedTarget);
     console.info('COIN CONTROL: sumOfSmaller() ', JSON.stringify(result));
-    if (result.length > 0 && validateAlgorithm(result, adjustedTarget)) {
+    if (result.length > 0 && validateAlgorithm(result, adjustedTarget) && result.length < bestSet.length) {
       bestSet = [...result];
-      return bestSet;
+      // return bestSet;
     }
 
     // the complexity of the subsetSum algo is too big
     // simply skip this algo for "big" pools of data
     result = outputs.length > 10 ? [] : subsetSum(outputs, adjustedTarget);
     console.info('COIN CONTROL: subsetSum() ', JSON.stringify(result));
-    if (result.length > 0 && validateAlgorithm(result, adjustedTarget)) {
+    if (result.length > 0 && validateAlgorithm(result, adjustedTarget) && result.length < bestSet.length) {
       bestSet = [...result];
-      return bestSet;
+      // return bestSet;
     }
 
     result = knapsackSelection(outputs, target);
     console.info('COIN CONTROL: knapsackSelection() ', JSON.stringify(result));
-    if (result.length > 0 && validateAlgorithm(result, adjustedTarget)) {
+    if (result.length > 0 && validateAlgorithm(result, adjustedTarget) && result.length < bestSet.length) {
       bestSet = [...result];
-      return bestSet;
+      // return bestSet;
     }
 
     let minSingleUtxo = getMinSingle(outputs, target);
