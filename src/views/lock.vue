@@ -140,14 +140,6 @@ const counter = ref(6);
 const isVideoLoaded = ref(false);
 const wrongAttempts = ref(0);
 const cooldown = ref(0);
-/* const animation = ref(null); // for saving the reference to the animation
-    const lottieOptions = ref({
-      animationData: animationData.default,
-      render: 'svg',
-      loop: false,
-      autoplay: true,
-    }); */
-
 const mainStore = useMainStore();
 
 const {

@@ -14,6 +14,6 @@ exports.default = async function notarizing(context) {
     appPath: `${appOutDir}/${appName}.app`,
     appleId: process.env.NOTARIZE_APPLE_ID,
     appleIdPassword: process.env.NOTARIZE_APPLE_ID_PASSWORD,
-    ascProvider: process.env.NOTARIZE_ASC_PROVIDER
+    ascProvider: process.env.NOTARIZE_ASC_PROVIDER,
   });
 };

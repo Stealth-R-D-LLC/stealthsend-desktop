@@ -49,7 +49,7 @@ function p2wsh(a, opts) {
       input: typef.maybe(typef.BufferN(0)),
       witness: typef.maybe(typef.arrayOf(typef.Buffer)),
     },
-    a,
+    a
   );
   const _address = lazy.value(() => {
     const result = bech32.decode(a.address);
@@ -183,11 +183,11 @@ function p2wsh(a, opts) {
         (a.redeem.input && _rchunks().some(chunkHasUncompressedPubkey)) ||
         (a.redeem.output &&
           (bscript.decompile(a.redeem.output) || []).some(
-            chunkHasUncompressedPubkey,
+            chunkHasUncompressedPubkey
           ))
       ) {
         throw new TypeError(
-          'redeem.input or redeem.output contains uncompressed pubkey',
+          'redeem.input or redeem.output contains uncompressed pubkey'
         );
       }
     }

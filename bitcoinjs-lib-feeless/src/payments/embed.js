@@ -21,7 +21,7 @@ function p2data(a, opts) {
       output: typef.maybe(typef.Buffer),
       data: typef.maybe(typef.arrayOf(typef.Buffer)),
     },
-    a,
+    a
   );
   const network = a.network || networks_1.bitcoin;
   const o = { name: 'embed', network };

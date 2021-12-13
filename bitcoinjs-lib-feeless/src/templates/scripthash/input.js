@@ -13,7 +13,7 @@ function check(script, allowIncomplete) {
   const lastChunk = chunks[chunks.length - 1];
   if (!Buffer.isBuffer(lastChunk)) return false;
   const scriptSigChunks = bscript.decompile(
-    bscript.compile(chunks.slice(0, -1)),
+    bscript.compile(chunks.slice(0, -1))
   );
   const redeemScriptChunks = bscript.decompile(lastChunk);
   // is redeemScript a valid script?

@@ -5,6 +5,7 @@ dist
 yarn-error.log
 .vscode
 .idea
+package-lock.json
 
 #Electron-builder output
 /dist_electron

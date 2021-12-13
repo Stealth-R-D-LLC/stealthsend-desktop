@@ -58,7 +58,7 @@ function compile(chunks) {
   }, 0.0);
   const buffer = Buffer.allocUnsafe(bufferSize);
   let offset = 0;
-  chunks.forEach(chunk => {
+  chunks.forEach((chunk) => {
     // data chunk
     if (singleChunkIsBuffer(chunk)) {
       // adhere to BIP62.3, minimal push policy
@@ -120,7 +120,7 @@ function toASM(chunks) {
     chunks = decompile(chunks);
   }
   return chunks
-    .map(chunk => {
+    .map((chunk) => {
       // data?
       if (singleChunkIsBuffer(chunk)) {
         const op = asMinimalOP(chunk);
@@ -136,20 +136,20 @@ exports.toASM = toASM;
 function fromASM(asm) {
   typeforce(types.String, asm);
   return compile(
-    asm.split(' ').map(chunkStr => {
+    asm.split(' ').map((chunkStr) => {
       // opcode?
       if (exports.OPS[chunkStr] !== undefined) return exports.OPS[chunkStr];
       typeforce(types.Hex, chunkStr);
       // data!
       return Buffer.from(chunkStr, 'hex');
-    }),
+    })
   );
 }
 exports.fromASM = fromASM;
 function toStack(chunks) {
   chunks = decompile(chunks);
   typeforce(isPushOnly, chunks);
-  return chunks.map(op => {
+  return chunks.map((op) => {
     if (singleChunkIsBuffer(op)) return op;
     if (op === exports.OPS.OP_0) return Buffer.allocUnsafe(0);
     return scriptNumber.encode(op - OP_INT_BASE);

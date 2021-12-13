@@ -38,7 +38,7 @@ function encode(signature, hashType) {
       signature: types.BufferN(64),
       hashType: types.UInt8,
     },
-    { signature, hashType },
+    { signature, hashType }
   );
   const hashTypeMod = hashType & ~0x80;
   if (hashTypeMod <= 0 || hashTypeMod >= 4)
