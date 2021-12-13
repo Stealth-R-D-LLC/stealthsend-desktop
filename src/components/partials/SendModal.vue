@@ -510,16 +510,6 @@ function findFee(fee = 0.01) {
 
 function coinSelection(targetAmount) {
   const { best } = useCoinControl(unspentOutputs, targetAmount);
-  if (
-    best.reduce((a, b) => MathService.add(a, b.amount), 0) <
-    unspentOutputs.reduce((a, b) => MathService.add(a, b.amount), 0)
-  ) {
-    console.log(
-      'COIN CONTROL: algo failed to find best sum, falling back to all utxos'
-    );
-    // if something is wrong with a coin control algo, return all utxos as a fallback
-    return unspentOutputs;
-  }
   return best;
 }
 
