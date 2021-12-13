@@ -27,7 +27,7 @@ function p2wpkh(a, opts) {
       signature: typef.maybe(bscript.isCanonicalScriptSignature),
       witness: typef.maybe(typef.arrayOf(typef.Buffer)),
     },
-    a,
+    a
   );
   const _address = lazy.value(() => {
     const result = bech32.decode(a.address);

@@ -24,7 +24,7 @@ function p2pkh(a, opts) {
       signature: typef.maybe(bscript.isCanonicalScriptSignature),
       input: typef.maybe(typef.Buffer),
     },
-    a,
+    a
   );
   const _address = lazy.value(() => {
     const payload = bs58check.decode(a.address);

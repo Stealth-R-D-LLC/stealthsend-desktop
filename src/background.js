@@ -184,6 +184,7 @@ async function createWindow() {
     authors: [pkgjson.authors],
   };
   app.setAboutPanelOptions(options);
+  app.setAccessibilitySupportEnabled(false);
 
   // webFrame.setZoomFactor(1);
   // webFrame.setVisualZoomLevelLimits(1, 1);
