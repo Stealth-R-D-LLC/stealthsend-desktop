@@ -89,22 +89,21 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       Number(MathService.subtract(sendForm.amount, fee))
     );
 
+
+    console.time("discoveraccount")
     let sumUtxo = utxo
-      .map((el) => el.amount)
+    .map((el) => el.amount)
       .reduce((a, b) => MathService.add(a, b), 0);
     const { account } = CryptoService.breakAccountPath(sendForm.account.path);
-    const discoveredAddresses = await CryptoService.accountDiscovery(
+    const { nextAddressToUse } = await CryptoService.accountDiscovery(
       account,
       1
     );
-    let nextFreeAddress = CryptoService.nextToUse(
-      discoveredAddresses.freeAddresses
-    );
-    const next = CryptoService.breakAccountPath(nextFreeAddress);
-
-    const child = CryptoService.getChildFromRoot(
-      next.account,
-      next.change,
+      const next = CryptoService.breakAccountPath(nextAddressToUse);
+      
+      const child = CryptoService.getChildFromRoot(
+        next.account,
+        next.change,
       next.address
     );
 
@@ -119,6 +118,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         )
       ), // account amount - (send amount + fee)
     };
+    console.timeEnd("discoveraccount")
     console.log('TRANSACTION BUILDER: change amount', change.amount);
 
     console.log('TRANSACTION BUILDER: change:', JSON.stringify(change));
@@ -143,6 +143,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
 
     // create feework and feeless scriptPubkey and add output for feeless trx
     if (fee === 0) {
+      console.time('FEELESS create_feework_and_script_pubkey');
       rawTransaction.setVersion(4);
       const bestBlock = await mainStore.rpc('getbestblock', []);
 
@@ -155,7 +156,6 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       console.log('FEELESS height: ', JSON.stringify(bestBlock.height));
       console.log('FEELESS size: ', JSON.stringify(bestBlock.size));
       console.log('FEELESS hash: ', JSON.stringify(bestBlock.hash));
-      console.time('FEELESS create_feework_and_script_pubkey');
 
       const feelessScriptPubkey = await FeelessJS.createFeeworkAndScriptPubkey(
         rawTransaction.__INPUTS.length,
@@ -171,24 +171,14 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         'TRANSACTION BUILDER: feeless script sig key hex: ',
         JSON.stringify(feelessScriptPubkey.toString('hex'))
       );
-      const testFeelessScriptPubkey =
-        await FeelessJS.testCreateFeeworkAndScriptPubkey(
-          txUnsignedHex,
-          bestBlock.height,
-          bestBlock.size,
-          bestBlock.hash,
-          feelessScriptPubkey.toString('hex')
-        );
-      console.log(
-        'FEELESS test results for script pubkey: ',
-        JSON.stringify(testFeelessScriptPubkey)
-      );
+
       rawTransaction.addOutput(Buffer.from(feelessScriptPubkey, 'hex'), 0);
       console.log(
         'TRANSACTION BUILDER: added output with zero amount and opcode OP_FEEWORK'
       );
     }
 
+    console.time("TXTIME: findpath")
     for (let i = 0; i < utxo.length; i++) {
       // careful how to derive the path. depends on the account of the address
       const pathForAddress = findPathForAddress(utxo[i].address);
@@ -215,6 +205,8 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         throw new Error('TRANSACTION BUILDER: cannot sign tx: ', e);
       }
     }
+
+    console.timeEnd("TXTIME: findpath")
 
     console.log('Raw TX for decode: ');
     console.dir(rawTransaction);
