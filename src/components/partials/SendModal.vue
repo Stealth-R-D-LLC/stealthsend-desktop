@@ -428,7 +428,7 @@ function closeModal() {
 const accounts = ref([{}]);
 async function scanWallet() {
   accounts.value = fil(
-    (el) => !el.isArchived && el.utxo > minimumXSTForSend.value,
+    (el) => !el.isArchived && el.utxo >= minimumXSTForSend.value,
     mainStore.wallet.accounts
   );
   if (pickedAccount.value) {
@@ -446,7 +446,7 @@ async function scanWallet() {
   // select first option so it doesn't remain empty
   if (!account.value || Object.keys(account.value).length === 0) {
     account.value = mainStore.wallet.accounts.filter(
-      (el) => el.utxo > minimumXSTForSend.value
+      (el) => el.utxo >= minimumXSTForSend.value
     )[0];
   }
 
