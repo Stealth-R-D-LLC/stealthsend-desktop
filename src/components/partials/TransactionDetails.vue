@@ -157,6 +157,18 @@
         <p class="bold">Receiving Address</p>
         <p v-if="tx?.isFailed">
           {{ tx?.txinfo?.destinations[0] }}
+          <StTooltip
+            :tooltip="
+              copyPending ? 'Copied to Clipboard!' : 'Copy to Clipboard'
+            "
+          >
+            <StClipboard
+              :content="tx?.txinfo?.destinations[0]"
+              @click="handleCopy"
+            >
+              <SvgIcon name="icon-clipboard" />
+            </StClipboard>
+          </StTooltip>
         </p>
         <template v-else>
           <p
@@ -167,13 +179,30 @@
               tx.vout[0].scriptPubKey.type === 'nonstandard'
             "
             class="item-link pointer"
-            @click="
-              openAddressExplorer(
-                tx?.vout[tx.vout.length - 1]?.scriptPubKey?.addresses[0]
-              )
-            "
           >
-            {{ tx?.vout[tx.vout.length - 1]?.scriptPubKey?.addresses[0] }}
+            <span
+              @click="
+                openAddressExplorer(
+                  tx?.vout[tx.vout.length - 1]?.scriptPubKey?.addresses[0]
+                )
+              "
+            >
+              {{ tx?.vout[tx.vout.length - 1]?.scriptPubKey?.addresses[0] }}
+            </span>
+            <StTooltip
+              :tooltip="
+                copyPending ? 'Copied to Clipboard!' : 'Copy to Clipboard'
+              "
+            >
+              <StClipboard
+                :content="
+                  tx?.vout[tx.vout.length - 1]?.scriptPubKey?.addresses[0]
+                "
+                @click="handleCopy"
+              >
+                <SvgIcon name="icon-clipboard" />
+              </StClipboard>
+            </StTooltip>
           </p>
           <template v-else>
             <p
@@ -186,14 +215,29 @@
                 tx.vout[tx.position].scriptPubKey.addresses &&
                 tx.vout[tx.position].scriptPubKey.addresses[0]
               "
-              class="item-link pointer"
-              @click="
-                openAddressExplorer(
-                  tx?.vout[tx.position]?.scriptPubKey?.addresses[0]
-                )
-              "
+              class="item-link pointer has-clipboard"
             >
-              {{ tx?.vout[tx.position]?.scriptPubKey?.addresses[0] }}
+              <span
+                @click="
+                  openAddressExplorer(
+                    tx?.vout[tx.position]?.scriptPubKey?.addresses[0]
+                  )
+                "
+              >
+                {{ tx?.vout[tx.position]?.scriptPubKey?.addresses[0] }}
+              </span>
+              <StTooltip
+                :tooltip="
+                  copyPending ? 'Copied to Clipboard!' : 'Copy to Clipboard'
+                "
+              >
+                <StClipboard
+                  :content="tx?.vout[tx.position]?.scriptPubKey?.addresses[0]"
+                  @click="handleCopy"
+                >
+                  <SvgIcon name="icon-clipboard" />
+                </StClipboard>
+              </StTooltip>
             </p>
             <p v-else>-</p>
           </template>
@@ -201,8 +245,21 @@
       </div>
       <div class="item">
         <p class="bold">Transaction ID</p>
-        <p class="item-link pointer" @click="openBlockExplorer(tx.txid)">
-          {{ tx.txid }}
+        <p class="item-link pointer has-clipboard txid">
+          <span>
+            <span @click="openBlockExplorer(tx.txid)">
+              {{ tx.txid }}
+            </span>
+            <StTooltip
+              :tooltip="
+                copyPending ? 'Copied to Clipboard!' : 'Copy to Clipboard'
+              "
+            >
+              <StClipboard :content="tx.txid" @click="handleCopy">
+                <SvgIcon name="icon-clipboard" />
+              </StClipboard>
+            </StTooltip>
+          </span>
         </p>
       </div>
       <div class="item item--grid">
@@ -392,6 +449,14 @@ function openAddressExplorer(address) {
   }, 1);
 }
 
+let copyPending = ref(false);
+function handleCopy() {
+  copyPending.value = true;
+  setTimeout(() => {
+    copyPending.value = false;
+  }, 1000);
+}
+
 async function getTx(txid) {
   if (!txid || txid === '-') {
     tx.value = {
@@ -557,5 +622,33 @@ function redoTransaction() {
 }
 :deep .label-right span {
   cursor: pointer;
+}
+
+.has-clipboard {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.has-clipboard .st-clipboard {
+  width: 8px;
+  height: 8px;
+}
+.has-clipboard:not(.txid) svg {
+  height: 19px;
+  width: 15px;
+  margin-left: 12px;
+  display: flex;
+}
+.has-clipboard.txid .tooltip {
+  display: inline-block;
+  top: 5px;
+  margin-left: 8px;
+  height: 19px;
+  width: 15px;
+}
+.has-clipboard.txid svg {
+  height: 19px;
+  width: 15px;
 }
 </style>
