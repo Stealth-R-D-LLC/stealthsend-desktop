@@ -89,21 +89,20 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       Number(MathService.subtract(sendForm.amount, fee))
     );
 
-
-    console.time("discoveraccount")
+    console.time('discoveraccount');
     let sumUtxo = utxo
-    .map((el) => el.amount)
+      .map((el) => el.amount)
       .reduce((a, b) => MathService.add(a, b), 0);
     const { account } = CryptoService.breakAccountPath(sendForm.account.path);
     const { nextAddressToUse } = await CryptoService.accountDiscovery(
       account,
       1
     );
-      const next = CryptoService.breakAccountPath(nextAddressToUse);
-      
-      const child = CryptoService.getChildFromRoot(
-        next.account,
-        next.change,
+    const next = CryptoService.breakAccountPath(nextAddressToUse);
+
+    const child = CryptoService.getChildFromRoot(
+      next.account,
+      next.change,
       next.address
     );
 
@@ -118,7 +117,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         )
       ), // account amount - (send amount + fee)
     };
-    console.timeEnd("discoveraccount")
+    console.timeEnd('discoveraccount');
     console.log('TRANSACTION BUILDER: change amount', change.amount);
 
     console.log('TRANSACTION BUILDER: change:', JSON.stringify(change));
@@ -178,7 +177,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       );
     }
 
-    console.time("TXTIME: findpath")
+    console.time('TXTIME: findpath');
     for (let i = 0; i < utxo.length; i++) {
       // careful how to derive the path. depends on the account of the address
       const pathForAddress = findPathForAddress(utxo[i].address);
@@ -206,7 +205,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       }
     }
 
-    console.timeEnd("TXTIME: findpath")
+    console.timeEnd('TXTIME: findpath');
 
     console.log('Raw TX for decode: ');
     console.dir(rawTransaction);
