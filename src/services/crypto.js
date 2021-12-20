@@ -481,7 +481,7 @@ const CryptoService = {
         1,
       ]);
       if (outputs.length > 0) {
-        // if there are some transactions, 
+        // if there are some transactions,
         // increase the account index and go to step 1
         emptyInARow = 0;
         freeAddresses = [];
@@ -496,7 +496,10 @@ const CryptoService = {
     }
 
     // store last used address for that account in db in order to continue the account discovery from that point
-    this.setLastUsedAddress(`${n}'/0/0`, parseInt(freeAddresses[0].split('/')[2]) - 1)
+    this.setLastUsedAddress(
+      `${n}'/0/0`,
+      parseInt(freeAddresses[0].split('/')[2]) - 1
+    );
     // Return free account addresses to the calling code
     return {
       nextAddressToUse: freeAddresses[0],
@@ -505,7 +508,7 @@ const CryptoService = {
   },
 
   async getLastUsedAddress(accountPath) {
-let accounts = await this.getAccounts();
+    let accounts = await this.getAccounts();
     for (let acc of accounts) {
       if (acc.path === accountPath) {
         return acc.lastAddressUsed;
@@ -514,7 +517,7 @@ let accounts = await this.getAccounts();
     return 0;
   },
 
-    async setLastUsedAddress(accountPath, lastAddressUsed) {
+  async setLastUsedAddress(accountPath, lastAddressUsed) {
     // set last used address in db for a particular account
     let accounts = await this.getAccounts();
     for (let acc of accounts) {
