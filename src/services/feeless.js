@@ -79,17 +79,8 @@ const FeelessJS = {
       .join('');
 
     const MCOST = this._getMcostFromSize(SIZE, BYTES_SIZE);
-
     const DATA = this._getDataBytesFromTxAndHash(txUnsignedHex, BLOCKHASH);
     const WORK = await this._createWork(DATA, MCOST);
-
-    // console.log('HEIGHT     :', HEIGHT);
-    // console.log('SIZE       :', SIZE);
-    // console.log('BLOCKHASH  :', BLOCKHASH);
-    // console.log('MCOST      :', MCOST);
-    // console.log('DATA       :', DATA);
-    // console.log('WORK       :', WORK);
-
     const scriptPubkeyBuffer = this._writeScriptPubkey(HEIGHT, MCOST, WORK);
     return scriptPubkeyBuffer.toString('hex');
   },
@@ -161,6 +152,7 @@ const FeelessJS = {
     var WORK;
     const LIMIT_DENARY = this._getLimitDenary();
     var start = new Date();
+    console.time('FEELESS work_calc');
     do {
       try {
         let curr = new Date();
@@ -186,6 +178,7 @@ const FeelessJS = {
     WORK = WORK.readBigUInt64BE();
     console.log('WORK hex', WORK);
     console.log('RETURN');
+    console.timeEnd('FEELESS work_calc');
     return WORK;
   },
 
@@ -227,75 +220,6 @@ const FeelessJS = {
       hex = '0' + hex;
     }
     return BigInt('0x' + hex);
-  },
-
-  async testCreateFeeworkAndScriptPubkey(
-    txUnsignedHex,
-    blockHeight,
-    blockSize,
-    blockHash,
-    scriptPubkeyHex
-  ) {
-    let scriptPubkeyBytes = Buffer.from(scriptPubkeyHex, 'hex');
-    let work = Buffer.allocUnsafe(8);
-    work.writeUint8(scriptPubkeyBytes[9], 0);
-    work.writeUint8(scriptPubkeyBytes[10], 1);
-    work.writeUint8(scriptPubkeyBytes[11], 2);
-    work.writeUint8(scriptPubkeyBytes[12], 3);
-    work.writeUint8(scriptPubkeyBytes[13], 4);
-    work.writeUint8(scriptPubkeyBytes[14], 5);
-    work.writeUint8(scriptPubkeyBytes[15], 6);
-    work.writeUint8(scriptPubkeyBytes[16], 7);
-    blockHash = blockHash
-      .match(/.{1,2}/g)
-      .reverse()
-      .join('');
-    let data = this._getDataBytesFromTxAndHash(txUnsignedHex, blockHash);
-    let mcost = this._getMcostFromSize(blockSize);
-    let hashDenary = await this._getHashWithArgon2(data, work, mcost);
-    let limitDenary = this._getLimitDenary();
-    let conditionText = 'LESS THAN';
-    if (hashDenary > limitDenary) {
-      conditionText = 'GREATER THAN';
-    }
-
-    let workDenary = this._hexToBn(work.toString('hex'));
-    let result = `ScriptPubkey length is ${Buffer.byteLength(
-      scriptPubkeyBytes
-    )}, 1st element is ${scriptPubkeyBytes[0]}, `;
-    result += `18th element is ${scriptPubkeyBytes[17]}. Hash denary is ${hashDenary}, which is ${conditionText} `;
-    result += `of limit denary ${limitDenary}. Work denary is ${workDenary}`;
-
-    return result;
-  },
-
-  async testCase() {
-    let tx_unsigned_hex =
-      '0400000004c38bd403ddc7f671d1a19fcca124f2114844f8fa24a0deb4cff25946550d4fb00100000000ffffffff053cb6dd125c8bb24e2f49aee7466397891b6a541052cd3896802554ab5e8ff10100000000fffffffff2be04127f403f5f0d4db71ed4f830b8f093b2693c40f3ed6d53d8cccde01c280100000000ffffffff3e43843fc5a99e827a63a6480f80bfb412dd5edd0c08dc2cc1e30c61c83bab400000000000ffffffff0200e1f505000000001976a914caea98e6984db848b661d6b4b8b25ea9d971741f88ac1d460000000000001976a9146015f23dc00ec6cfbcac20e88a2e8487e4d3567388ac00000000';
-    let block_hash =
-      '99169e463a9f8cf4914b544efe46d6a1d891d7e3d71d3bc7d4fb7d469e9bcac1';
-    // block_hash = block_hash.match(/.{1,2}/g).reverse().join("");
-    block_hash = block_hash.split('').reverse().join('');
-
-    // check the work
-    let mcost = 256;
-    let data = this._getDataBytesFromTxAndHash(tx_unsigned_hex, block_hash);
-    let limit_denary = this._getLimitDenary();
-    let work = Buffer.from('cc807acecec4b2b4', 'hex');
-
-    let hash_denary = await this._getHashWithArgon2(data, work, mcost);
-    let work_denary = work.readBigUInt64BE();
-    console.log(
-      'hash denary is %s, limit denary is %s, work denary is %s',
-      JSON.stringify(hash_denary),
-      JSON.stringify(limit_denary),
-      JSON.stringify(work_denary)
-    );
-    console.log(
-      'hash denary < limit denary: %s',
-      JSON.stringify(hash_denary < limit_denary)
-    );
-    return hash_denary;
   },
 };
 

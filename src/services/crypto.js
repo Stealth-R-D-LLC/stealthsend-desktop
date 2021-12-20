@@ -238,6 +238,7 @@ const CryptoService = {
       path: account.path,
       xpub: account.xpub,
       asset: account.asset,
+      lastAddressUsed: 0,
       favouritePosition: account.favouritePosition,
     });
 
@@ -460,16 +461,16 @@ const CryptoService = {
 
     return wallet;
   },
-  async accountDiscovery(n = 0, change = 0) {
+  async accountDiscovery(n = 0, change = 0, lastUsedAddress = 0) {
     const mainStore = useMainStore();
     //  Address gap limit is currently set  to 20. If the software hits 20 unused addresses in a row,
     // it expects there are no used addresses beyond this point and stops searching the address chain.
     // We scan just the external chains, because internal chains receive only coins that come from the associated external chains.
     const GAP_LIMIT = 20;
-
     let emptyInARow = 0;
     let freeAddresses = [];
-    for (let i = 0; i < Infinity; i++) {
+    lastUsedAddress = await this.getLastUsedAddress(`${n}'/0/0`);
+    for (let i = lastUsedAddress; i < Infinity; i++) {
       // derive the first account's node (index = 0)
       // derive the external chain node of this account
       const acc = this.getChildFromRoot(n, change, i);
@@ -480,8 +481,10 @@ const CryptoService = {
         1,
       ]);
       if (outputs.length > 0) {
-        // if there are some transactions, increase the account index and go to step 1
+        // if there are some transactions, 
+        // increase the account index and go to step 1
         emptyInARow = 0;
+        freeAddresses = [];
         continue;
       }
       // if there are no transactions, increment counter and go to next address
@@ -491,10 +494,36 @@ const CryptoService = {
       // If the software hits 20 unused addresses in a row, it expects there are no used addresses beyond this point and stops searching the address chain
       if (emptyInARow >= GAP_LIMIT) break;
     }
+
+    // store last used address for that account in db in order to continue the account discovery from that point
+    this.setLastUsedAddress(`${n}'/0/0`, parseInt(freeAddresses[0].split('/')[2]) - 1)
     // Return free account addresses to the calling code
     return {
+      nextAddressToUse: freeAddresses[0],
       freeAddresses,
     };
+  },
+
+  async getLastUsedAddress(accountPath) {
+let accounts = await this.getAccounts();
+    for (let acc of accounts) {
+      if (acc.path === accountPath) {
+        return acc.lastAddressUsed;
+      }
+    }
+    return 0;
+  },
+
+    async setLastUsedAddress(accountPath, lastAddressUsed) {
+    // set last used address in db for a particular account
+    let accounts = await this.getAccounts();
+    for (let acc of accounts) {
+      if (acc.path === accountPath) {
+        acc.lastAddressUsed = lastAddressUsed;
+        break;
+      }
+    }
+    await db.setItem('accounts', accounts);
   },
 
   async findLastUsedAccountPath() {
@@ -509,12 +538,14 @@ const CryptoService = {
       if (hdAccount.length > 0) {
         lastAccountPath = acc.path;
         emptyInARow = 0;
+        await this.accountDiscovery(i);
         continue;
       }
 
       emptyInARow += 1;
       if (emptyInARow >= 20) break;
     }
+    console.log('LAST ACC APATH', lastAccountPath);
     return parseInt(lastAccountPath);
   },
 
@@ -732,21 +763,6 @@ const CryptoService = {
       });
     });
   },
-  nextToUse(freeAddresses) {
-    for (let i = 0; i < freeAddresses.length; i++) {
-      if (
-        parseInt(freeAddresses[i + 1].split('/')[2]) -
-          parseInt(freeAddresses[i].split('/')[2]) ===
-        1
-      ) {
-        if (i === 0) {
-          return freeAddresses[i];
-        } else {
-          return freeAddresses[i - 1];
-        }
-      }
-    }
-  },
   getHdAccount(accountExtendedPk) {
     const mainStore = useMainStore();
     return mainStore.rpc('gethdaccount', [accountExtendedPk]);
@@ -806,6 +822,7 @@ const CryptoService = {
       asset: 'XST',
       wif: encryptedWIF,
       favouritePosition: null,
+      lastAddressUsed: 0,
       publicKey: keypair.publicKey.toString('hex'),
     });
 
