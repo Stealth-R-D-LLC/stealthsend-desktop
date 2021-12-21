@@ -219,11 +219,10 @@ export default function useCoinControl(outputs, target) {
     const resultsSum = results.reduce(
       (a, b) => MathService.add(a, b.amount),
       0
-      );
-    
-    if (results.length > 0 && resultsSum < adjustedTarget) {
-      Sentry.captureMessage(`validateAlgorithm() failed for ${algorithm}`)
+    );
 
+    if (results.length > 0 && resultsSum < adjustedTarget) {
+      Sentry.captureMessage(`validateAlgorithm() failed for ${algorithm}`);
     }
     return resultsSum >= adjustedTarget;
   }

@@ -189,7 +189,9 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     try {
       txid = await mainStore.rpc('sendrawtransaction', [rawTransactionToHex]);
     } catch (e) {
-      Sentry.captureMessage('sendrawtransaction error:' + JSON.stringify(rawTransactionToHex) )
+      Sentry.captureMessage(
+        'sendrawtransaction error:' + JSON.stringify(rawTransactionToHex)
+      );
       console.error('Transaction builded, but rejected from RPC. Reason: ', e);
       throw e;
     }
