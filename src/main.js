@@ -25,6 +25,7 @@ import App from './App.vue';
 import directives from './directives/';
 import './index.css';
 import router from './router';
+import * as Sentry from "@sentry/vue";
 
 const app = createApp(App);
 app.use(createPinia());
@@ -54,5 +55,19 @@ app.component('StFormItem', StFormItem);
 // register all directives
 directives(app);
 
+Sentry.init({ 
+  app,
+  dsn: process.env.VUE_APP_SENTRY_DSN,
+  // debug: true,
+  maxBreadcrumbs: 50,
+  beforeBreadcrumb(breadcrumb, hint) {
+    console.log('SENTRY:: breadcrumb: ', breadcrumb);
+    console.log('SENTRY:: hint: ', hint);
+    return breadcrumb;
+  },
+  beforeSend(event) {
+    return event;
+  }
+});
 app.use(router);
 app.mount('#app');
