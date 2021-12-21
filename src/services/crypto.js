@@ -189,8 +189,7 @@ const CryptoService = {
     };
   },
   isMnemonicValid(mnemonic) {
-    const isValid = bip39.validateMnemonic(mnemonic);
-    return isValid;
+    return bip39.validateMnemonic(mnemonic);
   },
   async getWalletFromDb() {
     return await db.getItem('wallet');
