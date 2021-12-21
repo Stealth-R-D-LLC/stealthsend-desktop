@@ -59,15 +59,7 @@ Sentry.init({
   app,
   dsn: process.env.VUE_APP_SENTRY_DSN,
   // debug: true,
-  maxBreadcrumbs: 50,
-  beforeBreadcrumb(breadcrumb, hint) {
-    console.log('SENTRY:: breadcrumb: ', breadcrumb);
-    console.log('SENTRY:: hint: ', hint);
-    return breadcrumb;
-  },
-  beforeSend(event) {
-    return event;
-  },
+  maxBreadcrumbs: 120
 });
 app.use(router);
 app.mount('#app');
