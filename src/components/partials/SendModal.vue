@@ -287,7 +287,7 @@ import { QrStream } from 'vue3-qr-reader';
 import SvgIcon from '../partials/SvgIcon.vue';
 import CircleProgress from '../partials/CircleProgress.vue';
 import getUnixTime from 'date-fns/getUnixTime';
-import * as Sentry from '@sentry/electron';
+import * as Sentry from '@sentry/vue';
 
 const mainStore = useMainStore();
 const { formatAmount, fil } = useHelpers();
