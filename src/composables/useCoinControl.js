@@ -1,6 +1,6 @@
 import MathService from '@/services/math';
 import CryptoService from '@/services/crypto';
-import * as Sentry from '@sentry/electron';
+import * as Sentry from '@sentry/vue';
 
 export default function useCoinControl(outputs, target) {
   console.log(
