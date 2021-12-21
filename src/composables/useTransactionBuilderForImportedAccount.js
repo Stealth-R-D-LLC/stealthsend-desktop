@@ -7,7 +7,7 @@ import * as bitcoinFeeless from '../../bitcoinjs-lib-feeless/src/index.js';
 import * as bitcoin from 'bitcoinjs-lib';
 import { Buffer } from 'buffer';
 import MathService from '@/services/math';
-import * as Sentry from '@sentry/electron';
+import * as Sentry from '@sentry/vue';
 
 export default async function useTransactionBuilder(utxo, sendForm) {
   const mainStore = useMainStore();
