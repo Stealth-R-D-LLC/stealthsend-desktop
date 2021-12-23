@@ -128,7 +128,7 @@ async function createWindow() {
               {
                 label: 'Quit StealthSend',
                 accelerator: 'CmdOrCtrl+Q',
-                role: 'close',
+                role: 'quit',
               },
             ],
           },
