@@ -132,18 +132,6 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         'TRANSACTION BUILDER: feeless script sig key hex: ',
         JSON.stringify(feelessScriptPubkey.toString('hex'))
       );
-      const testFeelessScriptPubkey =
-        await FeelessJS.testCreateFeeworkAndScriptPubkey(
-          txUnsignedHex,
-          bestBlock.height,
-          bestBlock.size,
-          bestBlock.hash,
-          feelessScriptPubkey.toString('hex')
-        );
-      console.log(
-        'FEELESS test results for script pubkey: ',
-        JSON.stringify(testFeelessScriptPubkey)
-      );
       rawTransaction.addOutput(Buffer.from(feelessScriptPubkey, 'hex'), 0);
       console.log(
         'TRANSACTION BUILDER: added output with zero amount and opcode OP_FEEWORK'
