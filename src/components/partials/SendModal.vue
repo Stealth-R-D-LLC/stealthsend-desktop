@@ -287,6 +287,7 @@ import { QrStream } from 'vue3-qr-reader';
 import SvgIcon from '../partials/SvgIcon.vue';
 import CircleProgress from '../partials/CircleProgress.vue';
 import getUnixTime from 'date-fns/getUnixTime';
+import * as Sentry from '@sentry/vue';
 
 const mainStore = useMainStore();
 const { formatAmount, fil } = useHelpers();
@@ -428,7 +429,7 @@ function closeModal() {
 const accounts = ref([{}]);
 async function scanWallet() {
   accounts.value = fil(
-    (el) => !el.isArchived && el.utxo > minimumXSTForSend.value,
+    (el) => !el.isArchived && el.utxo >= minimumXSTForSend.value,
     mainStore.wallet.accounts
   );
   if (pickedAccount.value) {
@@ -446,7 +447,7 @@ async function scanWallet() {
   // select first option so it doesn't remain empty
   if (!account.value || Object.keys(account.value).length === 0) {
     account.value = mainStore.wallet.accounts.filter(
-      (el) => el.utxo > minimumXSTForSend.value
+      (el) => el.utxo >= minimumXSTForSend.value
     )[0];
   }
 
@@ -478,7 +479,6 @@ async function getUnspentOutputs(acc) {
     unspentOutputs = fil((el) => el.isspent === 'false', res);
   }
   account.value = accounts.value.find((el) => el.address === acc.address);
-  console.log('RESULT', unspentOutputs);
 }
 
 function findFee(fee = 0.01) {
@@ -542,6 +542,8 @@ async function addFailedTx() {
     isFailed: true,
   });
 
+  Sentry.captureMessage('Transaction failed');
+
   await CryptoService.scanWallet();
   emitter.emit('transactions:refresh');
 }
@@ -580,6 +582,7 @@ async function send() {
         );
       } catch (e) {
         console.log('Transaction builder error: ', e);
+        Sentry.captureMessage('Transaction builder error (imported acc): ', e);
         setTimeout(() => addFailedTx(), 1);
       }
     } else {
@@ -597,6 +600,7 @@ async function send() {
         });
       } catch (e) {
         console.log('Transaction builder error: ', e);
+        Sentry.captureMessage('Transaction builder error (hd acc): ', e);
         setTimeout(() => addFailedTx(), 1);
       }
     }
