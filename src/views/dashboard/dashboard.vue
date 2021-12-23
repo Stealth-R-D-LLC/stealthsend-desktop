@@ -65,7 +65,9 @@ onMounted(async () => {
 emitter.on('transactions:refresh', async () => {
   if (route.name !== 'Dashboard') return; // don't refresh if not on this screen
   utxo.value = mainStore.wallet.utxo;
-  transactions.value = mainStore.wallet.txs;
+  transactions.value = CryptoService.refreshPendingTransactions(
+    mainStore.wallet.txs
+  );
   accounts.value = mainStore.wallet.accounts;
 });
 </script>

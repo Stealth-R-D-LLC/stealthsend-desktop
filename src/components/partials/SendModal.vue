@@ -618,7 +618,7 @@ async function send() {
         transactionResponse.txid,
         label.value
       );
-      await CryptoService.scanWallet();
+      // await CryptoService.scanWallet();
       emitter.emit('transactions:refresh');
       changeStep(6);
     }

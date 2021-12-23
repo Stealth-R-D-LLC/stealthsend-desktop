@@ -50,6 +50,38 @@ export default function useHelpers() {
     }, {});
   };
 
+        // certain props can be removed to reduce the object size
+      
+      
+    const removeProps = (obj) => {
+        const keysForDelete = [
+          'blockhash',
+          'height',
+          'prev_txid',
+          'prev_vout',
+          'vtx',
+          'vin',
+          'locktime',
+          'time',
+          'version',
+          'scriptSig',
+          'sequence',
+          'asm',
+          'reqSigs',
+        ];
+        if (Array.isArray(obj)) {
+          obj.forEach(function (item) {
+            removeProps(item, keysForDelete);
+          });
+        } else if (typeof obj === 'object' && obj != null) {
+          Object.getOwnPropertyNames(obj).forEach(function (key) {
+            if (keysForDelete.indexOf(key) !== -1) delete obj[key];
+            else removeProps(obj[key], keysForDelete);
+          });
+        }
+        return obj;
+      }
+
   // better and quicker filter
   const fil = (fn, a) => {
     const f = [];
@@ -66,5 +98,6 @@ export default function useHelpers() {
     formatAmount,
     groupBy,
     fil,
+    removeProps
   };
 }

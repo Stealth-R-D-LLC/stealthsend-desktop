@@ -8,7 +8,7 @@ import cryptoJs from 'crypto-js';
 import MathService from '@/services/math';
 import db from '../db';
 import useHelpers from '@/composables/useHelpers';
-const { fil } = useHelpers();
+const { fil, removeProps } = useHelpers();
 
 let networkConfig = {
   messagePrefix: 'unused',
@@ -682,37 +682,30 @@ const CryptoService = {
       }
       if (!targetAccount) await db.setItem('accounts', newAccounts);
 
-      // certain props can be removed to reduce the object size
-      function removeProps(obj) {
-        const keysForDelete = [
-          'blockhash',
-          'height',
-          'prev_txid',
-          'prev_vout',
-          'vtx',
-          'vin',
-          'locktime',
-          'time',
-          'version',
-          'scriptSig',
-          'sequence',
-          'asm',
-          'reqSigs',
-        ];
-        if (Array.isArray(obj)) {
-          obj.forEach(function (item) {
-            removeProps(item, keysForDelete);
-          });
-        } else if (typeof obj === 'object' && obj != null) {
-          Object.getOwnPropertyNames(obj).forEach(function (key) {
-            if (keysForDelete.indexOf(key) !== -1) delete obj[key];
-            else removeProps(obj[key], keysForDelete);
-          });
-        }
-        return obj;
-      }
+      const reducedTxs = this.refreshPendingTransactions(txs);
 
-      let pendingTransactions = [];
+      if (!targetAccount) {
+        // do not store in store in case we are searching only for one account
+        mainStore.SET_WALLET({
+          utxo: Number(balance), // sum of all utxo (except archived accounts)
+          txs: reducedTxs, // all transactions,
+          accounts: skipArchived
+            ? newAccounts.filter((el) => !el.isArchived)
+            : newAccounts,
+        });
+      }
+      resolve({
+        utxo: Number(balance), // sum of all utxo (except archived accounts)
+        txs: reducedTxs, // all transactions,
+        accounts: newAccounts,
+      });
+    });
+  },
+  refreshPendingTransactions(txs) {
+    // handle merging pending transactions with real ones and replacing the pending transaction with the real one 
+    const mainStore = useMainStore();
+
+    let pendingTransactions = [];
       for (let ptx of mainStore?.pendingTransactions) {
         pendingTransactions.push(JSON.parse(JSON.stringify(ptx))); // avoid proxy
       }
@@ -738,22 +731,8 @@ const CryptoService = {
         reducedTxs.push(pendingTx);
       }
 
-      if (!targetAccount) {
-        // do not store in store in case we are searching only for one account
-        mainStore.SET_WALLET({
-          utxo: Number(balance), // sum of all utxo (except archived accounts)
-          txs: reducedTxs, // all transactions,
-          accounts: skipArchived
-            ? newAccounts.filter((el) => !el.isArchived)
-            : newAccounts,
-        });
-      }
-      resolve({
-        utxo: Number(balance), // sum of all utxo (except archived accounts)
-        txs: reducedTxs, // all transactions,
-        accounts: newAccounts,
-      });
-    });
+      return reducedTxs;
+
   },
   getHdAccount(accountExtendedPk) {
     const mainStore = useMainStore();
