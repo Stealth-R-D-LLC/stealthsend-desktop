@@ -251,6 +251,7 @@
               {{ tx.txid }}
             </span>
             <StTooltip
+              v-if="tx?.txid !== '-'"
               :tooltip="
                 copyPending ? 'Copied to Clipboard!' : 'Copy to Clipboard'
               "
