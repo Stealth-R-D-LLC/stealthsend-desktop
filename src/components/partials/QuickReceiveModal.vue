@@ -93,7 +93,7 @@ const depositAddress = ref('');
 const qrSrc = ref('');
 async function changeAccount(acc = accounts.value[0]) {
   const { account, change } = CryptoService.breakAccountPath(acc.path);
-  const { nextAddressToUse } = await CryptoService.accountDiscovery(account);
+  const nextAddressToUse = await CryptoService.addressDiscovery(account);
   const next = CryptoService.breakAccountPath(nextAddressToUse);
 
   const child = CryptoService.getChildFromRoot(account, change, next.address);

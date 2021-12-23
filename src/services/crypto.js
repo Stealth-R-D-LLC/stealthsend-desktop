@@ -461,15 +461,11 @@ const CryptoService = {
 
     return wallet;
   },
-  async accountDiscovery(n = 0, change = 0, lastUsedAddress = 0) {
+  async addressDiscovery(n = 0, change = 0, lastUsedAddress = 0) {
+    // used for searching for the change address or the deposit address
     const mainStore = useMainStore();
-    //  Address gap limit is currently set  to 20. If the software hits 20 unused addresses in a row,
-    // it expects there are no used addresses beyond this point and stops searching the address chain.
-    // We scan just the external chains, because internal chains receive only coins that come from the associated external chains.
-    const GAP_LIMIT = 20;
-    let emptyInARow = 0;
-    let freeAddresses = [];
-    lastUsedAddress = await this.getLastUsedAddress(`${n}'/0/0`);
+    lastUsedAddress = await this.getLastUsedAddress(`${n}'/0/0`); // previously set in db
+
     for (let i = lastUsedAddress; i < Infinity; i++) {
       // derive the first account's node (index = 0)
       // derive the external chain node of this account
@@ -480,31 +476,19 @@ const CryptoService = {
         1,
         1,
       ]);
-      if (outputs.length > 0) {
-        // if there are some transactions,
-        // increase the account index and go to step 1
-        emptyInARow = 0;
-        freeAddresses = [];
+      if (outputs?.length > 0) {
+        // if there are some transactions, go to next step
         continue;
       }
-      // if there are no transactions, increment counter and go to next address
-      emptyInARow += 1;
-      freeAddresses.push(acc.path);
-
-      // If the software hits 20 unused addresses in a row, it expects there are no used addresses beyond this point and stops searching the address chain
-      if (emptyInARow >= GAP_LIMIT) break;
+      // if there are no transactions, store last used address for that account in db in order to continue the account discovery from that point
+      this.setLastUsedAddress(
+        `${n}'/0/0`,
+        parseInt(acc.path.split('/')[2]) - 1
+      );
+      // and return that path
+      return acc.path;
     }
 
-    // store last used address for that account in db in order to continue the account discovery from that point
-    this.setLastUsedAddress(
-      `${n}'/0/0`,
-      parseInt(freeAddresses[0].split('/')[2]) - 1
-    );
-    // Return free account addresses to the calling code
-    return {
-      nextAddressToUse: freeAddresses[0],
-      freeAddresses,
-    };
   },
 
   async getLastUsedAddress(accountPath) {
@@ -529,26 +513,32 @@ const CryptoService = {
     await db.setItem('accounts', accounts);
   },
 
-  async findLastUsedAccountPath() {
+  async accountDiscovery() {
+    //  Address gap limit is currently set  to 20. If the software hits 20 unused addresses in a row,
+    // it expects there are no used addresses beyond this point and stops searching the address chain.
+    // We scan just the external chains, because internal chains receive only coins that come from the associated external chains.
+    
+    const GAP_LIMIT = 20;
     const mainStore = useMainStore();
-
     let emptyInARow = 0;
     let lastAccountPath = '';
+
     for (let i = 0; i < Infinity; i++) {
+      // derive the first account's node (index = 0)
       const acc = this.getChildFromRoot(i, 0, 0);
       const hdAccount = await mainStore.rpc('gethdaccount', [acc.xpub]);
 
       if (hdAccount.length > 0) {
+        // if found, increase the account index and go to step 1
         lastAccountPath = acc.path;
         emptyInARow = 0;
-        await this.accountDiscovery(i);
         continue;
       }
 
+      // if there's nothing on that account, increment counter and go to the next one
       emptyInARow += 1;
-      if (emptyInARow >= 20) break;
+      if (emptyInARow >= GAP_LIMIT) break;
     }
-    console.log('LAST ACC APATH', lastAccountPath);
     return parseInt(lastAccountPath);
   },
 

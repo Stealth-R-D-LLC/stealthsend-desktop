@@ -304,7 +304,7 @@ async function changeAccount(acc = accounts.value[0]) {
     depositAddress.value = acc.address;
   } else {
     const { account, change } = CryptoService.breakAccountPath(acc.path);
-    const { nextAddressToUse } = await CryptoService.accountDiscovery(account);
+    const nextAddressToUse = await CryptoService.addressDiscovery(account);
     const next = CryptoService.breakAccountPath(nextAddressToUse);
     const child = CryptoService.getChildFromRoot(account, change, next.address);
     depositAddress.value = child.address;

@@ -31,7 +31,6 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     // iterate over account addresses until passed address is found and return its index
     for (let i = 0; i < Infinity; i++) {
       for (let j = 0; j <= 1; j++) {
-        // similar logic like in accountDiscovery
         const acc = CryptoService.getChildFromRoot(accountIndex, j, i);
         if (acc.address === address) {
           let path = CryptoService.breakAccountPath(
@@ -94,7 +93,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       .map((el) => el.amount)
       .reduce((a, b) => MathService.add(a, b), 0);
     const { account } = CryptoService.breakAccountPath(sendForm.account.path);
-    const { nextAddressToUse } = await CryptoService.accountDiscovery(
+    const nextAddressToUse = await CryptoService.addressDiscovery(
       account,
       1
     );
