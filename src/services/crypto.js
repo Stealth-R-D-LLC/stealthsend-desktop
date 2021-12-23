@@ -488,7 +488,6 @@ const CryptoService = {
       // and return that path
       return acc.path;
     }
-
   },
 
   async getLastUsedAddress(accountPath) {
@@ -517,7 +516,7 @@ const CryptoService = {
     //  Address gap limit is currently set  to 20. If the software hits 20 unused addresses in a row,
     // it expects there are no used addresses beyond this point and stops searching the address chain.
     // We scan just the external chains, because internal chains receive only coins that come from the associated external chains.
-    
+
     const GAP_LIMIT = 20;
     const mainStore = useMainStore();
     let emptyInARow = 0;
