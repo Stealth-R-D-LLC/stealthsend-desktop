@@ -253,23 +253,11 @@ async function askForMediaAccess() {
   return false;
 }
 
-// Quit when all windows are closed.
 app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
+  // but in our case, X and Menu -> Quit needs to fully close the app regardless of the OS
   app.quit();
-  // if (process.platform !== 'darwin') {
-  // } else {
-  //   var forceQuit = false;
-  //   app.on('before-quit', function () {
-  //     forceQuit = true;
-  //   });
-  //   win.on('close', function (event) {
-  //     if (!forceQuit) {
-  //       event.preventDefault();
-  //     }
-  //   });
-  // }
 });
 
 app.on('web-contents-created', (event, contents) => {
