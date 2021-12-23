@@ -8,7 +8,7 @@ import cryptoJs from 'crypto-js';
 import MathService from '@/services/math';
 import db from '../db';
 import useHelpers from '@/composables/useHelpers';
-const { fil } = useHelpers();
+const { fil, removeProps } = useHelpers();
 
 let networkConfig = {
   messagePrefix: 'unused',
@@ -237,6 +237,7 @@ const CryptoService = {
       path: account.path,
       xpub: account.xpub,
       asset: account.asset,
+      lastAddressUsed: 0,
       favouritePosition: account.favouritePosition,
     });
 
@@ -459,16 +460,12 @@ const CryptoService = {
 
     return wallet;
   },
-  async accountDiscovery(n = 0, change = 0) {
+  async addressDiscovery(n = 0, change = 0, lastUsedAddress = 0) {
+    // used for searching for the change address or the deposit address
     const mainStore = useMainStore();
-    //  Address gap limit is currently set  to 20. If the software hits 20 unused addresses in a row,
-    // it expects there are no used addresses beyond this point and stops searching the address chain.
-    // We scan just the external chains, because internal chains receive only coins that come from the associated external chains.
-    const GAP_LIMIT = 20;
+    lastUsedAddress = await this.getLastUsedAddress(`${n}'/0/0`); // previously set in db
 
-    let emptyInARow = 0;
-    let freeAddresses = [];
-    for (let i = 0; i < Infinity; i++) {
+    for (let i = lastUsedAddress; i < Infinity; i++) {
       // derive the first account's node (index = 0)
       // derive the external chain node of this account
       const acc = this.getChildFromRoot(n, change, i);
@@ -478,41 +475,67 @@ const CryptoService = {
         1,
         1,
       ]);
-      if (outputs.length > 0) {
-        // if there are some transactions, increase the account index and go to step 1
-        emptyInARow = 0;
+      if (outputs?.length > 0) {
+        // if there are some transactions, go to next step
         continue;
       }
-      // if there are no transactions, increment counter and go to next address
-      emptyInARow += 1;
-      freeAddresses.push(acc.path);
-
-      // If the software hits 20 unused addresses in a row, it expects there are no used addresses beyond this point and stops searching the address chain
-      if (emptyInARow >= GAP_LIMIT) break;
+      // if there are no transactions, store last used address for that account in db in order to continue the account discovery from that point
+      this.setLastUsedAddress(
+        `${n}'/0/0`,
+        parseInt(acc.path.split('/')[2]) - 1
+      );
+      // and return that path
+      return acc.path;
     }
-    // Return free account addresses to the calling code
-    return {
-      freeAddresses,
-    };
   },
 
-  async findLastUsedAccountPath() {
-    const mainStore = useMainStore();
+  async getLastUsedAddress(accountPath) {
+    let accounts = await this.getAccounts();
+    for (let acc of accounts) {
+      if (acc.path === accountPath) {
+        return acc.lastAddressUsed;
+      }
+    }
+    return 0;
+  },
 
+  async setLastUsedAddress(accountPath, lastAddressUsed) {
+    // set last used address in db for a particular account
+    let accounts = await this.getAccounts();
+    for (let acc of accounts) {
+      if (acc.path === accountPath) {
+        acc.lastAddressUsed = lastAddressUsed;
+        break;
+      }
+    }
+    await db.setItem('accounts', accounts);
+  },
+
+  async accountDiscovery() {
+    //  Address gap limit is currently set  to 20. If the software hits 20 unused addresses in a row,
+    // it expects there are no used addresses beyond this point and stops searching the address chain.
+    // We scan just the external chains, because internal chains receive only coins that come from the associated external chains.
+
+    const GAP_LIMIT = 20;
+    const mainStore = useMainStore();
     let emptyInARow = 0;
     let lastAccountPath = '';
+
     for (let i = 0; i < Infinity; i++) {
+      // derive the first account's node (index = 0)
       const acc = this.getChildFromRoot(i, 0, 0);
       const hdAccount = await mainStore.rpc('gethdaccount', [acc.xpub]);
 
       if (hdAccount.length > 0) {
+        // if found, increase the account index and go to step 1
         lastAccountPath = acc.path;
         emptyInARow = 0;
         continue;
       }
 
+      // if there's nothing on that account, increment counter and go to the next one
       emptyInARow += 1;
-      if (emptyInARow >= 20) break;
+      if (emptyInARow >= GAP_LIMIT) break;
     }
     return parseInt(lastAccountPath);
   },
@@ -658,61 +681,7 @@ const CryptoService = {
       }
       if (!targetAccount) await db.setItem('accounts', newAccounts);
 
-      // certain props can be removed to reduce the object size
-      function removeProps(obj) {
-        const keysForDelete = [
-          'blockhash',
-          'height',
-          'prev_txid',
-          'prev_vout',
-          'vtx',
-          'vin',
-          'locktime',
-          'time',
-          'version',
-          'scriptSig',
-          'sequence',
-          'asm',
-          'reqSigs',
-        ];
-        if (Array.isArray(obj)) {
-          obj.forEach(function (item) {
-            removeProps(item, keysForDelete);
-          });
-        } else if (typeof obj === 'object' && obj != null) {
-          Object.getOwnPropertyNames(obj).forEach(function (key) {
-            if (keysForDelete.indexOf(key) !== -1) delete obj[key];
-            else removeProps(obj[key], keysForDelete);
-          });
-        }
-        return obj;
-      }
-
-      let pendingTransactions = [];
-      for (let ptx of mainStore?.pendingTransactions) {
-        pendingTransactions.push(JSON.parse(JSON.stringify(ptx))); // avoid proxy
-      }
-      let reducedTxs = [];
-      // logic for showing/hiding pending transactions
-      for (const tx of txs) {
-        let found = pendingTransactions.find((el) => el.txid === tx.txid);
-        if (found) {
-          // if current transaction is in pending transactions, remove it, we'll show only the real tx
-          mainStore.REMOVE_PENDING_TRANSACTION(tx.txid); // tx retrieved from chain, it is no longer pending
-          pendingTransactions = pendingTransactions.filter(
-            (el) => el.txid !== tx.txid
-          );
-        }
-
-        // push regular tx into array
-        let result = JSON.parse(JSON.stringify(removeProps(tx), null, 4));
-        reducedTxs.push(result);
-      }
-
-      // after this array has been reduced with the transactions that came in the meantime, concat the rest with the array of all txs
-      for (let pendingTx of mainStore?.pendingTransactions) {
-        reducedTxs.push(pendingTx);
-      }
+      const reducedTxs = this.refreshPendingTransactions(txs);
 
       if (!targetAccount) {
         // do not store in store in case we are searching only for one account
@@ -731,20 +700,37 @@ const CryptoService = {
       });
     });
   },
-  nextToUse(freeAddresses) {
-    for (let i = 0; i < freeAddresses.length; i++) {
-      if (
-        parseInt(freeAddresses[i + 1].split('/')[2]) -
-          parseInt(freeAddresses[i].split('/')[2]) ===
-        1
-      ) {
-        if (i === 0) {
-          return freeAddresses[i];
-        } else {
-          return freeAddresses[i - 1];
-        }
-      }
+  refreshPendingTransactions(txs) {
+    // handle merging pending transactions with real ones and replacing the pending transaction with the real one
+    const mainStore = useMainStore();
+
+    let pendingTransactions = [];
+    for (let ptx of mainStore?.pendingTransactions) {
+      pendingTransactions.push(JSON.parse(JSON.stringify(ptx))); // avoid proxy
     }
+    let reducedTxs = [];
+    // logic for showing/hiding pending transactions
+    for (const tx of txs) {
+      let found = pendingTransactions.find((el) => el.txid === tx.txid);
+      if (found) {
+        // if current transaction is in pending transactions, remove it, we'll show only the real tx
+        mainStore.REMOVE_PENDING_TRANSACTION(tx.txid); // tx retrieved from chain, it is no longer pending
+        pendingTransactions = pendingTransactions.filter(
+          (el) => el.txid !== tx.txid
+        );
+      }
+
+      // push regular tx into array
+      let result = JSON.parse(JSON.stringify(removeProps(tx), null, 4));
+      reducedTxs.push(result);
+    }
+
+    // after this array has been reduced with the transactions that came in the meantime, concat the rest with the array of all txs
+    for (let pendingTx of mainStore?.pendingTransactions) {
+      reducedTxs.push(pendingTx);
+    }
+
+    return reducedTxs;
   },
   getHdAccount(accountExtendedPk) {
     const mainStore = useMainStore();
@@ -805,6 +791,7 @@ const CryptoService = {
       asset: 'XST',
       wif: encryptedWIF,
       favouritePosition: null,
+      lastAddressUsed: 0,
       publicKey: keypair.publicKey.toString('hex'),
     });
 
