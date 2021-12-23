@@ -7,6 +7,7 @@ import * as bitcoin from 'bitcoinjs-lib';
 import { Buffer } from 'buffer';
 import { floor } from 'mathjs';
 import MathService from '@/services/math';
+import * as Sentry from '@sentry/vue';
 
 export default async function useTransactionBuilder(utxo, sendForm) {
   const mainStore = useMainStore();
@@ -214,6 +215,9 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     try {
       txid = await mainStore.rpc('sendrawtransaction', [rawTransactionToHex]);
     } catch (e) {
+      Sentry.captureMessage(
+        'sendrawtransaction test:' + JSON.stringify(rawTransactionToHex)
+      );
       console.error('Transaction builded, but rejected from RPC. Reason: ', e);
       throw e;
     }
