@@ -3,7 +3,6 @@
 import {
   app,
   BrowserWindow,
-  globalShortcut,
   ipcMain,
   Menu,
   protocol,
@@ -128,7 +127,7 @@ async function createWindow() {
               {
                 label: 'Quit StealthSend',
                 accelerator: 'CmdOrCtrl+Q',
-                role: 'close',
+                role: 'quit',
               },
             ],
           },
@@ -163,10 +162,10 @@ async function createWindow() {
         },
       ],
     },
-    {
-      label: 'View',
-      submenu: [{ role: 'toggleDevTools' }],
-    },
+    // {
+    //   label: 'View',
+    //   submenu: [{ role: 'toggleDevTools' }],
+    // },
     {
       label: 'Window',
       submenu: [{ role: 'minimize' }],
@@ -253,23 +252,11 @@ async function askForMediaAccess() {
   return false;
 }
 
-// Quit when all windows are closed.
 app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-    app.quit();
-  } else {
-    var forceQuit = false;
-    app.on('before-quit', function () {
-      forceQuit = true;
-    });
-    win.on('close', function (event) {
-      if (!forceQuit) {
-        event.preventDefault();
-      }
-    });
-  }
+  // but in our case, X and Menu -> Quit needs to fully close the app regardless of the OS
+  app.quit();
 });
 
 app.on('web-contents-created', (event, contents) => {
@@ -298,12 +285,6 @@ app.on('activate', () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
-  if (process.platform === 'darwin') {
-    globalShortcut.register('Command+Q', () => {
-      app.quit();
-    });
-  }
-
   session
     .fromPartition('some-partition')
     .setPermissionRequestHandler((webContents, permission, callback) => {
@@ -362,12 +343,6 @@ app.on('ready', async () => {
       responseHeaders: contentSecurityPolicyHeaders,
     });
   });
-});
-
-app.on('will-quit', () => {
-  if (process.platform === 'darwin') {
-    globalShortcut.unregister('Command+Q');
-  }
 });
 
 // Exit cleanly on request from parent process in development mode.
