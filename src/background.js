@@ -257,19 +257,19 @@ async function askForMediaAccess() {
 app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-    app.quit();
-  } else {
-    var forceQuit = false;
-    app.on('before-quit', function () {
-      forceQuit = true;
-    });
-    win.on('close', function (event) {
-      if (!forceQuit) {
-        event.preventDefault();
-      }
-    });
-  }
+  app.quit();
+  // if (process.platform !== 'darwin') {
+  // } else {
+  //   var forceQuit = false;
+  //   app.on('before-quit', function () {
+  //     forceQuit = true;
+  //   });
+  //   win.on('close', function (event) {
+  //     if (!forceQuit) {
+  //       event.preventDefault();
+  //     }
+  //   });
+  // }
 });
 
 app.on('web-contents-created', (event, contents) => {
