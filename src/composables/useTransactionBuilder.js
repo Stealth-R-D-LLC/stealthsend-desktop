@@ -93,10 +93,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       .map((el) => el.amount)
       .reduce((a, b) => MathService.add(a, b), 0);
     const { account } = CryptoService.breakAccountPath(sendForm.account.path);
-    const nextAddressToUse = await CryptoService.addressDiscovery(
-      account,
-      1
-    );
+    const nextAddressToUse = await CryptoService.addressDiscovery(account, 1);
     const next = CryptoService.breakAccountPath(nextAddressToUse);
 
     const child = CryptoService.getChildFromRoot(
