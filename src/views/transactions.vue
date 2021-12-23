@@ -66,7 +66,11 @@ const currentRoute = computed(() => {
 
 const wallet = computed(() => {
   if (!mainStore?.wallet) return null;
-  return mainStore.wallet;
+  return {
+    utxo: mainStore.wallet.utxo,
+    txs: CryptoService.refreshPendingTransactions(mainStore.wallet.txs),
+    accounts: mainStore.wallet.accounts,
+  };
 });
 
 onBeforeUnmount(() => {
