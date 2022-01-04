@@ -479,11 +479,9 @@ const CryptoService = {
         // if there are some transactions, go to next step
         continue;
       }
+
       // if there are no transactions, store last used address for that account in db in order to continue the account discovery from that point
-      this.setLastUsedAddress(
-        `${n}'/0/0`,
-        parseInt(acc.path.split('/')[2]) - 1
-      );
+      this.setLastUsedAddress(`${n}'/0/0`,parseInt(i) - 1);
       // and return that path
       return acc.path;
     }
@@ -501,6 +499,7 @@ const CryptoService = {
 
   async setLastUsedAddress(accountPath, lastAddressUsed) {
     // set last used address in db for a particular account
+    lastAddressUsed = lastAddressUsed < 0 ? 0 : lastAddressUsed; // in case no deposits on that address, dont go beneath 0 
     let accounts = await this.getAccounts();
     for (let acc of accounts) {
       if (acc.path === accountPath) {
@@ -731,10 +730,6 @@ const CryptoService = {
     }
 
     return reducedTxs;
-  },
-  getHdAccount(accountExtendedPk) {
-    const mainStore = useMainStore();
-    return mainStore.rpc('gethdaccount', [accountExtendedPk]);
   },
 
   async getNextAccountPath() {
