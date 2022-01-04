@@ -7,6 +7,7 @@ import * as bitcoinFeeless from '../../bitcoinjs-lib-feeless/src/index.js';
 import * as bitcoin from 'bitcoinjs-lib';
 import { Buffer } from 'buffer';
 import MathService from '@/services/math';
+import * as Sentry from '@sentry/vue';
 
 export default async function useTransactionBuilder(utxo, sendForm) {
   const mainStore = useMainStore();
@@ -131,18 +132,6 @@ export default async function useTransactionBuilder(utxo, sendForm) {
         'TRANSACTION BUILDER: feeless script sig key hex: ',
         JSON.stringify(feelessScriptPubkey.toString('hex'))
       );
-      const testFeelessScriptPubkey =
-        await FeelessJS.testCreateFeeworkAndScriptPubkey(
-          txUnsignedHex,
-          bestBlock.height,
-          bestBlock.size,
-          bestBlock.hash,
-          feelessScriptPubkey.toString('hex')
-        );
-      console.log(
-        'FEELESS test results for script pubkey: ',
-        JSON.stringify(testFeelessScriptPubkey)
-      );
       rawTransaction.addOutput(Buffer.from(feelessScriptPubkey, 'hex'), 0);
       console.log(
         'TRANSACTION BUILDER: added output with zero amount and opcode OP_FEEWORK'
@@ -188,6 +177,9 @@ export default async function useTransactionBuilder(utxo, sendForm) {
     try {
       txid = await mainStore.rpc('sendrawtransaction', [rawTransactionToHex]);
     } catch (e) {
+      Sentry.captureMessage(
+        'sendrawtransaction error:' + JSON.stringify(rawTransactionToHex)
+      );
       console.error('Transaction builded, but rejected from RPC. Reason: ', e);
       throw e;
     }
