@@ -77,7 +77,7 @@ const accounts = ref([]);
 const account = ref(null);
 
 async function scanWallet() {
-  await CryptoService.scanWallet();
+  // await CryptoService.scanWallet();
   accounts.value = wallet.value.accounts;
   // select first account so that we can immediately start finding the first available address
   account.value = accounts.value[0];
