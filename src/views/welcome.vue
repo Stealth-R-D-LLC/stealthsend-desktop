@@ -1474,7 +1474,7 @@ onMounted(() => {
     isWelcome.value = true;
   }, 3500);
   setTimeout(() => {
-    window.ipc.send('resize:create');
+    window?.ipc?.send('resize:create');
   }, 10);
 });
 
@@ -1601,7 +1601,7 @@ async function recover() {
     CryptoService.master = master;
     await CryptoService.storeWalletInDb(password.value);
     await CryptoService.storeMnemonicInWallet(selectedRecoveryWords.value);
-    let lastAccountPath = await CryptoService.findLastUsedAccountPath();
+    let lastAccountPath = await CryptoService.accountDiscovery();
     /* If first wallet in account have balance 0 and you try to restore it, lastAccountPath is NaN so we have to put lastAccountPath to 0 */
     if (!lastAccountPath) {
       lastAccountPath = 0;
@@ -1613,7 +1613,7 @@ async function recover() {
     await wait(1000);
     isLoading.value = false;
     CryptoService.unlock(password.value);
-    window.ipc.send('resize:other');
+    window?.ipc?.send('resize:other');
     // goToDashboard();
     resetFields();
   } catch (e) {
@@ -1672,7 +1672,7 @@ async function createNewWallet() {
     isLoading.value = true;
     setTimeout(() => {
       isLoading.value = false;
-      window.ipc.send('resize:other');
+      window?.ipc?.send('resize:other');
       goToDashboard();
     }, 4000);
   }, 350);

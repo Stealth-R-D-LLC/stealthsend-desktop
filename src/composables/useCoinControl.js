@@ -1,5 +1,6 @@
 import MathService from '@/services/math';
 import CryptoService from '@/services/crypto';
+import * as Sentry from '@sentry/vue';
 
 export default function useCoinControl(outputs, target) {
   console.log(
@@ -93,13 +94,11 @@ export default function useCoinControl(outputs, target) {
   }
 
   function subsetSum(utxo, adjustedTarget) {
-    console.log('ajmo subset sum');
     // attempt to find a subset of items which sum of amounts is larger than the target amount
 
     // if there are multiple subsets, the one with the closest sum to the target amount will be used
     let sortedUtxo = orderBy(utxo, ['amount'], ['desc']);
     var result = [];
-    console.log('adj target: ', adjustedTarget);
     const findSubset = (sortedUtxo, target, partial = [], sum = 0) => {
       if (sum < target) {
         sortedUtxo.forEach((tx, i) => {
@@ -116,7 +115,6 @@ export default function useCoinControl(outputs, target) {
           (a, b) => MathService.add(a, b.amount),
           0
         );
-        console.log('partial sum: ', partialSum);
         if (partialSum >= adjustedTarget) {
           result.push(partial);
         }
@@ -215,13 +213,17 @@ export default function useCoinControl(outputs, target) {
     return result;
   }
 
-  function validateAlgorithm(results, adjustedTarget) {
+  function validateAlgorithm(results, adjustedTarget, algorithm) {
     // validate the result of the algorithm
     // the sum of the algorithm results should be >= adjustedTarget
     const resultsSum = results.reduce(
       (a, b) => MathService.add(a, b.amount),
       0
     );
+
+    if (results.length > 0 && resultsSum < adjustedTarget) {
+      Sentry.captureMessage(`validateAlgorithm() failed for ${algorithm}`);
+    }
     return resultsSum >= adjustedTarget;
   }
 
@@ -242,14 +244,12 @@ export default function useCoinControl(outputs, target) {
     let adjustedTarget = MathService.add(target, 0); // no need to add fee here because we are already increasing the target amount before sending it to coinControl
 
     let bestSet = iterateUntilTargetMet(outputs, adjustedTarget);
-    console.log('COIN CONTROL: best set: ', JSON.stringify(bestSet));
     let result = null;
 
     result = exactMatch(outputs, adjustedTarget);
-    console.info('COIN CONTROL: exactMatch() ', JSON.stringify(result));
     if (
       result.length > 0 &&
-      validateAlgorithm(result, adjustedTarget) &&
+      validateAlgorithm(result, adjustedTarget, 'exactMatch') &&
       result.length < bestSet.length
     ) {
       bestSet = [...result];
@@ -260,7 +260,7 @@ export default function useCoinControl(outputs, target) {
     console.info('COIN CONTROL: sumOfSmaller() ', JSON.stringify(result));
     if (
       result.length > 0 &&
-      validateAlgorithm(result, adjustedTarget) &&
+      validateAlgorithm(result, adjustedTarget, 'sumOfSmaller') &&
       result.length < bestSet.length
     ) {
       bestSet = [...result];
@@ -270,21 +270,19 @@ export default function useCoinControl(outputs, target) {
     // the complexity of the subsetSum algo is too big
     // simply skip this algo for "big" pools of data
     result = outputs.length > 10 ? [] : subsetSum(outputs, adjustedTarget);
-    console.info('COIN CONTROL: subsetSum() ', JSON.stringify(result));
     if (
       result.length > 0 &&
-      validateAlgorithm(result, adjustedTarget) &&
+      validateAlgorithm(result, adjustedTarget, 'subsetSum') &&
       result.length < bestSet.length
     ) {
       bestSet = [...result];
       // return bestSet;
     }
-
     result = knapsackSelection(outputs, target);
     console.info('COIN CONTROL: knapsackSelection() ', JSON.stringify(result));
     if (
       result.length > 0 &&
-      validateAlgorithm(result, adjustedTarget) &&
+      validateAlgorithm(result, adjustedTarget, 'knapsackSelection') &&
       result.length < bestSet.length
     ) {
       bestSet = [...result];
