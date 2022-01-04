@@ -1474,7 +1474,7 @@ onMounted(() => {
     isWelcome.value = true;
   }, 3500);
   setTimeout(() => {
-    window.ipc.send('resize:create');
+    window?.ipc?.send('resize:create');
   }, 10);
 });
 
@@ -1613,7 +1613,7 @@ async function recover() {
     await wait(1000);
     isLoading.value = false;
     CryptoService.unlock(password.value);
-    window.ipc.send('resize:other');
+    window?.ipc?.send('resize:other');
     // goToDashboard();
     resetFields();
   } catch (e) {
@@ -1672,7 +1672,7 @@ async function createNewWallet() {
     isLoading.value = true;
     setTimeout(() => {
       isLoading.value = false;
-      window.ipc.send('resize:other');
+      window?.ipc?.send('resize:other');
       goToDashboard();
     }, 4000);
   }, 350);
