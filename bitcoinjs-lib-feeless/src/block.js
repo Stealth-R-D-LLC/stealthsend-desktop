@@ -115,11 +115,7 @@ class Block {
   }
   byteLength(headersOnly, allowWitness = true) {
     if (headersOnly || !this.transactions) return 80;
-    return (
-      80 +
-      varuint.encodingLength(this.transactions.length) +
-      this.transactions.reduce((a, x) => a + x.byteLength(allowWitness), 0)
-    );
+    return (80 + varuint.encodingLength(this.transactions.length) + this.transactions.reduce((a, x) => a + x.byteLength(allowWitness), 0)); // nosemgrep code-string-concat
   }
   getHash() {
     return bcrypto.hash256(this.toBuffer(true));
