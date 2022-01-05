@@ -13,7 +13,12 @@ function varSliceSize(someScript) {
 }
 function vectorSize(someVector) {
   const length = someVector.length;
-  return (varuint.encodingLength(length) + someVector.reduce((sum, witness) => { return sum + varSliceSize(witness); }, 0) ); // nosemgrep code-string-concat
+  return (  // nosemgrep code-string-concat
+    varuint.encodingLength(length) +
+    someVector.reduce((sum, witness) => {
+      return sum + varSliceSize(witness);
+    }, 0)
+  );
 }
 const EMPTY_SCRIPT = Buffer.allocUnsafe(0);
 const EMPTY_WITNESS = [];
@@ -150,7 +155,7 @@ class Transaction {
   }
   byteLength(_ALLOW_WITNESS = true) {
     const hasWitnesses = _ALLOW_WITNESS && this.hasWitnesses();
-    return (
+    return (  // nosemgrep code-string-concat
       (hasWitnesses ? 10 : 8) +
       varuint.encodingLength(this.ins.length) +
       varuint.encodingLength(this.outs.length) +
@@ -160,7 +165,12 @@ class Transaction {
       this.outs.reduce((sum, output) => {
         return sum + 8 + varSliceSize(output.script);
       }, 0) +
-      (hasWitnesses ? this.ins.reduce((sum, input) => { return sum + vectorSize(input.witness); }, 0): 0) ); // nosemgrep code-string-concat
+      (hasWitnesses
+        ? this.ins.reduce((sum, input) => {
+            return sum + vectorSize(input.witness);
+          }, 0)
+        : 0)
+    );
   }
   clone() {
     const newTx = new Transaction();
