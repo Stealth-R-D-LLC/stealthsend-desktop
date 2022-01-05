@@ -326,7 +326,7 @@ class Transaction {
       (hashType & 0x1f) === Transaction.SIGHASH_SINGLE &&
       inIndex < this.outs.length
     ) {
-      const output = this.outs[inIndex]; // nosemgrep semgrep.js-frontend.security.audit.detect-bracket-object-injection
+      const output = this.outs[inIndex]; // nosemgrep detect-bracket-object-injection
       tbuffer = Buffer.allocUnsafe(8 + varSliceSize(output.script));
       bufferWriter = new bufferutils_1.BufferWriter(tbuffer, 0);
       bufferWriter.writeUInt64(output.value);
@@ -335,7 +335,7 @@ class Transaction {
     }
     tbuffer = Buffer.allocUnsafe(156 + varSliceSize(prevOutScript));
     bufferWriter = new bufferutils_1.BufferWriter(tbuffer, 0);
-    const input = this.ins[inIndex]; // nosemgrep semgrep.js-frontend.security.audit.detect-bracket-object-injection
+    const input = this.ins[inIndex]; // nosemgrep detect-bracket-object-injection
     bufferWriter.writeUInt32(this.version);
     bufferWriter.writeSlice(hashPrevouts);
     bufferWriter.writeSlice(hashSequence);
