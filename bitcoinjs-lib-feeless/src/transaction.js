@@ -13,7 +13,8 @@ function varSliceSize(someScript) {
 }
 function vectorSize(someVector) {
   const length = someVector.length;
-  return (  // nosemgrep code-string-concat
+  return (
+    // nosemgrep code-string-concat
     varuint.encodingLength(length) +
     someVector.reduce((sum, witness) => {
       return sum + varSliceSize(witness);
@@ -155,7 +156,8 @@ class Transaction {
   }
   byteLength(_ALLOW_WITNESS = true) {
     const hasWitnesses = _ALLOW_WITNESS && this.hasWitnesses();
-    return (  // nosemgrep code-string-concat
+    return (
+      // nosemgrep code-string-concat
       (hasWitnesses ? 10 : 8) +
       varuint.encodingLength(this.ins.length) +
       varuint.encodingLength(this.outs.length) +

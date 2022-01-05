@@ -115,7 +115,8 @@ class Block {
   }
   byteLength(headersOnly, allowWitness = true) {
     if (headersOnly || !this.transactions) return 80;
-    return ( // nosemgrep code-string-concat
+    return (
+      // nosemgrep code-string-concat
       80 +
       varuint.encodingLength(this.transactions.length) +
       this.transactions.reduce((a, x) => a + x.byteLength(allowWitness), 0)
