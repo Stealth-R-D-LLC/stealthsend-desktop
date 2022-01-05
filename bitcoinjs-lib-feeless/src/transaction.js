@@ -13,8 +13,8 @@ function varSliceSize(someScript) {
 }
 function vectorSize(someVector) {
   const length = someVector.length;
-  return (
-    // nosemgrep code-string-concat
+  // prettier-ignore
+  return ( // nosemgrep code-string-concat
     varuint.encodingLength(length) +
     someVector.reduce((sum, witness) => {
       return sum + varSliceSize(witness);
