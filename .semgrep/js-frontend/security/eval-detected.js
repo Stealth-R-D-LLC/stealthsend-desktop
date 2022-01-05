@@ -10,7 +10,8 @@
 eval('var x = "static strings are okay";');
 
 // ok:eval-detected
-const constVar = "function staticStrings() { return 'static strings are okay';}";
+const constVar =
+  "function staticStrings() { return 'static strings are okay';}";
 eval(constVar);
 
 // ok - const within another const
@@ -24,7 +25,7 @@ eval(constVar + secondConstVar);
  * Positive Matches
  */
 
-let dynamic = window.prompt() // arbitrary user input
+let dynamic = window.prompt(); // arbitrary user input
 
 // ruleid:eval-detected
 eval(dynamic + 'possibly malicious code');
@@ -36,6 +37,6 @@ eval(`${dynamic} possibly malicious code`);
 eval(dynamic.concat(''));
 
 function evalSomething(something) {
-    // ruleid:eval-detected
-    eval(something);
+  // ruleid:eval-detected
+  eval(something);
 }

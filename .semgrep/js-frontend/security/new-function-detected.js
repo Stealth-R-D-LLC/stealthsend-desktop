@@ -11,7 +11,8 @@ let func = new Function('var x = "static strings are okay";');
 func();
 
 // ok
-const constVar = "function staticStrings() { return 'static strings are okay';}";
+const constVar =
+  "function staticStrings() { return 'static strings are okay';}";
 let constVarFunc = new Function(constVar);
 constVarFunc();
 
@@ -30,7 +31,7 @@ let notEvaluatedFunc = new Function(document.getElementById('userInput'));
  * Positive Matches
  */
 
-let dynamic = window.prompt() // arbitrary user input
+let dynamic = window.prompt(); // arbitrary user input
 
 // ruleid:new-function-detected
 func = new Function(dynamic + 'possibly malicious code');
@@ -45,7 +46,7 @@ func3 = new Function(dynamic.concat(''));
 func3();
 
 function evalSomething(something) {
-    // ruleid:new-function-detected
-    let func = new Function(something);
-    func();
+  // ruleid:new-function-detected
+  let func = new Function(something);
+  func();
 }

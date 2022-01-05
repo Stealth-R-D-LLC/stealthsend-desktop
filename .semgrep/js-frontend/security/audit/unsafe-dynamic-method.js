@@ -12,9 +12,13 @@ function test2(data) {
 }
 
 let api = {
-  foo: function () { /* do smth */ },
-  bar: function () { /* do smth */ }
-}
+  foo: function () {
+    /* do smth */
+  },
+  bar: function () {
+    /* do smth */
+  },
+};
 
 function okTest1(data) {
   const message = JSON.parse(data);
@@ -27,7 +31,7 @@ function okTest1(data) {
 
 function okTest2(data) {
   // ok:unsafe-dynamic-method
-  const result = api["foo"](data);
+  const result = api['foo'](data);
   console.log(result);
 }
 
@@ -38,14 +42,18 @@ function okTest3(data) {
 }
 
 function okTest4(data) {
-  const actions = api = {
-    foo: function () { /* do smth */ },
-    bar: function () { /* do smth */ }
-  }
-  let result = null
-  Object.keys(actions).forEach(a => {
+  const actions = (api = {
+    foo: function () {
+      /* do smth */
+    },
+    bar: function () {
+      /* do smth */
+    },
+  });
+  let result = null;
+  Object.keys(actions).forEach((a) => {
     // ok:unsafe-dynamic-method
     result = actions[a](result);
-  })
+  });
   console.log(result);
 }
