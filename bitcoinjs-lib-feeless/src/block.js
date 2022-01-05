@@ -92,7 +92,7 @@ class Block {
       .map((out) => out.script.slice(6, 38));
     if (witnessCommits.length === 0) return null;
     // Use the commit with the highest output (should only be one though)
-    const result = witnessCommits[witnessCommits.length - 1];
+    const result = witnessCommits[witnessCommits.length - 1]; // nosemgrep semgrep.js-frontend.security.audit.detect-bracket-object-injection
     if (!(result instanceof Buffer && result.length === 32)) return null;
     return result;
   }
