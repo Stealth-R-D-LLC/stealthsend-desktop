@@ -156,6 +156,7 @@ class Transaction {
   }
   byteLength(_ALLOW_WITNESS = true) {
     const hasWitnesses = _ALLOW_WITNESS && this.hasWitnesses();
+    // eslint-disable-line
     return ( // nosemgrep code-string-concat
       (hasWitnesses ? 10 : 8) +
       varuint.encodingLength(this.ins.length) +
