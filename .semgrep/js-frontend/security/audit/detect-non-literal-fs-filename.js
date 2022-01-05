@@ -1,18 +1,17 @@
-const {readFile} = require('fs')
-const fs = require('fs')
+const { readFile } = require('fs');
+const fs = require('fs');
 
 function test1(fileName) {
   // ruleid:detect-non-literal-fs-filename
-  readFile(fileName)
-    .then((resolve, reject) => {
-      foobar()
-    })
+  readFile(fileName).then((resolve, reject) => {
+    foobar();
+  });
 }
 
 async function test2(fileName) {
   // ruleid:detect-non-literal-fs-filename
-  const data = await fs.promises.mkdir(fileName, {})
-  foobar(data)
+  const data = await fs.promises.mkdir(fileName, {});
+  foobar(data);
 }
 
 function test3(fileName) {
@@ -39,8 +38,7 @@ async function okTest2() {
     // ok:detect-non-literal-fs-filename
     filehandle = await fs.promises.open('thefile.txt', 'r');
   } finally {
-    if (filehandle !== undefined)
-      await filehandle.close();
+    if (filehandle !== undefined) await filehandle.close();
   }
 }
 
@@ -50,7 +48,6 @@ async function okTest3() {
     // ok:detect-non-literal-fs-filename
     filehandle = await this.open();
   } finally {
-    if (filehandle !== undefined)
-      await filehandle.close();
+    if (filehandle !== undefined) await filehandle.close();
   }
 }

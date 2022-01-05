@@ -40,9 +40,13 @@ const mssql = require('mssql');
     try {
       const request = pool.request();
       // ruleid: node-mssql-sqli
-      const dbResult = await request.query(`SELECT * FROM [foobar].[dbo].[users] WHERE user_id = ${id}`);
+      const dbResult = await request.query(
+        `SELECT * FROM [foobar].[dbo].[users] WHERE user_id = ${id}`
+      );
       // ok: node-mssql-sqli
-      const dbResult = await request.query(`SELECT * FROM [foobar].[dbo].[users] WHERE user_id = ?`);
+      const dbResult = await request.query(
+        `SELECT * FROM [foobar].[dbo].[users] WHERE user_id = ?`
+      );
       results = dbResult?.recordset ?? [];
     } catch (err) {
       console.log('get-user-by-id error', err.message, err);
@@ -52,25 +56,29 @@ const mssql = require('mssql');
     res.status(200).json({ results });
   });
 
-  app.listen(8080, () => {
-    console.log('Example foobar app listening at http://localhost:8080');
-  }).on('error', (err) => {
-    console.log('express error: ', err.message, err);
-  });
+  app
+    .listen(8080, () => {
+      console.log('Example foobar app listening at http://localhost:8080');
+    })
+    .on('error', (err) => {
+      console.log('express error: ', err.message, err);
+    });
 })();
 
 async function test1(userInput) {
-  const pool = await new mssql.ConnectionPool({server: 'localhost'});
+  const pool = await new mssql.ConnectionPool({ server: 'localhost' });
   const request = pool.request();
   // ruleid: node-mssql-sqli
-  const dbResult = await request.query("SELECT * FROM [foobar].[dbo].[users] WHERE user_id =" + userInput);
+  const dbResult = await request.query(
+    'SELECT * FROM [foobar].[dbo].[users] WHERE user_id =' + userInput
+  );
   return dbResult;
 }
 
 async function testOk1() {
-  const pool = await new mssql.ConnectionPool({server: 'localhost'});
+  const pool = await new mssql.ConnectionPool({ server: 'localhost' });
   const request = pool.request();
-  const query = "SELECT * FROM [foobar].[dbo].[users] WHERE user_id = 1";
+  const query = 'SELECT * FROM [foobar].[dbo].[users] WHERE user_id = 1';
   // ok: node-mssql-sqli
   const dbResult = await request.query(query);
   return dbResult;
