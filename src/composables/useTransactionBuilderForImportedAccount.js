@@ -49,7 +49,7 @@ export default async function useTransactionBuilder(utxo, sendForm) {
       //     el.value === tx.amount &&
       //     el.scriptPubKey.addresses.includes(tx.address)
       // );
-      let vout = txDetails.vout[tx.vout];
+      let vout = txDetails.vout[tx.vout]; // nosemgrep semgrep.js-frontend.security.audit.detect-bracket-object-injection
       rawTransaction.addInput(
         txDetails.txid,
         vout.n, // same as tx.vout

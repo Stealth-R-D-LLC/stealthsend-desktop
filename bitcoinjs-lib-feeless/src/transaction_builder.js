@@ -126,7 +126,7 @@ class TransactionBuilder {
       txHash = bufferutils_1.reverseBuffer(Buffer.from(txHash, 'hex'));
       // is it a Transaction object?
     } else if (txIsTransaction(txHash)) {
-      const txOut = txHash.outs[vout];
+      const txOut = txHash.outs[vout]; // nosemgrep semgrep.js-frontend.security.audit.detect-bracket-object-injections
       prevOutScript = txOut.script;
       value = txOut.value;
       txHash = txHash.getHash(false);
@@ -1007,7 +1007,7 @@ function getSigningData(
   if (!inputs[vin]) throw new Error('No input at index: ' + vin);
   hashType = hashType || transaction_1.Transaction.SIGHASH_ALL;
   if (needsOutputs(hashType)) throw new Error('Transaction needs outputs');
-  const input = inputs[vin];
+  const input = inputs[vin]; // nosemgrep semgrep.js-frontend.security.audit.detect-bracket-object-injection
   // if redeemScript was previously provided, enforce consistency
   if (
     input.redeemScript !== undefined &&

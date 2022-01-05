@@ -9,7 +9,7 @@ const p2pkh = require('../pubkeyhash');
 function check(chunks, allowIncomplete) {
   typeforce(typeforce.Array, chunks);
   if (chunks.length < 1) return false;
-  const witnessScript = chunks[chunks.length - 1];
+  const witnessScript = chunks[chunks.length - 1]; // nosemgrep semgrep.js-frontend.security.audit.detect-bracket-object-injection
   if (!Buffer.isBuffer(witnessScript)) return false;
   const witnessScriptChunks = bscript.decompile(witnessScript);
   // is witnessScript a valid script?
