@@ -157,8 +157,7 @@ class Transaction {
   byteLength(_ALLOW_WITNESS = true) {
     const hasWitnesses = _ALLOW_WITNESS && this.hasWitnesses();
     // prettier-ignore
-    return (
-      // nosemgrep code-string-concat
+    return ( // nosemgrep code-string-concat
       (hasWitnesses ? 10 : 8) +
       varuint.encodingLength(this.ins.length) +
       varuint.encodingLength(this.outs.length) +
