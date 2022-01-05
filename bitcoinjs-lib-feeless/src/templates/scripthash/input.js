@@ -10,7 +10,7 @@ const p2wsho = require('../witnessscripthash/output');
 function check(script, allowIncomplete) {
   const chunks = bscript.decompile(script);
   if (chunks.length < 1) return false;
-  const lastChunk = chunks[chunks.length - 1];
+  const lastChunk = chunks[chunks.length - 1]; // nosemgrep detect-bracket-object-injection
   if (!Buffer.isBuffer(lastChunk)) return false;
   const scriptSigChunks = bscript.decompile(
     bscript.compile(chunks.slice(0, -1))
