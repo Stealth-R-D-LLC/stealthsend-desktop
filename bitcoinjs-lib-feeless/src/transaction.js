@@ -14,12 +14,7 @@ function varSliceSize(someScript) {
 function vectorSize(someVector) {
   const length = someVector.length;
   // prettier-ignore
-  return ( // nosemgrep code-string-concat
-    varuint.encodingLength(length) +
-    someVector.reduce((sum, witness) => {
-      return sum + varSliceSize(witness);
-    }, 0)
-  );
+  return ( varuint.encodingLength(length) + someVector.reduce((sum, witness) => { return sum + varSliceSize(witness);}, 0) ); // nosemgrep code-string-concat
 }
 const EMPTY_SCRIPT = Buffer.allocUnsafe(0);
 const EMPTY_WITNESS = [];
@@ -157,22 +152,7 @@ class Transaction {
   byteLength(_ALLOW_WITNESS = true) {
     const hasWitnesses = _ALLOW_WITNESS && this.hasWitnesses();
     // prettier-ignore
-    return ( // nosemgrep code-string-concat
-      (hasWitnesses ? 10 : 8) +
-      varuint.encodingLength(this.ins.length) +
-      varuint.encodingLength(this.outs.length) +
-      this.ins.reduce((sum, input) => {
-        return sum + 40 + varSliceSize(input.script);
-      }, 0) +
-      this.outs.reduce((sum, output) => {
-        return sum + 8 + varSliceSize(output.script);
-      }, 0) +
-      (hasWitnesses
-        ? this.ins.reduce((sum, input) => {
-            return sum + vectorSize(input.witness);
-          }, 0)
-        : 0)
-    );
+    return ( (hasWitnesses ? 10 : 8) + varuint.encodingLength(this.ins.length) + varuint.encodingLength(this.outs.length) + this.ins.reduce((sum, input) => { return sum + 40 + varSliceSize(input.script); }, 0) + this.outs.reduce((sum, output) => { return sum + 8 + varSliceSize(output.script); }, 0) + (hasWitnesses ? this.ins.reduce((sum, input) => { return sum + vectorSize(input.witness); }, 0) : 0) ); // nosemgrep code-string-concat
   }
   clone() {
     const newTx = new Transaction();
