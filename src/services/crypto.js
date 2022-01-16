@@ -480,9 +480,9 @@ const CryptoService = {
         // if there are some transactions, go to next step
         continue;
       }
-      
+
       if (change === 0) {
-        // in case of change address, do not update the last used address 
+        // in case of change address, do not update the last used address
         console.log('nova last used: ', parseInt(i) - 1);
         // if there are no transactions, store last used address for that account in db in order to continue the account discovery from that point
         this.setLastUsedAddress(`${n}'/0/0`, parseInt(i) - 1);
