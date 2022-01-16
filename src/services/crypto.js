@@ -470,12 +470,12 @@ const CryptoService = {
       // derive the external chain node of this account
       const acc = this.getChildFromRoot(n, change, i);
       // scan addresses of the external chain; respect the gap limit described below
-      const outputs = await mainStore.rpc('getaddressoutputs', [
+      const inputs = await mainStore.rpc('getaddressinputs', [
         acc.address,
         1,
         1,
       ]);
-      if (outputs?.length > 0) {
+      if (inputs?.length > 0) {
         // if there are some transactions, go to next step
         continue;
       }
