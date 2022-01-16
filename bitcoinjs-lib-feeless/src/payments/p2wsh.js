@@ -192,7 +192,7 @@ function p2wsh(a, opts) {
       }
     }
     if (a.witness && a.witness.length > 0) {
-      const wScript = a.witness[a.witness.length - 1];
+      const wScript = a.witness[a.witness.length - 1]; // nosemgrep detect-bracket-object-injection
       if (a.redeem && a.redeem.output && !a.redeem.output.equals(wScript))
         throw new TypeError('Witness and redeem.output mismatch');
       if (

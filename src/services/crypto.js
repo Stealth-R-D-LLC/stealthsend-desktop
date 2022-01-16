@@ -125,7 +125,7 @@ const CryptoService = {
     });
   },
   breakAccountPath(path = "0'/0/0") {
-    path = path.replace("'", '');
+    path = path.replace("'", ''); // nosemgrep incomplete-sanitization
     const account = +path.split('/')[0];
     const change = +path.split('/')[1];
     const address = +path.split('/')[2];

@@ -1,3 +1,20 @@
+SAST Semgrep:
+  stage: test
+  tags:
+    - docker-executor
+  needs: []
+  image: nexus.barrage.net:13455/returntocorp/semgrep-action:latest
+  allow_failure: true
+  script:
+    - python -m semgrep_agent --disable-metrics
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: never
+    - if: '$SEMGREP_DISABLED'
+      when: never
+    - if: '$CI_COMMIT_BRANCH'
+      when: always
+
 Build Linux:
   image: nexus.barrage.net:13455/barrage-internal/electronjs-builder
   script:
