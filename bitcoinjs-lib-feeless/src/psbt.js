@@ -198,10 +198,10 @@ class Psbt {
     if (inputData.witnessScript) checkInvalidP2WSH(inputData.witnessScript);
     const c = this.__CACHE;
     this.data.addInput(inputData);
-    const txIn = c.__TX.ins[c.__TX.ins.length - 1];
+    const txIn = c.__TX.ins[c.__TX.ins.length - 1]; // nosemgrep detect-bracket-object-injection
     checkTxInputCache(c, txIn);
     const inputIndex = this.data.inputs.length - 1;
-    const input = this.data.inputs[inputIndex];
+    const input = this.data.inputs[inputIndex]; // nosemgrep detect-bracket-object-injection
     if (input.nonWitnessUtxo) {
       addNonWitnessTxCache(this.__CACHE, input, inputIndex);
     }
@@ -337,7 +337,7 @@ class Psbt {
     return results.reduce((final, res) => res === true && final, true);
   }
   validateSignaturesOfInput(inputIndex, pubkey) {
-    const input = this.data.inputs[inputIndex];
+    const input = this.data.inputs[inputIndex]; // nosemgrep detect-bracket-object-injection
     const partialSig = (input || {}).partialSig;
     if (!input || !partialSig || partialSig.length < 1)
       throw new Error('No signatures to validate');
@@ -1307,7 +1307,7 @@ function redeemFromFinalScriptSig(finalScript) {
   if (!finalScript) return;
   const decomp = bscript.decompile(finalScript);
   if (!decomp) return;
-  const lastItem = decomp[decomp.length - 1];
+  const lastItem = decomp[decomp.length - 1]; // nosemgrep detect-bracket-object-injection
   if (
     !Buffer.isBuffer(lastItem) ||
     isPubkeyLike(lastItem) ||
@@ -1321,7 +1321,7 @@ function redeemFromFinalScriptSig(finalScript) {
 function redeemFromFinalWitnessScript(finalScript) {
   if (!finalScript) return;
   const decomp = scriptWitnessToWitnessStack(finalScript);
-  const lastItem = decomp[decomp.length - 1];
+  const lastItem = decomp[decomp.length - 1]; // nosemgrep detect-bracket-object-injection
   if (isPubkeyLike(lastItem)) return;
   const sDecomp = bscript.decompile(lastItem);
   if (!sDecomp) return;
