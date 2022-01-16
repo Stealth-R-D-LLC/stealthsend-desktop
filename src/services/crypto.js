@@ -470,17 +470,19 @@ const CryptoService = {
       // derive the external chain node of this account
       const acc = this.getChildFromRoot(n, change, i);
       // scan addresses of the external chain; respect the gap limit described below
-      const inputs = await mainStore.rpc('getaddressinputs', [
+      const outputs = await mainStore.rpc('getaddressoutputs', [
         acc.address,
         1,
         1,
       ]);
-      if (inputs?.length > 0) {
+      if (outputs?.length > 0) {
+        console.log('ima outputa');
         // if there are some transactions, go to next step
         continue;
       }
 
       // if there are no transactions, store last used address for that account in db in order to continue the account discovery from that point
+      console.log('nova last used: ', parseInt(i) - 1);
       this.setLastUsedAddress(`${n}'/0/0`, parseInt(i) - 1);
       // and return that path
       return acc.path;
