@@ -73,6 +73,9 @@ export const useMainStore = defineStore({
         (el) => el.txid !== txid
       );
     },
+    RESET_PENDING_TRANSACTIONS() {
+      this.pendingTransactions = [];
+    },
     REMOVE_FAILED_TRANSACTIONS() {
       this.pendingTransactions = this.pendingTransactions.filter(
         (el) => !el.isFailed

@@ -480,18 +480,14 @@ const CryptoService = {
         1,
       ]);
       if (outputs?.length > 0) {
-        console.log('ima outputa');
         // if there are some transactions, go to next step
         continue;
       }
 
       if (change === 0) {
         // in case of change address, do not update the last used address
-        console.log('nova last used: ', parseInt(i) - 1);
         // if there are no transactions, store last used address for that account in db in order to continue the account discovery from that point
         this.setLastUsedAddress(`${n}'/0/0`, parseInt(i) - 1);
-      } else {
-        console.log('change je u pitanju, nemoj stavljati novu');
       }
       // and return that path
       return acc.path;
@@ -509,7 +505,6 @@ const CryptoService = {
   },
 
   async setLastUsedAddress(accountPath, lastAddressUsed) {
-    console.log('SET_LAST_USED', lastAddressUsed);
     // set last used address in db for a particular account
     lastAddressUsed = lastAddressUsed < 0 ? 0 : lastAddressUsed; // in case no deposits on that address, dont go beneath 0
     let accounts = await this.getAccounts();
