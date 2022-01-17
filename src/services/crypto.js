@@ -465,9 +465,9 @@ const CryptoService = {
     const mainStore = useMainStore();
     if (change === 0) {
       // in case of searching for the deposit address, we can use the last used address
-      // in case of searching for the change address, we'll skip this and search for it from the beginning 
+      // in case of searching for the change address, we'll skip this and search for it from the beginning
       lastUsedAddress = await this.getLastUsedAddress(`${n}'/0/0`); // previously set in db
-    } 
+    }
 
     for (let i = lastUsedAddress; i < Infinity; i++) {
       // derive the first account's node (index = 0)
