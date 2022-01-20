@@ -540,6 +540,7 @@ async function addFailedTx() {
     txid: '-',
     isPending: true,
     isFailed: true,
+    isFeeless: isFeeless.value
   });
 
   Sentry.captureMessage('Transaction failed');

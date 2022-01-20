@@ -28,7 +28,7 @@
           <StTooltip
             class="tooltip"
             tooltip="Resend Transaction"
-            v-if="tx && tx.amount < 0"
+            v-if="tx?.amount < 0 || tx?.isFailed"
           >
             <SvgIcon name="icon-redo-transaction" @click="redoTransaction" />
           </StTooltip>
@@ -497,15 +497,26 @@ async function getTx(txid) {
 }
 
 function redoTransaction() {
-  const isFeeless = !!tx.value.vout.filter((output) => {
-    return output.scriptPubKey.type === 'feework';
-  }).length;
-  mainStore.SET_SEND_ADDRESS(tx?.value?.vout[0]?.scriptPubKey?.addresses[0]);
-  mainStore.SET_REDO_ACCOUNT(tx?.value?.account);
-  mainStore.SET_REDO_AMOUNT(tx?.value?.vout[0].value);
-  mainStore.SET_REDO_LABEL(txWithLabels.value[tx.value.txid]);
-  mainStore.SET_MODAL_VISIBILITY('send', true);
-  mainStore.SET_FEELESS(isFeeless);
+  let isFeeless = false;
+  if (tx?.value.isFailed) {
+    isFeeless = !!tx?.value?.isFeeless
+    mainStore.SET_SEND_ADDRESS(tx?.value?.txinfo.destinations[0]);
+    mainStore.SET_REDO_ACCOUNT(tx?.value?.account);
+    mainStore.SET_REDO_AMOUNT(tx?.value?.amount);
+    mainStore.SET_REDO_LABEL('');
+    mainStore.SET_MODAL_VISIBILITY('send', true);
+    mainStore.SET_FEELESS(isFeeless);
+  } else {
+    isFeeless = !!tx?.value?.vout?.filter((output) => {
+      return output.scriptPubKey.type === 'feework';
+    }).length;
+    mainStore.SET_SEND_ADDRESS(tx?.value?.vout[0]?.scriptPubKey?.addresses[0]);
+    mainStore.SET_REDO_ACCOUNT(tx?.value?.account);
+    mainStore.SET_REDO_AMOUNT(tx?.value?.vout[0].value);
+    mainStore.SET_REDO_LABEL(txWithLabels.value[tx.value.txid]);
+    mainStore.SET_MODAL_VISIBILITY('send', true);
+    mainStore.SET_FEELESS(isFeeless);
+  }
   close();
 }
 </script>
