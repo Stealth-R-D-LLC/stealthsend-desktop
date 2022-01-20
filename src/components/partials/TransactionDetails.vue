@@ -499,7 +499,7 @@ async function getTx(txid) {
 function redoTransaction() {
   let isFeeless = false;
   if (tx?.value.isFailed) {
-    isFeeless = !!tx?.value?.isFeeless
+    isFeeless = !!tx?.value?.isFeeless;
     mainStore.SET_SEND_ADDRESS(tx?.value?.txinfo.destinations[0]);
     mainStore.SET_REDO_ACCOUNT(tx?.value?.account);
     mainStore.SET_REDO_AMOUNT(tx?.value?.amount);
