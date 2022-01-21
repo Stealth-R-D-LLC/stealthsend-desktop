@@ -196,6 +196,7 @@ watch(
 
 onMounted(() => {
   mainStore.STOP_GLOBAL_LOADING(); // just in case
+  mainStore.RESET_PENDING_TRANSACTIONS();
   mainStore.SET_WALLET(null);
   let video = document.getElementById('bgAnimation');
   video.addEventListener('loadeddata', () => {
