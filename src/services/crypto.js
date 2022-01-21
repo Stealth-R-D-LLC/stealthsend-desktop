@@ -463,7 +463,11 @@ const CryptoService = {
   async addressDiscovery(n = 0, change = 0, lastUsedAddress = 0) {
     // used for searching for the change address or the deposit address
     const mainStore = useMainStore();
-    lastUsedAddress = await this.getLastUsedAddress(`${n}'/0/0`); // previously set in db
+    if (change === 0) {
+      // in case of searching for the deposit address, we can use the last used address
+      // in case of searching for the change address, we'll skip this and search for it from the beginning
+      lastUsedAddress = await this.getLastUsedAddress(`${n}'/0/0`); // previously set in db
+    }
 
     for (let i = lastUsedAddress; i < Infinity; i++) {
       // derive the first account's node (index = 0)
@@ -480,8 +484,11 @@ const CryptoService = {
         continue;
       }
 
-      // if there are no transactions, store last used address for that account in db in order to continue the account discovery from that point
-      this.setLastUsedAddress(`${n}'/0/0`, parseInt(i) - 1);
+      if (change === 0) {
+        // in case of change address, do not update the last used address
+        // if there are no transactions, store last used address for that account in db in order to continue the account discovery from that point
+        this.setLastUsedAddress(`${n}'/0/0`, parseInt(i) - 1);
+      }
       // and return that path
       return acc.path;
     }
