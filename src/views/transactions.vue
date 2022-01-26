@@ -219,5 +219,6 @@ const computedTransactions = computed(() => {
 }
 :deep .overflow {
   height: calc(100vh - 225px);
+  background-color: #fff;
 }
 </style>
