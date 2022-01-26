@@ -752,10 +752,6 @@ export default {
   text-align: right;
 }
 
-:deep .table .table__row:hover {
-  background-color: #ffffff !important;
-}
-
 :deep .items-center {
   position: relative;
   text-align: center;
