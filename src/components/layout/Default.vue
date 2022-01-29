@@ -81,19 +81,21 @@ watch(pendingTransactions.value, async () => {
       // if the watcher is triggered when removing an item, we can kill the interval
       console.log('pendingTransactionsInterval: CLEAR');
       clearInterval(pendingTransactionsInterval);
-      pendingTransactionsInterval = null;    
+      pendingTransactionsInterval = null;
       return;
     }
 
-      const res = await mainStore.rpc('gettransaction', [pendingTransactions.value[0].txid]); // purposefully use only first tx to avoid unnecessary loops 
-      if (res?.confirmations> 0) {
-        // tx is minned, we need to scan the whole wallet to avoid complications with transactions that go to the same account or the same wallet
-        // and to avoid complications with manual calculating the new wallet and account balance
-        await CryptoService.scanWallet();
-        emitter.emit('transactions:refresh')
-      }
+    const res = await mainStore.rpc('gettransaction', [
+      pendingTransactions.value[0].txid,
+    ]); // purposefully use only first tx to avoid unnecessary loops
+    if (res?.confirmations > 0) {
+      // tx is minned, we need to scan the whole wallet to avoid complications with transactions that go to the same account or the same wallet
+      // and to avoid complications with manual calculating the new wallet and account balance
+      await CryptoService.scanWallet();
+      emitter.emit('transactions:refresh');
+    }
   }, 10000);
-})
+});
 
 function getExpandedMenu() {
   let menu = JSON.parse(localStorage.getItem('menubar'));
