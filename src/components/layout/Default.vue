@@ -40,7 +40,8 @@ import SendModal from '@/components/partials/SendModal.vue';
 import AddAccount from '@/components/partials/AddAccount.vue';
 import OffCanvas from '@/components/elements/StOffCanvas.vue';
 import { useMainStore } from '@/store';
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
+import emitter from '@/services/emitter';
 
 const mainStore = useMainStore();
 CryptoService.init();
@@ -55,12 +56,45 @@ const layout = ref(false);
 const menuExpanded = computed(() => {
   return mainStore.isMenuExpanded;
 });
+
+const pendingTransactions = computed(() => {
+  return mainStore.pendingTransactions;
+});
+
 onMounted(() => {
   if (!mainStore.layoutFlash) {
     layout.value = true;
   }
   mainStore.SET_LAYOUT_FLASH(true);
   getExpandedMenu();
+});
+
+let pendingTransactionsInterval = null;
+
+watch(pendingTransactions.value, async () => {
+  // in case pending transactions array is not empty
+  // create an interval checker for that txid
+  // it will check if the transaction has confirmations > 0 in order to move it from the peinding state
+  pendingTransactionsInterval = setInterval(async () => {
+    console.log('pendingTransactionsInterval: CREATE');
+    if (pendingTransactions?.value?.length === 0) {
+      // if the watcher is triggered when removing an item, we can kill the interval
+      console.log('pendingTransactionsInterval: CLEAR');
+      clearInterval(pendingTransactionsInterval);
+      pendingTransactionsInterval = null;
+      return;
+    }
+
+    const res = await mainStore.rpc('gettransaction', [
+      pendingTransactions.value[0].txid,
+    ]); // purposefully use only first tx to avoid unnecessary loops
+    if (res?.confirmations > 0) {
+      // tx is minned, we need to scan the whole wallet to avoid complications with transactions that go to the same account or the same wallet
+      // and to avoid complications with manual calculating the new wallet and account balance
+      await CryptoService.scanWallet();
+      emitter.emit('transactions:refresh');
+    }
+  }, 10000);
 });
 
 function getExpandedMenu() {
