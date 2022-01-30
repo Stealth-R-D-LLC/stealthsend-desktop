@@ -72,12 +72,18 @@ onMounted(() => {
 let pendingTransactionsInterval = null;
 
 watch(pendingTransactions.value, async () => {
+  let pendings = [];
+  for (let ptx of mainStore?.pendingTransactions) {
+    if (!ptx.isFailed) {
+      pendings.push(JSON.parse(JSON.stringify(ptx))); // avoid proxy
+    }
+  }
   // in case pending transactions array is not empty
   // create an interval checker for that txid
   // it will check if the transaction has confirmations > 0 in order to move it from the peinding state
   pendingTransactionsInterval = setInterval(async () => {
     console.log('pendingTransactionsInterval: CREATE');
-    if (pendingTransactions?.value?.length === 0) {
+    if (pendings.length === 0) {
       // if the watcher is triggered when removing an item, we can kill the interval
       console.log('pendingTransactionsInterval: CLEAR');
       clearInterval(pendingTransactionsInterval);
@@ -86,7 +92,7 @@ watch(pendingTransactions.value, async () => {
     }
 
     const res = await mainStore.rpc('gettransaction', [
-      pendingTransactions.value[0].txid,
+      pendings[0].txid,
     ]); // purposefully use only first tx to avoid unnecessary loops
     if (res?.confirmations > 0) {
       // tx is minned, we need to scan the whole wallet to avoid complications with transactions that go to the same account or the same wallet
