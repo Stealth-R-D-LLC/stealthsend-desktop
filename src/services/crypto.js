@@ -238,6 +238,7 @@ const CryptoService = {
       xpub: account.xpub,
       asset: account.asset,
       lastAddressUsed: 0,
+      lastChangeUsed: 0,
       favouritePosition: account.favouritePosition,
     });
 
@@ -460,16 +461,19 @@ const CryptoService = {
 
     return wallet;
   },
-  async addressDiscovery(n = 0, change = 0, lastUsedAddress = 0) {
+  async addressDiscovery(n = 0, change = 0, lastIndexUsed = 0) {
     // used for searching for the change address or the deposit address
     const mainStore = useMainStore();
     if (change === 0) {
       // in case of searching for the deposit address, we can use the last used address
       // in case of searching for the change address, we'll skip this and search for it from the beginning
-      lastUsedAddress = await this.getLastUsedAddress(`${n}'/0/0`); // previously set in db
+      lastIndexUsed = await this.getLastUsedAddress(`${n}'/0/0`); // previously set in db
+    } else if (change === 1) {
+      // in case of searching for the change address, do the same thing as for the non-change (deposit) address
+      lastIndexUsed = await this.getLastUsedChange(`${n}'/0/0`); // previously set in db      
     }
 
-    for (let i = lastUsedAddress; i < Infinity; i++) {
+    for (let i = lastIndexUsed; i < Infinity; i++) {
       // derive the first account's node (index = 0)
       // derive the external chain node of this account
       const acc = this.getChildFromRoot(n, change, i);
@@ -488,6 +492,8 @@ const CryptoService = {
         // in case of change address, do not update the last used address
         // if there are no transactions, store last used address for that account in db in order to continue the account discovery from that point
         this.setLastUsedAddress(`${n}'/0/0`, parseInt(i) - 1);
+      } else if (change === 1) {
+        this.setLastUsedChange(`${n}'/0/0`, parseInt(i) - 1)
       }
       // and return that path
       return acc.path;
@@ -504,6 +510,16 @@ const CryptoService = {
     return 0;
   },
 
+  async getLastUsedChange(accountPath) {
+    let accounts = await this.getAccounts();
+    for (let acc of accounts) {
+      if (acc.path === accountPath) {
+        return acc.lastChangeUsed;
+      }
+    }
+    return 0;
+  },
+
   async setLastUsedAddress(accountPath, lastAddressUsed) {
     // set last used address in db for a particular account
     lastAddressUsed = lastAddressUsed < 0 ? 0 : lastAddressUsed; // in case no deposits on that address, dont go beneath 0
@@ -511,6 +527,19 @@ const CryptoService = {
     for (let acc of accounts) {
       if (acc.path === accountPath) {
         acc.lastAddressUsed = lastAddressUsed;
+        break;
+      }
+    }
+    await db.setItem('accounts', accounts);
+  },
+
+    async setLastUsedChange(accountPath, lastChangeUsed) {
+    // set last used address in db for a particular account
+    lastChangeUsed = lastChangeUsed < 0 ? 0 : lastChangeUsed; // in case no deposits on that address, dont go beneath 0
+    let accounts = await this.getAccounts();
+    for (let acc of accounts) {
+      if (acc.path === accountPath) {
+        acc.lastChangeUsed = lastChangeUsed;
         break;
       }
     }
@@ -794,6 +823,7 @@ const CryptoService = {
       wif: encryptedWIF,
       favouritePosition: null,
       lastAddressUsed: 0,
+      lastChangeUsed: 0,
       publicKey: keypair.publicKey.toString('hex'),
     });
 
