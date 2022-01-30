@@ -91,9 +91,7 @@ watch(pendingTransactions.value, async () => {
       return;
     }
 
-    const res = await mainStore.rpc('gettransaction', [
-      pendings[0].txid,
-    ]); // purposefully use only first tx to avoid unnecessary loops
+    const res = await mainStore.rpc('gettransaction', [pendings[0].txid]); // purposefully use only first tx to avoid unnecessary loops
     if (res?.confirmations > 0) {
       // tx is minned, we need to scan the whole wallet to avoid complications with transactions that go to the same account or the same wallet
       // and to avoid complications with manual calculating the new wallet and account balance
