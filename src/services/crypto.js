@@ -41,7 +41,7 @@ const CryptoService = {
     changePercent24Hr: 0,
     MINIMAL_CHANGE: 0.01,
     MINIMUM_XST_FOR_SEND: 0.01,
-    FEELESS_CALCULATION_TIME_LIMIT_SECONDS: 120
+    FEELESS_CALCULATION_TIME_LIMIT_SECONDS: 120,
   },
   isFirstArrival: true,
   network: networkConfig,
