@@ -470,7 +470,7 @@ const CryptoService = {
       lastIndexUsed = await this.getLastUsedAddress(`${n}'/0/0`); // previously set in db
     } else if (change === 1) {
       // in case of searching for the change address, do the same thing as for the non-change (deposit) address
-      lastIndexUsed = await this.getLastUsedChange(`${n}'/0/0`); // previously set in db      
+      lastIndexUsed = await this.getLastUsedChange(`${n}'/0/0`); // previously set in db
     }
 
     for (let i = lastIndexUsed; i < Infinity; i++) {
@@ -493,7 +493,7 @@ const CryptoService = {
         // if there are no transactions, store last used address for that account in db in order to continue the account discovery from that point
         this.setLastUsedAddress(`${n}'/0/0`, parseInt(i) - 1);
       } else if (change === 1) {
-        this.setLastUsedChange(`${n}'/0/0`, parseInt(i) - 1)
+        this.setLastUsedChange(`${n}'/0/0`, parseInt(i) - 1);
       }
       // and return that path
       return acc.path;
@@ -533,7 +533,7 @@ const CryptoService = {
     await db.setItem('accounts', accounts);
   },
 
-    async setLastUsedChange(accountPath, lastChangeUsed) {
+  async setLastUsedChange(accountPath, lastChangeUsed) {
     // set last used address in db for a particular account
     lastChangeUsed = lastChangeUsed < 0 ? 0 : lastChangeUsed; // in case no deposits on that address, dont go beneath 0
     let accounts = await this.getAccounts();
