@@ -48,7 +48,7 @@
     "pinia": "2.0.0-rc.13",
     "postcss-preset-env": "^6.7.0",
     "sortablejs": "^1.14.0",
-    "stealthsend-frontend-components": "0.1.100",
+    "stealthsend-frontend-components": "0.1.101",
     "vanillaqr": "^1.0.0",
     "vue": "3.2.0",
     "vue-inline-svg": "^3.0.0-beta.3",
