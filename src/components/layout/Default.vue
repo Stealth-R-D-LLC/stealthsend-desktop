@@ -99,7 +99,6 @@ watch(pendingTransactions.value, async () => {
       }
     }
   }, 10000);
-
 });
 
 function getExpandedMenu() {
