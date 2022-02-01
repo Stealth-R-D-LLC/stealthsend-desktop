@@ -436,7 +436,7 @@ function openBlockExplorer(txid) {
   setTimeout(() => {
     window
       .open('https://stealthmonitor.org/transactions/' + txid + chain, '_blank')
-      .focus();
+      ?.focus();
   }, 1);
 }
 
@@ -446,7 +446,7 @@ function openAddressExplorer(address) {
   setTimeout(() => {
     window
       .open('https://stealthmonitor.org/address/' + address + chain, '_blank')
-      .focus();
+      ?.focus();
   }, 1);
 }
 

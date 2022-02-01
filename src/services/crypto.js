@@ -505,7 +505,7 @@ const CryptoService = {
     let accounts = await this.getAccounts();
     for (let acc of accounts) {
       if (acc.path === accountPath) {
-        return acc.lastAddressUsed;
+        return acc.lastAddressUsed || 0;
       }
     }
     return 0;
@@ -515,7 +515,7 @@ const CryptoService = {
     let accounts = await this.getAccounts();
     for (let acc of accounts) {
       if (acc.path === accountPath) {
-        return acc.lastChangeUsed;
+        return acc.lastChangeUsed || 0;
       }
     }
     return 0;
