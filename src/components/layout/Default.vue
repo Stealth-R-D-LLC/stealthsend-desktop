@@ -88,7 +88,6 @@ watch(pendingTransactions.value, async () => {
       console.log('pendingTransactionsInterval: CLEAR');
       clearInterval(pendingTransactionsInterval);
       pendingTransactionsInterval = null;
-      return;
     } else {
       const res = await mainStore.rpc('gettransaction', [pendings[0].txid]); // purposefully use only first tx to avoid unnecessary loops
       if (res?.confirmations > 0) {
