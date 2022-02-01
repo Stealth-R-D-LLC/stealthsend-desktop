@@ -435,8 +435,7 @@ function openBlockExplorer(txid) {
     process.env.VUE_APP_NETWORK === 'mainnet' ? '?chain=main' : '?chain=test';
   setTimeout(() => {
     window
-      .open('https://stealthmonitor.org/transactions/' + txid + chain, '_blank')
-      .focus();
+      .open('https://stealthmonitor.org/transactions/' + txid + chain, '_blank')?.focus();
   }, 1);
 }
 
@@ -445,8 +444,7 @@ function openAddressExplorer(address) {
     process.env.VUE_APP_NETWORK === 'mainnet' ? '?chain=main' : '?chain=test';
   setTimeout(() => {
     window
-      .open('https://stealthmonitor.org/address/' + address + chain, '_blank')
-      .focus();
+      .open('https://stealthmonitor.org/address/' + address + chain, '_blank')?.focus();
   }, 1);
 }
 

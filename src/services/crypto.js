@@ -473,7 +473,7 @@ const CryptoService = {
       // in case of searching for the change address, do the same thing as for the non-change (deposit) address
       lastIndexUsed = await this.getLastUsedChange(`${n}'/0/0`); // previously set in db
     }
-
+    
     for (let i = lastIndexUsed; i < Infinity; i++) {
       // derive the first account's node (index = 0)
       // derive the external chain node of this account
@@ -505,7 +505,7 @@ const CryptoService = {
     let accounts = await this.getAccounts();
     for (let acc of accounts) {
       if (acc.path === accountPath) {
-        return acc.lastAddressUsed;
+        return acc.lastAddressUsed || 0;
       }
     }
     return 0;
@@ -515,7 +515,7 @@ const CryptoService = {
     let accounts = await this.getAccounts();
     for (let acc of accounts) {
       if (acc.path === accountPath) {
-        return acc.lastChangeUsed;
+        return acc.lastChangeUsed || 0;
       }
     }
     return 0;
