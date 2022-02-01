@@ -116,6 +116,8 @@ const account = computed(() => {
   return mainStore.accountDetails;
 });
 
+const isHiddenAmounts = computed(() => mainStore.isAmountsHidden);
+
 const refreshChart = computed(() => {
   return mainStore.resetChart;
 });
@@ -168,7 +170,7 @@ function toggleComponentVisibility(component) {
 }
 
 emitter.on('transactions:refresh', async () => {
-  if (route.name !== 'AccountDetails') return; // don't refresh if not on this screen
+  if (route.name !== 'AccountDetails' || !account?.value?.address) return; // don't refresh if not on this screen
   mainStore.SET_ACCOUNT_DETAILS(
     mainStore.wallet.accounts.find((el) => el.address === account.value.address)
   );
