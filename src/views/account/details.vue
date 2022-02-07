@@ -174,7 +174,7 @@ function toggleComponentVisibility(component) {
 
 emitter.on('transactions:refresh', async () => {
   if (route.name !== 'AccountDetails' || !account?.value?.address) return; // don't refresh if not on this screen
-    transactions.value = CryptoService.refreshPendingTransactions(
+  transactions.value = CryptoService.refreshPendingTransactions(
     mainStore.wallet.txs
   );
   mainStore.SET_ACCOUNT_DETAILS(

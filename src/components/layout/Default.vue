@@ -56,7 +56,6 @@ const menuExpanded = computed(() => {
   return mainStore.isMenuExpanded;
 });
 
-
 onMounted(() => {
   if (!mainStore.layoutFlash) {
     layout.value = true;
@@ -64,7 +63,6 @@ onMounted(() => {
   mainStore.SET_LAYOUT_FLASH(true);
   getExpandedMenu();
 });
-
 
 function getExpandedMenu() {
   let menu = JSON.parse(localStorage.getItem('menubar'));
