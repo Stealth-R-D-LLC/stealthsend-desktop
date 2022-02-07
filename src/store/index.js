@@ -49,6 +49,7 @@ export const useMainStore = defineStore({
   getters: {},
   actions: {
     ADD_PENDING_TRANSACTION(tx) {
+      console.log('ADD_PENDING_TRANSACTION', tx);
       this.pendingTransactions.push(tx);
       // this.wallet.txs.push(tx);
     },
@@ -56,12 +57,13 @@ export const useMainStore = defineStore({
       this.pendingTransactions.push(tx);
       // this.wallet.txs.push(tx);
     },
-
+    
     REMOVE_PENDING_TRANSACTION(txid) {
+      console.log('REMOVE_PENDING_TRANSACTION', txid);
       this.pendingTransactions = this.pendingTransactions.filter(
         (el) => el.txid !== txid
-      );
-    },
+        );
+      },
     RESET_PENDING_TRANSACTIONS() {
       this.pendingTransactions = [];
     },

@@ -40,8 +40,7 @@ import SendModal from '@/components/partials/SendModal.vue';
 import AddAccount from '@/components/partials/AddAccount.vue';
 import OffCanvas from '@/components/elements/StOffCanvas.vue';
 import { useMainStore } from '@/store';
-import { ref, computed, onMounted, watch } from 'vue';
-import emitter from '@/services/emitter';
+import { ref, computed, onMounted } from 'vue';
 
 const mainStore = useMainStore();
 CryptoService.init();
@@ -57,9 +56,6 @@ const menuExpanded = computed(() => {
   return mainStore.isMenuExpanded;
 });
 
-const pendingTransactions = computed(() => {
-  return mainStore.pendingTransactions;
-});
 
 onMounted(() => {
   if (!mainStore.layoutFlash) {
@@ -69,36 +65,6 @@ onMounted(() => {
   getExpandedMenu();
 });
 
-let pendingTransactionsInterval = null;
-
-watch(pendingTransactions.value, async () => {
-  let pendings = [];
-  for (let ptx of mainStore?.pendingTransactions) {
-    if (!ptx.isFailed) {
-      pendings.push(JSON.parse(JSON.stringify(ptx))); // avoid proxy
-    }
-  }
-  // in case pending transactions array is not empty
-  // create an interval checker for that txid
-  // it will check if the transaction has confirmations > 0 in order to move it from the peinding state
-  pendingTransactionsInterval = setInterval(async () => {
-    console.log('pendingTransactionsInterval: CREATE');
-    if (pendings.length === 0) {
-      // if the watcher is triggered when removing an item, we can kill the interval
-      console.log('pendingTransactionsInterval: CLEAR');
-      clearInterval(pendingTransactionsInterval);
-      pendingTransactionsInterval = null;
-    } else {
-      const res = await mainStore.rpc('gettransaction', [pendings[0].txid]); // purposefully use only first tx to avoid unnecessary loops
-      if (res?.confirmations > 0) {
-        // tx is minned, we need to scan the whole wallet to avoid complications with transactions that go to the same account or the same wallet
-        // and to avoid complications with manual calculating the new wallet and account balance
-        await CryptoService.scanWallet();
-        emitter.emit('transactions:refresh');
-      }
-    }
-  }, 10000);
-});
 
 function getExpandedMenu() {
   let menu = JSON.parse(localStorage.getItem('menubar'));
