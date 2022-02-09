@@ -243,7 +243,8 @@ export const useMainStore = defineStore({
 
       // Here we will find all the address inputs
       // that have referenced this transaction.
-      const spent = ( // Loop each output
+      const spent = // Loop each output
+      (
         await Promise.all(
           transaction.vout.map((item) => {
             return new Promise((resolveFirst, rejectFirst) => {
