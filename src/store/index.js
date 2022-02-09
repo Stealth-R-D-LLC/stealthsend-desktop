@@ -3,6 +3,7 @@ import router from '@/router';
 import CryptoService from '@/services/crypto';
 import { defineStore } from 'pinia';
 import DOMPurify from 'dompurify';
+import emitter from '@/services/emitter';
 
 export const useMainStore = defineStore({
   // name of the store
@@ -51,6 +52,7 @@ export const useMainStore = defineStore({
     ADD_PENDING_TRANSACTION(tx) {
       console.log('ADD_PENDING_TRANSACTION', tx);
       this.pendingTransactions.push(tx);
+      emitter.emit('transactions:new-transaction');
       // this.wallet.txs.push(tx);
     },
     ADD_FAILED_TRANSACTION(tx) {
