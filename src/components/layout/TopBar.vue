@@ -481,7 +481,7 @@ watch(
 let pendingTransactionsInterval = null;
 
 emitter.on('transactions:new-transaction', async () => {
-    console.log('PENDING TX WATCHER');
+  console.log('PENDING TX WATCHER');
   let pendings = [];
   for (let ptx of mainStore?.pendingTransactions) {
     if (!ptx.isFailed) {
