@@ -3,7 +3,6 @@ import router from '@/router';
 import CryptoService from '@/services/crypto';
 import { defineStore } from 'pinia';
 import DOMPurify from 'dompurify';
-import emitter from '@/services/emitter';
 
 export const useMainStore = defineStore({
   // name of the store
@@ -52,7 +51,8 @@ export const useMainStore = defineStore({
     ADD_PENDING_TRANSACTION(tx) {
       console.log('ADD_PENDING_TRANSACTION', tx);
       this.pendingTransactions.push(tx);
-      emitter.emit('transactions:new-transaction');
+      // emitter.emit('transactions:new-transaction');
+      CryptoService.cronPaymentTransactions();
       // this.wallet.txs.push(tx);
     },
     ADD_FAILED_TRANSACTION(tx) {
@@ -243,7 +243,8 @@ export const useMainStore = defineStore({
 
       // Here we will find all the address inputs
       // that have referenced this transaction.
-      const spent = ( // Loop each output
+      const spent = // Loop each output
+      (
         await Promise.all(
           transaction.vout.map((item) => {
             return new Promise((resolveFirst, rejectFirst) => {
