@@ -481,6 +481,7 @@ const pendingTransactions = computed(() => {
 let pendingTransactionsInterval = null;
 
 watch(pendingTransactions.value, async () => {
+  console.log('PENDING TX WATCHER');
   let pendings = [];
   for (let ptx of mainStore?.pendingTransactions) {
     if (!ptx.isFailed) {
