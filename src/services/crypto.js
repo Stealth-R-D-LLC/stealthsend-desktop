@@ -43,7 +43,7 @@ const CryptoService = {
     MINIMAL_CHANGE: 0.01,
     MINIMUM_XST_FOR_SEND: 0.01,
     FEELESS_CALCULATION_TIME_LIMIT_SECONDS: 120,
-    PENDING_TRANSACTIONS_REFRESH_INTERVAL_SECONDS: 15
+    PENDING_TRANSACTIONS_REFRESH_INTERVAL_SECONDS: 15,
   },
   isFirstArrival: true,
   network: networkConfig,
@@ -756,7 +756,7 @@ const CryptoService = {
         mainStore.REMOVE_PENDING_TRANSACTION(tx.txid); // tx retrieved from chain, it is no longer pending
         pendingTransactions = pendingTransactions.filter(
           (el) => el.txid !== tx.txid
-          );
+        );
         emitter.emit('transactions:refresh');
       }
 
@@ -889,7 +889,8 @@ const CryptoService = {
         }
       }
       emitter.emit('transactions:refresh');
-      if (mainStore?.pendingTransactions.length > 0) this.cronPaymentTransactions(); 
+      if (mainStore?.pendingTransactions.length > 0)
+        this.cronPaymentTransactions();
     }, this.constraints.PENDING_TRANSACTIONS_REFRESH_INTERVAL_SECONDS * 1000);
   },
 };
