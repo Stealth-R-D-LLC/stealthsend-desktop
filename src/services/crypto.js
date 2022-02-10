@@ -9,6 +9,7 @@ import MathService from '@/services/math';
 import db from '../db';
 import useHelpers from '@/composables/useHelpers';
 const { fil, removeProps } = useHelpers();
+import emitter from '@/services/emitter';
 
 let networkConfig = {
   messagePrefix: 'unused',
@@ -42,12 +43,14 @@ const CryptoService = {
     MINIMAL_CHANGE: 0.01,
     MINIMUM_XST_FOR_SEND: 0.01,
     FEELESS_CALCULATION_TIME_LIMIT_SECONDS: 120,
+    PENDING_TRANSACTIONS_REFRESH_INTERVAL_SECONDS: 15,
   },
   isFirstArrival: true,
   network: networkConfig,
   master: null,
   seed: null,
   txWithLabels: {},
+  pendingTransactionsInterval: null,
 
   async init() {
     // check if there's already a wallet stored in the db
@@ -754,6 +757,7 @@ const CryptoService = {
         pendingTransactions = pendingTransactions.filter(
           (el) => el.txid !== tx.txid
         );
+        emitter.emit('transactions:refresh');
       }
 
       // push regular tx into array
@@ -849,6 +853,45 @@ const CryptoService = {
 
       return r;
     }, []);
+  },
+  cronPaymentTransactions() {
+    const mainStore = useMainStore();
+
+    console.log('PENDING TX WATCHER');
+
+    if (this.pendingTransactionsInterval) {
+      console.log('watcher already running');
+      return;
+    }
+
+    let pendings = [];
+    for (let ptx of mainStore?.pendingTransactions) {
+      if (!ptx.isFailed) {
+        pendings.push(JSON.parse(JSON.stringify(ptx))); // avoid proxy
+      }
+    }
+    // in case pending transactions array is not empty
+    // create an interval checker for that txid
+    // it will check if the transaction has confirmations > 0 in order to move it from the peinding state
+    this.pendingTransactionsInterval = setInterval(async () => {
+      console.log('pendingTransactionsInterval: CREATE');
+      if (mainStore?.pendingTransactions.length === 0) {
+        // if the watcher is triggered when removing an item, we can kill the interval
+        console.log('pendingTransactionsInterval: CLEAR');
+        clearInterval(this.pendingTransactionsInterval);
+        this.pendingTransactionsInterval = null;
+      } else {
+        const res = await mainStore.rpc('gettransaction', [pendings[0].txid]); // purposefully use only first tx to avoid unnecessary loops
+        if (res?.confirmations > 0) {
+          // tx is minned, we need to scan the whole wallet to avoid complications with transactions that go to the same account or the same wallet
+          // and to avoid complications with manual calculating the new wallet and account balance
+          await this.scanWallet();
+        }
+      }
+      emitter.emit('transactions:refresh');
+      if (mainStore?.pendingTransactions.length > 0)
+        this.cronPaymentTransactions();
+    }, this.constraints.PENDING_TRANSACTIONS_REFRESH_INTERVAL_SECONDS * 1000);
   },
 };
 
