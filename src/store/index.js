@@ -51,6 +51,8 @@ export const useMainStore = defineStore({
     ADD_PENDING_TRANSACTION(tx) {
       console.log('ADD_PENDING_TRANSACTION', tx);
       this.pendingTransactions.push(tx);
+      // emitter.emit('transactions:new-transaction');
+      CryptoService.cronPaymentTransactions();
       // this.wallet.txs.push(tx);
     },
     ADD_FAILED_TRANSACTION(tx) {
