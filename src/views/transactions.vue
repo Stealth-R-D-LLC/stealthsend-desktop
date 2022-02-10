@@ -53,6 +53,7 @@ import { useRoute } from 'vue-router';
 import SvgIcon from '../components/partials/SvgIcon.vue';
 import useHelpers from '@/composables/useHelpers';
 const { fil } = useHelpers();
+import emitter from '@/services/emitter';
 
 const query = ref('');
 const date = ref([]);
@@ -64,14 +65,13 @@ const currentRoute = computed(() => {
   return route.name;
 });
 
-const wallet = computed(() => {
-  if (!mainStore?.wallet) return null;
-  return {
-    utxo: mainStore.wallet.utxo,
-    txs: CryptoService.refreshPendingTransactions(mainStore.wallet.txs),
-    accounts: mainStore.wallet.accounts,
-  };
-});
+const transactions = ref([]);
+
+function scanWallet() {
+  // utxo.value = mainStore.wallet.utxo;
+  transactions.value = mainStore.wallet.txs;
+  // accounts.value = mainStore.wallet.accounts;
+}
 
 onBeforeUnmount(() => {
   mainStore.SET_CURRENT_DIRECTION({ label: 'All', value: '' });
@@ -86,6 +86,7 @@ onMounted(async () => {
   }
 
   await CryptoService.scanWallet();
+  scanWallet();
   mainStore.STOP_GLOBAL_LOADING();
 });
 
@@ -106,7 +107,7 @@ function findLabelForTx(tx) {
 }
 
 const computedTransactions = computed(() => {
-  let filtered = [...wallet.value.txs];
+  let filtered = [...transactions.value];
   if (filtered.length === 0) return [];
   let q = query?.value?.toLowerCase();
   if (q && q.length > 2) {
@@ -143,6 +144,13 @@ const computedTransactions = computed(() => {
     }
   }
   return filtered;
+});
+
+emitter.on('transactions:refresh', async () => {
+  if (route.name !== 'Transactions') return; // don't refresh if not on this screen
+  transactions.value = CryptoService.refreshPendingTransactions(
+    mainStore.wallet.txs
+  );
 });
 </script>
 
