@@ -55,6 +55,7 @@ const layout = ref(false);
 const menuExpanded = computed(() => {
   return mainStore.isMenuExpanded;
 });
+
 onMounted(() => {
   if (!mainStore.layoutFlash) {
     layout.value = true;

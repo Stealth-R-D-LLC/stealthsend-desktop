@@ -46,7 +46,9 @@ import { ref } from 'vue';
 import db from '@/db';
 import router from '@/router';
 import SvgIcon from '../../components/partials/SvgIcon.vue';
+import { useMainStore } from '@/store';
 
+const mainStore = useMainStore();
 const isCleared = ref(false);
 const timeout = ref(null);
 const counterTimeout = ref(null);
@@ -65,6 +67,7 @@ function clearAppData() {
     isCleared.value = false;
     clearTimeout(counterTimeout.value);
     counter.value = 5;
+    mainStore.RESET_PENDING_TRANSACTIONS();
     router.push('/welcome');
   }, 5000);
 }

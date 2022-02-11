@@ -9,6 +9,7 @@ import MathService from '@/services/math';
 import db from '../db';
 import useHelpers from '@/composables/useHelpers';
 const { fil, removeProps } = useHelpers();
+import emitter from '@/services/emitter';
 
 let networkConfig = {
   messagePrefix: 'unused',
@@ -41,12 +42,15 @@ const CryptoService = {
     changePercent24Hr: 0,
     MINIMAL_CHANGE: 0.01,
     MINIMUM_XST_FOR_SEND: 0.01,
+    FEELESS_CALCULATION_TIME_LIMIT_SECONDS: 120,
+    PENDING_TRANSACTIONS_REFRESH_INTERVAL_SECONDS: 15,
   },
   isFirstArrival: true,
   network: networkConfig,
   master: null,
   seed: null,
   txWithLabels: {},
+  pendingTransactionsInterval: null,
 
   async init() {
     // check if there's already a wallet stored in the db
@@ -238,6 +242,7 @@ const CryptoService = {
       xpub: account.xpub,
       asset: account.asset,
       lastAddressUsed: 0,
+      lastChangeUsed: 0,
       favouritePosition: account.favouritePosition,
     });
 
@@ -460,12 +465,19 @@ const CryptoService = {
 
     return wallet;
   },
-  async addressDiscovery(n = 0, change = 0, lastUsedAddress = 0) {
+  async addressDiscovery(n = 0, change = 0, lastIndexUsed = 0) {
     // used for searching for the change address or the deposit address
     const mainStore = useMainStore();
-    lastUsedAddress = await this.getLastUsedAddress(`${n}'/0/0`); // previously set in db
+    if (change === 0) {
+      // in case of searching for the deposit address, we can use the last used address
+      // in case of searching for the change address, we'll skip this and search for it from the beginning
+      lastIndexUsed = await this.getLastUsedAddress(`${n}'/0/0`); // previously set in db
+    } else if (change === 1) {
+      // in case of searching for the change address, do the same thing as for the non-change (deposit) address
+      lastIndexUsed = await this.getLastUsedChange(`${n}'/0/0`); // previously set in db
+    }
 
-    for (let i = lastUsedAddress; i < Infinity; i++) {
+    for (let i = lastIndexUsed; i < Infinity; i++) {
       // derive the first account's node (index = 0)
       // derive the external chain node of this account
       const acc = this.getChildFromRoot(n, change, i);
@@ -480,8 +492,13 @@ const CryptoService = {
         continue;
       }
 
-      // if there are no transactions, store last used address for that account in db in order to continue the account discovery from that point
-      this.setLastUsedAddress(`${n}'/0/0`, parseInt(i) - 1);
+      if (change === 0) {
+        // in case of change address, do not update the last used address
+        // if there are no transactions, store last used address for that account in db in order to continue the account discovery from that point
+        this.setLastUsedAddress(`${n}'/0/0`, parseInt(i) - 1);
+      } else if (change === 1) {
+        this.setLastUsedChange(`${n}'/0/0`, parseInt(i) - 1);
+      }
       // and return that path
       return acc.path;
     }
@@ -491,7 +508,17 @@ const CryptoService = {
     let accounts = await this.getAccounts();
     for (let acc of accounts) {
       if (acc.path === accountPath) {
-        return acc.lastAddressUsed;
+        return acc.lastAddressUsed || 0;
+      }
+    }
+    return 0;
+  },
+
+  async getLastUsedChange(accountPath) {
+    let accounts = await this.getAccounts();
+    for (let acc of accounts) {
+      if (acc.path === accountPath) {
+        return acc.lastChangeUsed || 0;
       }
     }
     return 0;
@@ -504,6 +531,19 @@ const CryptoService = {
     for (let acc of accounts) {
       if (acc.path === accountPath) {
         acc.lastAddressUsed = lastAddressUsed;
+        break;
+      }
+    }
+    await db.setItem('accounts', accounts);
+  },
+
+  async setLastUsedChange(accountPath, lastChangeUsed) {
+    // set last used address in db for a particular account
+    lastChangeUsed = lastChangeUsed < 0 ? 0 : lastChangeUsed; // in case no deposits on that address, dont go beneath 0
+    let accounts = await this.getAccounts();
+    for (let acc of accounts) {
+      if (acc.path === accountPath) {
+        acc.lastChangeUsed = lastChangeUsed;
         break;
       }
     }
@@ -717,6 +757,7 @@ const CryptoService = {
         pendingTransactions = pendingTransactions.filter(
           (el) => el.txid !== tx.txid
         );
+        emitter.emit('transactions:refresh');
       }
 
       // push regular tx into array
@@ -787,6 +828,7 @@ const CryptoService = {
       wif: encryptedWIF,
       favouritePosition: null,
       lastAddressUsed: 0,
+      lastChangeUsed: 0,
       publicKey: keypair.publicKey.toString('hex'),
     });
 
@@ -811,6 +853,45 @@ const CryptoService = {
 
       return r;
     }, []);
+  },
+  cronPaymentTransactions() {
+    const mainStore = useMainStore();
+
+    console.log('PENDING TX WATCHER');
+
+    if (this.pendingTransactionsInterval) {
+      console.log('watcher already running');
+      return;
+    }
+
+    let pendings = [];
+    for (let ptx of mainStore?.pendingTransactions) {
+      if (!ptx.isFailed) {
+        pendings.push(JSON.parse(JSON.stringify(ptx))); // avoid proxy
+      }
+    }
+    // in case pending transactions array is not empty
+    // create an interval checker for that txid
+    // it will check if the transaction has confirmations > 0 in order to move it from the peinding state
+    this.pendingTransactionsInterval = setInterval(async () => {
+      console.log('pendingTransactionsInterval: CREATE');
+      if (mainStore?.pendingTransactions.length === 0) {
+        // if the watcher is triggered when removing an item, we can kill the interval
+        console.log('pendingTransactionsInterval: CLEAR');
+        clearInterval(this.pendingTransactionsInterval);
+        this.pendingTransactionsInterval = null;
+      } else {
+        const res = await mainStore.rpc('gettransaction', [pendings[0].txid]); // purposefully use only first tx to avoid unnecessary loops
+        if (res?.confirmations > 0) {
+          // tx is minned, we need to scan the whole wallet to avoid complications with transactions that go to the same account or the same wallet
+          // and to avoid complications with manual calculating the new wallet and account balance
+          await this.scanWallet();
+        }
+      }
+      emitter.emit('transactions:refresh');
+      if (mainStore?.pendingTransactions.length > 0)
+        this.cronPaymentTransactions();
+    }, this.constraints.PENDING_TRANSACTIONS_REFRESH_INTERVAL_SECONDS * 1000);
   },
 };
 

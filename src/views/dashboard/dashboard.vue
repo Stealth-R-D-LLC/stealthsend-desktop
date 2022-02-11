@@ -48,8 +48,7 @@ const componentVisibility = computed(() => {
   return mainStore.componentVisibility;
 });
 
-async function scanWallet() {
-  await CryptoService.scanWallet();
+function scanWallet() {
   utxo.value = mainStore.wallet.utxo;
   transactions.value = mainStore.wallet.txs;
   accounts.value = mainStore.wallet.accounts;
@@ -58,7 +57,8 @@ async function scanWallet() {
 onMounted(async () => {
   mainStore.START_GLOBAL_LOADING();
   mainStore.SET_CURRENT_PERIOD({ label: '3d', value: 3 });
-  await scanWallet();
+  await CryptoService.scanWallet();
+  scanWallet();
   mainStore.STOP_GLOBAL_LOADING();
 });
 
