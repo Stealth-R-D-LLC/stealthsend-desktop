@@ -2,6 +2,7 @@ import argon2 from 'argon2-browser';
 import { XorShift1024Star } from 'xorshift.js';
 import { Buffer } from 'buffer/index.js';
 import differenceInSeconds from 'date-fns/differenceInSeconds';
+import CryptoService from '@/services/crypto';
 
 // Pseudo Code
 
@@ -162,7 +163,10 @@ const FeelessJS = {
         const randomBytes = prng.randomBytes(8);
         WORK = Buffer.from(randomBytes);
         HASH_DENARY = await this._getHashWithArgon2(data, WORK, mcost);
-        if (differenceInSeconds(curr, start) >= 180) {
+        if (
+          differenceInSeconds(curr, start) >=
+          CryptoService.constraints.FEELESS_CALCULATION_TIME_LIMIT_SECONDS
+        ) {
           throw new Error('Feeless calculation time exceeded!');
         }
       } catch (e) {

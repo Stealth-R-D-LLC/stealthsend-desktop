@@ -68,8 +68,8 @@
           class="details-table"
           has-table-header
           :transactions="
-            wallet && wallet?.txs
-              ? fil((el) => el.account === account.label, wallet.txs)
+            transactions
+              ? fil((el) => el.account === account.label, transactions)
               : []
           "
         ></TransactionList>
@@ -85,7 +85,7 @@ export default {
 </script>
 <script setup>
 import { useMainStore } from '@/store';
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import StLabel from '@/components/elements/StLabel';
 import Chart from '@/views/dashboard/components/chart';
 import TransactionList from '@/components/partials/TransactionList';
@@ -116,6 +116,8 @@ const account = computed(() => {
   return mainStore.accountDetails;
 });
 
+const isHiddenAmounts = computed(() => mainStore.isAmountsHidden);
+
 const refreshChart = computed(() => {
   return mainStore.resetChart;
 });
@@ -124,11 +126,14 @@ const wallet = computed(() => {
   return mainStore.wallet;
 });
 
+const transactions = ref([]);
+
 onMounted(async () => {
   mainStore.START_GLOBAL_LOADING();
   if (!wallet.value) {
-    CryptoService.scanWallet();
+    await CryptoService.scanWallet();
   }
+  transactions.value = mainStore.wallet.txs;
   if (!componentVisibility.value.chart) {
     toggleComponentVisibility('chart');
   }
@@ -168,7 +173,10 @@ function toggleComponentVisibility(component) {
 }
 
 emitter.on('transactions:refresh', async () => {
-  if (route.name !== 'AccountDetails') return; // don't refresh if not on this screen
+  if (route.name !== 'AccountDetails' || !account?.value?.address) return; // don't refresh if not on this screen
+  transactions.value = CryptoService.refreshPendingTransactions(
+    mainStore.wallet.txs
+  );
   mainStore.SET_ACCOUNT_DETAILS(
     mainStore.wallet.accounts.find((el) => el.address === account.value.address)
   );

@@ -704,6 +704,7 @@ export default {
   padding: 15px 14px 0 0;
   overflow: auto;
   height: calc(100vh - 256px);
+  background-color: #fff;
 }
 .overflow::-webkit-scrollbar {
   width: 4px;
@@ -750,10 +751,6 @@ export default {
   width: 168px;
   display: inline-block;
   text-align: right;
-}
-
-:deep .table .table__row:hover {
-  background-color: #ffffff !important;
 }
 
 :deep .items-center {

@@ -44,23 +44,15 @@ export const useMainStore = defineStore({
     isFeeless: true,
     currentPeriod: { label: '3d', value: 3 },
     currentDirection: { label: 'All', value: '' },
-
     pendingTransactions: [],
-    /* {
-        account: '123123123',
-        account_balance_change: 1.05,
-        amount: 1.06,
-        txinfo: { blocktime: Math.floor(Date.now() / 1000) },
-        blocktime: Math.floor(Date.now() / 1000),
-        txid: '2cd2b9277568066a2dd53fbee49635839829df804794101cdd9d450ae8c15e11',
-        isPending: true,
-        isFailed: true,
-      }, */
   }),
   getters: {},
   actions: {
     ADD_PENDING_TRANSACTION(tx) {
+      console.log('ADD_PENDING_TRANSACTION', tx);
       this.pendingTransactions.push(tx);
+      // emitter.emit('transactions:new-transaction');
+      CryptoService.cronPaymentTransactions();
       // this.wallet.txs.push(tx);
     },
     ADD_FAILED_TRANSACTION(tx) {
@@ -69,9 +61,13 @@ export const useMainStore = defineStore({
     },
 
     REMOVE_PENDING_TRANSACTION(txid) {
+      console.log('REMOVE_PENDING_TRANSACTION', txid);
       this.pendingTransactions = this.pendingTransactions.filter(
         (el) => el.txid !== txid
       );
+    },
+    RESET_PENDING_TRANSACTIONS() {
+      this.pendingTransactions = [];
     },
     REMOVE_FAILED_TRANSACTIONS() {
       this.pendingTransactions = this.pendingTransactions.filter(
