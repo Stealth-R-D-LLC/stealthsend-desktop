@@ -30,7 +30,7 @@ if (process.env.VUE_APP_NETWORK === 'mainnet') {
       private: 0x0488ade4,
     },
     pubKeyHash: 0x3e,
-    scriptHash: 0x85,
+    scriptHash: 0x55,
     wif: 0xbe,
   };
 }
@@ -582,18 +582,7 @@ const CryptoService = {
   isAddressValid(address) {
     try {
       const { version } = bitcoin.address.fromBase58Check(address);
-      return version === 62;
-      // const isMainnet = process.env.VUE_APP_NETWORK === 'mainnet';
-      // // https://en.bitcoin.it/wiki/Base58Check_encoding
-      // if (isMainnet && version === 62) {
-      //   // 62 is for mainnet
-      //   return true;
-      // } else if (!isMainnet && version === 111) {
-      //   // 111 is for testnet
-      //   return true;
-      // } else {
-      //   return false;
-      // }
+      return (version === 62 || version === 85);
     } catch (e) {
       return false;
     }
