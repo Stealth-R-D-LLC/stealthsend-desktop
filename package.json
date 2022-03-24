@@ -4,7 +4,11 @@
   "license": "UNLICENSED",
   "description": "Stealth Desktop",
   "homepage": "https://stealth.org",
+<<<<<<< HEAD
   "version": "0.9.07",
+=======
+  "version": "0.9.06",
+>>>>>>> 22b8338f36dbd3379927aabc7caa38654deca9b3
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
