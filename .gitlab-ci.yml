@@ -83,7 +83,7 @@ sonarqube-check:
     paths:
       - .sonar/cache
   script:
-    - sonar-scanner -Dsonar.projectKey="$CI_PROJECT_NAMESPACE:$CI_PROJECT_NAME"
+    - sonar-scanner -Dsonar.branch.name="$CI_COMMIT_BRANCH" -Dsonar.projectKey="$CI_PROJECT_NAMESPACE:$CI_PROJECT_NAME"
   allow_failure: true
   tags:
     - docker-executor
