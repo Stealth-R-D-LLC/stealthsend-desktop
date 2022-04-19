@@ -83,9 +83,11 @@ sonarqube-check:
     paths:
       - .sonar/cache
   script:
-    - sonar-scanner
+    - sonar-scanner -Dsonar.projectKey="$CI_PROJECT_NAMESPACE:$CI_PROJECT_NAME"
   allow_failure: true
-  only:
-    - develop # or the name of your main branch
   tags:
     - docker-executor
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+      when: always
+
