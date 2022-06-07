@@ -158,7 +158,7 @@ const btcAmount = computed(() => {
   return Number(account.value.utxo) * CryptoService.constraints.XST_BTC || 0;
 });
 const changePercent24Hr = computed(() => {
-  return formatAmount(CryptoService.constraints.changePercent24Hr);
+  return formatAmount(CryptoService.constraints.changePercent24Hr) || 0;
 });
 
 function toggleComponentVisibility(component) {
