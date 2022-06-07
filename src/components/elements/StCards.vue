@@ -36,6 +36,7 @@
           >~ {{ isHiddenAmounts ? '$•••' : steps[step].amountBottom }} USD</span
         >
         <StTag
+            v-if="steps[step]?.percentage"
           :color="Number(steps[step].percentage) > 0 ? 'success' : 'danger'"
         >
           {{
