@@ -477,14 +477,11 @@ async function getTx(txid) {
       ) || 0;
   } else if (mainStore.offCanvasData.account_balance_change === 0) {
     position = 0;
-  }
-  else {
+  } else {
     position =
-      mainStore.offCanvasData.txinfo.destinations?.findIndex(
-        (dest) => {
-          return dest.amount === mainStore.offCanvasData.account_balance_change
-        }
-      ) || 0;
+      mainStore.offCanvasData.txinfo.destinations?.findIndex((dest) => {
+        return dest.amount === mainStore.offCanvasData.account_balance_change;
+      }) || 0;
   }
   if (position === -1) {
     position = 0;

@@ -238,9 +238,11 @@
                     }}
                   </template>
                   <template v-else>
-                    <template v-if="item.amount>0 && !item.isPending">+
+                    <template v-if="item.amount > 0 && !item.isPending"
+                      >+
                     </template>
-                    <template v-else-if="item.amount<0 && !item.isPending">-
+                    <template v-else-if="item.amount < 0 && !item.isPending"
+                      >-
                     </template>
                   </template>
                   <template
@@ -354,9 +356,11 @@
                       }}
                     </template>
                     <template v-else>
-                      <template v-if="item.amount>0 && !item.isPending">+
+                      <template v-if="item.amount > 0 && !item.isPending"
+                        >+
                       </template>
-                      <template v-else-if="item.amount<0 && !item.isPending">-
+                      <template v-else-if="item.amount < 0 && !item.isPending"
+                        >-
                       </template>
                     </template>
                     {{
