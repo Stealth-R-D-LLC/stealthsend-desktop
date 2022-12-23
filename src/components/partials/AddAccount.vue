@@ -60,7 +60,9 @@
             <StButton type="type-b" @click="closeModal">Cancel</StButton>
             <StButton
               @click="generateAccount"
-              :disabled="!accountName.length || isLastAccountEmpty || isCreatingAccount"
+              :disabled="
+                !accountName.length || isLastAccountEmpty || isCreatingAccount
+              "
               >Add</StButton
             >
           </div>
@@ -323,7 +325,7 @@ async function generateAccount() {
   } catch {
     isCreatingAccount.value = false;
     return;
-  } 
+  }
 
   let next = await CryptoService.getNextAccountPath();
 
