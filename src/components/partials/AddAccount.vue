@@ -60,7 +60,9 @@
             <StButton type="type-b" @click="closeModal">Cancel</StButton>
             <StButton
               @click="generateAccount"
-              :disabled="!accountName.length || isLastAccountEmpty"
+              :disabled="
+                !accountName.length || isLastAccountEmpty || isCreatingAccount
+              "
               >Add</StButton
             >
           </div>
@@ -192,6 +194,7 @@ const isScanning = ref(false);
 const QRData = ref(null);
 const cameraAllowed = ref(false);
 const isCameraLoading = ref(false);
+const isCreatingAccount = ref(false);
 
 const route = useRoute();
 
@@ -315,8 +318,14 @@ async function accountImport() {
 
 async function generateAccount() {
   let account = {};
+  isCreatingAccount.value = true;
 
-  await validateFields();
+  try {
+    await validateFields();
+  } catch {
+    isCreatingAccount.value = false;
+    return;
+  }
 
   let next = await CryptoService.getNextAccountPath();
 
@@ -350,6 +359,7 @@ async function generateAccount() {
   await CryptoService.storeAccountInDb(account);
   await CryptoService.scanWallet();
   closeModal();
+  isCreatingAccount.value = false;
   accountName.value = '';
 }
 

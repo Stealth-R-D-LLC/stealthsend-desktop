@@ -16,6 +16,11 @@ export default function useHelpers() {
     decimals = 2,
     minimumFractionDigits = 2
   ) {
+    if (amount === 0) {
+      return new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: minimumFractionDigits,
+      }).format(round(amount, decimals));
+    }
     if (!amount) {
       return amount;
     }
