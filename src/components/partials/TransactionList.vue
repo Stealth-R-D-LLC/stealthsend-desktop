@@ -238,7 +238,12 @@
                     }}
                   </template>
                   <template v-else>
-                    {{ item.amount > 0 && !item.isPending ? '+' : '-' }}
+                    <template v-if="item.amount > 0 && !item.isPending"
+                      >+
+                    </template>
+                    <template v-else-if="item.amount < 0 && !item.isPending"
+                      >-
+                    </template>
                   </template>
                   <template
                     v-if="
@@ -351,7 +356,12 @@
                       }}
                     </template>
                     <template v-else>
-                      {{ item.amount > 0 && !item.isPending ? '+' : '-' }}
+                      <template v-if="item.amount > 0 && !item.isPending"
+                        >+
+                      </template>
+                      <template v-else-if="item.amount < 0 && !item.isPending"
+                        >-
+                      </template>
                     </template>
                     {{
                       isHiddenAmounts

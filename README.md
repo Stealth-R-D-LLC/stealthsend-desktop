@@ -28,6 +28,11 @@ npm run electron:build --linux
 ### Deploying / Publishing
 
 Artifacts for all platforms are created automatically on develop and all feature branches.
+Pushing to production means that you have to push your code to the outher remote; the main branch of [StealthSend Desktop](https://github.com/Stealth-R-D-LLC/stealthsend-desktop). Before pushing, make sure that: 
+* create a new tag 
+* you are pointing to the public `npmjs registry`
+* generate a new `package-lock.json` file 
+* On Github, go to Releases -> Draft a new release -> Attach all binaries -> Publish release`.
 
 ### Captain's log
 * buffer has to stay on version 5.7.x (do not upgrade to 6.x.x) because transactions would need refactoring.
