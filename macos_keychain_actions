@@ -65,7 +65,29 @@ function macos_setup_keychain() {
     openssl x509 -in stealthsend-developerID_application.cer -inform DER -out privkey.pem -outform PEM 2>> "$LOG_FILE" || failed "Certificate conversion failed"
     
     log "Creating PKCS12 bundle"
-    openssl pkcs12 -export -out privkey.p12 -inkey "$MACOS_TEMP_CERT_KEY" -in privkey.pem -nodes -passout pass:"$MACOS_TEMP_CERT_PASSWORD" 2>> "$LOG_FILE" || failed "PKCS12 bundle creation failed"
+
+    log_debug "Checking if private key file exists"
+    [ -f "$MACOS_TEMP_CERT_KEY" ] || failed "Private key file doesn't exist"
+
+    log_debug "Checking private key file permissions"
+    ls -l "$MACOS_TEMP_CERT_KEY" >> "$LOG_FILE" 2>&1
+
+    log_debug "Checking certificate PEM file"
+    ls -l privkey.pem >> "$LOG_FILE" 2>&1
+
+    log_debug "Attempting PKCS12 creation..."
+    openssl pkcs12 -export \
+        -out privkey.p12 \
+        -inkey "$MACOS_TEMP_CERT_KEY" \
+        -in privkey.pem \
+        -nodes \
+        -passout pass:"$MACOS_TEMP_CERT_PASSWORD" \
+        -v 2>> "$LOG_FILE" || {
+            log_error "PKCS12 bundle creation failed with error code $?"
+            log_error "Certificate contents:"
+            openssl x509 -in privkey.pem -text -noout >> "$LOG_FILE" 2>&1
+            failed "PKCS12 bundle creation failed"
+        }
 
     log "Managing keychain"
     log_debug "Attempting to delete existing keychain if present"
