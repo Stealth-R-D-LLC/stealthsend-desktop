@@ -42,9 +42,9 @@ Build MacOS:
     - nvm use 14
     - npm install --no-package-lock --legacy-peer-deps --registry=https://nexus.barrage.net/repository/npm.barrage.net/ --username=gitlab-ci-readonly --password=$CI_NEXUS_DOCKER_REGISTRY_READ_ONLY
     #- security unlock-keychain -p $KEYCHAIN_PASSWORD stealthdesktop.keychain
-    #- macos_setup_keychain
+    - macos_setup_keychain
     - npm run electron:build --mac
-    #- macos_cleanup_keychain
+    - macos_cleanup_keychain
     - cd $CI_PROJECT_DIR
     - rsync -r $WORKDIR/dist_electron ./
     - rm -rf "$WORKDIR"
@@ -61,7 +61,7 @@ Build Windows:
     - $Env:CSC_LINK = "C:\Users\runner\stealth_r_and_d_llc.p12"
     - $Env:CSC_KEY_PASSWORD = "$env:WINDOWS_CODESIGN_CERT_PASS"
     - npm cache clean --force
-    - npm install
+    - npm install --no-package-lock --legacy-peer-deps --registry=https://nexus.barrage.net/repository/npm.barrage.net/ --username=gitlab-ci-readonly --password=$CI_NEXUS_DOCKER_REGISTRY_READ_ONLY
     - npm run electron:build --windows
   tags:
     - windows
