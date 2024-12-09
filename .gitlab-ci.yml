@@ -43,6 +43,7 @@ Build MacOS:
     - nvm use 14
     - npm install --no-package-lock --legacy-peer-deps --registry=https://nexus.barrage.net/repository/npm.barrage.net/ --username=gitlab-ci-readonly --password=$CI_NEXUS_DOCKER_REGISTRY_READ_ONLY
     #- security unlock-keychain -p $KEYCHAIN_PASSWORD stealthdesktop.keychain
+    - which macos_setup_keychain
     - macos_setup_keychain
     - npm run electron:build --mac
     - macos_cleanup_keychain
