@@ -21,6 +21,7 @@ Build Linux:
     - apt-get update ; apt-get --yes install rsync
     - cp -R ./ /project
     - cd /project
+    - npm install electron-builder vue-cli-plugin-electron-builder
     - npm install --only=prod --no-package-lock --legacy-peer-deps
     - npm run electron:build --linux
     - cd $CI_PROJECT_DIR
