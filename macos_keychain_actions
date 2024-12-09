@@ -2,33 +2,130 @@
 
 # Variables are inherited from Gitlab CI/CD Settings page of the project
 
-function failed()
-{
+# Set up logging
+LOG_FILE="signing_script.log"
+KEYCHAIN_LOG="keychain_operations.log"
+
+function log() {
+    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    echo "[$timestamp] $1" | tee -a "$LOG_FILE"
+}
+
+function log_debug() {
+    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    echo "[$timestamp] DEBUG: $1" >> "$LOG_FILE"
+}
+
+function log_error() {
+    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    echo "[$timestamp] ERROR: $1" | tee -a "$LOG_FILE" >&2
+}
+
+function check_required_vars() {
+    log "Checking required environment variables..."
+    local required_vars=(
+        "MACOS_TEMP_CERT_KEY"
+        "MACOS_TEMP_CERT_PASSWORD"
+        "MACOS_TEMP_KEYCHAIN"
+        "MACOS_TEMP_KEYCHAIN_PASSWORD"
+    )
+    
+    for var in "${required_vars[@]}"; do
+        if [ -z "${!var}" ]; then
+            log_error "Required variable $var is not set"
+            return 1
+        else
+            log_debug "$var is set"
+        fi
+    done
+    log "All required variables are present"
+    return 0
+}
+
+function failed() {
     local error=${1:-Undefined error}
-    echo "Failed: $error" >&2
+    log_error "$error"
+    # Dump last 20 lines of keychain log if it exists
+    if [ -f "$KEYCHAIN_LOG" ]; then
+        log_error "Last 20 lines of keychain operations:"
+        tail -n 20 "$KEYCHAIN_LOG" | while read -r line; do
+            log_error "  $line"
+        done
+    fi
     exit 1
 }
 
-function macos_setup_keychain()
-{
-    echo "Running setup of custom keychain for importing of certificate"
-    openssl x509 -in stealthsend-developerID_application.cer -inform DER -out privkey.pem -outform PEM
-    openssl pkcs12 -export -out privkey.p12 -inkey $MACOS_TEMP_CERT_KEY -in privkey.pem -nodes -passout pass:$MACOS_TEMP_CERT_PASSWORD
-    security delete-keychain "$MACOS_TEMP_KEYCHAIN" > keychain.log || true
-    security create-keychain -p "$MACOS_TEMP_KEYCHAIN_PASSWORD" "$MACOS_TEMP_KEYCHAIN" >> keychain.log
-    security list-keychains -d user -s "$MACOS_TEMP_KEYCHAIN" $(security list-keychains -d user | sed s/\"//g) 
-    security set-keychain-settings "$MACOS_TEMP_KEYCHAIN" >> keychain.log
-    security unlock-keychain -p "$MACOS_TEMP_KEYCHAIN_PASSWORD" "$MACOS_TEMP_KEYCHAIN" >> keychain.log
-    security import privkey.p12 -k "$MACOS_TEMP_KEYCHAIN" -P "$MACOS_TEMP_CERT_PASSWORD" -T "/usr/bin/codesign" >> keychain.log
+function macos_setup_keychain() {
+    log "Starting setup of custom keychain for certificate import"
+    
+    # Check required variables first
+    check_required_vars || failed "Missing required environment variables"
+
+    log "Converting certificate from DER to PEM format"
+    openssl x509 -in stealthsend-developerID_application.cer -inform DER -out privkey.pem -outform PEM 2>> "$LOG_FILE" || failed "Certificate conversion failed"
+    
+    log "Creating PKCS12 bundle"
+    openssl pkcs12 -export -out privkey.p12 -inkey "$MACOS_TEMP_CERT_KEY" -in privkey.pem -nodes -passout pass:"$MACOS_TEMP_CERT_PASSWORD" 2>> "$LOG_FILE" || failed "PKCS12 bundle creation failed"
+
+    log "Managing keychain"
+    log_debug "Attempting to delete existing keychain if present"
+    security delete-keychain "$MACOS_TEMP_KEYCHAIN" > "$KEYCHAIN_LOG" 2>&1 || log_debug "No existing keychain to delete"
+    
+    log "Creating new keychain"
+    security create-keychain -p "$MACOS_TEMP_KEYCHAIN_PASSWORD" "$MACOS_TEMP_KEYCHAIN" >> "$KEYCHAIN_LOG" 2>&1 || failed "Keychain creation failed"
+    
+    log "Configuring keychain list"
+    security list-keychains -d user -s "$MACOS_TEMP_KEYCHAIN" $(security list-keychains -d user | sed s/\"//g) >> "$KEYCHAIN_LOG" 2>&1 || failed "Keychain list configuration failed"
+    
+    log "Setting keychain settings"
+    security set-keychain-settings "$MACOS_TEMP_KEYCHAIN" >> "$KEYCHAIN_LOG" 2>&1 || failed "Setting keychain settings failed"
+    
+    log "Unlocking keychain"
+    security unlock-keychain -p "$MACOS_TEMP_KEYCHAIN_PASSWORD" "$MACOS_TEMP_KEYCHAIN" >> "$KEYCHAIN_LOG" 2>&1 || failed "Keychain unlock failed"
+    
+    log "Importing certificate"
+    security import privkey.p12 -k "$MACOS_TEMP_KEYCHAIN" -P "$MACOS_TEMP_CERT_PASSWORD" -T "/usr/bin/codesign" >> "$KEYCHAIN_LOG" 2>&1 || failed "Certificate import failed"
+    
+    log "Extracting certificate identity"
     MACOS_TEMP_CERT_IDENTITY=$(security find-identity -v -p codesigning "$MACOS_TEMP_KEYCHAIN" | head -1 | grep '"' | sed -e 's/[^"]*"//' -e 's/".*//') 
-    MACOS_TEMP_CERT_UUID=$(security find-identity -v -p codesigning "$MACOS_TEMP_KEYCHAIN" | head -1 | grep '"' | awk '{print $2}') 
-    security set-key-partition-list -S apple-tool:,apple: -s -k $MACOS_TEMP_KEYCHAIN_PASSWORD -D "$MACOS_TEMP_CERT_IDENTITY" -t private $MACOS_TEMP_KEYCHAIN >> keychain.log || failed macos_setup_keychain
-    echo "Setup custom keychain completed"
+    MACOS_TEMP_CERT_UUID=$(security find-identity -v -p codesigning "$MACOS_TEMP_KEYCHAIN" | head -1 | grep '"' | awk '{print $2}')
+    
+    if [ -z "$MACOS_TEMP_CERT_IDENTITY" ]; then
+        failed "Failed to extract certificate identity"
+    fi
+    log_debug "Certificate Identity: $MACOS_TEMP_CERT_IDENTITY"
+    log_debug "Certificate UUID: $MACOS_TEMP_CERT_UUID"
+    
+    log "Setting key partition list"
+    security set-key-partition-list -S apple-tool:,apple: -s -k "$MACOS_TEMP_KEYCHAIN_PASSWORD" -D "$MACOS_TEMP_CERT_IDENTITY" -t private "$MACOS_TEMP_KEYCHAIN" >> "$KEYCHAIN_LOG" 2>&1 || failed "Setting key partition list failed"
+    
+    log "Custom keychain setup completed successfully"
 }
 
-function macos_cleanup_keychain() 
-{
-    security delete-keychain "$MACOS_TEMP_KEYCHAIN"
-    rm -fr privkey.*
+function macos_cleanup_keychain() {
+    log "Starting keychain cleanup"
+    
+    if [ -f "$MACOS_TEMP_KEYCHAIN" ]; then
+        log "Deleting temporary keychain"
+        security delete-keychain "$MACOS_TEMP_KEYCHAIN" >> "$LOG_FILE" 2>&1 || log_error "Failed to delete keychain"
+    else
+        log_debug "Keychain file not found: $MACOS_TEMP_KEYCHAIN"
+    fi
+    
+    log "Removing temporary private key files"
+    rm -fv privkey.* >> "$LOG_FILE" 2>&1 || log_error "Failed to remove some private key files"
+    
+    log "Cleanup completed"
 }
 
+# Main execution
+log "Script started"
+log "macOS version: $(sw_vers)"
+log "Current user: $(whoami)"
+log "Working directory: $(pwd)"
+
+# Add trap for cleanup on script exit
+trap 'log "Script exiting"; macos_cleanup_keychain' EXIT
+
+# Execute main function
+macos_setup_keychain
