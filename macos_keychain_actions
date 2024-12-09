@@ -65,10 +65,7 @@ function macos_setup_keychain() {
     openssl x509 -in stealthsend-developerID_application.cer -inform DER -out privkey.pem -outform PEM 2>> "$LOG_FILE" || failed "Certificate conversion failed"
     
     log "Creating PKCS12 bundle"
-
-    log_debug "Checking if private key file exists"
-    [ -f "$MACOS_TEMP_CERT_KEY" ] || failed "Private key file doesn't exist"
-
+    
     echo "$MACOS_TEMP_CERT_KEY" > temp_private_key.pem
     MACOS_TEMP_CERT_KEY="temp_private_key.pem"
 
