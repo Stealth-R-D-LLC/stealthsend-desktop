@@ -64,8 +64,11 @@ function macos_setup_keychain() {
     log "Converting certificate from DER to PEM format"
     openssl x509 -in stealthsend-developerID_application.cer -inform DER -out privkey.pem -outform PEM 2>> "$LOG_FILE" || failed "Certificate conversion failed"
     
+    log_debug "Checking converted certificate:"
+    openssl x509 -in privkey.pem -text -noout >> "$LOG_FILE" 2>&1 || log_error "Certificate conversion may have failed"
+
     log "Creating PKCS12 bundle"
-    
+
     echo "$MACOS_TEMP_CERT_KEY" > temp_private_key.pem
     MACOS_TEMP_CERT_KEY="temp_private_key.pem"
 
@@ -75,20 +78,27 @@ function macos_setup_keychain() {
     log_debug "Checking certificate PEM file"
     ls -l privkey.pem >> "$LOG_FILE" 2>&1
 
-    log_debug "Attempting PKCS12 creation..."
+
+    log_debug "Private key content type check:"
+    echo "$MACOS_TEMP_CERT_KEY" | openssl rsa -inform PEM -text -noout -check >> "$LOG_FILE" 2>&1 || log_error "Private key format may be invalid"
+
+    log "Creating PKCS12 bundle with verbose output"
+    echo "$MACOS_TEMP_CERT_KEY" > temp_private_key.pem
     openssl pkcs12 -export \
         -out privkey.p12 \
-        -inkey "$MACOS_TEMP_CERT_KEY" \
+        -inkey temp_private_key.pem \
         -in privkey.pem \
         -nodes \
         -passout pass:"$MACOS_TEMP_CERT_PASSWORD" \
         -v 2>> "$LOG_FILE" || {
             log_error "PKCS12 bundle creation failed with error code $?"
-            log_error "Certificate contents:"
-            openssl x509 -in privkey.pem -text -noout >> "$LOG_FILE" 2>&1
+            log_error "Debug information:"
+            log_error "Certificate file exists: $([ -f privkey.pem ] && echo 'Yes' || echo 'No')"
+            log_error "Private key file size: $(wc -c < temp_private_key.pem)"
+            cat "$LOG_FILE"
             failed "PKCS12 bundle creation failed"
-        }
-
+    }
+    
     log "Managing keychain"
     log_debug "Attempting to delete existing keychain if present"
     security delete-keychain "$MACOS_TEMP_KEYCHAIN" > "$KEYCHAIN_LOG" 2>&1 || log_debug "No existing keychain to delete"
