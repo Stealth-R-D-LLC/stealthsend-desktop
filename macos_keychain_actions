@@ -69,6 +69,9 @@ function macos_setup_keychain() {
     log_debug "Checking if private key file exists"
     [ -f "$MACOS_TEMP_CERT_KEY" ] || failed "Private key file doesn't exist"
 
+    echo "$MACOS_TEMP_CERT_KEY" > temp_private_key.pem
+    MACOS_TEMP_CERT_KEY="temp_private_key.pem"
+
     log_debug "Checking private key file permissions"
     ls -l "$MACOS_TEMP_CERT_KEY" >> "$LOG_FILE" 2>&1
 
