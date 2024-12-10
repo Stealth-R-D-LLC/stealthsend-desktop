@@ -5,9 +5,7 @@ import { sanitizeUrl } from '@braintree/sanitize-url';
 const API_CONFIG = {
   baseURL: process.env.VUE_APP_API_URL,
   headers: {
-    common: {
-      'Content-Type': 'application/json',
-    },
+    'Content-Type': 'application/json',
   },
   transformRequest: [
     (data) => {
