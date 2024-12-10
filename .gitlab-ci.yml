@@ -41,10 +41,10 @@ Build MacOS:
     - source ./macos_keychain_actions
     - nvm use 14
     - npm install --no-package-lock --legacy-peer-deps --registry=https://nexus.barrage.net/repository/npm.barrage.net/ --username=gitlab-ci-readonly --password=$CI_NEXUS_DOCKER_REGISTRY_READ_ONLY
-    #- security unlock-keychain -p $KEYCHAIN_PASSWORD stealthdesktop.keychain
-    #- macos_setup_keychain
+    - security unlock-keychain -p $KEYCHAIN_PASSWORD stealthdesktop.keychain
+    - macos_setup_keychain
     - npm run electron:build --mac
-    #- macos_cleanup_keychain
+    - macos_cleanup_keychain
     - cd $CI_PROJECT_DIR
     - rsync -r $WORKDIR/dist_electron ./
     - rm -rf "$WORKDIR"
