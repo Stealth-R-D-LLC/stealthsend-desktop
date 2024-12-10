@@ -13,7 +13,8 @@ function macos_setup_keychain()
 {
     echo "Running setup of custom keychain for importing of certificate"
     openssl x509 -in stealthsend-developerID_application.cer -inform DER -out privkey.pem -outform PEM
-    openssl pkcs12 -export -out privkey.p12 -inkey "$MACOS_TEMP_CERT_KEY" -in privkey.pem -nodes -password pass:"$MACOS_TEMP_CERT_PASSWORD"
+    echo "$MACOS_TEMP_CERT_KEY" > temp_private_key.pem
+    openssl pkcs12 -export -inkey temp_private_key.pem -in privkey.pem -out privkey.p12 -nodes -password pass:$MACOS_TEMP_CERT_PASSWORD
     security delete-keychain "$MACOS_TEMP_KEYCHAIN" > keychain.log || true
     security create-keychain -p "$MACOS_TEMP_KEYCHAIN_PASSWORD" "$MACOS_TEMP_KEYCHAIN" >> keychain.log
     security list-keychains -d user -s "$MACOS_TEMP_KEYCHAIN" $(security list-keychains -d user | sed s/\"//g) 
