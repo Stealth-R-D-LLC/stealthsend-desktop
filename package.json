@@ -79,12 +79,11 @@
     "eslint-plugin-vue": "^7.16.0",
     "husky": "^7.0.1",
     "prettier": "^2.3.2",
-    "electron-builder": "^25.1.8",
     "vue-cli-plugin-electron-builder": "~2.1.1"
   },
   "overrides": {
     "vue-cli-plugin-electron-builder": {
-      "electron-builder": "^25.1.8"
+      "electron-builder": "^23.0.3"
     }
   }
 }
