@@ -1,6 +1,6 @@
 import argon2 from 'argon2-browser';
 import { XorShift1024Star } from 'xorshift.js';
-import { Buffer } from 'buffer/index.js';
+import { Buffer } from 'buffer/';
 import differenceInSeconds from 'date-fns/differenceInSeconds';
 import CryptoService from '@/services/crypto';
 

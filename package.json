@@ -4,7 +4,7 @@
   "license": "UNLICENSED",
   "description": "Stealth Desktop",
   "homepage": "https://stealth.org",
-  "version": "0.9.09",
+  "version": "0.9.10",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -33,7 +33,6 @@
     "apexcharts": "^3.27.3",
     "argon2-browser": "^1.18.0",
     "base64-loader": "^1.0.0",
-    "bigint-buffer": "^1.1.5",
     "bip32": "^2.0.6",
     "bip39": "^3.0.4",
     "bitcoinjs-lib": "^5.2.0",

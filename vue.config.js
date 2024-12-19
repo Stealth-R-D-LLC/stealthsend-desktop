@@ -1,12 +1,22 @@
 const path = require('path');
 const vueSrc = './src';
+const webpack = require('webpack');
 // const GoogleFontsPlugin = require("@beyonk/google-fonts-webpack-plugin")
 module.exports = {
   runtimeCompiler: true,
   css: {
     requireModuleExtension: true,
   },
-  chainWebpack: (config) => config.resolve.symlinks(false),
+  // chainWebpack: (config) => config.resolve.symlinks(false),
+  chainWebpack: (config) => {
+    // Ensure symlinks are not followed
+    config.resolve.symlinks(false);
+
+    // Adding buffer polyfill
+    config.resolve.alias.set('buffer', require.resolve('buffer/'));
+
+    // You can also configure other customizations for Webpack here
+  },
   configureWebpack: {
     module: {
       noParse: /argon2\.wasm$/,
@@ -20,18 +30,14 @@ module.exports = {
     },
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, vueSrc),
+        buffer: require.resolve('buffer/'),
       },
       extensions: ['.js', '.vue', '.json'],
     },
     plugins: [
-      /*  new GoogleFontsPlugin({
-          fonts: [
-              { family: "Source Sans Pro", variants: [ "300", "400", "600", "700", "900" ] },
-              { family: "Noto Sans", variants: [ "400", "700" ] }
-          ]
-          /* ...options
-      })*/
+      new webpack.ProvidePlugin({
+        Buffer: ['buffer', 'Buffer'], // Provide Buffer polyfill globally
+      })
     ],
   },
   pluginOptions: {
