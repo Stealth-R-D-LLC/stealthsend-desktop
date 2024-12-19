@@ -39,7 +39,7 @@ Build MacOS:
     - rsync -r --exclude=.git ./ "$WORKDIR"
     - cd "$WORKDIR"
     - source ./macos_keychain_actions
-    - nvm use 14
+    - node -v
     - npm install -g npm@8
     - npm install --no-package-lock --legacy-peer-deps --registry=https://nexus.barrage.net/repository/npm.barrage.net/ --username=gitlab-ci-readonly --password=$CI_NEXUS_DOCKER_REGISTRY_READ_ONLY
     - security unlock-keychain -p $KEYCHAIN_PASSWORD stealthdesktop.keychain
