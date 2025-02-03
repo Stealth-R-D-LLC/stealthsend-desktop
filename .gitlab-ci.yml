@@ -45,7 +45,7 @@ Build MacOS:
     - security unlock-keychain -p $KEYCHAIN_PASSWORD stealthdesktop.keychain
     - macos_setup_keychain
     - npm run electron:build --mac
-    - macos_cleanup_keychain
+    #- macos_cleanup_keychain
     - cd $CI_PROJECT_DIR
     - rsync -r $WORKDIR/dist_electron ./
     - rm -rf "$WORKDIR"
