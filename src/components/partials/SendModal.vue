@@ -542,7 +542,6 @@ async function addFailedTx() {
     isFeeless: isFeeless.value,
   });
 
-
   await CryptoService.scanWallet();
   emitter.emit('transactions:refresh');
 }
