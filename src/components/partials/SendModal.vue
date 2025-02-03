@@ -287,7 +287,6 @@ import { QrStream } from 'vue3-qr-reader';
 import SvgIcon from '../partials/SvgIcon.vue';
 import CircleProgress from '../partials/CircleProgress.vue';
 import getUnixTime from 'date-fns/getUnixTime';
-// import * as Sentry from '@sentry/vue';
 
 const mainStore = useMainStore();
 const { formatAmount, fil } = useHelpers();
@@ -543,7 +542,6 @@ async function addFailedTx() {
     isFeeless: isFeeless.value,
   });
 
-  // Sentry.captureMessage('Transaction failed');
 
   await CryptoService.scanWallet();
   emitter.emit('transactions:refresh');
@@ -583,7 +581,6 @@ async function send() {
         );
       } catch (e) {
         console.log('Transaction builder error: ', e);
-        // Sentry.captureMessage('Transaction builder error (imported acc): ', e);
         setTimeout(() => addFailedTx(), 1);
       }
     } else {
@@ -601,7 +598,6 @@ async function send() {
         });
       } catch (e) {
         console.log('Transaction builder error: ', e);
-        // Sentry.captureMessage('Transaction builder error (hd acc): ', e);
         setTimeout(() => addFailedTx(), 1);
       }
     }

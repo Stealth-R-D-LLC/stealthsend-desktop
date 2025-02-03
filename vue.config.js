@@ -37,7 +37,7 @@ module.exports = {
     plugins: [
       new webpack.ProvidePlugin({
         Buffer: ['buffer', 'Buffer'], // Provide Buffer polyfill globally
-      })
+      }),
     ],
   },
   pluginOptions: {
