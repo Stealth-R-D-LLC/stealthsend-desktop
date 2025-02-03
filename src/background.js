@@ -189,7 +189,6 @@ async function createWindow() {
   // webFrame.setVisualZoomLevelLimits(1, 1);
 
   // win.setMenu(null); // remove menu bar
-
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
@@ -329,7 +328,7 @@ app.on('ready', async () => {
         "style-src-elem 'unsafe-inline' https://fonts.googleapis.com 'self' https://fonts.googleapis.com app:;",
         "font-src https://fonts.gstatic.com 'self';",
         // "default-src 'self' https://api-mainnet.stealthmonitor.xyz https://api.stealth.org 172.20.10.112:8080 app:;",
-        "connect-src 'self' https://*.sentry.io https://api-mainnet.stealthmonitor.xyz https://api.stealth.org 172.20.10.169:8080 app:;",
+        "connect-src 'self' https://api-gateway-mainnet.stealthmonitor.xyz https://api.stealth.org 172.20.10.169:8080 app:;",
         "script-src 'unsafe-inline' 'unsafe-eval' 'self' app: blob:;",
         "script-src-elem 'unsafe-inline' 'self' app:;",
         "img-src 'self' app: data:;",

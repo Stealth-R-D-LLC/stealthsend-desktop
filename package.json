@@ -4,7 +4,7 @@
   "license": "UNLICENSED",
   "description": "Stealth Desktop",
   "homepage": "https://stealth.org",
-  "version": "0.9.08",
+  "version": "0.9.10",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -26,13 +26,13 @@
   "dependencies": {
     "@beyonk/google-fonts-webpack-plugin": "^1.7.0",
     "@braintree/sanitize-url": "^5.0.2",
+    "@electron/notarize": "^2.5.0",
     "@sentry/vue": "^6.16.1",
     "@vueuse/core": "^5.3.0",
     "@vueuse/integrations": "^5.3.0",
     "apexcharts": "^3.27.3",
     "argon2-browser": "^1.18.0",
     "base64-loader": "^1.0.0",
-    "bigint-buffer": "^1.1.5",
     "bip32": "^2.0.6",
     "bip39": "^3.0.4",
     "bitcoinjs-lib": "^5.2.0",
@@ -79,5 +79,10 @@
     "husky": "^7.0.1",
     "prettier": "^2.3.2",
     "vue-cli-plugin-electron-builder": "~2.1.1"
+  },
+  "overrides": {
+    "vue-cli-plugin-electron-builder": {
+      "electron-builder": "^23.0.3"
+    }
   }
 }

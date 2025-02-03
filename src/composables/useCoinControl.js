@@ -1,6 +1,5 @@
 import MathService from '@/services/math';
 import CryptoService from '@/services/crypto';
-import * as Sentry from '@sentry/vue';
 
 export default function useCoinControl(outputs, target) {
   console.log(
@@ -222,7 +221,7 @@ export default function useCoinControl(outputs, target) {
     );
 
     if (results.length > 0 && resultsSum < adjustedTarget) {
-      Sentry.captureMessage(`validateAlgorithm() failed for ${algorithm}`);
+      console.log(`validateAlgorithm() failed for ${algorithm}`);
     }
     return resultsSum >= adjustedTarget;
   }
