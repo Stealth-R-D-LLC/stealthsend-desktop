@@ -63,9 +63,9 @@ Build Windows:
     - $Env:CSC_KEY_PASSWORD = "$env:WINDOWS_CODESIGN_CERT_PASS"
     - npm cache clean --force
     - node -v
-    - npm install --force -g npm@8
-    - npm install --no-package-lock --legacy-peer-deps
-    - npm run electron:build --windows
+    - npm install npm@8
+    - npx npm install --no-package-lock --legacy-peer-deps
+    - npx npm run electron:build --windows
   tags:
     - windows
   artifacts:
